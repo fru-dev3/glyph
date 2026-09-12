@@ -129,6 +129,7 @@
   .outcmd{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:11px;
           overflow-wrap:anywhere}
   .outcmd .p{color:var(--ochre)}
+  .automatic .generated{opacity:.5}.automatic .ok{color:var(--faint)}.automatic .copy{color:var(--faint)}
   .note{color:var(--faint);font-size:12px;margin-top:12px}
   .ov.note{margin-top:0;font-size:12.5px;line-height:1.55}
 
@@ -279,7 +280,8 @@
   .demo .lbl{font-size:12px;letter-spacing:.16em;color:var(--ochre)}
   .demo .fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(250px,1.15fr);align-items:end;gap:10px}
   .demo .agent-picker{margin:0;min-width:0}
-  .agent-options{gap:6px}.agent-option span{padding:8px 7px;border-radius:8px;font-size:12px;white-space:nowrap}.agent-option img{width:23px;height:23px}
+  .agent-picker select{display:block;width:100%;height:42px;padding:0 34px 0 12px;border:1px solid var(--edge2);border-radius:8px;background:#0f0f11;color:var(--fg);font:13px var(--mono);outline:none;cursor:pointer}
+  .agent-picker select:focus{border-color:var(--ochre);outline:2px solid rgba(194,86,47,.2);outline-offset:2px}
   .agent-cards{grid-template-columns:repeat(3,1fr);gap:14px}.agent-card{padding:18px}.agent-card h3{font-size:16px}
   .fleet-preview{gap:12px}.fleet-pane{padding:16px}
   footer{padding-bottom:10px}
@@ -287,7 +289,7 @@
     .col>.pad:first-of-type{grid-template-columns:1fr;padding-top:56px}.hero-visual{grid-column:1;grid-row:auto;width:100%;transform:none}.col>.pad:first-of-type h1{max-width:12ch}.agent-cards{grid-template-columns:repeat(2,1fr)}
   }
   @media(max-width:620px){
-    header{padding:14px 20px}.pad{padding:32px 20px}.col>.pad:first-of-type{padding-top:44px;padding-bottom:48px;gap:20px}.col>.pad:first-of-type h1{font-size:52px}.col>.pad:first-of-type .intro{font-size:15px}.mock-body{grid-template-columns:94px 1fr}.mock-side{padding:15px 10px;font-size:10px}.mock-terminal{padding:17px 13px;font-size:10px}.comparison{grid-template-columns:1fr}.agent-cards{grid-template-columns:1fr 1fr}.sw{display:none}.demo .fields{grid-template-columns:1fr}.demo .agent-picker{grid-column:auto}.agent-option span{font-size:13px;padding:9px 7px}
+    header{padding:14px 20px}.pad{padding:32px 20px}.col>.pad:first-of-type{padding-top:44px;padding-bottom:48px;gap:20px}.col>.pad:first-of-type h1{font-size:52px}.col>.pad:first-of-type .intro{font-size:15px}.mock-body{grid-template-columns:94px 1fr}.mock-side{padding:15px 10px;font-size:10px}.mock-terminal{padding:17px 13px;font-size:10px}.comparison{grid-template-columns:1fr}.agent-cards{grid-template-columns:1fr 1fr}.sw{display:none}.demo .fields{grid-template-columns:1fr}.demo .agent-picker{grid-column:auto}
   }
 </style>
 </head>
@@ -340,6 +342,23 @@
   </div>
 
   <div class="rule"></div>
+  <div class="pad" id="demo">
+    <h2>See it in action</h2>
+    <p class="why-intro">Run one command and Glyph opens the saved group together. Each agent gets its own named pane, so you can tell what is running at a glance.</p>
+    <div class="fleet-screen" aria-label="Animated preview of a Glyph Fleet launch">
+      <div class="screen-head"><span><i></i><i></i><i></i> glyph fleet ci</span><b>3 agents launching</b></div>
+      <div class="screen-command"><span>$</span> glyph fleet ci <em>→ opening named panes</em></div>
+      <div class="screen-grid">
+        <div class="screen-pane pane-claude"><strong>claude-code</strong><span>ci·acme-api·claude-code</span><small>ready</small></div>
+        <div class="screen-pane pane-agy"><strong>agi</strong><span>ci·acme-api·agi</span><small>ready</small></div>
+        <div class="screen-pane pane-codex"><strong>codex</strong><span>ci·acme-api·codex</span><small>ready</small></div>
+      </div>
+      <div class="screen-foot"><span>one command · one named pane per agent</span><span class="screen-cursor">▮</span></div>
+    </div>
+    <p class="screen-caption">This is what Fleet does: it opens the group together and keeps every session identifiable.</p>
+  </div>
+
+  <div class="rule"></div>
   <div class="pad">
     <div class="demo">
       <div class="lbl">Try it</div>
@@ -350,21 +369,18 @@
           <input id="prj" value="acme-api" spellcheck="false"></label>
       <fieldset class="agent-picker">
         <legend>Agent</legend>
-        <div class="agent-options">
-          <label class="agent-option"><input type="radio" name="agent" value="codex">
-            <span><img src="agents/codex.png" alt="" width="28" height="28">Codex</span></label>
-          <label class="agent-option"><input type="radio" name="agent" value="agy">
-            <span><img src="agents/agi.png" alt="" width="28" height="28">AGI</span></label>
-          <label class="agent-option"><input type="radio" name="agent" value="claude" checked>
-            <span><img src="agents/claude.png" alt="" width="28" height="28">Claude</span></label>
-        </div>
+        <select id="agent-select" aria-label="Choose an agent">
+          <option value="codex">Codex</option>
+          <option value="agy">AGI</option>
+          <option value="claude" selected>Claude</option>
+        </select>
       </fieldset>
       </div>
 
       <div class="out">
         <div class="orow"><span class="ok">You type</span>
           <div class="generated"><span class="ov mono" id="typed"></span><button type="button" class="copy" data-copy="generated-typed" aria-label="Copy the command you type">Copy</button></div></div>
-        <div class="orow"><span class="ok">glyph runs</span>
+        <div class="orow automatic"><span class="ok">Glyph runs automatically</span>
           <div class="generated"><span class="ov mono" id="cm"></span><button type="button" class="copy" data-copy="generated-run" aria-label="Copy generated launch command">Copy</button></div></div>
         <div class="orow"><span class="ok" id="mark-label">Session name</span>
           <span class="ov"><span class="outmark" id="mk"></span>
@@ -498,17 +514,6 @@
       <div class="fleet-pane"><img src="agents/agi.png" alt=""><b>AGI</b><code>pane 2 · ci · your project</code></div>
       <div class="fleet-pane"><img src="agents/codex.png" alt=""><b>Codex</b><code>pane 3 · ci · your project</code></div>
     </div>
-    <div class="fleet-screen" aria-label="Animated preview of a Glyph Fleet launch">
-      <div class="screen-head"><span><i></i><i></i><i></i> glyph fleet ci</span><b>3 agents launching</b></div>
-      <div class="screen-command"><span>$</span> glyph fleet ci <em>→ opening named panes</em></div>
-      <div class="screen-grid">
-        <div class="screen-pane pane-claude"><strong>claude-code</strong><span>ci·acme-api·claude-code</span><small>ready</small></div>
-        <div class="screen-pane pane-agy"><strong>agi</strong><span>ci·acme-api·agi</span><small>ready</small></div>
-        <div class="screen-pane pane-codex"><strong>codex</strong><span>ci·acme-api·codex</span><small>ready</small></div>
-      </div>
-      <div class="screen-foot"><span>one command · one named pane per agent</span><span class="screen-cursor">▮</span></div>
-    </div>
-    <p class="screen-caption">This is what Fleet does: it opens the group together and keeps every session identifiable.</p>
     <div class="fleet-steps">
       <section class="fleet-step">
         <h3>1. Create a fleet once</h3>
@@ -590,7 +595,7 @@ cloud = claude:studio codex:studio</pre></div>
 <script>
 (function(){
   var lab=document.getElementById('lab'), prj=document.getElementById('prj'),
-      agents=document.querySelectorAll('input[name="agent"]'), mk=document.getElementById('mk'),
+      agentSelect=document.getElementById('agent-select'), mk=document.getElementById('mk'),
       cm=document.getElementById('cm'), nt=document.getElementById('nt');
   var generatedTyped='', generatedRun='';
   var YOLO={claude:'--dangerously-skip-permissions',codex:'--dangerously-bypass-approvals-and-sandbox',
@@ -602,7 +607,7 @@ cloud = claude:studio codex:studio</pre></div>
     var d=new Date(), when=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())
           +'\u00b7'+pad(d.getHours())+pad(d.getMinutes());
     var raw=lab.value.trim().split(/\s+/)[0]||'';
-    var l=esc(token(raw)), p=esc(token(prj.value||'')), a=document.querySelector('input[name="agent"]:checked').value;
+    var l=esc(token(raw)), p=esc(token(prj.value||'')), a=agentSelect.value;
     var parts=[];
     var agentName={claude:'claude-code',codex:'codex',agy:'agi'}[a]||a;
     if(l) parts.push('<span class="m1">'+l+'</span>');
@@ -635,7 +640,7 @@ cloud = claude:studio codex:studio</pre></div>
     }
   }
   [lab,prj].forEach(function(el){el.addEventListener('input',render)});
-  agents.forEach(function(el){el.addEventListener('change',render)});
+  agentSelect.addEventListener('change',render);
   render();
   var copyStatus=document.getElementById('copy-status');
   document.querySelectorAll('[data-copy]').forEach(function(button){
