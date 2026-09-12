@@ -162,9 +162,8 @@ glyph fleet ci  # a preset of agents, each in its own marked pane
 | Agent | Carries the mark as | `GLYPH_YOLO=1` sends |
 |---|:-:|---|
 | Claude Code | ✔ real session name | `--dangerously-skip-permissions` |
-| Antigravity | title | `--dangerously-skip-permissions` |
+| Antigravity (`agy`) | title | `--dangerously-skip-permissions` |
 | Codex | title | `--dangerously-bypass-approvals-and-sandbox` |
-| Gemini CLI | title | `--yolo` |
 | Cursor | title | `--force` |
 | Crush | title | `--yolo` |
 | Cortex | title | `--dangerously-allow-all-tool-calls` |
@@ -175,39 +174,50 @@ Six agents, five spellings of *"stop asking me to approve every tool call"*.
 
 ## Fleets
 
-Set up example fleets with one command (existing definitions are kept):
-
-```sh
-glyph fleet init
-```
-
-Then run `glyph fleet ci` from your project folder. Fleet uses the current
-workspace automatically: Herdr creates one Herdr tab per local agent, cmux
-creates one cmux workspace per local agent, Zellij creates a named pane per
-agent, WezTerm creates one tab per agent, and standalone shells use tmux. Set
-`GLYPH_FLEET_BACKEND=tmux|herdr|cmux|zellij|wezterm` to choose explicitly. Fleet needs
-the selected workspace manager and the agent CLIs installed. Customize the
-generated config when needed:
+One preset launches several agents at once, each in its own marked pane:
 
 ```ini
 # ~/.config/glyph/fleet.conf
-ci      = claude agy codex
-review  = claude claude:studio
-cloud   = claude:hetzner codex:hetzner
+solo   = claude                        # one agent, named
+review = claude codex                  # two vendors on the same diff
+duo    = claude agy                    # Anthropic and Google side by side
+ci     = claude agy codex              # the three-up bench
+bench  = claude codex agy cursor-agent # everything local
+pair   = claude cursor-agent           # terminal agent + editor-native
+deep   = claude cortex                 # coding agent + warehouse-native
+light  = crush opencode                # cheap, quick passes
+split  = claude codex:mini             # one local, one remote
+spread = claude claude:mini            # same agent, two machines
+cloud  = claude:mini codex:mini        # both on the remote box
 ```
 
 ```sh
-glyph fleet review
+glyph fleet init     # write the presets above, keeping any you already have
+glyph presets        # list them
+glyph fleet review   # launch one
 ```
 
-- A slot is `<agent>` or `<agent>:<ssh-host>`.
-- The part after `:` is an **ssh host**, not the machine tag — the tag is
-  whatever that machine reports for itself.
-- Remote panes require Glyph and the agent installed on the SSH host, with
-  Glyph sourced in its zsh config. They `cd` to the same project path and stop
-  if that path is missing.
-- Herdr, cmux, Zellij, and WezTerm backends support local slots. Use the tmux backend for
-  `<agent>:<ssh-host>` slots.
+### Remote agents
+
+A slot is `<agent>` or `<agent>:<machine>`. Glyph opens SSH in that pane, cds to
+the same directory, and launches the agent through the remote wrapper so it gets
+its own flags and its own mark.
+
+`glyph hosts` lists everything you can put after the colon. A machine name
+resolves in this order:
+
+1. **SSH config** — a `Host` entry in `~/.ssh/config` always wins
+2. **known_hosts** — a name SSH already trusts, so the pane never stalls on a
+   fingerprint prompt
+3. **Tailscale** — a short machine name is expanded to its MagicDNS name
+4. **Literal** — anything else (`user@10.0.0.5`) goes to SSH untouched
+
+Tailscale is optional and detected automatically. Accept a new host's key by
+hand once (`ssh mini`) before using it in a fleet.
+
+Remote slots work on **every** backend — Herdr, tmux, cmux, Zellij, WezTerm —
+because they all build the same SSH command. Glyph is not tied to any one
+workspace tool; with none running, Fleet falls back to tmux.
 
 <details>
 <summary><b>Configuration</b></summary>

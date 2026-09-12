@@ -34,7 +34,6 @@ typeset -gA GLYPH_YOLO_FLAG GLYPH_NAME_FLAG GLYPH_EXTRA GLYPH_LABEL
 GLYPH_YOLO_FLAG=(
   claude       "--dangerously-skip-permissions"
   agy          "--dangerously-skip-permissions"
-  gemini       "--yolo"
   codex        "--dangerously-bypass-approvals-and-sandbox"
   cursor-agent "--force"
   crush        "--yolo"
@@ -44,7 +43,7 @@ GLYPH_YOLO_FLAG=(
 )
 GLYPH_NAME_FLAG=( claude "-n" )
 GLYPH_LABEL=(
-  claude "claude-code"  agy "agy"  gemini "gemini-cli"
+  claude "claude-code"  agy "agy"
   codex "codex"  cursor-agent "cursor"  crush "crush"
   cortex "cortex"  opencode "opencode"  pi "pi"
 )
@@ -207,6 +206,19 @@ glyph() {
           && printf "%-14s %-14s %s\n" "$a" "${GLYPH_LABEL[$a]}" "${GLYPH_YOLO_FLAG[$a]:-(no yolo flag)}"
       done ;;
     name) shift; _glyph_compose "${1:-}" "$(_glyph_project "$PWD")" ;;
+    hosts)
+      local h line ts
+      print -r -- "ssh config (~/.ssh/config)"
+      for h in ${(f)"$(_glyph_ssh_hosts)"}; do printf '  %-22s %s\n' "$h" "ssh host"; done
+      if ts=$(_glyph_tailscale_bin); then
+        print -r -- "tailscale"
+        for line in ${(f)"$(_glyph_tailscale_peers)"}; do
+          printf '  %-22s %-38s %s\n' "${line%%$'\t'*}" "${${line#*$'\t'}%%$'\t'*}" "${line##*$'\t'}"
+        done
+      else
+        print -r -- "tailscale: not detected"
+      fi
+      print -r -- "use any of these after a colon, e.g. glyph fleet cloud with codex:mini" ;;
     fleet) shift; glyph-fleet "$@" ;;
     presets)
       local conf=$(_glyph_fleet_conf)
@@ -217,8 +229,93 @@ glyph agents   installed agents and their auto-approve flags
 glyph name [x] print the mark this directory would produce
 glyph fleet init create example fleets without replacing existing presets
 glyph fleet [p] launch a preset of agents, each in its own marked tmux pane
-glyph presets  list the presets in ~/.config/glyph/fleet.conf" ;;
+glyph presets  list the presets in ~/.config/glyph/fleet.conf
+glyph hosts    machines you can put after a colon in a fleet slot" ;;
   esac
+}
+
+# --- remote slots -------------------------------------------------------------
+# A slot may name a machine: <agent>:<host>. The host can be
+#   * an ssh config Host entry        (Host mini ...)
+#   * a Tailscale machine, short name (mini -> mini.tailnet.ts.net)
+#   * any hostname, IP or user@host
+# Resolution never guesses over an explicit ssh config entry.
+_glyph_tailscale_bin() {
+  local b
+  # The macOS app bundle binary is tried first: a bare `tailscale` on PATH can be
+  # a stub that aborts with a bundle-identifier error instead of printing status.
+  for b in ${GLYPH_TAILSCALE:-} /Applications/Tailscale.app/Contents/MacOS/Tailscale \
+           /opt/homebrew/bin/tailscale /usr/local/bin/tailscale tailscale; do
+    [[ -n $b ]] || continue
+    command -v "$b" >/dev/null 2>&1 || continue
+    command "$b" status --json 2>/dev/null | command head -c 1 | command grep -q '{' \
+      && { print -r -- "$b"; return 0 }
+  done
+  return 1
+}
+
+_glyph_ssh_hosts() {                      # Host entries from ~/.ssh/config
+  local cfg=${GLYPH_SSH_CONFIG:-$HOME/.ssh/config}
+  [[ -r $cfg ]] || return 0
+  command awk 'tolower($1)=="host"{for(i=2;i<=NF;i++) if($i !~ /[*?]/) print $i}' "$cfg" 2>/dev/null
+}
+
+_glyph_tailscale_peers() {                # "<short>\t<magicdns>\t<online>"
+  local ts; ts=$(_glyph_tailscale_bin) || return 0
+  command "$ts" status --json 2>/dev/null | command python3 -c '
+import sys,json
+try: d=json.load(sys.stdin)
+except Exception: raise SystemExit
+def row(p):
+    dns=(p.get("DNSName") or "").rstrip(".")
+    if not dns: return
+    print("\t".join([dns.split(".")[0],dns,"online" if p.get("Online") else "offline"]))
+for p in (d.get("Peer") or {}).values(): row(p)
+' 2>/dev/null
+}
+
+_glyph_known_hosts() {                    # names already trusted by ssh
+  local kh=${GLYPH_KNOWN_HOSTS:-$HOME/.ssh/known_hosts}
+  [[ -r $kh ]] || return 0
+  command awk '{split($1,a,","); for(i in a){gsub(/\[|\]:[0-9]+/,"",a[i]); print a[i]}}' \
+    "$kh" 2>/dev/null
+}
+
+_glyph_resolve_host() {                   # short name -> something ssh can dial
+  local want=$1 host line
+  [[ -n $want ]] || return 1
+  # 1. an explicit ssh config Host always wins
+  for host in ${(f)"$(_glyph_ssh_hosts)"}; do
+    [[ $host == $want ]] && { print -r -- "$want"; return 0 }
+  done
+  # 2. a name ssh already trusts. Prefer it over MagicDNS: the tailnet FQDN is
+  #    usually absent from known_hosts, and the pane would stall on the
+  #    "continue connecting (yes/no)?" prompt.
+  for host in ${(f)"$(_glyph_known_hosts)"}; do
+    [[ $host == $want ]] && { print -r -- "$want"; return 0 }
+  done
+  # 3. a Tailscale machine, matched on the short name
+  for line in ${(f)"$(_glyph_tailscale_peers)"}; do
+    [[ ${line%%$'\t'*} == $want ]] && { print -r -- "${${line#*$'\t'}%%$'\t'*}"; return 0 }
+  done
+  # 4. take it literally: hostname, IP or user@host
+  print -r -- "$want"
+}
+
+# The command a pane runs for one slot, local or remote. Every backend uses this
+# so SSH is not tied to any one workspace tool.
+_glyph_slot_command() {
+  local agent=$1 machine=$2 preset=$3 target remote_script remote_cmd
+  if [[ $machine == local ]]; then
+    print -r -- "${agent} ${(q)preset}"
+    return 0
+  fi
+  target=$(_glyph_resolve_host "$machine")
+  # An interactive remote zsh loads the remote Glyph wrapper, which adds that
+  # agent's own flags. Fall back to a login shell instead of closing the pane.
+  remote_script="cd ${(q)PWD} 2>/dev/null; ${(q)agent} ${(q)preset} || exec \$SHELL -l"
+  remote_cmd="zsh -ic ${(q)remote_script}"
+  print -r -- "ssh -t ${(q)target} ${(q)remote_cmd}"
 }
 
 # --- fleet: several marked agents at once ------------------------------------
@@ -250,12 +347,11 @@ _glyph_fleet_init() {
   local -a examples=(
     'solo|claude|one agent, named. the everyday case'
     'review|claude codex|two vendors on the same diff, for a second opinion'
-    'duo|claude gemini|Anthropic and Google side by side'
-    'crosscheck|claude codex gemini|three vendors when the answer has to be right'
-    'ci|claude agy codex|the original three-up bench'
-    'bench|claude codex gemini agy|everything local, one pane each'
-    'google|gemini agy|the Google stack on its own'
+    'duo|claude agy|Anthropic and Google side by side'
+    'ci|claude agy codex|the three-up bench: Claude, AGY, Codex'
+    'bench|claude codex agy cursor-agent|everything local, one pane each'
     'pair|claude cursor-agent|a terminal agent beside an editor-native one'
+    'deep|claude cortex|a coding agent next to a warehouse-native one'
     'light|crush opencode|lightweight runners for cheap, quick passes'
     'split|claude codex:studio|one local, one on a remote box'
     'spread|claude claude:studio|the same agent on two machines'
@@ -316,8 +412,8 @@ _glyph_fleet_herdr() {
   for slot in "$@"; do
     agent=${slot%%:*}; machine=${slot#*:}
     [[ $machine == $slot ]] && machine=local
-    [[ $machine == local ]] || { print -ru2 -- "glyph: Herdr backend does not support SSH slot '$slot'; run it with GLYPH_FLEET_BACKEND=tmux"; return 1; }
     label="${GLYPH_LABEL[$agent]:-$agent} · $mark"
+    [[ $machine == local ]] || label="${GLYPH_LABEL[$agent]:-$agent} @$machine · $mark"
     if [[ -n ${GLYPH_DRYRUN:-} ]]; then
       print -r -- "herdr tab  $label  ($agent $preset)"
       continue
@@ -341,7 +437,7 @@ _glyph_fleet_herdr() {
     done
     [[ -n $pane_id ]] || { print -ru2 -- "glyph: could not find the pane for Herdr tab $tab_id"; return 1; }
 
-    command_text="${agent} ${(q)preset}"
+    command_text=$(_glyph_slot_command "$agent" "$machine" "$preset")
     command herdr pane run "$pane_id" "$command_text" >/dev/null || return 1
   done
 }
@@ -353,9 +449,9 @@ _glyph_fleet_cmux() {
   for slot in "$@"; do
     agent=${slot%%:*}; machine=${slot#*:}
     [[ $machine == $slot ]] && machine=local
-    [[ $machine == local ]] || { print -ru2 -- "glyph: cmux backend does not support SSH slot '$slot'; use tmux backend"; return 1; }
+    [[ $machine == local ]] || label="$label @$machine"
     label="${GLYPH_LABEL[$agent]:-$agent} · $mark"
-    command_text="zsh -lic ${(q)agent}\ ${(q)preset}"
+    command_text="zsh -lic ${(q)$(_glyph_slot_command "$agent" "$machine" "$preset")}"
     if [[ -n ${GLYPH_DRYRUN:-} ]]; then
       print -r -- "cmux workspace  $label  ($command_text)"
     else
@@ -372,9 +468,9 @@ _glyph_fleet_zellij() {
   for slot in "$@"; do
     agent=${slot%%:*}; machine=${slot#*:}
     [[ $machine == $slot ]] && machine=local
-    [[ $machine == local ]] || { print -ru2 -- "glyph: zellij backend does not support SSH slot '$slot'; use tmux backend"; return 1; }
+    [[ $machine == local ]] || label="$label @$machine"
     label="${GLYPH_LABEL[$agent]:-$agent} · $mark"
-    command_text="${agent} ${(q)preset}"
+    command_text=$(_glyph_slot_command "$agent" "$machine" "$preset")
     if [[ -n ${GLYPH_DRYRUN:-} ]]; then
       print -r -- "zellij pane  $label  (zellij run --cwd $PWD --name $label -- zsh -lic $command_text)"
     else
@@ -390,9 +486,9 @@ _glyph_fleet_wezterm() {
   for slot in "$@"; do
     agent=${slot%%:*}; machine=${slot#*:}
     [[ $machine == $slot ]] && machine=local
-    [[ $machine == local ]] || { print -ru2 -- "glyph: wezterm backend does not support SSH slot '$slot'; use tmux backend"; return 1; }
+    [[ $machine == local ]] || label="$label @$machine"
     label="${GLYPH_LABEL[$agent]:-$agent} · $mark"
-    command_text="${agent} ${(q)preset}"
+    command_text=$(_glyph_slot_command "$agent" "$machine" "$preset")
     if [[ -n ${GLYPH_DRYRUN:-} ]]; then
       print -r -- "wezterm tab  $label  (wezterm cli spawn --cwd $PWD -- zsh -lic $command_text)"
     else
@@ -459,15 +555,8 @@ glyph-fleet() {
     agent=${slots[i]%%:*}; machine=${slots[i]#*:}
     [[ $machine == $slots[i] ]] && machine=local
     label="${GLYPH_LABEL[$agent]:-$agent}"
-    if [[ $machine == local ]]; then
-      cmd="${(q)agent} ${(q)preset}"
-    else
-      label="$label @$machine"
-      local remote_script="cd ${(q)PWD} && ${(q)agent} ${(q)preset}"
-      # Interactive zsh loads the remote Glyph wrapper from .zshrc.
-      local remote_cmd="zsh -ic ${(q)remote_script}"
-      cmd="ssh -t ${(q)machine} ${(q)remote_cmd}"
-    fi
+    [[ $machine == local ]] || label="$label @$machine"
+    cmd=$(_glyph_slot_command "$agent" "$machine" "$preset")
     command tmux set-option -p -t "$panes[i]" @label "$label · $mark" >/dev/null 2>&1
     command tmux send-keys -t "$panes[i]" "$cmd" C-m
   done
