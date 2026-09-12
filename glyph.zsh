@@ -1,6 +1,6 @@
 # glyph - one identity for every coding agent you run.
 #
-#   claude billing   ->  billing·Acme API·Claude·mbp·2026-09-12·0556
+#   claude billing   ->  billing·acme-api·claude-code·mbp·2026-09-12·0556
 #   agy billing      ->  same name, on the terminal and tmux window
 #   codex billing    ->  same
 #
@@ -43,34 +43,28 @@ GLYPH_YOLO_FLAG=(
 )
 GLYPH_NAME_FLAG=( claude "-n" )
 GLYPH_LABEL=(
-  claude "Claude Code"  agy "Antigravity"  gemini "Gemini CLI"
-  codex "Codex"  cursor-agent "Cursor"  crush "Crush"
-  cortex "Cortex"  opencode "OpenCode"  pi "pi"
+  claude "claude-code"  agy "agi"  gemini "gemini-cli"
+  codex "codex"  cursor-agent "cursor"  crush "crush"
+  cortex "cortex"  opencode "opencode"  pi "pi"
 )
 
 # --- pieces of the mark -----------------------------------------------------
+_glyph_token() {
+  local value=${1:-}
+  value=${(L)value}
+  print -r -- "$value" | command sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//'
+}
+
 _glyph_machine() {
   local h=${GLYPH_MACHINE:-}
-  if [[ -n $h ]]; then print -r -- "$h"; return; fi
-  h=$(command hostname -s 2>/dev/null); h=${h%%.*}
-  case ${(L)h} in
-    *mini*)        print -r -- mini ;;
-    *air*)         print -r -- air ;;
-    *macbook*pro*) print -r -- mbp ;;
-    *macbook*)     print -r -- mb ;;
-    *imac*)        print -r -- imac ;;
-    *studio*)      print -r -- studio ;;
-    *)
-      # Anything else - a Windows box, a Linux server, a cloud instance.
-      # Prefer the first word of the hostname (build-01 -> build), and fall
-      # back to the whole thing when that word is too short or all digits.
-      h=${h#[A-Za-z][0-9]-}
-      local first=${${(L)h}%%[-_.]*}
-      first=${first//[^a-z0-9]/}
-      local whole=${${(L)h}//[^a-z0-9]/}
-      [[ ${#first} -ge 3 && $first != <-> ]] || first=$whole
-      print -r -- "${first[1,10]}" ;;
-  esac
+  if [[ -n $h ]]; then _glyph_token "$h"; return; fi
+  local os=$(command uname -s 2>/dev/null)
+  if [[ $os == Darwin ]] && command -v scutil >/dev/null 2>&1; then
+    h=$(command scutil --get ComputerName 2>/dev/null)
+  fi
+  [[ -n $h ]] || h=$(command hostname 2>/dev/null)
+  [[ -n $h ]] || h=$(command hostname -s 2>/dev/null)
+  _glyph_token "$h"
 }
 
 _glyph_project() {
@@ -80,24 +74,17 @@ _glyph_project() {
   local map=${GLYPH_MAP:-$HOME/.config/glyph/names.tsv}
   if [[ -r $map ]]; then
     line=$(command grep -m1 -E "^${slug}"$'\t' "$map" 2>/dev/null)
-    [[ -n $line ]] && { print -r -- "${line#*$'\t'}"; return 0; }
+    [[ -n $line ]] && { _glyph_token "${line#*$'\t'}"; return 0; }
   fi
-  local base=${slug//[-_]/ } w; local -a out
-  for w in ${=base}; do
-    case ${(L)w} in
-      cli|api|mcp|ai|ui|os|db|sdk|ios|tv) out+=( ${(U)w} ) ;;
-      *) out+=( "${(C)w}" ) ;;
-    esac
-  done
-  print -r -- "${(j: :)out}"
+  _glyph_token "$slug"
 }
 
 _glyph_compose() {
   local g=$1 pj=$2 agent=${3:-} sep=${GLYPH_SEP:-·}
   local -a parts
-  [[ -n $g ]] && parts+=("$g")
-  [[ -n $pj && ${(L)pj} != ${(L)g} ]] && parts+=("$pj")
-  [[ -n $agent ]] && parts+=("${GLYPH_LABEL[$agent]:-$agent}")
+  [[ -n $g ]] && parts+=("$(_glyph_token "$g")")
+  [[ -n $pj && ${(L)pj} != ${(L)g} ]] && parts+=("$(_glyph_token "$pj")")
+  [[ -n $agent ]] && parts+=("$(_glyph_token "${GLYPH_LABEL[$agent]:-$agent}")")
   if [[ -z ${GLYPH_OFF:-} ]]; then
     parts+=("$(_glyph_machine)")
     parts+=("$(command date +${GLYPH_FMT:-%Y-%m-%d${sep}%H%M})")

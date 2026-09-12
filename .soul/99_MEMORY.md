@@ -65,3 +65,14 @@
 - Updated the vault-linked installed shell wrapper and verified the composed mark
   plus the existing smoke suite. Website/docs examples updated; no deploy made
   for this change yet.
+
+- Standardized all mark fields to lowercase hyphenated tokens separated by `·`:
+  label, project, agent, machine, timestamp. Project overrides normalize too.
+- Machine identity now comes from the configured macOS ComputerName via
+  `scutil --get ComputerName`, otherwise the system hostname. GLYPH_MACHINE is
+  the explicit override for Windows releases, tablets, or custom roles. Glyph
+  no longer guesses Mac model abbreviations or OS names.
+- Herdr guidance: use Herdr as the outer workspace and launch individual agents
+  in its tabs. `glyph fleet` still creates standalone tmux; inside Herdr it
+  nests tmux. Documented this behavior and recommendation; no Herdr Fleet
+  backend added without a clear API/UX decision.

@@ -6,7 +6,7 @@
 
 **Every agent session, named before it starts.**
 
-`billing·Acme API·Claude Code·mbp·2026-09-12·0556`
+`billing·acme-api·claude-code·mbp·2026-09-12·0556`
 
 [![stars](https://img.shields.io/github/stars/fru-dev3/glyph?style=flat&label=stars&color=C4A35A&labelColor=1c1712)](https://github.com/fru-dev3/glyph/stargazers)
 [![license](https://img.shields.io/badge/license-MIT-C4A35A?style=flat&labelColor=1c1712)](LICENSE)
@@ -39,14 +39,14 @@ node                                 ← Antigravity. same
 Turn glyph on and the same five read:
 
 ```
-billing·Acme API·Claude Code·laptop·2026-09-12·0556     ← MacBook Pro
-migration·Acme API·AGI·studio·2026-09-12·0602           ← Mac Studio
-docs·Website·Codex·mini·2026-09-12·0611                ← Mac mini
-audit·Payments·Claude Code·desktop·2026-09-11·2247      ← Windows box, via WSL
-scrape·Atlas·Codex·hetzner·2026-09-12·0640              ← cloud server
+billing·acme-api·claude-code·laptop·2026-09-12·0556     ← MacBook Pro
+migration·acme-api·agi·studio·2026-09-12·0602           ← Mac Studio
+docs·website·codex·mini·2026-09-12·0611                ← Mac mini
+audit·payments·claude-code·windows·2026-09-11·2247      ← Windows box, via WSL
+scrape·atlas·codex·hetzner·2026-09-12·0640              ← cloud server
 ```
 
-Label · project · agent · machine · date · time. Every agent, every machine, set before
+Label · project · agent · machine · date · time. Every field is lowercase; hyphens join words, and `·` separates fields. Every agent, every machine, set before
 the first token.
 
 **You could do this by hand.** Rename a Claude session with `/rename`, or
@@ -89,7 +89,7 @@ claude
 # launches:  claude -n 'Acme API·mbp·2026-09-12·0648' --remote-control
 
 claude billing
-# launches:  claude -n 'billing·Acme API·Claude Code·mbp·2026-09-12·0648' --remote-control
+# launches:  claude -n 'billing·acme-api·claude-code·mbp·2026-09-12·0648' --remote-control
 
 claude billing "fix the webhook retry"
 # launches:  claude -n 'billing·…' --remote-control 'fix the webhook retry'
@@ -217,28 +217,28 @@ glyph fleet review
 | `GLYPH_LOG=0` | Do not record sessions locally |
 | `GLYPH_DRYRUN=1` | Print the argv instead of launching |
 
-**Machine tags** come from `hostname -s`:
+**Machine tags** come from the system computer name when available. On macOS,
+Glyph reads `scutil --get ComputerName`; Windows/WSL and Linux use the system
+hostname. Every result is normalized to lowercase hyphenated form:
 
-| Hostname | Tag |
+| System computer name | Tag |
 |---|---|
-| `rivers-macbook-pro` | `mbp` |
-| `studio-air` | `air` |
-| `office-mac-mini` | `mini` |
-| `DESKTOP-8KQ2LM1` (Windows/WSL) | `desktop` |
-| `ubuntu-prod-01` (cloud) | `ubuntu` |
-| `hetzner-cx41` | `hetzner` |
+| `Rivers MacBook Pro` | `rivers-macbook-pro` |
+| `Studio Air` | `studio-air` |
+| `DESKTOP-8KQ2LM1` | `desktop-8kq2lm1` |
+| `ubuntu-prod-01` | `ubuntu-prod-01` |
+| `hetzner-cx41` | `hetzner-cx41` |
 
-Macs are recognised by model. Everything else takes the first word of the
-hostname. When that is unhelpful — a Windows box called `DESKTOP-8KQ2LM1`, or a
-fleet of identically-named cloud instances — name it yourself:
+Glyph does not guess a model or operating-system release. If the computer name
+is missing or generic, or if you need a tablet/device role, set the tag yourself:
 
 ```sh
-export GLYPH_MACHINE=win      # or ec2, gpu, prod, laptop…
+export GLYPH_MACHINE=windows-10   # or ipad, ubuntu-gpu, prod, laptop…
 ```
 
-**Project names** are the git repo's directory, title-cased (`acme-api` →
-`Acme API`). Override in `~/.config/glyph/names.tsv` as
-`directory<TAB>Display Name`.
+**Project names** are lowercase git repo directory tokens (`acme-api` stays
+`acme-api`; `Acme API` becomes `acme-api`). Overrides in
+`~/.config/glyph/names.tsv` are normalized the same way.
 
 `-p` / `--print` and subcommands (`claude mcp`, `codex resume`) pass through
 untouched, so scripts and CI behave exactly as before.
@@ -260,8 +260,12 @@ Two things that cost real debugging time:
 - In zsh, `argv` **is** `$@`. Declaring `local -a argv` in a function silently
   empties the positional parameters.
 
-glyph is an identity layer, not a multiplexer. It launches panes and gets out of
-the way — pair it with workmux, herdr or plain tmux for the rest.
+glyph is an identity layer, not a multiplexer. Herdr is the recommended outer
+workspace when you use it every day: launch `claude`, `codex`, or `agy` inside
+an existing Herdr tab and Glyph labels that tab. `glyph fleet` currently creates
+a standalone tmux session, so running it inside Herdr creates nested tmux. Use
+Fleet outside Herdr, or keep using separate Herdr tabs until a native Herdr Fleet
+backend is added.
 
 </details>
 

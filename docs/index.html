@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>glyph — every agent session, named before it starts</title>
-<meta name="description" content="Shell wrapper that names every Claude, Codex and AGI session with your label, the project, the machine and the time — before the process starts.">
+<meta name="description" content="Shell wrapper that names every Claude, Codex and AGI session with lowercase label, project, agent, machine and time tokens before the process starts.">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" href="glyph.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -31,7 +31,7 @@
  "downloadUrl":"https://github.com/fru-dev3/glyph",
  "codeRepository":"https://github.com/fru-dev3/glyph",
  "programmingLanguage":"Shell",
- "description":"A zsh wrapper that names every AI coding agent session - Claude, Codex and AGI - with your label, the project, the machine and the time, before the process starts.",
+ "description":"A zsh wrapper that names every AI coding agent session - Claude, Codex and AGI - with lowercase label, project, agent, machine and time tokens before the process starts.",
  "license":"https://opensource.org/licenses/MIT",
  "isAccessibleForFree":true,
  "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
@@ -261,7 +261,7 @@
 
   <div class="pad">
     <h1>Agents in.<br><span class="o">Named sessions out.</span></h1>
-    <p class="intro">A zsh wrapper for Claude, Codex and AGI. It stamps your label, the project, the machine and the time onto
+    <p class="intro">A zsh wrapper for Claude, Codex and AGI. It stamps lowercase label, project, agent, machine and time tokens onto
     every session <b>before the process starts</b>, so tmux windows, the web app
     and your phone all read at a glance. No daemon, no plugin, one file.</p>
 
@@ -305,7 +305,8 @@
             <span class="leg">
               <b class="m1">■</b> label
               <b class="m2">■</b> project
-              <b class="m3">■</b> machine
+              <b class="m3">■</b> agent
+              <b class="m4">■</b> machine
               <b class="m4">■</b> started
             </span></span></div>
         <div class="orow"><span class="ok">Meaning</span>
@@ -331,9 +332,9 @@
       <article class="after">
         <h3>With glyph</h3>
         <ul>
-          <li><strong>billing</strong>·Acme API·mbp·2026-09-12·0556</li>
-          <li><strong>review</strong>·Acme API·mini·2026-09-12·0602</li>
-          <li><strong>docs</strong>·Website·studio·2026-09-12·0611</li>
+          <li><strong>billing</strong>·acme-api·claude-code·mbp·2026-09-12·0556</li>
+          <li><strong>review</strong>·acme-api·agi·mini·2026-09-12·0602</li>
+          <li><strong>docs</strong>·website·codex·studio·2026-09-12·0611</li>
         </ul>
         <p>Task · project · agent · machine · date · time</p>
       </article>
@@ -369,7 +370,7 @@
     <h2>Use</h2>
     <div class="cmds">
       <div class="k">Label</div>
-      <div class="v"><span class="p">$</span> claude billing <span class="c">→ billing·Acme API·Claude·laptop·0648</span></div>
+      <div class="v"><span class="p">$</span> claude billing <span class="c">→ billing·acme-api·claude-code·laptop·0648</span></div>
       <div class="k">Prompt</div>
       <div class="v"><span class="p">$</span> claude "fix the retry" <span class="c">→ a phrase is a prompt, not a label</span></div>
       <div class="k">Both</div>
@@ -474,9 +475,9 @@ cloud = claude:studio codex:studio</pre></div>
     <p class="why-intro">The defaults work without a config. Open a section when you want to change something.</p>
     <div class="settings">
       <details><summary>Change your machine or project name</summary>
-        <p>Glyph uses your hostname for the machine tag and your git folder for the project name: <code>acme-api</code> becomes <code>Acme API</code>.</p>
-        <p>Set a machine name in <code>~/.zshrc</code>: <code>export GLYPH_MACHINE=laptop</code>.</p>
-        <p>For a project override, add a line to <code>~/.config/glyph/names.tsv</code>: the folder name, a tab, then your display name.</p>
+        <p>Every mark is lowercase. Hyphens join words inside a field; <code>·</code> separates fields: <code>billing·acme-api·claude-code·mbp·2026-09-12·0648</code>.</p>
+        <p>Glyph detects Mac model, WSL/Windows, Ubuntu, and generic Linux. It cannot know a Windows release or tablet model reliably, so set one explicitly: <code>export GLYPH_MACHINE=windows-10</code>.</p>
+        <p>For a project override, add a line to <code>~/.config/glyph/names.tsv</code>: the folder name, a tab, then the name. It is normalized to lowercase hyphenated form.</p>
       </details>
       <details><summary>Adjust naming and launch options</summary>
         <dl>
@@ -493,7 +494,7 @@ cloud = claude:studio codex:studio</pre></div>
       <details><summary>How Glyph fits your workflow</summary>
         <p>The wrapper builds the mark before launching the agent. For Claude, it passes <code>-n</code> for the session name and <code>--remote-control</code> for the phone bridge.</p>
         <p>Print-mode runs and recognized subcommands, such as <code>claude --print</code> and <code>codex resume</code>, pass through.</p>
-        <p>Glyph names sessions and starts fleets. tmux handles the panes; you can also use Glyph alongside <a href="https://github.com/raine/workmux">workmux</a> or herdr.</p>
+        <p>Herdr is the recommended outer workspace: launch agents inside existing Herdr tabs and Glyph labels them. <code>glyph fleet</code> currently creates a standalone tmux session, so running it inside Herdr nests tmux. Use Fleet outside Herdr until a native Herdr Fleet backend exists.</p>
       </details>
     </div>
   </div>
@@ -516,23 +517,20 @@ cloud = claude:studio codex:studio</pre></div>
   var generatedTyped='', generatedRun='';
   var YOLO={claude:'--dangerously-skip-permissions',codex:'--dangerously-bypass-approvals-and-sandbox',
             agy:'--dangerously-skip-permissions'};
-  function title(s){return s.replace(/[-_]+/g,' ').trim().split(/\s+/).map(function(w){
-      if(!w) return w;
-      return /^(cli|api|mcp|ai|ui|os|db|sdk|ios|tv)$/i.test(w)?w.toUpperCase()
-           : w.charAt(0).toUpperCase()+w.slice(1);}).join(' ');}
+  function token(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
   function pad(n){return (n<10?'0':'')+n}
   function esc(s){return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
   function render(){
     var d=new Date(), when=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())
           +'\u00b7'+pad(d.getHours())+pad(d.getMinutes());
     var raw=lab.value.trim().split(/\s+/)[0]||'';
-    var l=esc(raw), p=esc(title(prj.value||'')), a=document.querySelector('input[name="agent"]:checked').value;
+    var l=esc(token(raw)), p=esc(token(prj.value||'')), a=document.querySelector('input[name="agent"]:checked').value;
     var parts=[];
-    var agentName={claude:'Claude Code',codex:'Codex',agy:'AGI'}[a]||a;
+    var agentName={claude:'claude-code',codex:'codex',agy:'agi'}[a]||a;
     if(l) parts.push('<span class="m1">'+l+'</span>');
     if(p && p.toLowerCase()!==l.toLowerCase()) parts.push('<span class="m2">'+p+'</span>');
     parts.push('<span class="m3">'+esc(agentName)+'</span>');
-    parts.push('<span class="m4">laptop</span>');
+    parts.push('<span class="m4">your-machine</span>');
     parts.push('<span class="m4">'+when+'</span>');
     mk.innerHTML=parts.join('<span class="md">\u00b7</span>');
     var plain=mk.textContent;
