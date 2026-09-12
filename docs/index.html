@@ -424,22 +424,23 @@
 
   <div class="rule"></div>
   <div class="pad">
-    <h2>Use</h2>
+    <h2>Type a short label. Get a named session.</h2>
+    <p class="why-intro">You type the simple command you already know. Glyph uses the first word as the label, adds the project, agent, machine, and time, then launches the agent with that name attached.</p>
     <div class="cmds">
-      <div class="k">Label</div>
-      <div class="v"><span class="p">$</span> claude billing <span class="c">→ billing·acme-api·claude-code·laptop·0648</span></div>
-      <div class="k">Prompt</div>
-      <div class="v"><span class="p">$</span> claude "fix the retry" <span class="c">→ a phrase is a prompt, not a label</span></div>
-      <div class="k">Both</div>
-      <div class="v"><span class="p">$</span> claude billing "fix the retry"</div>
+      <div class="k">You type</div>
+      <div class="v"><span class="p">$</span> claude billing <span class="c">→ label: billing</span></div>
+      <div class="k">Glyph adds</div>
+      <div class="v"><span class="p">$</span> <b>billing·acme-api·claude-code·laptop·0648</b> <span class="c">→ the name shown in your terminal and phone</span></div>
+      <div class="k">Prompt too</div>
+      <div class="v"><span class="p">$</span> claude billing "fix the retry" <span class="c">→ label plus prompt</span></div>
+      <div class="k">Claude</div>
+      <div class="v"><span class="p">$</span> claude billing <span class="c">→ named session + Remote Control bridge</span></div>
       <div class="k">Any agent</div>
-      <div class="v"><span class="p">$</span> codex audit <span class="c">→ marks the window and the registry</span></div>
-      <div class="k">Auto-approve</div>
-      <div class="v"><span class="p">$</span> GLYPH_YOLO=1 codex audit <span class="c">→ adds that agent's own flag</span></div>
+      <div class="v"><span class="p">$</span> codex audit <span class="c">→ the same naming pattern</span></div>
       <div class="k">Fleet</div>
-      <div class="v"><span class="p">$</span> glyph fleet ci <span class="c">→ several agents, one marked pane each</span></div>
+      <div class="v"><span class="p">$</span> glyph fleet ci <span class="c">→ opens the saved group together</span></div>
       <div class="k">List</div>
-      <div class="v"><span class="p">$</span> glyph ls <span class="c">→ when, agent, mark, machine</span></div>
+      <div class="v"><span class="p">$</span> glyph ls <span class="c">→ see every name, agent, and machine</span></div>
     </div>
   </div>
 
