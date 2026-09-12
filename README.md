@@ -1,11 +1,20 @@
-<img src="assets/glyph-512.png" width="140" align="right" alt="Glyph">
+<div align="center">
+
+<img src="assets/glyph-512.png" width="150" alt="glyph">
 
 # glyph
 
-**One identity for every coding agent you run.**
+**Every agent session, named before it starts.**
 
-Open your agent sessions on a phone, or list the tmux windows on a machine you
-walked away from an hour ago, and you get this:
+`billing·Acme API·mbp·2026-09-12·0556`
+
+[Install](#install) · [Usage](#usage) · [Agents](#agents) · [glyph.fru.dev](https://glyph.fru.dev)
+
+</div>
+
+---
+
+You have four agent sessions open. This is your list:
 
 ```
 tims-macbook-pro-4-local-transient
@@ -14,145 +23,132 @@ doc-9b
 zsh
 ```
 
-Which machine? Which project? Started when? You cannot tell without opening each
-one. Claude Code names a session from your first message or auto-derives one,
-and most other agents do not name sessions at all.
+Which machine? Which project? Started when? You have to open each one to find
+out. Claude Code names a session from your first message, and most other agents
+never name one at all.
 
-`glyph` cuts one mark into every session before it starts:
+With glyph, the same four:
 
 ```
 billing·Acme API·mbp·2026-09-12·0556
+migration·Acme API·mini·2026-09-12·0602
+docs·Website·mbp·2026-09-12·0611
+review·Payments·mini·2026-09-11·2247
 ```
 
-Your label, the project, the machine, the moment. A glyph is an incised mark,
-and the oldest thing anyone ever did with one was say *this is mine, and I was
-here.*
+Label, project, machine, moment. Every agent, every machine, before the first
+token.
 
 ## Install
 
 ```sh
 git clone https://github.com/fru-dev3/glyph.git
-cd glyph && ./install.sh
-exec zsh
+cd glyph && ./install.sh && exec zsh
 ```
 
-zsh, and at least one agent CLI. The installer copies one file to
-`~/.config/glyph/` and adds one line to `~/.zshrc`.
+One file into `~/.config/glyph/`, one line into `~/.zshrc`. zsh and at least one
+agent CLI.
 
-## Use
+## Usage
 
-Nothing new to learn. Keep typing what you already type:
+Nothing new to type. Keep using the command you already use:
 
 ```sh
-claude                    # Acme API·mbp·2026-09-12·0556
-claude billing            # billing·Acme API·mbp·2026-09-12·0556
-claude billing "fix X"    # same, and "fix X" is the first prompt
-claude "fix the bug"      # a quoted phrase is a prompt, not a label
-agy billing               # Antigravity, same mark on the window
-codex billing             # Codex, same mark
+claude                  # Acme API·mbp·2026-09-12·0556
+claude billing          # billing·Acme API·mbp·2026-09-12·0556
+claude billing "fix X"  # ...and "fix X" is the first prompt
+claude "fix the bug"    # a quoted phrase is a prompt, not a label
+agy billing             # Antigravity, same mark
+codex billing           # Codex, same mark
 ```
 
-A single bare word is your label. Anything with a space in it is a prompt.
+One bare word is your label. Anything with a space is a prompt.
 
 ```sh
-glyph agents      # which agents are installed, and their auto-approve flags
-glyph ls          # recent sessions: when, agent, mark, machine
-glyph name deploy # print the mark this directory would produce
-glyph fleet trio  # a preset of agents, each in its own marked pane
-glyph presets     # what fleet presets are defined
+glyph ls        # recent sessions: when, agent, mark, machine
+glyph agents    # what is installed, and each one's auto-approve flag
+glyph fleet ci  # a preset of agents, each in its own marked pane
 ```
 
 ## Agents
 
-Only Claude Code can name its own session, via `-n`. For every other agent the
-glyph lands on the terminal title, the tmux window name, and the local registry,
-so `glyph ls` and your window list stay readable regardless.
+Claude Code takes the mark as a real session name, so it reaches your phone
+through Remote Control. Every other agent gets it on the terminal title, the
+tmux window, and `glyph ls`.
 
-| Agent | Names session | Auto-approve flag `glyph` knows |
-|---|---|---|
-| Claude Code | yes (`-n` + `--remote-control`) | `--dangerously-skip-permissions` |
-| Antigravity (`agy`) | title only | `--dangerously-skip-permissions` |
-| Codex | title only | `--dangerously-bypass-approvals-and-sandbox` |
-| Gemini CLI | title only | `--yolo` |
-| Cursor (`cursor-agent`) | title only | `--force` |
-| Crush | title only | `--yolo` |
-| Cortex | title only | `--dangerously-allow-all-tool-calls` |
-| OpenCode, pi | title only | — |
+| Agent | Session name | `GLYPH_YOLO=1` sends |
+|---|:-:|---|
+| Claude Code | ✔ | `--dangerously-skip-permissions` |
+| Antigravity | title | `--dangerously-skip-permissions` |
+| Codex | title | `--dangerously-bypass-approvals-and-sandbox` |
+| Gemini CLI | title | `--yolo` |
+| Cursor | title | `--force` |
+| Crush | title | `--yolo` |
+| Cortex | title | `--dangerously-allow-all-tool-calls` |
+| OpenCode · pi | title | — |
 
-Wrappers are only defined for agents actually on your `PATH`.
-
-Auto-approve is **off** by default. `GLYPH_YOLO=1` turns it on and each agent
-gets its own correct flag, so you stop remembering which one spells it `--yolo`
-and which spells it `--dangerously-bypass-approvals-and-sandbox`.
+Five agents, five spellings of the same idea. `GLYPH_YOLO=1` remembers them for
+you. It is off unless you ask.
 
 ## Fleets
 
-A preset opens several marked agents at once, locally or over ssh, each in its
-own tmux pane with the mark on the border.
+Open a whole bench at once, local or over ssh, each pane wearing the mark:
 
-```
+```ini
 # ~/.config/glyph/fleet.conf
-default = claude agy
-review  = claude claude:mini
-trio    = claude agy codex
+ci     = claude agy codex
+review = claude claude:mini
 ```
 
 ```sh
-glyph fleet trio          # three panes, one mark
-glyph fleet claude:mini agy   # ad-hoc, no preset needed
-glyph presets             # what is defined
+glyph fleet review
 ```
 
-A slot is `<agent>[:<machine>]`, where the machine is an ssh host. Remote panes
-`cd` to the same path and fall back to a login shell if the agent is missing.
-
-## Configuration
+<details>
+<summary><b>Configuration</b></summary>
 
 | Variable | Effect |
 |---|---|
+| `GLYPH_YOLO=1` | Auto-approve tool calls, per-agent flag |
 | `GLYPH_OFF=1` | Keep the label, drop the machine and time |
 | `GLYPH_FMT` | `date(1)` format for the stamp (default `%Y-%m-%d·%H%M`) |
-| `GLYPH_MACHINE` | Machine tag, when the hostname does not map well |
 | `GLYPH_SEP` | Separator (default `·`) |
-| `GLYPH_YOLO=1` | Auto-approve tool calls, per-agent flag |
-| `GLYPH_RC=0` | Do not add Claude's `--remote-control` |
+| `GLYPH_MACHINE` | Machine tag, when the hostname does not map well |
+| `GLYPH_RC=0` | Skip Claude's `--remote-control` |
 | `GLYPH_TITLE=0` | Do not retitle the terminal or tmux window |
 | `GLYPH_LOG=0` | Do not record sessions locally |
 | `GLYPH_DRYRUN=1` | Print the argv instead of launching |
-| `GLYPH_FLEET_CONF` | Path to the fleet preset file |
 
 The machine tag comes from `hostname -s`: a MacBook Pro becomes `mbp`, a Mac
-mini `mini`, a MacBook Air `air`. Project names come from the git repo's
-directory name, title-cased (`acme-api` → `Acme API`); override any of them in
-`~/.config/glyph/names.tsv`, one `directory<TAB>Display Name` per line.
+mini `mini`. Projects are the git repo's directory name, title-cased
+(`acme-api` → `Acme API`); override either in `~/.config/glyph/names.tsv` as
+`directory<TAB>Display Name`.
 
-## What it leaves alone
+`-p` / `--print` and subcommands (`claude mcp`, `codex resume`) pass through
+untouched, so scripts and CI behave exactly as before.
 
-`-p` / `--print`, and subcommands like `claude mcp`, `codex resume`, and
-`opencode export`, pass through untouched, so scripts and CI behave exactly as
-before. An explicit `--remote-control <name>` is respected as given.
+</details>
 
-`glyph` does not manage worktrees or long-lived sessions. Fleets only launch
-panes and then get out of the way. It is an identity layer, not a multiplexer:
-pair it with [workmux](https://github.com/raine/workmux) or plain tmux for the
-rest.
-
-## Why a shell wrapper and not a plugin
+<details>
+<summary><b>Why a shell wrapper and not a plugin</b></summary>
 
 A session name has to exist before the process starts, so it can only come from
-argv. Plugins and `SessionStart` hooks run after that point and cannot set it.
+argv. Plugins and `SessionStart` hooks run after that and cannot set it.
 
-Two things that cost real debugging time, written down so they cost you none:
+Two things that cost real debugging time:
 
 - Claude Code's `--remote-control <name>` opens the bridge but does **not** name
-  the session. It comes back as `nameSource: "derived"` with an auto-generated
-  name. Only `-n` sets it, so `glyph` passes both.
-- In zsh, `argv` **is** `$@`. Declaring `local -a argv` inside a function
-  silently empties the positional parameters and every argument disappears.
+  the session — it comes back as `nameSource: "derived"`. Only `-n` sets it, so
+  glyph passes both. To see a session's real name, read
+  `~/.claude/sessions/<pid>.json`; the startup banner shows neither.
+- In zsh, `argv` **is** `$@`. Declaring `local -a argv` in a function silently
+  empties the positional parameters.
 
-To see what a running Claude session is actually called, read
-`~/.claude/sessions/<pid>.json` and look at `name` and `nameSource`. The startup
-banner prints neither.
+glyph is an identity layer, not a multiplexer. It launches panes and gets out of
+the way — pair it with [workmux](https://github.com/raine/workmux) or plain tmux
+for the rest.
+
+</details>
 
 ## License
 
