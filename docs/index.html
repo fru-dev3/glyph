@@ -203,14 +203,19 @@
   .fleet-pane img{width:24px;height:24px;vertical-align:middle;margin-right:5px}
   .fleet-pane b{font-size:12px}
   .fleet-pane code{display:block;font-size:11px;color:var(--dim);margin-top:8px;overflow-wrap:anywhere}
+  .fleet-gif,.fleet-static img{display:block;width:100%;height:auto;border:1px solid #463329;border-radius:14px;background:#0d0d0f;box-shadow:0 18px 50px rgba(0,0,0,.2)}
+  .fleet-gif{margin:22px 0 8px}.fleet-static{margin:22px 0 28px}.fleet-static figcaption{color:var(--faint);font-size:12px;margin-top:8px}
   .fleet-screen{border:1px solid #463329;border-radius:14px;overflow:hidden;background:#100f10;margin:22px 0 8px;box-shadow:0 18px 50px rgba(0,0,0,.2)}
   .screen-head,.screen-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 15px;color:var(--dim);font:11px var(--mono);border-bottom:1px solid var(--edge)}
   .screen-head i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#604336;margin-right:4px}.screen-head i:first-child{background:var(--ochre)}.screen-head b{color:#d5a37e;font-weight:500}
-  .screen-command{padding:17px 18px;font:13px var(--mono);color:var(--fg);border-bottom:1px solid var(--edge)}.screen-command>span{color:var(--ochre)}.screen-command em{color:var(--faint);font-style:normal;margin-left:10px}
-  .screen-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px;min-height:132px}.screen-pane{display:flex;flex-direction:column;gap:9px;padding:14px;border:1px solid var(--edge2);border-radius:9px;background:#161416;opacity:0;transform:translateY(10px);animation:pane-in .55s ease forwards}.screen-pane strong{font:600 12px var(--mono);color:var(--fg)}.screen-pane span{font:11px var(--mono);color:#d9a078;overflow-wrap:anywhere}.screen-pane small{color:#84a889;font:11px var(--mono)}.pane-claude{animation-delay:.25s}.pane-agy{animation-delay:.5s}.pane-codex{animation-delay:.75s}
+  .screen-command{padding:17px 18px;font:13px var(--mono);color:var(--fg);border-bottom:1px solid var(--edge)}.screen-command>span{color:var(--ochre)}.screen-command .type-text{display:inline-block;overflow:hidden;vertical-align:bottom;white-space:nowrap;font-weight:400;animation:type-command 7s steps(15,end) infinite}.screen-command em{color:var(--faint);font-style:normal;margin-left:10px}
+  .screen-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px;min-height:132px}.screen-pane{display:flex;flex-direction:column;gap:9px;padding:14px;border:1px solid var(--edge2);border-radius:9px;background:#161416;opacity:0;transform:translateY(10px);animation:pane-loop 7s ease-in-out infinite}.screen-pane strong{font:600 12px var(--mono);color:var(--fg)}.screen-pane span{font:11px var(--mono);color:#d9a078;overflow-wrap:anywhere}.screen-pane small{color:#84a889;font:11px var(--mono)}.pane-claude{animation-delay:.65s}.pane-agy{animation-delay:1.05s}.pane-codex{animation-delay:1.45s}
   .screen-foot{border-top:1px solid var(--edge);border-bottom:0;color:var(--faint)}.screen-cursor{color:var(--ochre);animation:cursor-blink 1s steps(2,end) infinite}.screen-caption{color:var(--faint);font-size:12px;margin:0 0 22px}
-  @keyframes pane-in{to{opacity:1;transform:none}}@keyframes cursor-blink{50%{opacity:.15}}
-  @media(prefers-reduced-motion:reduce){.screen-pane{animation:none;opacity:1;transform:none}.screen-cursor{animation:none}}
+  @keyframes type-command{0%,8%{width:0}32%,100%{width:8.8em}}
+  @keyframes pane-loop{0%,12%{opacity:0;transform:translateY(10px)}22%,76%{opacity:1;transform:none}88%,100%{opacity:0;transform:translateY(-6px)}}
+  @keyframes mock-line{0%,12%{opacity:0;transform:translateX(-5px)}24%,78%{opacity:1;transform:none}90%,100%{opacity:.35}}
+  @keyframes cursor-blink{50%{opacity:.15}}
+  @media(prefers-reduced-motion:reduce){.screen-command .type-text{animation:none;width:auto}.screen-pane{animation:none;opacity:1;transform:none}.mock-terminal p{animation:none;opacity:1}.screen-cursor{animation:none}}
   .settings{display:grid;gap:10px}
   .settings details{border:1px solid var(--edge2);border-radius:8px;padding:14px 16px;min-width:0}
   .settings summary{cursor:pointer;font-size:14px;font-weight:600}
@@ -270,7 +275,7 @@
   .mock-dots{display:flex;gap:5px}.mock-dots i{width:7px;height:7px;border-radius:50%;background:#594139}.mock-dots i:first-child{background:#c2562f}
   .mock-tabs{gap:6px;padding:8px 10px;overflow:hidden}.mock-tabs span{padding:6px 9px;white-space:nowrap;border-radius:5px}.mock-tabs .active{color:var(--fg);background:#2a1c17}
   .mock-body{display:grid;grid-template-columns:130px minmax(0,1fr);min-height:265px}.mock-body>*{min-width:0}.mock-side{display:flex;flex-direction:column;gap:13px;padding:18px 14px;border-right:1px solid var(--edge);font:11px var(--mono);color:var(--dim)}.mock-side b{color:var(--fg);font-weight:500}.side-label{color:var(--faint);font-size:9px;letter-spacing:.14em}
-  .mock-terminal{min-width:0;padding:23px 20px;font:12px/1.8 var(--mono);color:var(--dim)}.mock-terminal .prompt{color:var(--ochre)}.mock-terminal p{margin:12px 0 0;white-space:normal;overflow-wrap:anywhere;word-break:break-word}.mock-terminal strong{color:#e0a071;font-weight:500}.cursor{color:var(--ochre);margin-top:16px}
+  .mock-terminal{min-width:0;padding:23px 20px;font:12px/1.8 var(--mono);color:var(--dim)}.mock-terminal .prompt{color:var(--ochre)}.mock-terminal p{margin:12px 0 0;white-space:normal;overflow-wrap:anywhere;word-break:break-word;opacity:0;animation:mock-line 6s ease-in-out infinite}.mock-terminal p:nth-of-type(2){animation-delay:.45s}.mock-terminal p:nth-of-type(3){animation-delay:.9s}.mock-terminal strong{color:#e0a071;font-weight:500}.cursor{color:var(--ochre);margin-top:16px}
   .rule{border-color:#29282b}
   .section-heading h2,h2{font-size:26px;letter-spacing:-.035em}
   .why-intro{font-size:15px;line-height:1.6}
@@ -345,17 +350,8 @@
   <div class="pad" id="demo">
     <h2>See it in action</h2>
     <p class="why-intro">Run one command and Glyph opens the saved group together. Each agent gets its own named pane, so you can tell what is running at a glance.</p>
-    <div class="fleet-screen" aria-label="Animated preview of a Glyph Fleet launch">
-      <div class="screen-head"><span><i></i><i></i><i></i> glyph fleet ci</span><b>3 agents launching</b></div>
-      <div class="screen-command"><span>$</span> glyph fleet ci <em>→ opening named panes</em></div>
-      <div class="screen-grid">
-        <div class="screen-pane pane-claude"><strong>claude-code</strong><span>ci·acme-api·claude-code</span><small>ready</small></div>
-        <div class="screen-pane pane-agy"><strong>agi</strong><span>ci·acme-api·agi</span><small>ready</small></div>
-        <div class="screen-pane pane-codex"><strong>codex</strong><span>ci·acme-api·codex</span><small>ready</small></div>
-      </div>
-      <div class="screen-foot"><span>one command · one named pane per agent</span><span class="screen-cursor">▮</span></div>
-    </div>
-    <p class="screen-caption">This is what Fleet does: it opens the group together and keeps every session identifiable.</p>
+    <img class="fleet-gif" src="fleet-demo.gif" alt="Animated terminal preview: glyph fleet ci types, then Claude, AGI, and Codex open in named panes">
+    <p class="screen-caption">The command types itself, then each named terminal pane opens in sequence.</p>
   </div>
 
   <div class="rule"></div>
@@ -514,6 +510,7 @@
       <div class="fleet-pane"><img src="agents/agi.png" alt=""><b>AGI</b><code>pane 2 · ci · your project</code></div>
       <div class="fleet-pane"><img src="agents/codex.png" alt=""><b>Codex</b><code>pane 3 · ci · your project</code></div>
     </div>
+    <figure class="fleet-static"><img src="fleet-terminal.png" alt="Static terminal screenshot showing Claude, AGI, and Codex running in named panes"><figcaption>After launch: one terminal, three named agent sessions.</figcaption></figure>
     <div class="fleet-steps">
       <section class="fleet-step">
         <h3>1. Create a fleet once</h3>

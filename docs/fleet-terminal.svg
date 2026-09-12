@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
+  <title id="title">Glyph Fleet terminal preview</title>
+  <desc id="desc">A terminal command opens Claude, AGI, and Codex in named panes.</desc>
+  <rect width="1200" height="560" rx="22" fill="#0d0d0f"/>
+  <rect x="1" y="1" width="1198" height="558" rx="21" fill="none" stroke="#4a352b" stroke-width="2"/>
+  <rect width="1200" height="58" rx="22" fill="#151416"/>
+  <path d="M0 58h1200" stroke="#2b292d"/>
+  <circle cx="31" cy="29" r="7" fill="#c2562f"/><circle cx="53" cy="29" r="7" fill="#60463b"/><circle cx="75" cy="29" r="7" fill="#60463b"/>
+  <text x="106" y="36" fill="#aaa4ad" font-family="Menlo,monospace" font-size="18">glyph fleet ci</text>
+  <text x="1030" y="36" fill="#d7a27b" font-family="Menlo,monospace" font-size="16">3 agents ready</text>
+  <rect x="34" y="86" width="1132" height="54" rx="8" fill="#111013" stroke="#2b292d"/>
+  <text x="55" y="121" fill="#c2562f" font-family="Menlo,monospace" font-size="20">$</text>
+  <text x="81" y="121" fill="#f1eef0" font-family="Menlo,monospace" font-size="20">glyph fleet ci</text>
+  <text x="278" y="121" fill="#66626a" font-family="Menlo,monospace" font-size="18">→ opening named panes</text>
+  <g transform="translate(34 166)"><rect width="358" height="314" rx="12" fill="#171518" stroke="#383238"/><rect width="358" height="42" rx="12" fill="#21191a"/><text x="20" y="28" fill="#eee9eb" font-family="Menlo,monospace" font-size="16" font-weight="600">claude-code</text><text x="20" y="84" fill="#d9a078" font-family="Menlo,monospace" font-size="15">ci·acme-api·claude-code</text><text x="20" y="116" fill="#86aa8b" font-family="Menlo,monospace" font-size="14">ready · remote control</text><text x="20" y="274" fill="#77727b" font-family="Menlo,monospace" font-size="13">$ claude ci</text></g>
+  <g transform="translate(421 166)"><rect width="358" height="314" rx="12" fill="#171518" stroke="#383238"/><rect width="358" height="42" rx="12" fill="#1a191e"/><text x="20" y="28" fill="#eee9eb" font-family="Menlo,monospace" font-size="16" font-weight="600">agi</text><text x="20" y="84" fill="#d9a078" font-family="Menlo,monospace" font-size="15">ci·acme-api·agi</text><text x="20" y="116" fill="#86aa8b" font-family="Menlo,monospace" font-size="14">ready</text><text x="20" y="274" fill="#77727b" font-family="Menlo,monospace" font-size="13">$ agy ci</text></g>
+  <g transform="translate(808 166)"><rect width="358" height="314" rx="12" fill="#171518" stroke="#383238"/><rect width="358" height="42" rx="12" fill="#1a191e"/><text x="20" y="28" fill="#eee9eb" font-family="Menlo,monospace" font-size="16" font-weight="600">codex</text><text x="20" y="84" fill="#d9a078" font-family="Menlo,monospace" font-size="15">ci·acme-api·codex</text><text x="20" y="116" fill="#86aa8b" font-family="Menlo,monospace" font-size="14">ready</text><text x="20" y="274" fill="#77727b" font-family="Menlo,monospace" font-size="13">$ codex ci</text></g>
+</svg>
