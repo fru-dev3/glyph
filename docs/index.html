@@ -72,37 +72,47 @@
   </div>
 </header>
 
-<p class="lead">Five agents running across two machines. This is what you
-come back to:</p>
+<p class="lead">Five agents, five machines. This is what you come back to:</p>
 
 <pre class="before">tims-macbook-pro-4-local-transient   <span class="cmt">&#8592; Claude Code, auto-derived</span>
 fru-5e                               <span class="cmt">&#8592; Claude Code, auto-derived</span>
-doc-9b                               <span class="cmt">&#8592; Claude Code on the other machine</span>
+doc-9b                               <span class="cmt">&#8592; Claude Code, a different machine</span>
 zsh                                  <span class="cmt">&#8592; Codex. no session name at all</span>
 node                                 <span class="cmt">&#8592; Antigravity. same</span></pre>
 
-<p>Two of them are the same project. One is on a machine you are not sitting at.
-One has been idle since yesterday. You cannot tell which is which without
-opening all five.</p>
+<ul>
+  <li>Two are the same project. You cannot tell which two.</li>
+  <li>One is on a machine you are not sitting at.</li>
+  <li>One has been idle since yesterday.</li>
+  <li>Two are not named at all, because their agent has no such concept.</li>
+</ul>
 
 <p>Turn <code>glyph</code> on and the same five read:</p>
 
-<pre class="after"><b>billing·Acme API·mbp·2026-09-12·0556
-migration·Acme API·mini·2026-09-12·0602
-docs·Website·mbp·2026-09-12·0611
-audit·Payments·mbp·2026-09-11·2247
-scrape·Atlas·mini·2026-09-12·0640</b></pre>
+<pre class="after"><b>billing·Acme API·mbp·2026-09-12·0556</b>        <span class="cmt">&#8592; MacBook Pro</span>
+<b>migration·Acme API·air·2026-09-12·0602</b>      <span class="cmt">&#8592; MacBook Air</span>
+<b>docs·Website·mini·2026-09-12·0611</b>           <span class="cmt">&#8592; Mac mini</span>
+<b>audit·Payments·win·2026-09-11·2247</b>          <span class="cmt">&#8592; Windows box, via WSL</span>
+<b>scrape·Atlas·hetzner·2026-09-12·0640</b>        <span class="cmt">&#8592; cloud server</span></pre>
 
-<p>Label, project, machine, moment.</p>
+<p>Label · project · machine · date · time. Every agent, every machine, set
+before the first token.</p>
 
-<p>Yes, you can rename a Claude session by hand, or long-press it in the mobile
-app, or type <code>/rename</code> once it is running. glyph does it for
-<strong>every session on every agent at launch</strong>, so there is nothing to
-remember and nothing to clean up later. It earns its keep the moment you are
-running more than one agent, more than one project, or more than one machine —
-exactly when tmux, <a href="https://herdr.dev">herdr</a> and
-<a href="https://github.com/raine/workmux">workmux</a> panes all start looking
-identical.</p>
+<p><strong>You could do this by hand.</strong> Rename a Claude session with
+<code>/rename</code>, or long-press it in the mobile app. glyph's argument is
+only that it happens automatically:</p>
+
+<ul>
+  <li>at launch, so a session is never briefly nameless</li>
+  <li>on every agent, not just the one that supports naming</li>
+  <li>on every machine, with the machine baked into the name</li>
+  <li>with no step to forget and nothing to tidy up afterwards</li>
+</ul>
+
+<p>It matters most when panes stop being distinguishable — several agents at
+once, or tmux, <a href="https://herdr.dev">herdr</a> and
+<a href="https://github.com/raine/workmux">workmux</a> grids where every pane is
+a lookalike shell.</p>
 
 <h2>Install</h2>
 <pre>git clone https://github.com/fru-dev3/glyph.git
@@ -171,14 +181,37 @@ lands on the terminal title, the tmux window, and a local registry, so
 normalises them and each agent gets its own correct flag. It is off by default.</p>
 
 <h2>Fleets</h2>
-<p>A preset opens several marked agents at once, locally or over ssh, each in
-its own tmux pane with the mark on the border.</p>
+<p>Open a whole bench at once, each pane wearing the mark on its border:</p>
 <pre><span class="cmt"># ~/.config/glyph/fleet.conf</span>
-default = claude agy
-review  = claude claude:mini
-trio    = claude agy codex
+ci      = claude agy codex
+review  = claude claude:studio
+cloud   = claude:hetzner codex:hetzner
 
-$ glyph fleet trio</pre>
+$ glyph fleet review</pre>
+<ul>
+  <li>A slot is <code>&lt;agent&gt;</code> or <code>&lt;agent&gt;:&lt;ssh-host&gt;</code>.</li>
+  <li>The part after <code>:</code> is an <strong>ssh host</strong>, not the
+      machine tag — the tag is whatever that machine reports for itself.</li>
+  <li>Remote panes <code>cd</code> to the same path, and fall back to a login
+      shell if the agent is not installed there.</li>
+</ul>
+
+<h2>Machine tags</h2>
+<p>Taken from <code>hostname -s</code>. Macs are recognised by model; everything
+else uses the first word of the hostname.</p>
+<table>
+<tr><th>Hostname</th><th>Tag</th></tr>
+<tr><td><code>laptop</code></td><td><code>mbp</code></td></tr>
+<tr><td><code>air</code></td><td><code>air</code></td></tr>
+<tr><td><code>Mac-mini</code></td><td><code>mini</code></td></tr>
+<tr><td><code>Mac-Studio</code></td><td><code>studio</code></td></tr>
+<tr><td><code>DESKTOP-8KQ2LM1</code> (Windows/WSL)</td><td><code>desktop</code></td></tr>
+<tr><td><code>ubuntu-prod-01</code> (cloud)</td><td><code>ubuntu</code></td></tr>
+<tr><td><code>hetzner-cx41</code></td><td><code>hetzner</code></td></tr>
+</table>
+<p>When that is unhelpful — a Windows box called <code>DESKTOP-8KQ2LM1</code>, or
+a fleet of identically-named cloud instances — name it yourself:</p>
+<pre>export GLYPH_MACHINE=win      <span class="cmt"># or ec2, gpu, prod, laptop…</span></pre>
 
 <h2>Why a shell wrapper</h2>
 <p>A session name has to exist before the process starts, so it can only come

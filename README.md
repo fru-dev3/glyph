@@ -14,39 +14,47 @@
 
 ---
 
-Five agents running across two machines. This is what you come back to:
+Five agents, five machines. This is what you come back to:
 
 ```
 tims-macbook-pro-4-local-transient   ← Claude Code, auto-derived
 fru-5e                               ← Claude Code, auto-derived
-doc-9b                               ← Claude Code on the other machine
+doc-9b                               ← Claude Code, a different machine
 zsh                                  ← Codex. no session name at all
 node                                 ← Antigravity. same
 ```
 
-Two of them are the same project. One is on a machine you are not sitting at.
-One has been idle since yesterday. You cannot tell which is which without
-opening all five.
+- Two are the same project. You cannot tell which two.
+- One is on a machine you are not sitting at.
+- One has been idle since yesterday.
+- Two are not named at all, because their agent has no such concept.
 
 Turn glyph on and the same five read:
 
 ```
-billing·Acme API·mbp·2026-09-12·0556
-migration·Acme API·mini·2026-09-12·0602
-docs·Website·mbp·2026-09-12·0611
-audit·Payments·mbp·2026-09-11·2247
-scrape·Atlas·mini·2026-09-12·0640
+billing·Acme API·mbp·2026-09-12·0556        ← MacBook Pro
+migration·Acme API·air·2026-09-12·0602      ← MacBook Air
+docs·Website·mini·2026-09-12·0611           ← Mac mini
+audit·Payments·win·2026-09-11·2247          ← Windows box, via WSL
+scrape·Atlas·hetzner·2026-09-12·0640        ← cloud server
 ```
 
-Label, project, machine, moment.
+Label · project · machine · date · time. Every agent, every machine, set before
+the first token.
 
-Yes, you can rename a Claude session by hand, or long-press it in the mobile
-app, or type `/rename` once it is running. glyph does it for **every session on
-every agent at launch**, so there is nothing to remember and nothing to clean up
-later. It earns its keep the moment you are running more than one agent, more
-than one project, or more than one machine — which is exactly when
-[tmux](https://github.com/tmux/tmux), [herdr](https://herdr.dev) and
-[workmux](https://github.com/raine/workmux) panes all start looking identical.
+**You could do this by hand.** Rename a Claude session with `/rename`, or
+long-press it in the mobile app. glyph's argument is only that it happens
+automatically:
+
+- at launch, so a session is never briefly nameless
+- on every agent, not just the one that supports naming
+- on every machine, with the machine baked into the name
+- with no step to forget and nothing to tidy up afterwards
+
+It matters most when panes stop being distinguishable — several agents at once,
+or [tmux](https://github.com/tmux/tmux), [herdr](https://herdr.dev) and
+[workmux](https://github.com/raine/workmux) grids where every pane is a
+lookalike shell.
 
 ## Install
 
@@ -116,6 +124,7 @@ GLYPH_YOLO=1 codex audit
 glyph ls        # recent sessions: when, agent, mark, machine
 glyph agents    # what is installed, and each one's auto-approve flag
 glyph name x    # print the mark this directory would produce
+glyph fleet ci  # a preset of agents, each in its own marked pane
 ```
 
 ## Agents
@@ -136,18 +145,24 @@ you. It is off unless you ask.
 
 ## Fleets
 
-Open a whole bench at once, local or over ssh, each pane wearing the mark on its
-border:
+Open a whole bench at once, each pane wearing the mark on its border:
 
 ```ini
 # ~/.config/glyph/fleet.conf
-ci     = claude agy codex
-review = claude claude:mini
+ci      = claude agy codex
+review  = claude claude:studio
+cloud   = claude:hetzner codex:hetzner
 ```
 
 ```sh
 glyph fleet review
 ```
+
+- A slot is `<agent>` or `<agent>:<ssh-host>`.
+- The part after `:` is an **ssh host**, not the machine tag — the tag is
+  whatever that machine reports for itself.
+- Remote panes `cd` to the same path, and fall back to a login shell if the
+  agent is not installed there.
 
 <details>
 <summary><b>Configuration</b></summary>
@@ -164,9 +179,28 @@ glyph fleet review
 | `GLYPH_LOG=0` | Do not record sessions locally |
 | `GLYPH_DRYRUN=1` | Print the argv instead of launching |
 
-The machine tag comes from `hostname -s`: a MacBook Pro becomes `mbp`, a Mac
-mini `mini`. Projects are the git repo's directory name, title-cased
-(`acme-api` → `Acme API`); override either in `~/.config/glyph/names.tsv` as
+**Machine tags** come from `hostname -s`:
+
+| Hostname | Tag |
+|---|---|
+| `laptop` | `mbp` |
+| `air` | `air` |
+| `Mac-mini` | `mini` |
+| `Mac-Studio` | `studio` |
+| `DESKTOP-8KQ2LM1` (Windows/WSL) | `desktop` |
+| `ubuntu-prod-01` (cloud) | `ubuntu` |
+| `hetzner-cx41` | `hetzner` |
+
+Macs are recognised by model. Everything else takes the first word of the
+hostname. When that is unhelpful — a Windows box called `DESKTOP-8KQ2LM1`, or a
+fleet of identically-named cloud instances — name it yourself:
+
+```sh
+export GLYPH_MACHINE=win      # or ec2, gpu, prod, laptop…
+```
+
+**Project names** are the git repo's directory, title-cased (`acme-api` →
+`Acme API`). Override in `~/.config/glyph/names.tsv` as
 `directory<TAB>Display Name`.
 
 `-p` / `--print` and subcommands (`claude mcp`, `codex resume`) pass through

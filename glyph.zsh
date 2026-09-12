@@ -60,7 +60,16 @@ _glyph_machine() {
     *macbook*)     print -r -- mb ;;
     *imac*)        print -r -- imac ;;
     *studio*)      print -r -- studio ;;
-    *) h=${h#[A-Za-z][0-9]-}; print -r -- "${${(L)h}//[^a-z0-9]/}[1,8]" ;;
+    *)
+      # Anything else - a Windows box, a Linux server, a cloud instance.
+      # Prefer the first word of the hostname (build-01 -> build), and fall
+      # back to the whole thing when that word is too short or all digits.
+      h=${h#[A-Za-z][0-9]-}
+      local first=${${(L)h}%%[-_.]*}
+      first=${first//[^a-z0-9]/}
+      local whole=${${(L)h}//[^a-z0-9]/}
+      [[ ${#first} -ge 3 && $first != <-> ]] || first=$whole
+      print -r -- "${first[1,10]}" ;;
   esac
 }
 
