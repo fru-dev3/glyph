@@ -1,0 +1,9 @@
+{
+  "title": "Nametag",
+  "product": "claude-nametag",
+  "type": "cli",
+  "language": "zsh",
+  "summary": "Readable names for Claude Code Remote Control sessions.",
+  "entry": "nametag.zsh",
+  "install": "./install.sh"
+}
