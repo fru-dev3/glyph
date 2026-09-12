@@ -104,6 +104,7 @@ _glyph_title() {
 
 _glyph_log() {
   [[ ${GLYPH_LOG:-1} == 1 ]] || return 0
+  [[ -z ${GLYPH_DRYRUN:-} ]] || return 0   # a dry run must leave no trace
   command mkdir -p "$GLYPH_STATE" 2>/dev/null || return 0
   printf '%s\t%s\t%s\t%s\t%s\n' \
     "$(command date +%Y-%m-%dT%H:%M:%S)" "$1" "$2" "$PWD" "$(_glyph_machine)" \
