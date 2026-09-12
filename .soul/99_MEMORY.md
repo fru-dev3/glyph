@@ -30,3 +30,24 @@
 - Simplified the opening: one logo with wordmark in the header, removed the
   duplicate hero logo, and moved creator attribution to the footer. Checked
   desktop and 375/320px mobile layouts with no overflow.
+
+## Active hosting (supersedes GitHub Pages note above)
+
+- Moved production to Netlify at Fru's request after the GitHub custom-domain
+  certificate failure. Site: glyph-fru, ID 43596603-ee22-490c-958d-d97b4a2ccab0.
+- Production deploy: 6aa555d0b05d025d44962a65, serving website commit e1ffbdd.
+  Fallback URL: https://glyph-fru.netlify.app.
+- glyph.fru.dev now uses Netlify-managed DNS in zone 676ed2114e30745448e3330d.
+  Replaced the old CNAME fru-dev3.github.io (record 6aa538169a24fc78dd75653b,
+  TTL 3600) with Netlify's managed record. Other DNS records were untouched.
+- Netlify has an issued certificate covering *.fru.dev and forces HTTPS.
+  Verified certificate validation and exact HTML content against Netlify's IP;
+  public DNS resolver 1.1.1.1 returned Netlify while the local resolver still
+  cached GitHub. Old DNS answers may persist for their one-hour TTL.
+- No Git repository connected to Netlify, so pushes do not deploy to production.
+  Deploy only with explicit session authorization, using:
+  netlify deploy --site 43596603-ee22-490c-958d-d97b4a2ccab0 --dir docs --no-build --prod
+- CLI validation: real installed claude, agy, codex, cursor-agent, crush, cortex,
+  opencode and pi all accepted `billing --help` through Glyph, exit 0. This is
+  parser/argument smoke coverage, not full interactive-session certification.
+  Gemini CLI is absent (exit 127); do not describe all nine as verified locally.
