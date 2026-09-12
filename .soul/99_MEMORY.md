@@ -86,3 +86,7 @@
 - Herdr and cmux backend commands were inspected against installed CLIs. No live
   agent fleet was launched during tests. The installed vault-linked wrapper was
   updated.
+- Added Zellij and WezTerm Fleet backends with explicit selection and dry-run
+  output; neither CLI is installed on this machine, so live launches remain
+  untested. Refreshed the website around a wider Herdr-inspired product layout
+  with a workspace preview while preserving all generator and copy controls.

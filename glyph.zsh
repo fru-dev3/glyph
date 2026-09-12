@@ -21,7 +21,7 @@
 #   GLYPH_TITLE=0     do not retitle the terminal / tmux window
 #   GLYPH_LOG=0       do not record sessions to the local registry
 #   GLYPH_DRYRUN=1    print the argv instead of launching
-#   GLYPH_FLEET_BACKEND=auto|herdr|cmux|tmux   fleet workspace backend
+#   GLYPH_FLEET_BACKEND=auto|herdr|cmux|zellij|wezterm|tmux   fleet workspace backend
 #   ~/.config/glyph/names.tsv    "<dir-name>\t<Display Name>" overrides
 
 typeset -g GLYPH_STATE=${GLYPH_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/glyph}
@@ -263,12 +263,14 @@ _glyph_fleet_init() {
 
 _glyph_fleet_backend() {
   case ${GLYPH_FLEET_BACKEND:-auto} in
-    herdr|cmux|tmux) print -r -- "$GLYPH_FLEET_BACKEND" ;;
+    herdr|cmux|zellij|wezterm|tmux) print -r -- "$GLYPH_FLEET_BACKEND" ;;
     auto)
       [[ -n ${HERDR_ENV:-} ]] && { print -r -- herdr; return; }
       [[ -n ${CMUX_SOCKET_PATH:-} || -n ${CMUX_WORKSPACE_ID:-} ]] && { print -r -- cmux; return; }
+      [[ -n ${ZELLIJ_SESSION_NAME:-} ]] && { print -r -- zellij; return; }
+      [[ -n ${WEZTERM_PANE:-} ]] && { print -r -- wezterm; return; }
       print -r -- tmux ;;
-    *) print -ru2 -- "glyph: unknown fleet backend '$GLYPH_FLEET_BACKEND' (use auto, herdr, cmux or tmux)"; return 1 ;;
+    *) print -ru2 -- "glyph: unknown fleet backend '$GLYPH_FLEET_BACKEND' (use auto, herdr, cmux, zellij, wezterm or tmux)"; return 1 ;;
   esac
 }
 
@@ -314,6 +316,42 @@ _glyph_fleet_cmux() {
   done
 }
 
+_glyph_fleet_zellij() {
+  local preset=$1 mark=$2; shift 2
+  [[ -n ${GLYPH_DRYRUN:-} ]] || command -v zellij >/dev/null 2>&1 || { print -ru2 -- 'glyph: zellij backend needs zellij'; return 1; }
+  local slot agent machine label command_text
+  for slot in "$@"; do
+    agent=${slot%%:*}; machine=${slot#*:}
+    [[ $machine == $slot ]] && machine=local
+    [[ $machine == local ]] || { print -ru2 -- "glyph: zellij backend does not support SSH slot '$slot'; use tmux backend"; return 1; }
+    label="${GLYPH_LABEL[$agent]:-$agent} · $mark"
+    command_text="${agent} ${(q)preset}"
+    if [[ -n ${GLYPH_DRYRUN:-} ]]; then
+      print -r -- "zellij pane  $label  (zellij run --cwd $PWD --name $label -- zsh -lic $command_text)"
+    else
+      command zellij run --cwd "$PWD" --name "$label" -- zsh -lic "$command_text" >/dev/null || return 1
+    fi
+  done
+}
+
+_glyph_fleet_wezterm() {
+  local preset=$1 mark=$2; shift 2
+  [[ -n ${GLYPH_DRYRUN:-} ]] || command -v wezterm >/dev/null 2>&1 || { print -ru2 -- 'glyph: wezterm backend needs wezterm'; return 1; }
+  local slot agent machine label command_text
+  for slot in "$@"; do
+    agent=${slot%%:*}; machine=${slot#*:}
+    [[ $machine == $slot ]] && machine=local
+    [[ $machine == local ]] || { print -ru2 -- "glyph: wezterm backend does not support SSH slot '$slot'; use tmux backend"; return 1; }
+    label="${GLYPH_LABEL[$agent]:-$agent} · $mark"
+    command_text="${agent} ${(q)preset}"
+    if [[ -n ${GLYPH_DRYRUN:-} ]]; then
+      print -r -- "wezterm tab  $label  (wezterm cli spawn --cwd $PWD -- zsh -lic $command_text)"
+    else
+      command wezterm cli spawn --cwd "$PWD" -- zsh -lic "$command_text" >/dev/null || return 1
+    fi
+  done
+}
+
 glyph-fleet() {
   emulate -L zsh
   if [[ ${1:-} == init ]]; then _glyph_fleet_init; return; fi
@@ -347,11 +385,15 @@ glyph-fleet() {
     done
     [[ $backend == herdr ]] && _glyph_fleet_herdr "$preset" "$mark" "${slots[@]}"
     [[ $backend == cmux ]] && _glyph_fleet_cmux "$preset" "$mark" "${slots[@]}"
+    [[ $backend == zellij ]] && _glyph_fleet_zellij "$preset" "$mark" "${slots[@]}"
+    [[ $backend == wezterm ]] && _glyph_fleet_wezterm "$preset" "$mark" "${slots[@]}"
     return 0
   fi
 
   [[ $backend == herdr ]] && { _glyph_fleet_herdr "$preset" "$mark" "${slots[@]}"; _glyph_log "fleet:$preset" "$mark"; return; }
   [[ $backend == cmux ]] && { _glyph_fleet_cmux "$preset" "$mark" "${slots[@]}"; _glyph_log "fleet:$preset" "$mark"; return; }
+  [[ $backend == zellij ]] && { _glyph_fleet_zellij "$preset" "$mark" "${slots[@]}"; _glyph_log "fleet:$preset" "$mark"; return; }
+  [[ $backend == wezterm ]] && { _glyph_fleet_wezterm "$preset" "$mark" "${slots[@]}"; _glyph_log "fleet:$preset" "$mark"; return; }
 
   panes[1]=$(command tmux new-session -d -s "$session" -c "$PWD" -PF '#{pane_id}')
   for (( i = 2; i <= n; i++ )); do
