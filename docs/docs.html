@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><!-- build 2026-09-12T12:59:08 --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Glyph docs — install, commands, Fleet, adapters, naming</title><meta name="description" content="Glyph installation, commands, Fleet, adapters, naming, and configuration reference."><link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" href="glyph.svg" type="image/svg+xml">
+<html lang="en"><head><!-- build 2026-09-12T12:59:08 --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Glyph docs: install, commands, Fleet, adapters, naming</title><meta name="description" content="Glyph installation, commands, Fleet, adapters, naming, and configuration reference."><link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" href="glyph.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="canonical" href="https://glyph.fru.dev/docs.html">
 <meta name="robots" content="index,follow,max-image-preview:large">
@@ -7,7 +7,7 @@
 <meta name="author" content="fru.dev">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="glyph">
-<meta property="og:title" content="Glyph docs — install, commands, Fleet, adapters, naming">
+<meta property="og:title" content="Glyph docs: install, commands, Fleet, adapters, naming">
 <meta property="og:description" content="Glyph installation, commands, Fleet, adapters, naming, and configuration reference.">
 <meta property="og:url" content="https://glyph.fru.dev/docs.html">
 <meta property="og:image" content="https://glyph.fru.dev/og.png">
@@ -41,7 +41,7 @@
 <div class="card"><b>spread</b><code>claude claude:studio</code><p class="note">The same agent on two machines.</p></div>
 <div class="card"><b>cloud</b><code>claude:studio codex:studio</code><p class="note">Both agents on the remote box.</p></div>
 </div>
-<p class="note">A slot is <code>&lt;agent&gt;</code> or <code>&lt;agent&gt;:&lt;machine&gt;</code>. Replace <code>studio</code> with one of your own machines — see <a href="#update">Updating</a><a href="#remote">Remote agents</a>.</p>
+<p class="note">A slot is <code>&lt;agent&gt;</code> or <code>&lt;agent&gt;:&lt;machine&gt;</code>. Replace <code>studio</code> with one of your own machines. See <a href="#update">Updating</a><a href="#remote">Remote agents</a>.</p>
 <h3>Preview, then open</h3><pre><button class="copy" data-copy="fleet-preview-code">Copy</button><code id="fleet-preview-code">GLYPH_DRYRUN=1 glyph fleet ci<br>glyph fleet ci</code></pre><p class="note">The default <code>ci</code> group contains Claude Code, AGY, and Codex. Fleet is the only layer that opens multiple agents.</p>
 <h2 id="update">Updating</h2><p>Glyph is one file. Pull the latest straight from GitHub:</p>
 <pre><button class="copy" data-copy="update-code">Copy</button><code id="update-code">glyph update<br>exec zsh<br>glyph version</code></pre>
@@ -55,7 +55,7 @@
 <div class="card"><b>4 · Literal</b><code>user@10.0.0.5</code><p class="note">Anything else is passed to SSH untouched.</p></div></div>
 <p class="note">Run <code>glyph hosts</code> to list every machine you can put after the colon: your SSH config entries, plus tailnet machines with their online status. Tailscale is optional and detected automatically; nothing changes if you do not use it.</p>
 <div class="preview-note"><b>First connection</b><code>ssh mini</code><span>Accept the host key once by hand. After that, remote panes start clean.</span></div>
-<p class="note">Remote slots work on every backend — Herdr, tmux, cmux, Zellij and WezTerm — because they all build the same SSH command. Glyph is not tied to any one workspace tool; with no workspace running, Fleet falls back to tmux.</p>
+<p class="note">Remote slots work on every backend (Herdr, tmux, cmux, Zellij and WezTerm) because they all build the same SSH command. Glyph is not tied to any one workspace tool; with no workspace running, Fleet falls back to tmux.</p>
 <h2 id="adapters">Adapters</h2><p>Glyph keeps the command you already know and adds the same readable session name around it. A wrapper is defined only for agents actually on your PATH.</p>
 <h3>Adding an agent yourself</h3><p>Any CLI can be wired up without waiting for a release. One tab-separated line per agent in <code>~/.config/glyph/agents.tsv</code>:</p>
 <pre><button class="copy" data-copy="agents-tsv">Copy</button><code id="agents-tsv">openclaw&#9;--yolo&#9;OpenClaw<br>grok&#9;--force&#9;Grok</code></pre>
