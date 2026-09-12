@@ -16,10 +16,11 @@
 <meta name="twitter:card" content="summary_large_image">
 <style>
   :root{
-    --paper:#f7f4ed; --paper2:#efeae0; --card:#fffdf9;
-    --ink:#16130f; --ink2:#463f36; --muted:#867b6c; --rule:#ddd5c6;
-    --terra:#a8451f; --teal:#12615b; --indigo:#3b4a94; --slate:#776c5d;
-    --night:#171410; --night2:#221d17;
+    --paper:#ffffff; --paper2:#f4f5f7; --card:#ffffff;
+    --ink:#0c0d0f; --ink2:#4a4e56; --muted:#7d828b; --rule:#e3e5ea;
+    --accent:#7c1f2e; --slate:#2f4a6b;
+    --night:#0e0f11; --night2:#16181b;
+    --c-label:#7c1f2e; --c-proj:#0c0d0f; --c-mach:#2f4a6b; --c-when:#8b9099;
     --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
     --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
     --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
@@ -31,11 +32,11 @@
   .wrap{max-width:1120px;margin:0 auto;padding:0 34px}
   a{color:inherit}
   code{font-family:var(--mono)}
-  .s1{color:var(--terra)} .s2{color:var(--teal)}
-  .s3{color:var(--indigo)} .s4{color:var(--slate)} .dot{color:#b8ad9c}
+  .s1{color:var(--c-label);font-weight:600} .s2{color:var(--c-proj)}
+  .s3{color:var(--c-mach)} .s4{color:var(--c-when)} .dot{color:#b9bdc4}
 
   /* nav */
-  nav{position:sticky;top:0;z-index:30;background:rgba(247,244,237,.9);
+  nav{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.86);
       backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
   nav .wrap{display:flex;align-items:center;gap:16px;height:62px}
   .brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);
@@ -43,54 +44,54 @@
   .brand img{width:28px;height:28px}
   nav .sp{flex:1}
   nav a.lnk{color:var(--ink2);font-size:14px;font-weight:550;text-decoration:none}
-  nav a.lnk:hover{color:var(--terra)}
+  nav a.lnk:hover{color:var(--accent)}
   .ghbtn{display:inline-flex;align-items:stretch;border:1px solid var(--ink);
          border-radius:7px;overflow:hidden;font-size:13px;font-weight:650;text-decoration:none}
   .ghbtn span{padding:6px 11px;background:var(--ink);color:var(--paper)}
   .ghbtn b{padding:6px 11px;background:transparent;color:var(--ink);
            font-variant-numeric:tabular-nums}
-  .ghbtn:hover span{background:var(--terra)}
+  .ghbtn:hover span{background:var(--accent)}
 
   /* hero */
   .hero{border-bottom:1px solid var(--rule);
-        background:linear-gradient(180deg,#faf8f3,transparent 60%)}
+        background:linear-gradient(180deg,#fafbfc,transparent 60%)}
   .hgrid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);
          gap:60px;align-items:center;padding:76px 0 80px}
   h1{font-family:var(--serif);font-size:clamp(40px,5vw,60px);line-height:1.03;
      letter-spacing:-.022em;margin:0 0 20px;font-weight:600;max-width:13ch}
-  h1 em{font-style:italic;color:var(--terra)}
+  h1 em{font-style:italic;color:var(--accent)}
   .tag{color:var(--ink2);font-size:18.5px;margin:0 0 28px;max-width:46ch}
   .install{display:flex;align-items:center;gap:8px;background:var(--night);
            border-radius:10px;padding:5px 5px 5px 15px;max-width:530px;
-           box-shadow:0 8px 22px rgba(30,24,16,.16)}
-  .install .pfx{color:#b9834a;font-family:var(--mono);font-size:13px;user-select:none}
-  .install code{flex:1;font-size:12.8px;color:#eee5d3;white-space:nowrap;overflow:hidden;
+           box-shadow:0 8px 22px rgba(12,13,15,.14)}
+  .install .pfx{color:#9aa3ad;font-family:var(--mono);font-size:13px;user-select:none}
+  .install code{flex:1;font-size:12.8px;color:#e9ebee;white-space:nowrap;overflow:hidden;
                 text-overflow:ellipsis}
-  .copy{border:0;background:#33291f;color:#e5d9c4;cursor:pointer;border-radius:7px;
+  .copy{border:0;background:#24272b;color:#e9ebee;cursor:pointer;border-radius:7px;
         padding:9px 15px;font:650 12.5px var(--sans);flex:none}
-  .copy:hover{background:var(--terra);color:#fff}
+  .copy:hover{background:var(--accent);color:#fff}
   .hint{color:var(--muted);font-size:13px;margin:12px 0 0}
 
   /* phone */
   .phonewrap{display:flex;justify-content:center}
   .phone{width:100%;max-width:306px;background:var(--night);border-radius:32px;
-         padding:15px 13px 20px;box-shadow:0 30px 60px rgba(35,27,17,.30),0 2px 0 #3a3025 inset}
-  .notch{width:58px;height:5px;border-radius:99px;background:#3a3025;margin:2px auto 16px}
+         padding:15px 13px 20px;box-shadow:0 26px 54px rgba(12,13,15,.28)}
+  .notch{width:58px;height:5px;border-radius:99px;background:#33373d;margin:2px auto 16px}
   .phead{display:flex;justify-content:space-between;padding:0 4px 12px;
-         font:650 10.5px var(--sans);color:#8b7d69;letter-spacing:.12em;text-transform:uppercase}
+         font:650 10.5px var(--sans);color:#868c95;letter-spacing:.12em;text-transform:uppercase}
   .srow{display:flex;align-items:center;gap:9px;padding:10px;border-radius:10px;
-        background:#1f1a14;margin-bottom:8px}
-  .srow .ic{width:16px;height:16px;flex:none;color:#cbbba0}
+        background:#191b1f;margin-bottom:8px}
+  .srow .ic{width:16px;height:16px;flex:none;color:#b9bec7}
   .srow .t{font-family:var(--mono);font-size:10.3px;overflow:hidden;
-           text-overflow:ellipsis;white-space:nowrap;color:#e8dcc6}
-  .phone .s1{color:#e8a06d} .phone .s2{color:#7fc0b3}
-  .phone .s3{color:#9fb0e8} .phone .dot{color:#6d6152}
-  .live{width:6px;height:6px;border-radius:50%;background:#79ad78;flex:none;margin-left:auto}
+           text-overflow:ellipsis;white-space:nowrap;color:#e9ebee}
+  .phone .s1{color:#e0919b} .phone .s2{color:#eef0f3}
+  .phone .s3{color:#94b6de} .phone .dot{color:#5f656d}
+  .live{width:6px;height:6px;border-radius:50%;background:#5f9e6b;flex:none;margin-left:auto}
 
   /* sections */
   section{padding:88px 0;border-bottom:1px solid var(--rule)}
   section.tint{background:var(--paper2)}
-  .num{font-family:var(--mono);font-size:12px;color:var(--terra);letter-spacing:.16em;
+  .num{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.16em;
        margin:0 0 14px;font-weight:600}
   h2{font-family:var(--serif);font-size:clamp(28px,3.6vw,40px);margin:0 0 12px;
      letter-spacing:-.018em;line-height:1.13;font-weight:600}
@@ -103,7 +104,7 @@
   .three>div{background:var(--card);padding:28px 26px}
   .three h3{font-family:var(--serif);font-size:21px;margin:0 0 10px;font-weight:600}
   .three p{color:var(--ink2);font-size:15px;margin:0}
-  .three .big{font-family:var(--serif);font-size:38px;color:var(--terra);
+  .three .big{font-family:var(--serif);font-size:38px;color:var(--accent);
               line-height:1;margin:0 0 14px;font-weight:600}
 
   /* before/after */
@@ -111,10 +112,10 @@
   .panel{border:1px solid var(--rule);border-radius:14px;overflow:hidden;background:var(--card)}
   .panel .cap{padding:12px 18px;border-bottom:1px solid var(--rule);
               font:650 11px var(--sans);letter-spacing:.14em;text-transform:uppercase}
-  .panel.bad .cap{color:#9a5540;background:#f7ece8}
-  .panel.good .cap{color:var(--teal);background:#e9f2ef}
+  .panel.bad .cap{color:#8a5560;background:#f6f0f1}
+  .panel.good .cap{color:var(--slate);background:#eef1f5}
   .rows{font-family:var(--mono);font-size:13px;line-height:2.15;padding:18px}
-  .rows.muted{color:#a2988a}
+  .rows.muted{color:#a9aeb6}
 
   /* anatomy */
   .anat{background:var(--card);border:1px solid var(--rule);border-radius:14px;
@@ -128,15 +129,15 @@
 
   /* terminal */
   .term{background:var(--night);border-radius:13px;overflow:hidden;
-        box-shadow:0 14px 34px rgba(35,27,17,.2)}
+        box-shadow:0 14px 34px rgba(12,13,15,.18)}
   .term .bar{display:flex;align-items:center;gap:7px;padding:11px 16px;background:var(--night2)}
-  .term .bar i{width:9px;height:9px;border-radius:50%;background:#463c2d;display:block}
-  .term .bar b{margin-left:8px;font:600 11px/1 var(--mono);color:#8b7d69;letter-spacing:.05em}
+  .term .bar i{width:9px;height:9px;border-radius:50%;background:#34383e;display:block}
+  .term .bar b{margin-left:8px;font:600 11px/1 var(--mono);color:#868c95;letter-spacing:.05em}
   .term pre{margin:0;padding:19px 20px;overflow-x:auto;font-family:var(--mono);
-            font-size:12.7px;line-height:1.95;color:#e9decb}
-  .term .p{color:#c58a4e} .term .cmt{color:#7d715f}
-  .term .s1{color:#e8a06d} .term .s2{color:#7fc0b3}
-  .term .s3{color:#9fb0e8} .term .s4{color:#b6a894} .term .dot{color:#6d6152}
+            font-size:12.7px;line-height:1.95;color:#e9ebee}
+  .term .p{color:#9aa3ad} .term .cmt{color:#6b7078}
+  .term .s1{color:#e0919b} .term .s2{color:#eef0f3}
+  .term .s3{color:#94b6de} .term .s4{color:#9aa0a8} .term .dot{color:#5f656d}
 
   .twocol{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);
           gap:48px;align-items:start}
@@ -150,18 +151,18 @@
   .agent .n{font-weight:650;font-size:15px;flex:1;letter-spacing:-.01em}
   .pill{font:650 9.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;
         padding:3px 7px;border-radius:99px;border:1px solid var(--rule);color:var(--muted)}
-  .pill.real{background:var(--terra);border-color:var(--terra);color:#fff}
+  .pill.real{background:var(--accent);border-color:var(--accent);color:#fff}
   .agent .f{font-family:var(--mono);font-size:10.5px;color:var(--muted);
             word-break:break-all;line-height:1.55}
 
   /* fleet */
   .panes{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}
   .pane{border:1px solid var(--rule);border-radius:9px;background:var(--card);overflow:hidden}
-  .pane .lab{font:650 9.5px/1.4 var(--mono);padding:7px 9px;background:#f0ebe1;
+  .pane .lab{font:650 9.5px/1.4 var(--mono);padding:7px 9px;background:#f1f2f5;
              border-bottom:1px solid var(--rule);white-space:nowrap;overflow:hidden;
              text-overflow:ellipsis;display:flex;align-items:center;gap:5px;color:var(--ink2)}
   .pane .lab svg{width:11px;height:11px;flex:none}
-  .pane .body{height:58px;background:repeating-linear-gradient(180deg,#f4efe5 0 2px,transparent 2px 11px)}
+  .pane .body{height:58px;background:repeating-linear-gradient(180deg,#f6f7f9 0 2px,transparent 2px 11px)}
 
   table{border-collapse:collapse;width:100%;font-size:14px;display:block;overflow-x:auto}
   th,td{text-align:left;padding:10px 18px 10px 0;border-bottom:1px solid var(--rule);white-space:nowrap}
@@ -172,7 +173,7 @@
   ul.plain{padding-left:19px;color:var(--ink2)} ul.plain li{margin-bottom:8px}
   footer{padding:34px 0 52px;color:var(--muted);font-size:13.5px}
   footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
-  footer a{color:var(--terra)}
+  footer a{color:var(--accent)}
 
   @media (max-width:980px){
     .agents,.three{grid-template-columns:repeat(2,1fr)}
@@ -212,7 +213,7 @@
 
 <nav>
   <div class="wrap">
-    <a class="brand" href="/"><img src="glyph.svg" alt="">glyph</a>
+    <a class="brand" href="/"><img src="glyph-mono.svg" alt="">glyph</a>
     <div class="sp"></div>
     <a class="lnk" href="#why">Why</a>
     <a class="lnk" href="#anatomy">The mark</a>
@@ -321,10 +322,10 @@
     <div class="anat">
       <div class="m"><span class="s1">billing</span><span class="dot">·</span><wbr><span class="s2">Acme API</span><span class="dot">·</span><wbr><span class="s3">laptop</span><span class="dot">·</span><wbr><span class="s4">2026-09-12·0556</span></div>
       <div class="legend">
-        <div><b style="color:var(--terra)">Label</b>What you called it, or the project if you said nothing.</div>
-        <div><b style="color:var(--teal)">Project</b>The git repo, title-cased. Overridable.</div>
-        <div><b style="color:var(--indigo)">Machine</b>From the hostname: laptop, studio, desktop, hetzner.</div>
-        <div><b style="color:var(--slate)">Started</b>Date and time, so idle work is obvious.</div>
+        <div><b style="color:var(--c-label)">Label</b>What you called it, or the project if you said nothing.</div>
+        <div><b style="color:var(--c-proj)">Project</b>The git repo, title-cased. Overridable.</div>
+        <div><b style="color:var(--c-mach)">Machine</b>From the hostname: laptop, studio, desktop, hetzner.</div>
+        <div><b style="color:var(--c-when)">Started</b>Date and time, so idle work is obvious.</div>
       </div>
     </div>
   </div>
