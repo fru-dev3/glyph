@@ -36,6 +36,7 @@ done
 out=$(GLYPH_DRYRUN=1 glyph fleet pi opencode)
 [[ $out == *'pane 2  opencode on local'* ]] || { print -ru2 -- 'FAIL: ad-hoc agents without approval flags'; exit 1; }
 export GLYPH_FLEET_CONF="$test_dir/fleet.conf"
+export GLYPH_FLEET_BACKEND=tmux
 printf 'ci = claude agy codex\nremote = agy:studio\n' > "$GLYPH_FLEET_CONF"
 out=$(GLYPH_DRYRUN=1 glyph fleet ci)
 [[ $out == *'pane 2  agy on local'* ]] || { print -ru2 -- 'FAIL: preset preview'; exit 1; }
@@ -44,6 +45,15 @@ glyph fleet ci
 glyph fleet remote
 [[ $(< "$GLYPH_TEST_TMUX") == *'ssh -t studio'* ]] || { print -ru2 -- 'FAIL: remote fleet command'; exit 1; }
 [[ ! -e "$GLYPH_STATE/sessions.tsv" ]] || { print -ru2 -- 'FAIL: disabled log wrote state'; exit 1; }
+unset GLYPH_FLEET_BACKEND
+export HERDR_ENV=1
+out=$(GLYPH_DRYRUN=1 glyph fleet ci)
+[[ $out == *'backend herdr'* && $out == *'herdr tab'* ]] || { print -ru2 -- 'FAIL: Herdr fleet backend'; exit 1; }
+unset HERDR_ENV
+export CMUX_SOCKET_PATH=/tmp/cmux-test.sock
+out=$(GLYPH_DRYRUN=1 glyph fleet ci)
+[[ $out == *'backend cmux'* && $out == *'cmux workspace'* ]] || { print -ru2 -- 'FAIL: cmux fleet backend'; exit 1; }
+unset CMUX_SOCKET_PATH
 export GLYPH_FLEET_CONF="$test_dir/nested/new-fleet.conf"
 GLYPH_DRYRUN=1 glyph fleet init >/dev/null
 [[ ! -e $GLYPH_FLEET_CONF ]] || { print -ru2 -- 'FAIL: init dry run wrote config'; exit 1; }

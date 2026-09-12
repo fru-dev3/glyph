@@ -21,6 +21,7 @@
 #   GLYPH_TITLE=0     do not retitle the terminal / tmux window
 #   GLYPH_LOG=0       do not record sessions to the local registry
 #   GLYPH_DRYRUN=1    print the argv instead of launching
+#   GLYPH_FLEET_BACKEND=auto|herdr|cmux|tmux   fleet workspace backend
 #   ~/.config/glyph/names.tsv    "<dir-name>\t<Display Name>" overrides
 
 typeset -g GLYPH_STATE=${GLYPH_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/glyph}
@@ -260,6 +261,59 @@ _glyph_fleet_init() {
   print -r -- "cloud is an example: replace studio with your SSH host before using it"
 }
 
+_glyph_fleet_backend() {
+  case ${GLYPH_FLEET_BACKEND:-auto} in
+    herdr|cmux|tmux) print -r -- "$GLYPH_FLEET_BACKEND" ;;
+    auto)
+      [[ -n ${HERDR_ENV:-} ]] && { print -r -- herdr; return; }
+      [[ -n ${CMUX_SOCKET_PATH:-} || -n ${CMUX_WORKSPACE_ID:-} ]] && { print -r -- cmux; return; }
+      print -r -- tmux ;;
+    *) print -ru2 -- "glyph: unknown fleet backend '$GLYPH_FLEET_BACKEND' (use auto, herdr, cmux or tmux)"; return 1 ;;
+  esac
+}
+
+_glyph_fleet_herdr() {
+  local preset=$1 mark=$2; shift 2
+  command -v herdr >/dev/null 2>&1 || { print -ru2 -- 'glyph: Herdr backend needs herdr'; return 1; }
+  local slot agent machine label tab_output tab_id command_text
+  for slot in "$@"; do
+    agent=${slot%%:*}; machine=${slot#*:}
+    [[ $machine == $slot ]] && machine=local
+    [[ $machine == local ]] || { print -ru2 -- "glyph: Herdr backend does not support SSH slot '$slot'; use tmux backend"; return 1; }
+    label="${GLYPH_LABEL[$agent]:-$agent} · $mark"
+    if [[ -n ${GLYPH_DRYRUN:-} ]]; then
+      print -r -- "herdr tab  $label  ($agent $preset)"
+      continue
+    fi
+    tab_output=$(command herdr tab create --cwd "$PWD" --label "$label" --no-focus 2>/dev/null) || return 1
+    tab_id=$(print -r -- "$tab_output" | command sed -n 's/.*"tab_id":"\([^"]*\)".*/\1/p')
+    [[ -n $tab_id ]] || { print -ru2 -- 'glyph: could not read Herdr tab id'; return 1; }
+    # Start through an interactive zsh so the installed Glyph wrapper supplies
+    # the agent-specific flags and title. The tab itself carries the full mark.
+    command_text="${agent} ${(q)preset}"
+    command herdr agent start "$agent" --cwd "$PWD" --tab "$tab_id" --no-focus -- zsh -lic "$command_text" >/dev/null || return 1
+  done
+}
+
+_glyph_fleet_cmux() {
+  local preset=$1 mark=$2; shift 2
+  command -v cmux >/dev/null 2>&1 || { print -ru2 -- 'glyph: cmux backend needs cmux'; return 1; }
+  local slot agent machine label command_text
+  for slot in "$@"; do
+    agent=${slot%%:*}; machine=${slot#*:}
+    [[ $machine == $slot ]] && machine=local
+    [[ $machine == local ]] || { print -ru2 -- "glyph: cmux backend does not support SSH slot '$slot'; use tmux backend"; return 1; }
+    label="${GLYPH_LABEL[$agent]:-$agent} · $mark"
+    command_text="zsh -lic ${(q)agent}\ ${(q)preset}"
+    if [[ -n ${GLYPH_DRYRUN:-} ]]; then
+      print -r -- "cmux workspace  $label  ($command_text)"
+    else
+      command cmux new-workspace --command "$command_text" >/dev/null || return 1
+      command cmux log --source glyph --level info -- "$label" >/dev/null 2>&1 || true
+    fi
+  done
+}
+
 glyph-fleet() {
   emulate -L zsh
   if [[ ${1:-} == init ]]; then _glyph_fleet_init; return; fi
@@ -279,19 +333,25 @@ glyph-fleet() {
   command -v tmux >/dev/null 2>&1 || { print -ru2 -- "glyph: fleet needs tmux"; return 1; }
 
   local mark=$(_glyph_compose "$preset" "$(_glyph_project "$PWD")")
+  local backend=$(_glyph_fleet_backend) || return 1
   local session="glyph-${preset}-$(command date +%H%M%S)"
   local n=$#slots i agent machine cmd label
   local -a panes
 
   if [[ -n ${GLYPH_DRYRUN:-} ]]; then
-    print -r -- "session $session  ($n panes)  mark: $mark"
+    print -r -- "backend $backend  session $session  ($n panes)  mark: $mark"
     for i in {1..$n}; do
       agent=${slots[i]%%:*}; machine=${slots[i]#*:}
       [[ $machine == $slots[i] ]] && machine=local
       print -r -- "  pane $i  $agent on $machine"
     done
+    [[ $backend == herdr ]] && _glyph_fleet_herdr "$preset" "$mark" "${slots[@]}"
+    [[ $backend == cmux ]] && _glyph_fleet_cmux "$preset" "$mark" "${slots[@]}"
     return 0
   fi
+
+  [[ $backend == herdr ]] && { _glyph_fleet_herdr "$preset" "$mark" "${slots[@]}"; _glyph_log "fleet:$preset" "$mark"; return; }
+  [[ $backend == cmux ]] && { _glyph_fleet_cmux "$preset" "$mark" "${slots[@]}"; _glyph_log "fleet:$preset" "$mark"; return; }
 
   panes[1]=$(command tmux new-session -d -s "$session" -c "$PWD" -PF '#{pane_id}')
   for (( i = 2; i <= n; i++ )); do

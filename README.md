@@ -181,8 +181,12 @@ Set up example fleets with one command (existing definitions are kept):
 glyph fleet init
 ```
 
-Then run `glyph fleet ci` from your project folder. Fleet needs tmux and the
-agent CLIs installed. Customize the generated config when needed:
+Then run `glyph fleet ci` from your project folder. Fleet uses the current
+workspace automatically: Herdr creates one Herdr tab per local agent, cmux
+creates one cmux workspace per local agent, and standalone shells use tmux.
+Set `GLYPH_FLEET_BACKEND=tmux|herdr|cmux` to choose explicitly. Fleet needs
+the selected workspace manager and the agent CLIs installed. Customize the
+generated config when needed:
 
 ```ini
 # ~/.config/glyph/fleet.conf
@@ -201,6 +205,8 @@ glyph fleet review
 - Remote panes require Glyph and the agent installed on the SSH host, with
   Glyph sourced in its zsh config. They `cd` to the same project path and stop
   if that path is missing.
+- Herdr and cmux backends support local slots. Use the tmux backend for
+  `<agent>:<ssh-host>` slots.
 
 <details>
 <summary><b>Configuration</b></summary>
@@ -212,6 +218,7 @@ glyph fleet review
 | `GLYPH_FMT` | `date(1)` format for the stamp (default `%Y-%m-%d·%H%M`) |
 | `GLYPH_SEP` | Separator (default `·`) |
 | `GLYPH_MACHINE` | Machine tag, when the hostname does not map well |
+| `GLYPH_FLEET_BACKEND` | `auto` (Herdr, cmux, then tmux), or explicit `herdr`, `cmux`, `tmux` |
 | `GLYPH_RC=0` | Skip Claude's `--remote-control` |
 | `GLYPH_TITLE=0` | Do not retitle the terminal or tmux window |
 | `GLYPH_LOG=0` | Do not record sessions locally |

@@ -76,3 +76,13 @@
   in its tabs. `glyph fleet` still creates standalone tmux; inside Herdr it
   nests tmux. Documented this behavior and recommendation; no Herdr Fleet
   backend added without a clear API/UX decision.
+
+- Added native Fleet backends. `GLYPH_FLEET_BACKEND=auto` selects Herdr when
+  `HERDR_ENV` is present, cmux when its workspace environment is present, and
+  standalone tmux otherwise. Explicit `herdr`, `cmux`, and `tmux` values are
+  supported. Herdr creates one tab per local slot and starts the wrapper through
+  interactive zsh; cmux creates one workspace per local slot. SSH slots remain
+  tmux-only. Dry-run output covers both new backends.
+- Herdr and cmux backend commands were inspected against installed CLIs. No live
+  agent fleet was launched during tests. The installed vault-linked wrapper was
+  updated.
