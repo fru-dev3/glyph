@@ -59,20 +59,33 @@
   .demo{border:1px solid var(--edge2);border-radius:10px;background:var(--panel);padding:20px}
   .demo .lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);
              margin-bottom:9px}
-  .fields{display:flex;gap:9px;flex-wrap:wrap}
-  .fields input,.fields select{background:#0f0f11;border:1px solid var(--edge2);color:var(--fg);
-        border-radius:7px;padding:8px 11px;font:14px var(--mono);outline:none;min-width:0}
-  .fields input{flex:1;min-width:130px}
-  .fields input:focus,.fields select:focus{border-color:var(--ochre)}
-  .out{margin-top:16px;border-top:1px solid var(--edge);padding-top:16px}
-  .outmark{font-family:var(--mono);font-size:clamp(13px,2.4vw,17px);overflow-wrap:anywhere;
-           line-height:1.7}
+  .fields{display:flex;gap:10px;flex-wrap:wrap}
+  .fld{flex:1;min-width:132px;display:flex;flex-direction:column;gap:5px}
+  .fld.sel{flex:0 0 116px}
+  .fld>span{font-size:11px;letter-spacing:.06em;color:var(--faint);text-transform:uppercase}
+  .fld input,.fld select{background:#0f0f11;border:1px solid var(--edge2);color:var(--fg);
+        border-radius:7px;padding:8px 11px;font:13.5px var(--mono);outline:none;
+        min-width:0;width:100%}
+  .fld input:focus,.fld select:focus{border-color:var(--ochre)}
+  .out{margin-top:18px;border-top:1px solid var(--edge)}
+  .orow{display:grid;grid-template-columns:96px 1fr;gap:0 16px;padding:10px 0;
+        border-bottom:1px solid var(--edge)}
+  .orow:last-child{border-bottom:0;padding-bottom:0}
+  .ok{color:var(--faint);font-size:12px;padding-top:2px}
+  .ov{min-width:0;overflow-wrap:anywhere}
+  .ov.mono{font-family:var(--mono);font-size:12.6px;color:var(--dim)}
+  .leg{display:block;margin-top:7px;font-size:11px;color:var(--faint)}
+  .leg b{font-weight:400;margin-left:9px}
+  .leg b:first-child{margin-left:0}
+  .outmark{font-family:var(--mono);font-size:clamp(13px,2.2vw,16px);overflow-wrap:anywhere;
+           line-height:1.7;display:block}
   .m1{color:var(--ochre);font-weight:600} .m2{color:var(--fg)}
   .m3{color:#8fa8c9} .m4{color:var(--dim)} .md{color:var(--faint)}
   .outcmd{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:11px;
           overflow-wrap:anywhere}
   .outcmd .p{color:var(--ochre)}
   .note{color:var(--faint);font-size:12px;margin-top:12px}
+  .ov.note{margin-top:0;font-size:12.5px;line-height:1.55}
 
   h2{font-size:16.5px;margin:0 0 18px;font-weight:700;letter-spacing:-.01em}
   .dl{display:grid;grid-template-columns:104px 1fr;gap:0 20px}
@@ -167,19 +180,34 @@
     <div class="demo">
       <div class="lbl">Try it</div>
       <div class="fields">
-        <input id="lab" value="billing" spellcheck="false" aria-label="label">
-        <input id="prj" value="acme-api" spellcheck="false" aria-label="project directory">
-        <select id="agt" aria-label="agent">
-          <option value="claude">claude</option>
-          <option value="codex">codex</option>
-          <option value="gemini">gemini</option>
-          <option value="agy">agy</option>
-        </select>
+        <label class="fld"><span>Your label</span>
+          <input id="lab" value="billing" spellcheck="false"></label>
+        <label class="fld"><span>Project folder</span>
+          <input id="prj" value="acme-api" spellcheck="false"></label>
+        <label class="fld sel"><span>Agent</span>
+          <select id="agt">
+            <option value="claude">claude</option>
+            <option value="codex">codex</option>
+            <option value="gemini">gemini</option>
+            <option value="agy">agy</option>
+          </select></label>
       </div>
+
       <div class="out">
-        <div class="outmark" id="mk"></div>
-        <div class="outcmd" id="cm"></div>
-        <div class="note" id="nt"></div>
+        <div class="orow"><span class="ok">You type</span>
+          <span class="ov mono" id="typed"></span></div>
+        <div class="orow"><span class="ok">glyph runs</span>
+          <span class="ov mono" id="cm"></span></div>
+        <div class="orow"><span class="ok">Session name</span>
+          <span class="ov"><span class="outmark" id="mk"></span>
+            <span class="leg">
+              <b class="m1">■</b> label
+              <b class="m2">■</b> project
+              <b class="m3">■</b> machine
+              <b class="m4">■</b> started
+            </span></span></div>
+        <div class="orow"><span class="ok">Meaning</span>
+          <span class="ov note" id="nt"></span></div>
       </div>
     </div>
   </div>
@@ -317,21 +345,34 @@
   function esc(s){return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
   function render(){
     var d=new Date(), when=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())
-          +'·'+pad(d.getHours())+pad(d.getMinutes());
-    var l=esc(lab.value.trim().split(/\s+/)[0]||''), p=esc(title(prj.value||'')), a=agt.value;
+          +'\u00b7'+pad(d.getHours())+pad(d.getMinutes());
+    var raw=lab.value.trim().split(/\s+/)[0]||'';
+    var l=esc(raw), p=esc(title(prj.value||'')), a=agt.value;
     var parts=[];
     if(l) parts.push('<span class="m1">'+l+'</span>');
     if(p && p.toLowerCase()!==l.toLowerCase()) parts.push('<span class="m2">'+p+'</span>');
     parts.push('<span class="m3">laptop</span>');
     parts.push('<span class="m4">'+when+'</span>');
-    mk.innerHTML=parts.join('<span class="md">·</span>');
+    mk.innerHTML=parts.join('<span class="md">\u00b7</span>');
     var plain=mk.textContent;
+
+    var multi=/\s/.test(lab.value.trim());
+    document.getElementById('typed').innerHTML=
+      '<span class="p">$</span> '+a+(raw?' '+esc(raw):'')+
+      (multi?'   <span style="color:var(--faint)">'+
+        '\u2190 only the first word is the label; a quoted phrase is a prompt</span>':'');
+
     if(a==='claude'){
       cm.innerHTML='<span class="p">$</span> claude -n \''+esc(plain)+'\' --remote-control';
-      nt.textContent='Claude Code takes it as the real session name, so it shows in the web app and on your phone.';
+      nt.innerHTML='<b>-n</b> sets the session name; <b>--remote-control</b> opens the '+
+        'bridge so it appears in the web app and on your phone. Claude Code is the only '+
+        'agent that can name its own session.';
     }else{
-      cm.innerHTML='<span class="p">$</span> '+a+'  → sets the terminal title and tmux window';
-      nt.textContent=a+' has no session-name flag, so the mark goes on the title, the tmux window and glyph ls. GLYPH_YOLO=1 would add '+YOLO[a]+'.';
+      cm.innerHTML='<span class="p">$</span> '+a+
+        '   <span class="c" style="color:var(--faint)">+ terminal title and tmux window set to the mark</span>';
+      nt.innerHTML=esc(a)+' has no session-name flag, so nothing is added to the command — '+
+        'the mark goes on the terminal title, the tmux window and <b>glyph ls</b>. '+
+        '<b>GLYPH_YOLO=1</b> would add <b>'+YOLO[a]+'</b>.';
     }
   }
   [lab,prj].forEach(function(el){el.addEventListener('input',render)});
