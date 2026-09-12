@@ -8,13 +8,17 @@
 
 `billing·Acme API·mbp·2026-09-12·0556`
 
+[![stars](https://img.shields.io/github/stars/fru-dev3/glyph?style=flat&label=stars&color=C4A35A&labelColor=1c1712)](https://github.com/fru-dev3/glyph/stargazers)
+[![license](https://img.shields.io/badge/license-MIT-C4A35A?style=flat&labelColor=1c1712)](LICENSE)
+
 [Install](#install) · [Usage](#usage) · [Fleets](#fleets) · [glyph.fru.dev](https://glyph.fru.dev)
 
 </div>
 
 ---
 
-Five agents, five machines. This is what you come back to:
+Your agents follow you to your phone. Without a name, that list is hostnames
+and hashes:
 
 ```
 tims-macbook-pro-4-local-transient   ← Claude Code, auto-derived

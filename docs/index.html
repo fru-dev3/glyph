@@ -4,19 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>glyph — every agent session, named before it starts</title>
-<meta name="description" content="Mark every AI coding agent session with your label, the project, the machine and the moment, before it starts. Claude Code, Antigravity, Codex, Gemini and friends.">
+<meta name="description" content="Take your coding agents with you. glyph marks every Claude Code, Codex, Gemini or Antigravity session with your label, the project, the machine and the moment — before it starts.">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" href="glyph.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:title" content="glyph — every agent session, named before it starts">
-<meta property="og:description" content="Mark every AI coding agent session with your label, the project, the machine and the moment, before it starts.">
+<meta property="og:description" content="Take your coding agents with you. Every session marked with your label, the project, the machine and the moment.">
 <meta property="og:image" content="https://glyph.fru.dev/og.png">
 <meta property="og:url" content="https://glyph.fru.dev/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <style>
   :root{
-    --ink:#14100c; --panel:#1c1712; --edge:#2e251c;
+    --ink:#14100c; --panel:#1c1712; --edge:#2e251c; --deep:#0d0a08;
     --stone:#ead9bb; --dust:#a3907a; --faint:#7a6854;
     --gold:#C4A35A;
     --c-label:#e8c375; --c-proj:#8fb8a0; --c-mach:#9db4d8; --c-when:#bb9ac9;
@@ -27,268 +27,293 @@
   html{scroll-behavior:smooth}
   body{margin:0;background:var(--ink);color:var(--stone);font-family:var(--sans);
        line-height:1.6;-webkit-font-smoothing:antialiased;font-size:16.5px}
-  .wrap{max-width:1000px;margin:0 auto;padding:0 28px}
+  .wrap{max-width:1010px;margin:0 auto;padding:0 28px}
   a{color:var(--gold);text-decoration:none}
   a:hover{text-decoration:underline}
   code{font-family:var(--mono)}
-
-  /* ---------- hero ---------- */
-  .hero{text-align:center;padding:88px 0 20px}
-  .hero img{width:172px;height:172px}
-  .hero h1{font-size:clamp(66px,13vw,116px);margin:16px 0 0;letter-spacing:-.045em;
-           line-height:.9;font-weight:800}
-  .hero .sub{font-size:clamp(19px,3vw,25px);color:var(--dust);margin:16px 0 0}
-  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:34px 0 0}
-  .btn{display:inline-block;padding:12px 24px;border-radius:9px;font-weight:650;
-       font-size:15.5px;border:1px solid var(--edge)}
-  .btn.primary{background:var(--gold);color:#1a1409;border-color:var(--gold)}
-  .btn.ghost{color:var(--stone)}
-  .btn:hover{text-decoration:none;filter:brightness(1.08)}
-
-  /* ---------- the mark, taken apart ---------- */
-  .anatomy{margin:70px auto 0;max-width:760px;text-align:center}
-  .mark{font-family:var(--mono);font-size:clamp(14px,3.1vw,26px);
-        letter-spacing:-.01em;display:inline-block;overflow-wrap:anywhere;
-        line-height:1.5}
-  .mark span{position:relative}
   .s1{color:var(--c-label)} .s2{color:var(--c-proj)}
-  .s3{color:var(--c-mach)} .s4{color:var(--c-when)}
-  .dot{color:var(--faint)}
-  .keys{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:22px 0 0;
-        font-size:13px;color:var(--dust)}
-  .key{display:flex;align-items:center;gap:7px;background:var(--panel);
-       border:1px solid var(--edge);border-radius:99px;padding:5px 13px}
-  .swatch{width:9px;height:9px;border-radius:2px;flex:none}
+  .s3{color:var(--c-mach)} .s4{color:var(--c-when)} .dot{color:var(--faint)}
 
-  /* ---------- sections ---------- */
-  section{padding:82px 0 0}
-  h2{font-size:clamp(30px,5vw,42px);margin:0 0 10px;letter-spacing:-.025em;
-     line-height:1.15;font-weight:750}
-  h3{font-size:20px;margin:0 0 12px;font-weight:650}
-  .lede{color:var(--dust);font-size:18px;margin:0 0 30px;max-width:62ch}
-  p{margin:0 0 16px}
+  .hero{text-align:center;padding:76px 0 0}
+  .hero img.mascot{width:158px;height:158px}
+  .hero h1{font-size:clamp(64px,12vw,112px);margin:14px 0 0;letter-spacing:-.045em;
+           line-height:.9;font-weight:800}
+  .sub{font-size:clamp(18px,2.7vw,24px);color:var(--dust);margin:14px auto 0;max-width:22ch}
+  .mark{font-family:var(--mono);font-size:clamp(14px,3vw,25px);margin-top:34px;
+        display:inline-block;overflow-wrap:anywhere;line-height:1.6}
+  .keys{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin:18px 0 0;font-size:12.5px;color:var(--dust)}
+  .key{display:flex;align-items:center;gap:6px;background:var(--panel);
+       border:1px solid var(--edge);border-radius:99px;padding:4px 12px}
+  .sw{width:9px;height:9px;border-radius:2px;flex:none}
 
-  /* ---------- before / after ---------- */
+  .quick{margin:38px auto 0;max-width:660px;background:var(--deep);
+         border:1px solid var(--edge);border-radius:12px;display:flex;align-items:center;
+         gap:12px;padding:14px 16px;text-align:left}
+  .quick code{flex:1;font-size:13px;color:var(--stone);overflow-x:auto;white-space:nowrap}
+  .copy{border:1px solid var(--edge);background:#221a12;color:var(--dust);cursor:pointer;
+        border-radius:7px;padding:7px 13px;font:600 12px var(--sans);flex:none}
+  .copy:hover{color:var(--stone)}
+  .cta{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;margin:20px 0 0;align-items:center}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 21px;border-radius:9px;
+       font-weight:650;font-size:15px;border:1px solid var(--edge)}
+  .btn.primary{background:var(--gold);color:#1a1409;border-color:var(--gold)}
+  .btn.ghost{color:var(--stone);padding:9px 14px}
+  .btn:hover{text-decoration:none;filter:brightness(1.08)}
+  .btn img{height:20px;display:block}
+
+  section{padding:88px 0 0}
+  h2{font-size:clamp(29px,4.6vw,41px);margin:0 0 10px;letter-spacing:-.025em;line-height:1.15;font-weight:750}
+  .lede{color:var(--dust);font-size:17.5px;margin:0 0 30px;max-width:60ch}
+  p{margin:0 0 15px}
+
+  .phones{display:grid;grid-template-columns:1fr 1fr;gap:26px;max-width:720px;margin:0 auto}
+  .phone{background:#0b0907;border:1px solid var(--edge);border-radius:26px;padding:12px 11px 16px;
+         box-shadow:0 18px 44px rgba(0,0,0,.45)}
+  .notch{width:52px;height:4px;border-radius:99px;background:#241c14;margin:3px auto 12px}
+  .plabel{font:700 10.5px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;
+          text-align:center;margin-bottom:12px}
+  .bad .plabel{color:#b4705f} .good .plabel{color:var(--gold)}
+  .srow{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:9px;
+        background:#141009;margin-bottom:7px}
+  .srow .ic{width:17px;height:17px;flex:none;opacity:.85}
+  .srow .t{font-family:var(--mono);font-size:10.6px;line-height:1.35;overflow:hidden;
+           text-overflow:ellipsis;white-space:nowrap}
+  .bad .srow .t{color:#6b5c4b}
+  .live{width:6px;height:6px;border-radius:50%;background:#6d8f6d;flex:none;margin-left:auto}
+
   .split{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-  .card{background:var(--panel);border:1px solid var(--edge);border-radius:13px;
-        padding:20px 22px}
-  .card h4{margin:0 0 14px;font-size:12.5px;letter-spacing:.13em;text-transform:uppercase;
-           color:var(--faint);font-weight:700}
-  .card.bad h4{color:#b4705f}
-  .card.good h4{color:var(--gold)}
-  .rows{font-family:var(--mono);font-size:13.5px;line-height:2.05}
-  .rows .muted{color:#6b5c4b}
-  .why{margin:26px 0 0;padding:0;list-style:none;display:grid;gap:9px;
-       grid-template-columns:1fr 1fr}
-  .why li{color:var(--dust);font-size:15px;padding-left:22px;position:relative}
+  .card{background:var(--panel);border:1px solid var(--edge);border-radius:13px;padding:19px 21px}
+  .card h4{margin:0 0 13px;font-size:12px;letter-spacing:.13em;text-transform:uppercase;font-weight:700}
+  .card.bad h4{color:#b4705f} .card.good h4{color:var(--gold)}
+  .rows{font-family:var(--mono);font-size:13px;line-height:2}
+  .rows.muted{color:#6b5c4b}
+  .why{margin:24px 0 0;padding:0;list-style:none;display:grid;gap:8px;grid-template-columns:1fr 1fr}
+  .why li{color:var(--dust);font-size:15px;padding-left:21px;position:relative}
   .why li::before{content:"→";position:absolute;left:0;color:var(--faint)}
 
-  /* ---------- terminal ---------- */
-  .term{background:#0d0a08;border:1px solid var(--edge);border-radius:12px;overflow:hidden}
-  .term .bar{display:flex;align-items:center;gap:7px;padding:11px 15px;
-             border-bottom:1px solid var(--edge);background:#151009}
+  .term{background:var(--deep);border:1px solid var(--edge);border-radius:12px;overflow:hidden}
+  .term .bar{display:flex;align-items:center;gap:7px;padding:10px 15px;border-bottom:1px solid var(--edge);background:#151009}
   .term .bar i{width:10px;height:10px;border-radius:50%;background:#3a2f24;display:block}
-  .term .bar b{margin-left:8px;font:600 12px/1 var(--mono);color:var(--faint);
-               letter-spacing:.04em}
-  .term pre{margin:0;padding:18px 20px;overflow-x:auto;font-family:var(--mono);
-            font-size:13.5px;line-height:1.85}
-  .p{color:var(--gold)}
-  .cmt{color:#635444}
-  .out{color:var(--stone)}
+  .term .bar b{margin-left:8px;font:600 11.5px/1 var(--mono);color:var(--faint);letter-spacing:.04em}
+  .term pre{margin:0;padding:17px 19px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.85}
+  .p{color:var(--gold)} .cmt{color:#635444} .out{color:var(--stone)}
 
-  /* ---------- agent grid ---------- */
-  .agents{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:13px}
-  .agent{background:var(--panel);border:1px solid var(--edge);border-radius:11px;padding:15px 17px}
-  .agent .n{font-weight:680;font-size:16px;display:flex;align-items:center;
-            justify-content:space-between;gap:8px}
-  .pill{font:600 10.5px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;
-        padding:4px 8px;border-radius:99px;border:1px solid var(--edge);color:var(--faint)}
-  .pill.real{background:rgba(196,163,90,.14);border-color:rgba(196,163,90,.4);color:var(--gold)}
-  .agent .f{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-top:9px;
+  .agents{display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:12px}
+  .agent{background:var(--panel);border:1px solid var(--edge);border-radius:11px;padding:15px 16px}
+  .agent .top{display:flex;align-items:center;gap:10px}
+  .agent .ic{width:22px;height:22px;flex:none;color:var(--stone)}
+  .agent .n{font-weight:670;font-size:15.5px;flex:1}
+  .pill{font:600 10px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;
+        padding:4px 8px;border-radius:99px;border:1px solid var(--edge);color:var(--faint);flex:none}
+  .pill.real{background:rgba(196,163,90,.14);border-color:rgba(196,163,90,.42);color:var(--gold)}
+  .agent .f{font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:10px;
             word-break:break-all;line-height:1.5}
 
-  /* ---------- fleet diagram ---------- */
-  .panes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px}
+  .panes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
   .pane{border:1px solid var(--edge);border-radius:9px;background:#100c09;overflow:hidden}
-  .pane .lab{font:600 10.5px/1.4 var(--mono);padding:7px 10px;background:#1a140e;
-             color:var(--dust);border-bottom:1px solid var(--edge);white-space:nowrap;
-             overflow:hidden;text-overflow:ellipsis}
-  .pane .body{height:74px;background:
-     repeating-linear-gradient(180deg,#141009 0 2px,transparent 2px 11px)}
+  .pane .lab{font:600 10px/1.4 var(--mono);padding:7px 9px;background:#1a140e;color:var(--dust);
+             border-bottom:1px solid var(--edge);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+             display:flex;align-items:center;gap:6px}
+  .pane .lab svg{width:12px;height:12px;flex:none}
+  .pane .body{height:66px;background:repeating-linear-gradient(180deg,#141009 0 2px,transparent 2px 11px)}
 
   table{border-collapse:collapse;width:100%;font-size:14.5px;display:block;overflow-x:auto}
-  th,td{text-align:left;padding:9px 16px 9px 0;border-bottom:1px solid var(--edge);
-        white-space:nowrap}
+  th,td{text-align:left;padding:9px 16px 9px 0;border-bottom:1px solid var(--edge);white-space:nowrap}
   th{color:var(--faint);font-size:12px;text-transform:uppercase;letter-spacing:.09em}
-  details{border-top:1px solid var(--edge);padding:18px 0 4px;margin-top:8px}
-  summary{cursor:pointer;font-weight:650;font-size:17px}
-  details p,details table,details ul{margin-top:14px}
-  ul.plain{padding-left:20px;color:var(--dust)}
-  ul.plain li{margin-bottom:8px}
-  footer{margin:96px 0 56px;padding-top:26px;border-top:1px solid var(--edge);
-         color:var(--faint);font-size:14px;display:flex;justify-content:space-between;
-         gap:14px;flex-wrap:wrap}
+  details{border-top:1px solid var(--edge);padding:17px 0 4px}
+  summary{cursor:pointer;font-weight:650;font-size:16.5px}
+  details p,details table,details ul{margin-top:13px}
+  ul.plain{padding-left:19px;color:var(--dust)} ul.plain li{margin-bottom:7px}
+  footer{margin:92px 0 54px;padding-top:25px;border-top:1px solid var(--edge);color:var(--faint);
+         font-size:14px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
   @media (max-width:720px){
-    .split,.why,.panes{grid-template-columns:1fr}
-    .hero{padding-top:54px}.hero img{width:126px;height:126px}
-    section{padding-top:62px}
+    .split,.why,.panes,.phones{grid-template-columns:1fr}
+    .hero{padding-top:50px}.hero img.mascot{width:120px;height:120px}
+    section{padding-top:64px}
+    .phones{max-width:340px}
   }
 </style>
 </head>
 <body>
+
+<!-- Stylised marks for recognition only; not official trademarks. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-claude" viewBox="0 0 24 24">
+    <g stroke="currentColor" stroke-width="1.9" stroke-linecap="round" fill="none">
+      <path d="M12 3v6M12 15v6M3 12h6M15 12h6M6.4 6.4l4.2 4.2M13.4 13.4l4.2 4.2M17.6 6.4l-4.2 4.2M10.6 13.4l-4.2 4.2"/>
+    </g>
+  </symbol>
+  <symbol id="i-codex" viewBox="0 0 24 24">
+    <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">
+      <path d="M12 2.6l8.1 4.7v9.4L12 21.4 3.9 16.7V7.3z"/>
+      <path d="M12 7.4l4 2.3v4.6l-4 2.3-4-2.3V9.7z"/>
+    </g>
+  </symbol>
+  <symbol id="i-gemini" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M12 1.6c.5 5.4 4.9 9.9 10.4 10.4-5.5.5-9.9 5-10.4 10.4C11.5 17 7.1 12.5 1.6 12 7.1 11.5 11.5 7 12 1.6z"/>
+  </symbol>
+  <symbol id="i-antigravity" viewBox="0 0 24 24">
+    <g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 20V5.6"/><path d="M6.6 11L12 5.2l5.4 5.8"/><path d="M4.5 20h15"/>
+    </g>
+  </symbol>
+  <symbol id="i-cursor" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M5 2.5l13.4 8.2-5.9 1.3 3.1 6.4-2.7 1.3-3.1-6.4-4.2 4.3z"/>
+  </symbol>
+  <symbol id="i-crush" viewBox="0 0 24 24">
+    <g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round">
+      <path d="M12 2.8l6.4 6.4L12 21.2 5.6 9.2z"/><path d="M5.6 9.2h12.8"/>
+    </g>
+  </symbol>
+  <symbol id="i-cortex" viewBox="0 0 24 24">
+    <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <circle cx="12" cy="12" r="3"/><circle cx="4.6" cy="7" r="2"/><circle cx="19.4" cy="7" r="2"/>
+      <circle cx="6.4" cy="19" r="2"/><circle cx="17.6" cy="19" r="2"/>
+      <path d="M9.4 10.6L6.4 8.4M14.6 10.6l3-2.2M10.2 14.6l-2.6 2.8M13.8 14.6l2.6 2.8"/>
+    </g>
+  </symbol>
+  <symbol id="i-code" viewBox="0 0 24 24">
+    <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8.4 7.4L3.6 12l4.8 4.6M15.6 7.4L20.4 12l-4.8 4.6"/>
+    </g>
+  </symbol>
+</defs></svg>
+
 <div class="wrap">
 
 <div class="hero">
-  <img src="glyph.svg" alt="A petroglyph figure with a raised marking hand beside a spiral">
+  <img class="mascot" src="glyph.svg" alt="A petroglyph figure with a raised marking hand beside a spiral">
   <h1>glyph</h1>
   <div class="sub">Every agent session, named before it starts.</div>
-  <div class="cta">
-    <a class="btn primary" href="#install">Install</a>
-    <a class="btn ghost" href="https://github.com/fru-dev3/glyph">GitHub</a>
-  </div>
-</div>
 
-<div class="anatomy">
   <div class="mark"><span class="s1">billing</span><span class="dot">·</span><wbr><span class="s2">Acme API</span><span class="dot">·</span><wbr><span class="s3">mbp</span><span class="dot">·</span><wbr><span class="s4">2026-09-12·0556</span></div>
   <div class="keys">
-    <span class="key"><i class="swatch" style="background:var(--c-label)"></i>your label</span>
-    <span class="key"><i class="swatch" style="background:var(--c-proj)"></i>project</span>
-    <span class="key"><i class="swatch" style="background:var(--c-mach)"></i>machine</span>
-    <span class="key"><i class="swatch" style="background:var(--c-when)"></i>when it started</span>
+    <span class="key"><i class="sw" style="background:var(--c-label)"></i>your label</span>
+    <span class="key"><i class="sw" style="background:var(--c-proj)"></i>project</span>
+    <span class="key"><i class="sw" style="background:var(--c-mach)"></i>machine</span>
+    <span class="key"><i class="sw" style="background:var(--c-when)"></i>when it started</span>
+  </div>
+
+  <div class="quick">
+    <code id="cmd">git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; ./install.sh</code>
+    <button class="copy" onclick="navigator.clipboard.writeText(document.getElementById('cmd').innerText);this.textContent='copied'">copy</button>
+  </div>
+
+  <div class="cta">
+    <a class="btn primary" href="https://github.com/fru-dev3/glyph">★ Star on GitHub</a>
+    <a class="btn ghost" href="https://github.com/fru-dev3/glyph/stargazers">
+      <img src="https://img.shields.io/github/stars/fru-dev3/glyph?style=flat&label=stars&color=C4A35A&labelColor=1c1712" alt="GitHub stars">
+    </a>
   </div>
 </div>
 
-<section id="why">
-  <h2>Five agents. Five machines.</h2>
-  <p class="lede">You step away for an hour. This is the list you come back to.</p>
+<section id="mobile">
+  <h2>Your agents come with you</h2>
+  <p class="lede">Remote Control puts running sessions on your phone. Without a
+  name, that list is hostnames and hashes.</p>
 
-  <div class="split">
-    <div class="card bad">
-      <h4>without glyph</h4>
-      <div class="rows muted">
-        tims-macbook-pro-4-local-transient<br>
-        fru-5e<br>
-        doc-9b<br>
-        zsh<br>
-        node
-      </div>
+  <div class="phones">
+    <div class="phone bad">
+      <div class="notch"></div>
+      <div class="plabel">without glyph</div>
+      <div class="srow"><svg class="ic"><use href="#i-claude"/></svg><span class="t">tims-macbook-pro-4-local…</span><i class="live"></i></div>
+      <div class="srow"><svg class="ic"><use href="#i-claude"/></svg><span class="t">fru-5e</span><i class="live"></i></div>
+      <div class="srow"><svg class="ic"><use href="#i-claude"/></svg><span class="t">doc-9b</span></div>
+      <div class="srow"><svg class="ic"><use href="#i-codex"/></svg><span class="t">zsh</span></div>
+      <div class="srow"><svg class="ic"><use href="#i-antigravity"/></svg><span class="t">node</span></div>
     </div>
-    <div class="card good">
-      <h4>with glyph</h4>
-      <div class="rows">
-        <span class="s1">billing</span><span class="dot">·</span><wbr><span class="s2">Acme API</span><span class="dot">·</span><wbr><span class="s3">mbp</span><span class="dot">·</span><wbr><span class="s4">0556</span><br>
-        <span class="s1">migration</span><span class="dot">·</span><wbr><span class="s2">Acme API</span><span class="dot">·</span><wbr><span class="s3">air</span><span class="dot">·</span><wbr><span class="s4">0602</span><br>
-        <span class="s1">docs</span><span class="dot">·</span><wbr><span class="s2">Website</span><span class="dot">·</span><wbr><span class="s3">mini</span><span class="dot">·</span><wbr><span class="s4">0611</span><br>
-        <span class="s1">audit</span><span class="dot">·</span><wbr><span class="s2">Payments</span><span class="dot">·</span><wbr><span class="s3">win</span><span class="dot">·</span><wbr><span class="s4">2247</span><br>
-        <span class="s1">scrape</span><span class="dot">·</span><wbr><span class="s2">Atlas</span><span class="dot">·</span><wbr><span class="s3">hetzner</span><span class="dot">·</span><wbr><span class="s4">0640</span>
-      </div>
+    <div class="phone good">
+      <div class="notch"></div>
+      <div class="plabel">with glyph</div>
+      <div class="srow"><svg class="ic"><use href="#i-claude"/></svg><span class="t"><span class="s1">billing</span>·<span class="s2">Acme API</span>·<span class="s3">mbp</span></span><i class="live"></i></div>
+      <div class="srow"><svg class="ic"><use href="#i-claude"/></svg><span class="t"><span class="s1">migration</span>·<span class="s2">Acme API</span>·<span class="s3">air</span></span><i class="live"></i></div>
+      <div class="srow"><svg class="ic"><use href="#i-claude"/></svg><span class="t"><span class="s1">docs</span>·<span class="s2">Website</span>·<span class="s3">mini</span></span></div>
+      <div class="srow"><svg class="ic"><use href="#i-codex"/></svg><span class="t"><span class="s1">audit</span>·<span class="s2">Payments</span>·<span class="s3">win</span></span></div>
+      <div class="srow"><svg class="ic"><use href="#i-antigravity"/></svg><span class="t"><span class="s1">scrape</span>·<span class="s2">Atlas</span>·<span class="s3">hetzner</span></span></div>
     </div>
   </div>
 
-  <ul class="why">
-    <li>Two are the same project. You cannot tell which.</li>
-    <li>One is on a machine you are not sitting at.</li>
-    <li>One has been idle since yesterday.</li>
-    <li>Two have no name at all — their agent has no such idea.</li>
+  <ul class="why" style="max-width:720px;margin-left:auto;margin-right:auto">
+    <li>Which project, from the lock screen.</li>
+    <li>Which machine is burning tokens.</li>
+    <li>Which one you started this morning.</li>
+    <li>Which two are the same repo.</li>
   </ul>
-</section>
-
-<section id="install">
-  <h2>Install</h2>
-  <p class="lede">One file into <code>~/.config/glyph/</code>, one line into <code>~/.zshrc</code>.
-  zsh, and at least one agent CLI.</p>
-  <div class="term">
-    <div class="bar"><i></i><i></i><i></i><b>~</b></div>
-<pre><span class="p">$</span> git clone https://github.com/fru-dev3/glyph.git
-<span class="p">$</span> cd glyph &amp;&amp; ./install.sh &amp;&amp; exec zsh</pre>
-  </div>
 </section>
 
 <section id="use">
   <h2>Keep typing what you already type</h2>
-  <p class="lede">One bare word is your label. Anything with a space is a prompt.
-  That rule is the same for every agent.</p>
+  <p class="lede">One bare word is your label. Anything with a space is a prompt.</p>
 
-  <h3>Claude Code</h3>
-  <p>The one agent that can name its own session, so the mark becomes the real
-  session name and rides Remote Control to your phone.</p>
   <div class="term">
-    <div class="bar"><i></i><i></i><i></i><b>claude</b></div>
+    <div class="bar"><i></i><i></i><i></i><b>zsh</b></div>
 <pre><span class="p">$</span> claude billing
 <span class="cmt">launches</span>  claude -n '<span class="s1">billing</span>·<span class="s2">Acme API</span>·<span class="s3">mbp</span>·<span class="s4">2026-09-12·0648</span>' --remote-control
 
-<span class="p">$</span> claude billing <span class="out">"fix the webhook retry"</span>
-<span class="cmt">launches</span>  claude -n '<span class="s1">billing</span>·…' --remote-control 'fix the webhook retry'</pre>
-  </div>
-
-  <h3 style="margin-top:30px">Antigravity and Codex</h3>
-  <p>Neither has a session-name flag, so the label never enters the command — it
-  lands on the terminal title, the tmux window and <code>glyph ls</code> instead.</p>
-  <div class="term">
-    <div class="bar"><i></i><i></i><i></i><b>agy · codex</b></div>
-<pre><span class="p">$</span> agy migration
-<span class="cmt">launches</span>  agy
+<span class="p">$</span> agy migration          <span class="cmt">← no name flag, so it marks the window</span>
 <span class="cmt">titles</span>    <span class="s1">migration</span>·<span class="s2">Acme API</span>·<span class="s3">mbp</span>·<span class="s4">2026-09-12·0648</span>
 
 <span class="p">$</span> codex audit
-<span class="cmt">launches</span>  codex
 <span class="cmt">titles</span>    <span class="s1">audit</span>·<span class="s2">Acme API</span>·<span class="s3">mbp</span>·<span class="s4">2026-09-12·0648</span>
 
-<span class="p">$</span> codex <span class="out">"refactor auth"</span>
-<span class="cmt">launches</span>  codex 'refactor auth'   <span class="cmt">← a phrase is a prompt</span></pre>
+<span class="p">$</span> codex <span class="out">"refactor auth"</span>   <span class="cmt">← a phrase is a prompt, not a label</span></pre>
   </div>
 </section>
 
 <section id="agents">
-  <h2>Six agents, five spellings of “don’t ask”</h2>
-  <p class="lede">Every agent has a flag meaning <em>stop asking me to approve each
-  tool call</em>, and they all spell it differently. <code>GLYPH_YOLO=1</code> sends
-  whichever one is right. It is off unless you ask.</p>
+  <h2>Works with what you already run</h2>
+  <p class="lede">Only Claude Code can name its own session. Everywhere else the
+  mark lands on the terminal title, the tmux window and <code>glyph ls</code>.
+  <code>GLYPH_YOLO=1</code> sends each agent's own auto-approve flag — off unless
+  you ask.</p>
 
   <div class="agents">
-    <div class="agent"><div class="n">Claude Code <span class="pill real">real name</span></div>
-      <div class="f">--dangerously-skip-permissions</div></div>
-    <div class="agent"><div class="n">Antigravity <span class="pill">title</span></div>
-      <div class="f">--dangerously-skip-permissions</div></div>
-    <div class="agent"><div class="n">Codex <span class="pill">title</span></div>
-      <div class="f">--dangerously-bypass-approvals-and-sandbox</div></div>
-    <div class="agent"><div class="n">Gemini CLI <span class="pill">title</span></div>
-      <div class="f">--yolo</div></div>
-    <div class="agent"><div class="n">Cursor <span class="pill">title</span></div>
-      <div class="f">--force</div></div>
-    <div class="agent"><div class="n">Crush <span class="pill">title</span></div>
-      <div class="f">--yolo</div></div>
-    <div class="agent"><div class="n">Cortex <span class="pill">title</span></div>
-      <div class="f">--dangerously-allow-all-tool-calls</div></div>
-    <div class="agent"><div class="n">OpenCode · pi <span class="pill">title</span></div>
-      <div class="f">—</div></div>
+    <div class="agent"><div class="top"><svg class="ic"><use href="#i-claude"/></svg><span class="n">Claude Code</span><span class="pill real">real name</span></div><div class="f">--dangerously-skip-permissions</div></div>
+    <div class="agent"><div class="top"><svg class="ic"><use href="#i-codex"/></svg><span class="n">Codex</span><span class="pill">title</span></div><div class="f">--dangerously-bypass-approvals-and-sandbox</div></div>
+    <div class="agent"><div class="top"><svg class="ic"><use href="#i-gemini"/></svg><span class="n">Gemini CLI</span><span class="pill">title</span></div><div class="f">--yolo</div></div>
+    <div class="agent"><div class="top"><svg class="ic"><use href="#i-antigravity"/></svg><span class="n">Antigravity</span><span class="pill">title</span></div><div class="f">--dangerously-skip-permissions</div></div>
+    <div class="agent"><div class="top"><svg class="ic"><use href="#i-cursor"/></svg><span class="n">Cursor</span><span class="pill">title</span></div><div class="f">--force</div></div>
+    <div class="agent"><div class="top"><svg class="ic"><use href="#i-crush"/></svg><span class="n">Crush</span><span class="pill">title</span></div><div class="f">--yolo</div></div>
+    <div class="agent"><div class="top"><svg class="ic"><use href="#i-cortex"/></svg><span class="n">Cortex</span><span class="pill">title</span></div><div class="f">--dangerously-allow-all-tool-calls</div></div>
+    <div class="agent"><div class="top"><svg class="ic"><use href="#i-code"/></svg><span class="n">OpenCode · pi</span><span class="pill">title</span></div><div class="f">—</div></div>
+  </div>
+</section>
+
+<section id="desktop">
+  <h2>Same on the desktop</h2>
+  <p class="lede">Five agents, five machines, one glance.</p>
+  <div class="split">
+    <div class="card bad"><h4>without glyph</h4>
+      <div class="rows muted">tims-macbook-pro-4-local-transient<br>fru-5e<br>doc-9b<br>zsh<br>node</div></div>
+    <div class="card good"><h4>with glyph</h4>
+      <div class="rows">
+        <span class="s1">billing</span><span class="dot">·</span><span class="s2">Acme API</span><span class="dot">·</span><span class="s3">mbp</span><span class="dot">·</span><span class="s4">0556</span><br>
+        <span class="s1">migration</span><span class="dot">·</span><span class="s2">Acme API</span><span class="dot">·</span><span class="s3">air</span><span class="dot">·</span><span class="s4">0602</span><br>
+        <span class="s1">docs</span><span class="dot">·</span><span class="s2">Website</span><span class="dot">·</span><span class="s3">mini</span><span class="dot">·</span><span class="s4">0611</span><br>
+        <span class="s1">audit</span><span class="dot">·</span><span class="s2">Payments</span><span class="dot">·</span><span class="s3">win</span><span class="dot">·</span><span class="s4">2247</span><br>
+        <span class="s1">scrape</span><span class="dot">·</span><span class="s2">Atlas</span><span class="dot">·</span><span class="s3">hetzner</span><span class="dot">·</span><span class="s4">0640</span>
+      </div></div>
   </div>
 </section>
 
 <section id="fleets">
   <h2>Or open the whole bench</h2>
-  <p class="lede">A preset launches several agents at once, local or over ssh, each
-  pane wearing the mark on its border.</p>
+  <p class="lede">One preset, several agents, local or over ssh — each pane wearing
+  the mark on its border.</p>
 
   <div class="panes">
-    <div class="pane"><div class="lab">Claude Code · <span class="s1">ci</span>·<span class="s2">Acme API</span>·<span class="s3">mbp</span></div><div class="body"></div></div>
-    <div class="pane"><div class="lab">Antigravity · <span class="s1">ci</span>·<span class="s2">Acme API</span>·<span class="s3">mbp</span></div><div class="body"></div></div>
-    <div class="pane"><div class="lab">Codex · <span class="s1">ci</span>·<span class="s2">Acme API</span>·<span class="s3">mbp</span></div><div class="body"></div></div>
+    <div class="pane"><div class="lab"><svg><use href="#i-claude"/></svg><span class="s1">ci</span>·<span class="s2">Acme API</span></div><div class="body"></div></div>
+    <div class="pane"><div class="lab"><svg><use href="#i-antigravity"/></svg><span class="s1">ci</span>·<span class="s2">Acme API</span></div><div class="body"></div></div>
+    <div class="pane"><div class="lab"><svg><use href="#i-codex"/></svg><span class="s1">ci</span>·<span class="s2">Acme API</span></div><div class="body"></div></div>
   </div>
 
-  <div class="term" style="margin-top:18px">
+  <div class="term" style="margin-top:16px">
     <div class="bar"><i></i><i></i><i></i><b>~/.config/glyph/fleet.conf</b></div>
-<pre>ci      = claude agy codex
-review  = claude claude:studio
-cloud   = claude:hetzner codex:hetzner
+<pre>ci     = claude agy codex
+cloud  = claude:hetzner codex:hetzner
 
 <span class="p">$</span> glyph fleet ci</pre>
   </div>
-  <ul class="plain" style="margin-top:18px">
-    <li>A slot is <code>&lt;agent&gt;</code> or <code>&lt;agent&gt;:&lt;ssh-host&gt;</code>.</li>
-    <li>The part after <code>:</code> is an <strong>ssh host</strong>, not the machine tag.</li>
-    <li>Remote panes <code>cd</code> to the same path, and fall back to a login shell.</li>
-  </ul>
 </section>
 
 <section id="more">
@@ -296,20 +321,17 @@ cloud   = claude:hetzner codex:hetzner
 
   <details open>
     <summary>Machine tags</summary>
-    <p>Taken from <code>hostname -s</code>. Macs are recognised by model; everything
-    else uses the first word of the hostname.</p>
+    <p>From <code>hostname -s</code>. Macs by model, everything else by the first
+    word of the hostname.</p>
     <table>
       <tr><th>Hostname</th><th>Tag</th></tr>
       <tr><td><code>laptop</code></td><td><code>mbp</code></td></tr>
       <tr><td><code>air</code></td><td><code>air</code></td></tr>
-      <tr><td><code>Mac-mini</code></td><td><code>mini</code></td></tr>
-      <tr><td><code>Mac-Studio</code></td><td><code>studio</code></td></tr>
+      <tr><td><code>Mac-mini</code> · <code>Mac-Studio</code></td><td><code>mini</code> · <code>studio</code></td></tr>
       <tr><td><code>DESKTOP-8KQ2LM1</code> · Windows/WSL</td><td><code>desktop</code></td></tr>
-      <tr><td><code>ubuntu-prod-01</code> · cloud</td><td><code>ubuntu</code></td></tr>
-      <tr><td><code>hetzner-cx41</code></td><td><code>hetzner</code></td></tr>
+      <tr><td><code>ubuntu-prod-01</code> · <code>hetzner-cx41</code></td><td><code>ubuntu</code> · <code>hetzner</code></td></tr>
     </table>
-    <p>When that is unhelpful, name it yourself:
-    <code>export GLYPH_MACHINE=win</code></p>
+    <p>Override any of it: <code>export GLYPH_MACHINE=win</code></p>
   </details>
 
   <details>
@@ -318,38 +340,35 @@ cloud   = claude:hetzner codex:hetzner
       <tr><th>Variable</th><th>Effect</th></tr>
       <tr><td><code>GLYPH_YOLO=1</code></td><td>Auto-approve tool calls, per-agent flag</td></tr>
       <tr><td><code>GLYPH_OFF=1</code></td><td>Keep the label, drop the machine and time</td></tr>
-      <tr><td><code>GLYPH_FMT</code></td><td><code>date(1)</code> format for the stamp</td></tr>
-      <tr><td><code>GLYPH_SEP</code></td><td>Separator (default <code>·</code>)</td></tr>
+      <tr><td><code>GLYPH_FMT</code> · <code>GLYPH_SEP</code></td><td>Stamp format and separator</td></tr>
       <tr><td><code>GLYPH_MACHINE</code></td><td>Machine tag override</td></tr>
       <tr><td><code>GLYPH_RC=0</code></td><td>Skip Claude's <code>--remote-control</code></td></tr>
-      <tr><td><code>GLYPH_TITLE=0</code></td><td>Do not retitle the terminal or tmux window</td></tr>
-      <tr><td><code>GLYPH_LOG=0</code></td><td>Do not record sessions locally</td></tr>
+      <tr><td><code>GLYPH_TITLE=0</code> · <code>GLYPH_LOG=0</code></td><td>No retitling · no local registry</td></tr>
       <tr><td><code>GLYPH_DRYRUN=1</code></td><td>Print the argv instead of launching</td></tr>
     </table>
-    <p>Projects are the git repo's directory, title-cased (<code>acme-api</code> →
-    <code>Acme API</code>); override in <code>~/.config/glyph/names.tsv</code>.
-    <code>-p</code>/<code>--print</code> and subcommands like <code>codex resume</code>
-    pass through untouched.</p>
+    <p>Projects are the git repo's directory, title-cased; override in
+    <code>~/.config/glyph/names.tsv</code>. <code>-p</code>/<code>--print</code> and
+    subcommands like <code>codex resume</code> pass through untouched.</p>
   </details>
 
   <details>
     <summary>Why a shell wrapper and not a plugin</summary>
-    <p>A session name must exist before the process starts, so it can only come from
-    argv. Plugins and <code>SessionStart</code> hooks run after that.</p>
+    <p>A session name must exist before the process starts, so it can only come
+    from argv. Plugins and <code>SessionStart</code> hooks run after that.</p>
     <ul class="plain">
       <li>Claude Code's <code>--remote-control &lt;name&gt;</code> opens the bridge but does
           <strong>not</strong> name the session — only <code>-n</code> does. glyph passes both.</li>
       <li>In zsh, <code>argv</code> <strong>is</strong> <code>$@</code>. Declaring
           <code>local -a argv</code> silently empties the positional parameters.</li>
     </ul>
-    <p>glyph is an identity layer, not a multiplexer. Pair it with
+    <p>An identity layer, not a multiplexer. Pair it with
     <a href="https://github.com/raine/workmux">workmux</a>, herdr or plain tmux.</p>
   </details>
 </section>
 
 <footer>
   <span><a href="https://github.com/fru-dev3/glyph">github.com/fru-dev3/glyph</a> · MIT</span>
-  <span>built by <a href="https://fru.dev">fru.dev</a></span>
+  <span>built by <a href="https://fru.dev">fru.dev</a> · agent marks are stylised, not official logos</span>
 </footer>
 
 </div>
