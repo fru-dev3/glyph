@@ -131,7 +131,7 @@ h1 .g{color:var(--gold)}
   padding:0 20px;color:var(--dim);font:11px var(--mono);letter-spacing:.19em;text-transform:uppercase;
   transition:.18s}
 .bar button:hover{color:var(--ink);background:color-mix(in srgb,var(--gold) 10%,transparent)}
-.out{margin:14px 0 0;display:flex;gap:11px;align-items:baseline;color:var(--dim);
+.out{margin:14px 0 0;min-height:1.5em;display:flex;gap:11px;align-items:baseline;color:var(--dim);
   font:13px/1.5 var(--mono);overflow-wrap:anywhere;min-width:0}
 .out i{font-style:normal;color:var(--faint);flex:none}
 .out b{color:var(--gold);font-weight:600}
@@ -332,7 +332,7 @@ footer .sp{margin-left:auto}
       <code id="cmd">git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; ./install.sh</code>
       <button id="copy" type="button">Copy</button>
     </div>
-    <p class="out" id="out"><i>&rarr;</i><span class="t">one file into ~/.config/glyph, one line into ~/.zshrc</span></p>
+    <p class="out" id="out"></p>
 
     <div class="works">
       <p class="mi">Works with</p>
@@ -457,8 +457,7 @@ addEventListener('scroll',function(){nav.classList.toggle('stuck',scrollY>10)},{
 
 /* ---- tabs ---- */
 var TAB={
-  install:['git clone https://github.com/fru-dev3/glyph.git && cd glyph && ./install.sh',
-           null,'one file into ~/.config/glyph, one line into ~/.zshrc'],
+  install:['git clone https://github.com/fru-dev3/glyph.git && cd glyph && ./install.sh',null,''],
   claude :['claude billing','billing','·acme-api·claude-code·mbp·2026-09-12·0556'],
   codex  :['codex audit','audit','·acme-api·codex·mbp·2026-09-12·0602'],
   agy    :['agy migration','migration','·acme-api·agy·mbp·2026-09-12·0611'],
@@ -471,7 +470,7 @@ document.querySelectorAll('.tabs button').forEach(function(b){
     b.setAttribute('aria-selected','true');
     var t=TAB[b.dataset.k];
     cmdEl.textContent=t[0];fits();
-    outEl.innerHTML='<i>&rarr;</i>'+(t[1]
+    outEl.innerHTML=!t[2] ? '' : '<i>&rarr;</i>'+(t[1]
       ? '<span class="t"><b>'+t[1]+'</b>'+t[2]+'</span>'
       : '<span class="t">'+t[2]+'</span>');
   })});
