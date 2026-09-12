@@ -118,6 +118,19 @@ GLYPH_YOLO=1 agy migration
 # titles:    migration·Acme API·mbp·2026-09-12·0648
 ```
 
+AGY requires an explicit flag for interactive prompts. Glyph supplies it:
+
+```sh
+agy billing "fix the retry"
+# launches: agy --prompt-interactive 'fix the retry'
+```
+
+If `agy billing` reports an unexpected argument, the terminal may still have
+an older wrapper loaded. Run `exec zsh` to reload the installed Glyph wrapper.
+The mark appears in the terminal/tmux title and `glyph ls`, not AGY's app banner
+or conversation name. Agents may overwrite terminal titles after launch; Fleet
+keeps its own pane-border labels.
+
 ### Codex
 
 Same shape, different spelling of the same flag:
@@ -178,8 +191,9 @@ glyph fleet review
 - A slot is `<agent>` or `<agent>:<ssh-host>`.
 - The part after `:` is an **ssh host**, not the machine tag — the tag is
   whatever that machine reports for itself.
-- Remote panes `cd` to the same path, and fall back to a login shell if the
-  agent is not installed there.
+- Remote panes require Glyph and the agent installed on the SSH host, with
+  Glyph sourced in its zsh config. They `cd` to the same project path and stop
+  if that path is missing.
 
 <details>
 <summary><b>Configuration</b></summary>

@@ -4,16 +4,40 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>glyph — every agent session, named before it starts</title>
-<meta name="description" content="Shell wrapper that names every Claude Code, Codex, Gemini and Antigravity session with your label, the project, the machine and the time — before the process starts.">
+<meta name="description" content="Shell wrapper that names every Claude, Codex and AGI session with your label, the project, the machine and the time — before the process starts.">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" href="glyph.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:title" content="glyph — every agent session, named before it starts">
-<meta property="og:description" content="Names every Claude Code, Codex, Gemini and Antigravity session before the process starts.">
+<meta property="og:description" content="Names every Claude, Codex and AGI session before the process starts.">
 <meta property="og:image" content="https://glyph.fru.dev/og.png">
 <meta property="og:url" content="https://glyph.fru.dev/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://glyph.fru.dev/og.png">
+<link rel="canonical" href="https://glyph.fru.dev/">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="author" content="fru.dev">
+<meta name="theme-color" content="#0d0d0e">
+<meta property="og:site_name" content="glyph">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="glyph — every agent session, named before it starts">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication",
+ "name":"glyph","applicationCategory":"DeveloperApplication",
+ "operatingSystem":"macOS, Linux, Windows (WSL)",
+ "url":"https://glyph.fru.dev/",
+ "downloadUrl":"https://github.com/fru-dev3/glyph",
+ "codeRepository":"https://github.com/fru-dev3/glyph",
+ "programmingLanguage":"Shell",
+ "description":"A zsh wrapper that names every AI coding agent session - Claude, Codex and AGI - with your label, the project, the machine and the time, before the process starts.",
+ "license":"https://opensource.org/licenses/MIT",
+ "isAccessibleForFree":true,
+ "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
+ "author":{"@type":"Organization","name":"fru.dev","url":"https://fru.dev"},
+ "keywords":"Claude, Codex, AGI, tmux, session naming, remote control, AI coding agents, zsh"}
+</script>
 <style>
   :root{
     --bg:#0d0d0e; --panel:#141416; --edge:#232326; --edge2:#2e2e33;
@@ -35,15 +59,24 @@
 
   header{display:flex;align-items:center;gap:9px;padding:16px 34px;
          border-bottom:1px solid var(--edge)}
-  header img{width:20px;height:20px}
-  header .nm{font-weight:700;font-size:14.5px;letter-spacing:-.01em}
+  .hbrand{display:flex;align-items:center;gap:9px;text-decoration:none}
+  header img{width:30px;height:30px;display:block}
+  header .nm{font-weight:700;font-size:16px;letter-spacing:-.015em}
   header .by{color:var(--faint);font-size:13px}
   header .sp{flex:1}
   header a.l{color:var(--dim);font-size:13px;text-decoration:none}
   header a.l:hover{color:var(--fg)}
-  header .st{color:var(--dim);font-size:13px;text-decoration:none;
-             font-variant-numeric:tabular-nums}
+  .star{display:inline-flex;align-items:center;gap:7px;text-decoration:none;
+        border:1px solid var(--ochre);border-radius:8px;padding:6px 9px 6px 10px;
+        font-size:13px;font-weight:650;color:var(--fg);background:rgba(194,86,47,.10);
+        transition:background .15s}
+  .star:hover{background:rgba(194,86,47,.22);color:var(--fg)}
+  .star svg{width:14px;height:14px;color:var(--ochre);flex:none}
+  .star b{font-variant-numeric:tabular-nums;background:#000;color:var(--fg);
+          border-radius:5px;padding:2px 8px;font-size:12.5px;min-width:30px;
+          text-align:center}
 
+  .heromark{width:72px;height:72px;display:block;margin:0 0 18px}
   h1{font-size:clamp(30px,5vw,40px);line-height:1.12;letter-spacing:-.028em;
      margin:0 0 18px;font-weight:700}
   h1 .o{color:var(--ochre)}
@@ -57,21 +90,35 @@
   .chip b{padding:4px 8px;font-family:var(--mono);font-weight:500;color:var(--fg)}
 
   .demo{border:1px solid var(--edge2);border-radius:10px;background:var(--panel);padding:20px}
-  .demo .lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);
+  .demo .lbl{font-size:17px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);
              margin-bottom:9px}
   .fields{display:flex;gap:10px;flex-wrap:wrap}
   .fld{flex:1;min-width:132px;display:flex;flex-direction:column;gap:5px}
-  .fld.sel{flex:0 0 116px}
-  .fld>span{font-size:11px;letter-spacing:.06em;color:var(--faint);text-transform:uppercase}
-  .fld input,.fld select{background:#0f0f11;border:1px solid var(--edge2);color:var(--fg);
+  .fld>span{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--dim);text-transform:uppercase}
+  .fld input{background:#0f0f11;border:1px solid var(--edge2);color:var(--fg);
         border-radius:7px;padding:8px 11px;font:13.5px var(--mono);outline:none;
         min-width:0;width:100%}
-  .fld input:focus,.fld select:focus{border-color:var(--ochre)}
+  .fld input:focus{border-color:var(--ochre)}
+  .agent-picker{border:0;padding:0;margin:15px 0 0;min-width:0}
+  .agent-picker legend{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--faint);
+    text-transform:uppercase;margin-bottom:7px;padding:0}
+  .agent-options{display:flex;gap:8px}
+  .agent-option{position:relative;flex:1;min-width:0;cursor:pointer}
+  .agent-option input{position:absolute;opacity:0;width:1px;height:1px}
+  .agent-option span{display:flex;align-items:center;justify-content:center;gap:8px;
+    border:1px solid var(--edge2);border-radius:7px;padding:9px 10px;
+    background:#0f0f11;font-size:13.5px;font-weight:600}
+  .agent-option img{width:28px;height:28px;object-fit:contain}
+  .agent-option input:checked + span{border-color:var(--ochre);background:#201914}
+  .agent-option input:focus-visible + span{outline:2px solid var(--fg);outline-offset:3px}
+  .agent-option:hover span{border-color:var(--dim)}
+  .generated{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;min-width:0}
+  .generated .ov{flex:1}
   .out{margin-top:18px;border-top:1px solid var(--edge)}
   .orow{display:grid;grid-template-columns:96px 1fr;gap:0 16px;padding:10px 0;
         border-bottom:1px solid var(--edge)}
   .orow:last-child{border-bottom:0;padding-bottom:0}
-  .ok{color:var(--faint);font-size:12px;padding-top:2px}
+  .ok{color:var(--fg);font-size:12px;font-weight:700;padding-top:2px}
   .ov{min-width:0;overflow-wrap:anywhere}
   .ov.mono{font-family:var(--mono);font-size:12.6px;color:var(--dim)}
   .leg{display:block;margin-top:7px;font-size:11px;color:var(--faint)}
@@ -107,11 +154,79 @@
   td{padding:9px 12px 9px 0;border-top:1px solid var(--edge);vertical-align:top}
   tr:first-child td{border-top:0;padding-top:0}
   td.a{white-space:nowrap;width:130px}
-  td.a svg{width:14px;height:14px;vertical-align:-2px;margin-right:7px;color:var(--dim)}
+  td.a img{width:24px;height:24px;vertical-align:middle;margin-right:7px;object-fit:contain}
   td.b{color:var(--faint);white-space:nowrap;width:56px;font-size:11.5px}
   td.c{font-family:var(--mono);color:var(--dim);font-size:11.8px;word-break:break-all}
   .real{color:var(--ochre)}
 
+  .why-intro{color:var(--dim);margin:-7px 0 20px;max-width:52ch}
+  .comparison{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .comparison article{min-width:0;border:1px solid var(--edge2);border-radius:9px;padding:18px;background:var(--panel)}
+  .comparison h3{font-size:14px;margin:0 0 14px}
+  .comparison ul{list-style:none;padding:0;margin:0;font:11.5px/1.7 var(--mono)}
+  .comparison li{padding:9px 0;overflow-wrap:anywhere;border-top:1px solid var(--edge)}
+  .comparison li:first-child{border:0;padding-top:0}
+  .comparison .before{color:var(--dim)}
+  .comparison .after{border-color:var(--ochre)}
+  .comparison .after strong{color:var(--ochre);font-weight:500}
+  .comparison p{font-size:12px;color:var(--dim);margin:12px 0 0}
+  .why-takeaway{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin:18px 0 0}
+  .why-takeaway span{color:var(--dim);font-size:13px}
+  .section-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+  .section-heading h2{margin:0}
+  .copy{border:1px solid var(--edge2);border-radius:6px;background:var(--panel);
+    color:var(--fg);padding:6px 10px;font:12px var(--sans);cursor:pointer;white-space:nowrap}
+  .copy:hover{border-color:var(--ochre)}
+  .copy:focus-visible{outline:2px solid var(--fg);outline-offset:3px}
+  .install-steps{list-style:none;padding:0;margin:0;border:1px solid var(--edge2);border-radius:9px;overflow:hidden}
+  .install-steps li{display:grid;grid-template-columns:1fr auto;gap:5px 12px;padding:14px 16px;background:var(--panel);border-top:1px solid var(--edge)}
+  .install-steps li:first-child{border-top:0}
+  .step-label{color:var(--dim);font-size:12px}
+  .install-steps code{grid-column:1;grid-row:2;font-size:12px;overflow-wrap:anywhere;min-width:0}
+  .install-steps .copy{grid-column:2;grid-row:1 / 3;align-self:center}
+  .copy-status{min-height:1.5em;color:var(--dim);font-size:12px;margin:8px 0 0}
+  @media (max-width:540px){
+    .comparison{grid-template-columns:1fr}
+    .agent-option span{gap:4px;padding:9px 5px;font-size:12px}
+    .agent-option img{width:24px;height:24px}
+    .orow{grid-template-columns:1fr;gap:4px}
+  }
+  .fleet-steps{display:grid;gap:18px}
+  .fleet-step{min-width:0}
+  .fleet-step h3{font-size:14px;margin:0 0 7px}
+  .fleet-step p{color:var(--dim);font-size:13px;margin:0 0 10px}
+  .code-block{border:1px solid var(--edge2);border-radius:8px;overflow:hidden;background:var(--panel);margin-top:8px}
+  .code-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 12px;border-bottom:1px solid var(--edge);color:var(--dim);font-size:12px}
+  .code-heading span{overflow-wrap:anywhere;min-width:0}
+  .code-block pre{padding:13px;margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.8 var(--mono)}
+  .fleet-preview{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0 22px}
+  .fleet-pane{border:1px solid var(--edge2);border-radius:7px;padding:12px;min-width:0;background:var(--panel)}
+  .fleet-pane img{width:24px;height:24px;vertical-align:middle;margin-right:5px}
+  .fleet-pane b{font-size:12px}
+  .fleet-pane code{display:block;font-size:11px;color:var(--dim);margin-top:8px;overflow-wrap:anywhere}
+  .settings{display:grid;gap:10px}
+  .settings details{border:1px solid var(--edge2);border-radius:8px;padding:14px 16px;min-width:0}
+  .settings summary{cursor:pointer;font-size:14px;font-weight:600}
+  .settings p{color:var(--dim);font-size:13px;margin:12px 0 0}
+  .settings code{font-size:12px;overflow-wrap:anywhere}
+  .settings dl{display:grid;grid-template-columns:minmax(110px,auto) 1fr;gap:9px 16px;font-size:12px}
+  .settings dt{color:var(--fg);overflow-wrap:anywhere}
+  .settings dd{margin:0;color:var(--dim)}
+  @media(max-width:540px){
+    .fleet-preview{grid-template-columns:1fr}
+    .settings dl{grid-template-columns:1fr;gap:5px}
+    .settings dd{margin-bottom:8px}
+  }
+  .agent-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .agent-card{min-width:0;padding:14px;border:1px solid var(--edge2);border-radius:8px;background:var(--panel)}
+  .agent-card h3{display:flex;align-items:center;gap:8px;font-size:14px;margin:0 0 9px}
+  .agent-card img{object-fit:contain}
+  img.monochrome{filter:invert(1)}
+  .agent-kind{display:block;font-size:11px;color:var(--dim);margin-bottom:8px}
+  .agent-card code{font-size:11px;overflow-wrap:anywhere}
+  .agent-card details{font-size:11px;color:var(--dim);margin-top:12px}
+  .agent-card summary{cursor:pointer;margin-bottom:5px}
+  @media(max-width:540px){.agent-cards{grid-template-columns:repeat(2,1fr)}}
   footer{color:var(--faint);font-size:12.5px;display:flex;justify-content:space-between;
          gap:14px;flex-wrap:wrap}
   footer a{color:var(--dim)}
@@ -128,49 +243,38 @@
 </head>
 <body>
 
-<!-- Stylised marks for recognition only; not official trademarks. -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-  <symbol id="i-claude" viewBox="0 0 24 24"><g stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none">
-    <path d="M12 3v6M12 15v6M3 12h6M15 12h6M6.4 6.4l4.2 4.2M13.4 13.4l4.2 4.2M17.6 6.4l-4.2 4.2M10.6 13.4l-4.2 4.2"/></g></symbol>
-  <symbol id="i-codex" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round">
-    <path d="M12 2.6l8.1 4.7v9.4L12 21.4 3.9 16.7V7.3z"/><path d="M12 7.4l4 2.3v4.6l-4 2.3-4-2.3V9.7z"/></g></symbol>
-  <symbol id="i-gemini" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.6c.5 5.4 4.9 9.9 10.4 10.4-5.5.5-9.9 5-10.4 10.4C11.5 17 7.1 12.5 1.6 12 7.1 11.5 11.5 7 12 1.6z"/></symbol>
-  <symbol id="i-antigravity" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 20V5.6"/><path d="M6.6 11L12 5.2l5.4 5.8"/><path d="M4.5 20h15"/></g></symbol>
-  <symbol id="i-cursor" viewBox="0 0 24 24"><path fill="currentColor" d="M5 2.5l13.4 8.2-5.9 1.3 3.1 6.4-2.7 1.3-3.1-6.4-4.2 4.3z"/></symbol>
-  <symbol id="i-crush" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
-    <path d="M12 2.8l6.4 6.4L12 21.2 5.6 9.2z"/><path d="M5.6 9.2h12.8"/></g></symbol>
-  <symbol id="i-cortex" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
-    <circle cx="12" cy="12" r="3"/><circle cx="4.6" cy="7" r="2"/><circle cx="19.4" cy="7" r="2"/>
-    <circle cx="6.4" cy="19" r="2"/><circle cx="17.6" cy="19" r="2"/>
-    <path d="M9.4 10.6L6.4 8.4M14.6 10.6l3-2.2M10.2 14.6l-2.6 2.8M13.8 14.6l2.6 2.8"/></g></symbol>
-  <symbol id="i-code" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M8.4 7.4L3.6 12l4.8 4.6M15.6 7.4L20.4 12l-4.8 4.6"/></g></symbol>
-</defs></svg>
-
 <div class="col">
 
   <header>
-    <img src="glyph.svg" alt="">
-    <span class="nm">glyph</span>
+    <a class="hbrand" href="/" aria-label="glyph home">
+      <img src="glyph.svg" width="30" height="30"
+           alt="glyph logo: a petroglyph figure with a raised marking hand beside a spiral">
+      <span class="nm">glyph</span>
+    </a>
     <span class="by">by fru.dev</span>
     <span class="sp"></span>
     <a class="l" href="#install">Install</a>
+    <a class="l" href="#fleet">Fleet</a>
     <a class="l" href="#agents">Agents</a>
-    <a class="st" href="https://github.com/fru-dev3/glyph">GitHub ★&nbsp;<span id="stars">—</span></a>
+    <a class="star" href="https://github.com/fru-dev3/glyph"
+       aria-label="Star glyph on GitHub">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg>
+      <span class="sw">Star</span><b id="stars">—</b>
+    </a>
   </header>
 
   <div class="pad">
+    <img class="heromark" src="glyph.svg" width="72" height="72"
+         alt="glyph: a pecked petroglyph figure beside a spiral">
     <h1>Agents in.<br><span class="o">Named sessions out.</span></h1>
-    <p class="intro">A zsh wrapper for Claude Code, Codex, Gemini, Antigravity and
-    five more. It stamps your label, the project, the machine and the time onto
+    <p class="intro">A zsh wrapper for Claude, Codex and AGI. It stamps your label, the project, the machine and the time onto
     every session <b>before the process starts</b>, so tmux windows, the web app
     and your phone all read at a glance. No daemon, no plugin, one file.</p>
 
     <div class="chips">
       <span class="chip"><i>install</i><b>./install.sh</b></span>
       <span class="chip"><i>shell</i><b>zsh</b></span>
-      <span class="chip"><i>agents</i><b>9</b></span>
+      <span class="chip"><i>adapters</i><b>9</b></span>
       <span class="chip"><i>license</i><b>MIT</b></span>
     </div>
   </div>
@@ -184,21 +288,25 @@
           <input id="lab" value="billing" spellcheck="false"></label>
         <label class="fld"><span>Project folder</span>
           <input id="prj" value="acme-api" spellcheck="false"></label>
-        <label class="fld sel"><span>Agent</span>
-          <select id="agt">
-            <option value="claude">claude</option>
-            <option value="codex">codex</option>
-            <option value="gemini">gemini</option>
-            <option value="agy">agy</option>
-          </select></label>
       </div>
+      <fieldset class="agent-picker">
+        <legend>Agent</legend>
+        <div class="agent-options">
+          <label class="agent-option"><input type="radio" name="agent" value="codex">
+            <span><img src="agents/codex.png" alt="" width="28" height="28">Codex</span></label>
+          <label class="agent-option"><input type="radio" name="agent" value="agy">
+            <span><img src="agents/agi.png" alt="" width="28" height="28">AGI</span></label>
+          <label class="agent-option"><input type="radio" name="agent" value="claude" checked>
+            <span><img src="agents/claude.png" alt="" width="28" height="28">Claude</span></label>
+        </div>
+      </fieldset>
 
       <div class="out">
         <div class="orow"><span class="ok">You type</span>
-          <span class="ov mono" id="typed"></span></div>
+          <div class="generated"><span class="ov mono" id="typed"></span><button type="button" class="copy" data-copy="generated-typed" aria-label="Copy the command you type">Copy</button></div></div>
         <div class="orow"><span class="ok">glyph runs</span>
-          <span class="ov mono" id="cm"></span></div>
-        <div class="orow"><span class="ok">Session name</span>
+          <div class="generated"><span class="ov mono" id="cm"></span><button type="button" class="copy" data-copy="generated-run" aria-label="Copy generated launch command">Copy</button></div></div>
+        <div class="orow"><span class="ok" id="mark-label">Session name</span>
           <span class="ov"><span class="outmark" id="mk"></span>
             <span class="leg">
               <b class="m1">■</b> label
@@ -214,36 +322,50 @@
 
   <div class="rule"></div>
   <div class="pad">
-    <h2>Why</h2>
-    <dl class="dl">
-      <dt>The change</dt>
-      <dd>One assistant in one terminal needed no name. Now agents run in parallel,
-          on machines you are not sitting at, and ask permission on your phone.</dd>
-      <dt>Without it</dt>
-      <dd><code>rivers-macbook-pro-4-local-transient</code>, <code>agent-5e</code>,
-          <code>doc-9b</code>, <code>zsh</code>, <code>node</code>. Two of those are
-          the same repo and you cannot tell which.</dd>
-      <dt>With it</dt>
-      <dd><b>billing·Acme API·laptop·0556</b>. Label, project, machine, time —
-          on every agent, on every machine.</dd>
-      <dt>By hand</dt>
-      <dd>You can rename a Claude session with <code>/rename</code> or long-press it
-          in the app. glyph's only claim is that it happens at launch, every time,
-          with nothing to remember.</dd>
-    </dl>
+    <h2>Know which session is which.</h2>
+    <p class="why-intro">Several agents. Different machines. One glance to find the right session.</p>
+    <div class="comparison">
+      <article class="before">
+        <h3>Without glyph</h3>
+        <ul>
+          <li>agent-5e</li>
+          <li>zsh</li>
+          <li>node</li>
+        </ul>
+        <p>Which project? Which machine? What task?</p>
+      </article>
+      <article class="after">
+        <h3>With glyph</h3>
+        <ul>
+          <li><strong>billing</strong>·Acme API·mbp·2026-09-12·0556</li>
+          <li><strong>review</strong>·Acme API·mini·2026-09-12·0602</li>
+          <li><strong>docs</strong>·Website·studio·2026-09-12·0611</li>
+        </ul>
+        <p>Task · project · machine · date · time</p>
+      </article>
+    </div>
+    <p class="why-takeaway"><b>Named at launch. Every time.</b>
+      <span>No manual renaming to remember.</span></p>
   </div>
 
   <div class="rule"></div>
   <div class="pad" id="install">
-    <h2>Install</h2>
-    <div class="cmds">
-      <div class="k">Clone</div>
-      <div class="v"><span class="p">$</span> git clone https://github.com/fru-dev3/glyph.git</div>
-      <div class="k">Install</div>
-      <div class="v"><span class="p">$</span> cd glyph &amp;&amp; ./install.sh &amp;&amp; exec zsh</div>
-      <div class="k">Verify</div>
-      <div class="v"><span class="p">$</span> GLYPH_DRYRUN=1 claude billing</div>
+    <div class="section-heading">
+      <h2>Install</h2>
+      <button class="copy" type="button" data-copy="all">Copy all</button>
     </div>
+    <ol class="install-steps">
+      <li><span class="step-label">1. Clone</span>
+        <code id="cmd-clone">git clone https://github.com/fru-dev3/glyph.git</code>
+        <button class="copy" type="button" data-copy="cmd-clone" aria-label="Copy clone command">Copy</button></li>
+      <li><span class="step-label">2. Install</span>
+        <code id="cmd-install">cd glyph &amp;&amp; ./install.sh &amp;&amp; exec zsh</code>
+        <button class="copy" type="button" data-copy="cmd-install" aria-label="Copy install command">Copy</button></li>
+      <li><span class="step-label">3. Verify</span>
+        <code id="cmd-verify">GLYPH_DRYRUN=1 claude billing</code>
+        <button class="copy" type="button" data-copy="cmd-verify" aria-label="Copy verify command">Copy</button></li>
+    </ol>
+    <p class="copy-status" role="status" aria-live="polite" id="copy-status"></p>
     <p class="note">Copies one file to <code>~/.config/glyph/</code> and adds one
     line to <code>~/.zshrc</code>.</p>
   </div>
@@ -271,60 +393,118 @@
 
   <div class="rule"></div>
   <div class="pad" id="agents">
-    <h2>Agents</h2>
-    <table>
-      <tr><td class="a"><svg><use href="#i-claude"/></svg>Claude Code</td><td class="b real">name</td><td class="c">--dangerously-skip-permissions</td></tr>
-      <tr><td class="a"><svg><use href="#i-codex"/></svg>Codex</td><td class="b">title</td><td class="c">--dangerously-bypass-approvals-and-sandbox</td></tr>
-      <tr><td class="a"><svg><use href="#i-gemini"/></svg>Gemini CLI</td><td class="b">title</td><td class="c">--yolo</td></tr>
-      <tr><td class="a"><svg><use href="#i-antigravity"/></svg>Antigravity</td><td class="b">title</td><td class="c">--dangerously-skip-permissions</td></tr>
-      <tr><td class="a"><svg><use href="#i-cursor"/></svg>Cursor</td><td class="b">title</td><td class="c">--force</td></tr>
-      <tr><td class="a"><svg><use href="#i-crush"/></svg>Crush</td><td class="b">title</td><td class="c">--yolo</td></tr>
-      <tr><td class="a"><svg><use href="#i-cortex"/></svg>Cortex</td><td class="b">title</td><td class="c">--dangerously-allow-all-tool-calls</td></tr>
-      <tr><td class="a"><svg><use href="#i-code"/></svg>OpenCode · pi</td><td class="b">title</td><td class="c">—</td></tr>
-    </table>
-    <p class="note"><span class="real">name</span> means the mark becomes the real
-    session name and reaches the phone. <b>title</b> means the agent has no such
-    flag, so it lands on the terminal title, the tmux window and
-    <code>glyph ls</code>. The third column is what <code>GLYPH_YOLO=1</code>
-    sends — off unless you ask.</p>
+    <h2>Agent adapters</h2>
+    <p class="why-intro">The demo features three agents. Glyph also wraps these CLIs when they are installed.</p>
+    <div class="agent-cards">
+      <article class="agent-card"><h3><img class="" src="agents/codex.png" alt="" width="28" height="28">Codex</h3>
+        <span class="agent-kind">Terminal label</span><code>codex billing</code>
+        <details><summary>Auto-approve flag</summary><code>--dangerously-bypass-approvals-and-sandbox</code></details></article>
+      <article class="agent-card"><h3><img class="" src="agents/agi.png" alt="" width="28" height="28">AGI</h3>
+        <span class="agent-kind">Terminal label</span><code>agy billing</code>
+        <details><summary>Auto-approve flag</summary><code>--dangerously-skip-permissions</code></details></article>
+      <article class="agent-card"><h3><img class="" src="agents/claude.png" alt="" width="28" height="28">Claude</h3>
+        <span class="agent-kind">Session name</span><code>claude billing</code>
+        <details><summary>Auto-approve flag</summary><code>--dangerously-skip-permissions</code></details></article>
+      <article class="agent-card"><h3><img class="" src="agents/cursor.png" alt="" width="28" height="28">Cursor</h3>
+        <span class="agent-kind">Terminal label</span><code>cursor-agent billing</code>
+        <details><summary>Auto-approve flag</summary><code>--force</code></details></article>
+      <article class="agent-card"><h3><img class="" src="agents/crush.png" alt="" width="28" height="28">Crush</h3>
+        <span class="agent-kind">Terminal label</span><code>crush billing</code>
+        <details><summary>Auto-approve flag</summary><code>--yolo</code></details></article>
+      <article class="agent-card"><h3><img class="" src="agents/cortex.svg" alt="" width="28" height="28">Cortex</h3>
+        <span class="agent-kind">Terminal label</span><code>cortex billing</code>
+        <details><summary>Auto-approve flag</summary><code>--dangerously-allow-all-tool-calls</code></details></article>
+      <article class="agent-card"><h3><img class="monochrome" src="agents/opencode.svg" alt="" width="28" height="28">OpenCode</h3>
+        <span class="agent-kind">Terminal label</span><code>opencode billing</code>
+        <details><summary>Auto-approve flag</summary><code>No extra flag</code></details></article>
+      <article class="agent-card"><h3><img class="monochrome" src="agents/pi.svg" alt="" width="28" height="28">pi</h3>
+        <span class="agent-kind">Terminal label</span><code>pi billing</code>
+        <details><summary>Auto-approve flag</summary><code>No extra flag</code></details></article>
+      <article class="agent-card"><h3><img class="" src="agents/gemini.svg" alt="" width="28" height="28">Gemini CLI</h3>
+        <span class="agent-kind">Terminal label</span><code>gemini billing</code>
+        <details><summary>Auto-approve flag</summary><code>--yolo</code></details></article>
+    </div>
+    <p class="note">These labels describe what Glyph currently sets. Terminal labels appear in window titles and <code>glyph ls</code>, not inside the agent's conversation list. Fleet adds persistent pane borders. <code>GLYPH_YOLO=1</code> opts into each adapter's auto-approve flag.</p>
+  </div>
+
+  <div class="rule"></div>
+  <div class="pad" id="fleet">
+    <h2>Glyph Fleet</h2>
+    <p class="why-intro">Save a group of agents. Open them together, each in its own named tmux pane.</p>
+    <div class="fleet-preview" aria-label="Example: three panes opened by the ci fleet">
+      <div class="fleet-pane"><img src="agents/claude.png" alt=""><b>Claude</b><code>ci · your project · mbp</code></div>
+      <div class="fleet-pane"><img src="agents/agi.png" alt=""><b>AGI</b><code>ci · your project · mbp</code></div>
+      <div class="fleet-pane"><img src="agents/codex.png" alt=""><b>Codex</b><code>ci · your project · mbp</code></div>
+    </div>
+    <div class="fleet-steps">
+      <section class="fleet-step">
+        <h3>1. Set up your fleets</h3>
+        <p>You need tmux, Glyph and the agent CLIs installed. Open the config file and add a line for each group you want.</p>
+        <div class="code-block"><div class="code-heading"><span>Open the config</span><button type="button" class="copy" data-copy="fleet-edit" aria-label="Copy fleet config edit command">Copy</button></div>
+          <pre id="fleet-edit">mkdir -p ~/.config/glyph &amp;&amp; nano ~/.config/glyph/fleet.conf</pre></div>
+        <div class="code-block"><div class="code-heading"><span>~/.config/glyph/fleet.conf</span><button type="button" class="copy" data-copy="fleet-config" aria-label="Copy fleet config example">Copy</button></div>
+          <pre id="fleet-config">ci = claude agy codex
+review = claude codex
+cloud = claude:studio codex:studio</pre></div>
+        <p class="note">Left of <code>=</code>: the fleet name. Right: one agent per pane. AGI uses the command <code>agy</code>. Save with Ctrl+O, Enter, then exit with Ctrl+X.</p>
+      </section>
+      <section class="fleet-step">
+        <h3>2. Check it from your project folder</h3>
+        <p>Preview the agents and machines before opening any panes.</p>
+        <div class="code-block"><div class="code-heading"><span>Preview the ci fleet</span><button type="button" class="copy" data-copy="fleet-preview" aria-label="Copy fleet preview command">Copy</button></div>
+          <pre id="fleet-preview">GLYPH_DRYRUN=1 glyph fleet ci</pre></div>
+      </section>
+      <section class="fleet-step">
+        <h3>3. Launch the group</h3>
+        <p>Glyph opens a tiled tmux session with Claude, AGI and Codex. Each pane gets a label with the fleet, project, machine and start time.</p>
+        <div class="code-block"><div class="code-heading"><span>Start the ci fleet</span><button type="button" class="copy" data-copy="fleet-launch" aria-label="Copy fleet launch command">Copy</button></div>
+          <pre id="fleet-launch">glyph fleet ci</pre></div>
+        <p class="note">Use <code>glyph presets</code> to list saved fleets. In tmux, Ctrl+B then an arrow switches panes; Ctrl+B then D detaches.</p>
+      </section>
+    </div>
+    <div class="settings" style="margin-top:20px">
+      <details><summary>Run agents on another machine</summary>
+        <p><code>claude:studio</code> means Claude on the SSH host <code>studio</code>. Replace it with a host you can already reach using SSH.</p>
+        <p>Install Glyph and the agent on that machine, source Glyph in its zsh config, and keep the project at the same path. Then run <code>glyph fleet cloud</code>.</p>
+        <p>The agent's mark uses that machine's own tag. Glyph's pane border also shows the SSH host so you can tell remote panes apart.</p>
+      </details>
+    </div>
   </div>
 
   <div class="rule"></div>
   <div class="pad">
-    <h2>Notes</h2>
-    <dl class="dl">
-      <dt>Machine tag</dt>
-      <dd>From <code>hostname -s</code>: Macs by model, everything else by the first
-          word — <code>DESKTOP-8KQ2LM1</code> → <code>desktop</code>,
-          <code>hetzner-cx41</code> → <code>hetzner</code>. Override with
-          <code>GLYPH_MACHINE</code>.</dd>
-      <dt>Project</dt>
-      <dd>The git repo directory, title-cased. Override in
-          <code>~/.config/glyph/names.tsv</code>.</dd>
-      <dt>Untouched</dt>
-      <dd><code>-p</code>, <code>--print</code> and subcommands like
-          <code>codex resume</code> pass straight through, so scripts and CI are
-          unaffected.</dd>
-      <dt>Knobs</dt>
-      <dd><code>GLYPH_OFF</code> <code>GLYPH_FMT</code> <code>GLYPH_SEP</code>
-          <code>GLYPH_RC</code> <code>GLYPH_TITLE</code> <code>GLYPH_LOG</code>
-          <code>GLYPH_DRYRUN</code></dd>
-      <dt>Why a wrapper</dt>
-      <dd>A name must exist before the process starts, so it can only come from
-          argv — plugins and <code>SessionStart</code> hooks run too late.
-          Claude's <code>--remote-control &lt;name&gt;</code> opens the bridge but does
-          not name the session; only <code>-n</code> does, so glyph passes both.</dd>
-      <dt>Scope</dt>
-      <dd>An identity layer, not a multiplexer. Pairs with
-          <a href="https://github.com/raine/workmux">workmux</a>, herdr or plain tmux.</dd>
-    </dl>
+    <h2>Make it yours</h2>
+    <p class="why-intro">The defaults work without a config. Open a section when you want to change something.</p>
+    <div class="settings">
+      <details><summary>Change your machine or project name</summary>
+        <p>Glyph uses your hostname for the machine tag and your git folder for the project name: <code>acme-api</code> becomes <code>Acme API</code>.</p>
+        <p>Set a machine name in <code>~/.zshrc</code>: <code>export GLYPH_MACHINE=laptop</code>.</p>
+        <p>For a project override, add a line to <code>~/.config/glyph/names.tsv</code>: the folder name, a tab, then your display name.</p>
+      </details>
+      <details><summary>Adjust naming and launch options</summary>
+        <dl>
+          <dt><code>GLYPH_OFF=1</code></dt><dd>Keep the label and project; omit machine and time.</dd>
+          <dt><code>GLYPH_SEP</code></dt><dd>Change the separator between name parts. Default: ·</dd>
+          <dt><code>GLYPH_FMT</code></dt><dd>Set the date format. Default: %Y-%m-%d·%H%M</dd>
+          <dt><code>GLYPH_RC=0</code></dt><dd>Skip Claude's Remote Control flag.</dd>
+          <dt><code>GLYPH_TITLE=0</code></dt><dd>Leave terminal and tmux window titles unchanged.</dd>
+          <dt><code>GLYPH_LOG=0</code></dt><dd>Skip the local session log.</dd>
+          <dt><code>GLYPH_DRYRUN=1</code></dt><dd>Preview the command instead of launching an agent.</dd>
+          <dt><code>GLYPH_YOLO=1</code></dt><dd>Enable the agent's auto-approve flag. Off by default.</dd>
+        </dl>
+      </details>
+      <details><summary>How Glyph fits your workflow</summary>
+        <p>The wrapper builds the mark before launching the agent. For Claude, it passes <code>-n</code> for the session name and <code>--remote-control</code> for the phone bridge.</p>
+        <p>Print-mode runs and recognized subcommands, such as <code>claude --print</code> and <code>codex resume</code>, pass through.</p>
+        <p>Glyph names sessions and starts fleets. tmux handles the panes; you can also use Glyph alongside <a href="https://github.com/raine/workmux">workmux</a> or herdr.</p>
+      </details>
+    </div>
   </div>
 
   <div class="rule"></div>
   <div class="pad">
     <footer>
       <span><a href="https://github.com/fru-dev3/glyph">github.com/fru-dev3/glyph</a> · MIT</span>
-      <span>agent marks are stylised, not official logos</span>
     </footer>
   </div>
 
@@ -333,10 +513,11 @@
 <script>
 (function(){
   var lab=document.getElementById('lab'), prj=document.getElementById('prj'),
-      agt=document.getElementById('agt'), mk=document.getElementById('mk'),
+      agents=document.querySelectorAll('input[name="agent"]'), mk=document.getElementById('mk'),
       cm=document.getElementById('cm'), nt=document.getElementById('nt');
+  var generatedTyped='', generatedRun='';
   var YOLO={claude:'--dangerously-skip-permissions',codex:'--dangerously-bypass-approvals-and-sandbox',
-            gemini:'--yolo',agy:'--dangerously-skip-permissions'};
+            agy:'--dangerously-skip-permissions'};
   function title(s){return s.replace(/[-_]+/g,' ').trim().split(/\s+/).map(function(w){
       if(!w) return w;
       return /^(cli|api|mcp|ai|ui|os|db|sdk|ios|tv)$/i.test(w)?w.toUpperCase()
@@ -347,7 +528,7 @@
     var d=new Date(), when=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())
           +'\u00b7'+pad(d.getHours())+pad(d.getMinutes());
     var raw=lab.value.trim().split(/\s+/)[0]||'';
-    var l=esc(raw), p=esc(title(prj.value||'')), a=agt.value;
+    var l=esc(raw), p=esc(title(prj.value||'')), a=document.querySelector('input[name="agent"]:checked').value;
     var parts=[];
     if(l) parts.push('<span class="m1">'+l+'</span>');
     if(p && p.toLowerCase()!==l.toLowerCase()) parts.push('<span class="m2">'+p+'</span>');
@@ -355,6 +536,10 @@
     parts.push('<span class="m4">'+when+'</span>');
     mk.innerHTML=parts.join('<span class="md">\u00b7</span>');
     var plain=mk.textContent;
+    function quote(value){return "'"+value.replace(/'/g,"'\\''")+"'";}
+    generatedTyped=a+(raw?' '+quote(raw):'');
+    document.getElementById('mark-label').textContent=a==='claude'?'Session name':'Terminal label';
+    generatedRun=a==='claude'?'command claude -n '+quote(plain)+' --remote-control':'command '+a;
 
     var multi=/\s/.test(lab.value.trim());
     document.getElementById('typed').innerHTML=
@@ -363,21 +548,38 @@
         '\u2190 only the first word is the label; a quoted phrase is a prompt</span>':'');
 
     if(a==='claude'){
-      cm.innerHTML='<span class="p">$</span> claude -n \''+esc(plain)+'\' --remote-control';
+      cm.textContent='$ '+generatedRun;
       nt.innerHTML='<b>-n</b> sets the session name; <b>--remote-control</b> opens the '+
-        'bridge so it appears in the web app and on your phone. Claude Code is the only '+
-        'agent that can name its own session.';
+        'bridge so the named session appears in the web app and on your phone.';
     }else{
-      cm.innerHTML='<span class="p">$</span> '+a+
-        '   <span class="c" style="color:var(--faint)">+ terminal title and tmux window set to the mark</span>';
-      nt.innerHTML=esc(a)+' has no session-name flag, so nothing is added to the command — '+
-        'the mark goes on the terminal title, the tmux window and <b>glyph ls</b>. '+
-        '<b>GLYPH_YOLO=1</b> would add <b>'+YOLO[a]+'</b>.';
+      cm.textContent='$ '+generatedRun;
+      nt.innerHTML='Look for this label in the <b>terminal or tmux window title</b> and <b>glyph ls</b>. '+
+        'Glyph does not rename the conversation or app banner inside '+(a==='agy'?'AGI':'Codex')+'. '+
+        'The app may replace its terminal title after launch. Copying the raw launch command alone does not apply the label; use the command above with Glyph installed.';
     }
   }
   [lab,prj].forEach(function(el){el.addEventListener('input',render)});
-  agt.addEventListener('change',render);
+  agents.forEach(function(el){el.addEventListener('change',render)});
   render();
+  var copyStatus=document.getElementById('copy-status');
+  document.querySelectorAll('[data-copy]').forEach(function(button){
+    button.addEventListener('click',async function(){
+      var target=button.dataset.copy;
+      var text=target==='generated-typed'?generatedTyped:target==='generated-run'?generatedRun:target==='all'
+        ? document.getElementById('cmd-clone').textContent+
+          " && cd glyph && ./install.sh && zsh -ic 'GLYPH_DRYRUN=1 claude billing; exec zsh'"
+        : document.getElementById(target).textContent;
+      try{
+        await navigator.clipboard.writeText(text);
+        button.textContent='Copied';
+        clearTimeout(button.copyReset);
+        button.copyReset=setTimeout(function(){button.textContent=target==='all'?'Copy all':'Copy'},2000);
+        copyStatus.textContent=target==='all'?'All commands copied. Paste once to install and verify.':'Command copied.';
+      }catch(error){
+        copyStatus.textContent='Could not access the clipboard. Select and copy the command text.';
+      }
+    });
+  });
   fetch('https://api.github.com/repos/fru-dev3/glyph').then(function(r){return r.json()})
     .then(function(d){if(typeof d.stargazers_count==='number')
       document.getElementById('stars').textContent=d.stargazers_count;}).catch(function(){});

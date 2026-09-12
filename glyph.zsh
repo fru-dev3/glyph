@@ -139,6 +139,13 @@ _glyph_launch() {
     mcp|auth|login|logout|plugin|plugins|install|update|upgrade|doctor|agents|setup-token|daemon|import|export|config|resume|fork|queue|archive|unarchive|delete|session|sessions|ls|migrate-rollouts|migrate-installer)
       _glyph_run "$@"; return ;;
   esac
+  # AGY has its own management commands; none is a session label.
+  if [[ $agent == agy ]]; then
+    case ${1:-} in
+      agent|changelog|help|mic-serve|models|remote-control)
+        _glyph_run "$@"; return ;;
+    esac
+  fi
   # Non-interactive runs pass straight through.
   if [[ " $* " == *" -p "* || " $* " == *" --print "* || " $* " == *" --headless "* ]]; then
     _glyph_run "$@"; return
@@ -171,6 +178,11 @@ _glyph_launch() {
   # containing whitespace is a prompt ("fix the login bug") and is left alone.
   if [[ -n ${1:-} && ${1:-} != -* && ${1:-} != *[[:space:]]* ]]; then
     given=$1; shift
+  fi
+
+  # AGY rejects positional prompts; interactive prompts need its explicit flag.
+  if [[ $agent == agy && -n ${1:-} && ${1:-} != -* ]]; then
+    set -- --prompt-interactive "$@"
   fi
 
   local mark=$(_glyph_compose "$given" "$proj")
@@ -242,7 +254,7 @@ glyph-fleet() {
   emulate -L zsh
   local preset=${1:-default}; shift 2>/dev/null
   local -a slots
-  if [[ $preset == *:* || -n ${GLYPH_YOLO_FLAG[${preset%%:*}]:-} ]]; then
+  if [[ $preset == *:* || ${+GLYPH_YOLO_FLAG[${preset%%:*}]} == 1 ]]; then
     slots=("$preset" "$@")          # slots given directly on the command line
     preset="ad-hoc"
   else
@@ -286,10 +298,13 @@ glyph-fleet() {
     [[ $machine == $slots[i] ]] && machine=local
     label="${GLYPH_LABEL[$agent]:-$agent}"
     if [[ $machine == local ]]; then
-      cmd="$agent ${(q)mark}"
+      cmd="${(q)agent} ${(q)preset}"
     else
       label="$label @$machine"
-      cmd="ssh -t ${(q)machine} 'cd ${(q)PWD} 2>/dev/null; $agent ${(q)mark} || \$SHELL -l'"
+      local remote_script="cd ${(q)PWD} && ${(q)agent} ${(q)preset}"
+      # Interactive zsh loads the remote Glyph wrapper from .zshrc.
+      local remote_cmd="zsh -ic ${(q)remote_script}"
+      cmd="ssh -t ${(q)machine} ${(q)remote_cmd}"
     fi
     command tmux set-option -p -t "$panes[i]" @label "$label · $mark" >/dev/null 2>&1
     command tmux send-keys -t "$panes[i]" "$cmd" C-m
