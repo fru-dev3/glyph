@@ -17,12 +17,15 @@
 
 ---
 
-Your agents follow you to your phone. Without a name, that list is hostnames
-and hashes:
+**Why now:** a year ago you ran one assistant in one terminal. Now agents run in
+parallel, on machines you are not sitting at, and answer permission prompts on
+your phone. Identity stopped being cosmetic.
+
+Without a name, five running agents look like this:
 
 ```
-tims-macbook-pro-4-local-transient   ← Claude Code, auto-derived
-fru-5e                               ← Claude Code, auto-derived
+rivers-macbook-pro-4-local-transient ← Claude Code, auto-derived
+agent-5e                             ← Claude Code, auto-derived
 doc-9b                               ← Claude Code, a different machine
 zsh                                  ← Codex. no session name at all
 node                                 ← Antigravity. same
@@ -36,10 +39,10 @@ node                                 ← Antigravity. same
 Turn glyph on and the same five read:
 
 ```
-billing·Acme API·mbp·2026-09-12·0556        ← MacBook Pro
-migration·Acme API·air·2026-09-12·0602      ← MacBook Air
+billing·Acme API·laptop·2026-09-12·0556     ← MacBook Pro
+migration·Acme API·studio·2026-09-12·0602   ← Mac Studio
 docs·Website·mini·2026-09-12·0611           ← Mac mini
-audit·Payments·win·2026-09-11·2247          ← Windows box, via WSL
+audit·Payments·desktop·2026-09-11·2247      ← Windows box, via WSL
 scrape·Atlas·hetzner·2026-09-12·0640        ← cloud server
 ```
 
@@ -197,10 +200,9 @@ glyph fleet review
 
 | Hostname | Tag |
 |---|---|
-| `laptop` | `mbp` |
-| `air` | `air` |
-| `Mac-mini` | `mini` |
-| `Mac-Studio` | `studio` |
+| `rivers-macbook-pro` | `mbp` |
+| `studio-air` | `air` |
+| `office-mac-mini` | `mini` |
 | `DESKTOP-8KQ2LM1` (Windows/WSL) | `desktop` |
 | `ubuntu-prod-01` (cloud) | `ubuntu` |
 | `hetzner-cx41` | `hetzner` |
