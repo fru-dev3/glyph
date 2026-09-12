@@ -493,10 +493,10 @@
     <div class="fleet-steps">
       <section class="fleet-step">
         <h3>1. Create a fleet once</h3>
-        <p>Choose the agents you want to open together. Glyph keeps the group in your local config.</p>
+        <p>Run once to create the default fleets.</p>
         <div class="code-block"><div class="code-heading"><span>Create your fleets</span><button type="button" class="copy" data-copy="fleet-init" aria-label="Copy fleet setup command">Copy</button></div>
           <pre id="fleet-init">glyph fleet init</pre></div>
-        <p class="note">Adds <code>ci</code> (Claude Code, AGY, Codex), <code>review</code> (Claude Code, Codex), and a <code>cloud</code> example. You need tmux and the agent CLIs to launch them.</p>
+        <p class="note">Creates <code>ci</code>, <code>review</code>, and <code>cloud</code> in your local config.</p>
         <div class="settings"><details><summary>View or customize the config</summary>
           <p>Saved to <code>~/.config/glyph/fleet.conf</code>, or your <code>GLYPH_FLEET_CONF</code> override. Left of <code>=</code> is the fleet name; right is one agent per pane.</p>
           <div class="code-block"><pre>ci = claude agy codex
@@ -507,16 +507,16 @@ cloud = claude:studio codex:studio</pre></div>
       </section>
       <section class="fleet-step">
         <h3>2. Preview the launch</h3>
-        <p>See which agents and machines will open before you start them.</p>
+        <p>Preview the group without launching anything.</p>
         <div class="code-block"><div class="code-heading"><span>Preview the ci fleet</span><button type="button" class="copy" data-copy="fleet-preview" aria-label="Copy fleet preview command">Copy</button></div>
           <pre id="fleet-preview">GLYPH_DRYRUN=1 glyph fleet ci</pre></div>
       </section>
       <section class="fleet-step">
         <h3>3. Open the fleet</h3>
-        <p>Glyph uses your current workspace: Herdr creates one tab per local agent, cmux creates one workspace per local agent, Zellij creates a named pane per agent, WezTerm creates one tab per agent, and a normal shell uses a tiled tmux session. Each tab or pane gets the fleet mark and agent label.</p>
+        <p>Open one named pane or tab per agent in your current workspace.</p>
         <div class="code-block"><div class="code-heading"><span>Start the ci fleet</span><button type="button" class="copy" data-copy="fleet-launch" aria-label="Copy fleet launch command">Copy</button></div>
           <pre id="fleet-launch">glyph fleet ci</pre></div>
-        <p class="note">Use <code>glyph presets</code> to list saved fleets. Set <code>GLYPH_FLEET_BACKEND=herdr|cmux|zellij|wezterm|tmux</code> to choose a backend explicitly. SSH slots require the tmux backend.</p>
+        <p class="note">Use <code>glyph presets</code> to list fleets. Choose a workspace with <code>GLYPH_FLEET_BACKEND</code>.</p>
       </section>
     </div>
     <div class="settings" style="margin-top:20px">
