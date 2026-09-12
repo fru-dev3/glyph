@@ -4,242 +4,348 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>glyph — every agent session, named before it starts</title>
-<meta name="description" content="Mark every agent session with your label, the project, the machine and the moment, before it starts. Claude Code, Antigravity, Codex, Gemini and friends.">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" href="/glyph.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Mark every AI coding agent session with your label, the project, the machine and the moment, before it starts. Claude Code, Antigravity, Codex, Gemini and friends.">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="glyph.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:title" content="glyph — every agent session, named before it starts">
-<meta property="og:description" content="Mark every agent session with your label, the project, the machine and the moment, before it starts.">
+<meta property="og:description" content="Mark every AI coding agent session with your label, the project, the machine and the moment, before it starts.">
 <meta property="og:image" content="https://glyph.fru.dev/og.png">
 <meta property="og:url" content="https://glyph.fru.dev/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <style>
   :root{
-    --ink:#17120e; --stone:#ead9bb; --dust:#a3907a; --faint:#7d6a56;
-    --rock:#6b4f3e; --line:#2e241c; --gold:#C4A35A;
+    --ink:#14100c; --panel:#1c1712; --edge:#2e251c;
+    --stone:#ead9bb; --dust:#a3907a; --faint:#7a6854;
+    --gold:#C4A35A;
+    --c-label:#e8c375; --c-proj:#8fb8a0; --c-mach:#9db4d8; --c-when:#bb9ac9;
     --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
     --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
   }
   *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
   body{margin:0;background:var(--ink);color:var(--stone);font-family:var(--sans);
-       line-height:1.6;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:820px;margin:0 auto;padding:0 24px}
-  a{color:var(--gold)}
-  header{padding:72px 0 40px;display:flex;gap:28px;align-items:center;flex-wrap:wrap}
-  header img{width:132px;height:132px;flex:none}
-  h1{font-size:clamp(48px,9vw,76px);margin:0;letter-spacing:-.03em;line-height:1}
-  .tag{color:var(--dust);font-size:clamp(17px,2.6vw,21px);margin-top:10px}
-  h3{font-size:17px;margin:30px 0 10px;color:var(--stone);font-weight:600}
-  h2{font-size:15px;text-transform:uppercase;letter-spacing:.14em;color:var(--faint);
-     margin:56px 0 16px;font-weight:600}
-  p{margin:0 0 18px}
-  .lead{font-size:19px}
-  pre{background:#0e0b09;border:1px solid var(--line);border-radius:10px;
-      padding:18px 20px;overflow-x:auto;font-family:var(--mono);font-size:14px;
-      line-height:1.75;margin:0 0 20px}
-  code{font-family:var(--mono);font-size:.93em}
-  p code,li code,td code{background:#0e0b09;border:1px solid var(--line);
-      border-radius:5px;padding:1px 6px}
-  .before{color:var(--faint)}
-  .after{color:var(--stone)}
-  .after b{color:var(--gold);font-weight:600}
-  .cmt{color:#5f5142}
-  table{border-collapse:collapse;width:100%;font-size:14.5px;margin-bottom:20px;
-        display:block;overflow-x:auto}
-  th,td{text-align:left;padding:9px 14px 9px 0;border-bottom:1px solid var(--line);
-        vertical-align:top;white-space:nowrap}
-  th{color:var(--faint);font-weight:600;font-size:12.5px;text-transform:uppercase;
-     letter-spacing:.08em}
-  td:last-child,th:last-child{white-space:normal}
-  .yes{color:var(--gold)}
-  ul{padding-left:20px;margin:0 0 18px}
-  li{margin-bottom:9px}
-  footer{margin:80px 0 60px;padding-top:28px;border-top:1px solid var(--line);
+       line-height:1.6;-webkit-font-smoothing:antialiased;font-size:16.5px}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 28px}
+  a{color:var(--gold);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{font-family:var(--mono)}
+
+  /* ---------- hero ---------- */
+  .hero{text-align:center;padding:88px 0 20px}
+  .hero img{width:172px;height:172px}
+  .hero h1{font-size:clamp(66px,13vw,116px);margin:16px 0 0;letter-spacing:-.045em;
+           line-height:.9;font-weight:800}
+  .hero .sub{font-size:clamp(19px,3vw,25px);color:var(--dust);margin:16px 0 0}
+  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:34px 0 0}
+  .btn{display:inline-block;padding:12px 24px;border-radius:9px;font-weight:650;
+       font-size:15.5px;border:1px solid var(--edge)}
+  .btn.primary{background:var(--gold);color:#1a1409;border-color:var(--gold)}
+  .btn.ghost{color:var(--stone)}
+  .btn:hover{text-decoration:none;filter:brightness(1.08)}
+
+  /* ---------- the mark, taken apart ---------- */
+  .anatomy{margin:70px auto 0;max-width:760px;text-align:center}
+  .mark{font-family:var(--mono);font-size:clamp(14px,3.1vw,26px);
+        letter-spacing:-.01em;display:inline-block;overflow-wrap:anywhere;
+        line-height:1.5}
+  .mark span{position:relative}
+  .s1{color:var(--c-label)} .s2{color:var(--c-proj)}
+  .s3{color:var(--c-mach)} .s4{color:var(--c-when)}
+  .dot{color:var(--faint)}
+  .keys{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:22px 0 0;
+        font-size:13px;color:var(--dust)}
+  .key{display:flex;align-items:center;gap:7px;background:var(--panel);
+       border:1px solid var(--edge);border-radius:99px;padding:5px 13px}
+  .swatch{width:9px;height:9px;border-radius:2px;flex:none}
+
+  /* ---------- sections ---------- */
+  section{padding:82px 0 0}
+  h2{font-size:clamp(30px,5vw,42px);margin:0 0 10px;letter-spacing:-.025em;
+     line-height:1.15;font-weight:750}
+  h3{font-size:20px;margin:0 0 12px;font-weight:650}
+  .lede{color:var(--dust);font-size:18px;margin:0 0 30px;max-width:62ch}
+  p{margin:0 0 16px}
+
+  /* ---------- before / after ---------- */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .card{background:var(--panel);border:1px solid var(--edge);border-radius:13px;
+        padding:20px 22px}
+  .card h4{margin:0 0 14px;font-size:12.5px;letter-spacing:.13em;text-transform:uppercase;
+           color:var(--faint);font-weight:700}
+  .card.bad h4{color:#b4705f}
+  .card.good h4{color:var(--gold)}
+  .rows{font-family:var(--mono);font-size:13.5px;line-height:2.05}
+  .rows .muted{color:#6b5c4b}
+  .why{margin:26px 0 0;padding:0;list-style:none;display:grid;gap:9px;
+       grid-template-columns:1fr 1fr}
+  .why li{color:var(--dust);font-size:15px;padding-left:22px;position:relative}
+  .why li::before{content:"→";position:absolute;left:0;color:var(--faint)}
+
+  /* ---------- terminal ---------- */
+  .term{background:#0d0a08;border:1px solid var(--edge);border-radius:12px;overflow:hidden}
+  .term .bar{display:flex;align-items:center;gap:7px;padding:11px 15px;
+             border-bottom:1px solid var(--edge);background:#151009}
+  .term .bar i{width:10px;height:10px;border-radius:50%;background:#3a2f24;display:block}
+  .term .bar b{margin-left:8px;font:600 12px/1 var(--mono);color:var(--faint);
+               letter-spacing:.04em}
+  .term pre{margin:0;padding:18px 20px;overflow-x:auto;font-family:var(--mono);
+            font-size:13.5px;line-height:1.85}
+  .p{color:var(--gold)}
+  .cmt{color:#635444}
+  .out{color:var(--stone)}
+
+  /* ---------- agent grid ---------- */
+  .agents{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:13px}
+  .agent{background:var(--panel);border:1px solid var(--edge);border-radius:11px;padding:15px 17px}
+  .agent .n{font-weight:680;font-size:16px;display:flex;align-items:center;
+            justify-content:space-between;gap:8px}
+  .pill{font:600 10.5px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;
+        padding:4px 8px;border-radius:99px;border:1px solid var(--edge);color:var(--faint)}
+  .pill.real{background:rgba(196,163,90,.14);border-color:rgba(196,163,90,.4);color:var(--gold)}
+  .agent .f{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-top:9px;
+            word-break:break-all;line-height:1.5}
+
+  /* ---------- fleet diagram ---------- */
+  .panes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px}
+  .pane{border:1px solid var(--edge);border-radius:9px;background:#100c09;overflow:hidden}
+  .pane .lab{font:600 10.5px/1.4 var(--mono);padding:7px 10px;background:#1a140e;
+             color:var(--dust);border-bottom:1px solid var(--edge);white-space:nowrap;
+             overflow:hidden;text-overflow:ellipsis}
+  .pane .body{height:74px;background:
+     repeating-linear-gradient(180deg,#141009 0 2px,transparent 2px 11px)}
+
+  table{border-collapse:collapse;width:100%;font-size:14.5px;display:block;overflow-x:auto}
+  th,td{text-align:left;padding:9px 16px 9px 0;border-bottom:1px solid var(--edge);
+        white-space:nowrap}
+  th{color:var(--faint);font-size:12px;text-transform:uppercase;letter-spacing:.09em}
+  details{border-top:1px solid var(--edge);padding:18px 0 4px;margin-top:8px}
+  summary{cursor:pointer;font-weight:650;font-size:17px}
+  details p,details table,details ul{margin-top:14px}
+  ul.plain{padding-left:20px;color:var(--dust)}
+  ul.plain li{margin-bottom:8px}
+  footer{margin:96px 0 56px;padding-top:26px;border-top:1px solid var(--edge);
          color:var(--faint);font-size:14px;display:flex;justify-content:space-between;
-         gap:16px;flex-wrap:wrap}
-  @media (max-width:560px){header{padding-top:48px;gap:20px}header img{width:96px;height:96px}}
+         gap:14px;flex-wrap:wrap}
+  @media (max-width:720px){
+    .split,.why,.panes{grid-template-columns:1fr}
+    .hero{padding-top:54px}.hero img{width:126px;height:126px}
+    section{padding-top:62px}
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-<header>
-  <img src="/glyph.svg" alt="A petroglyph figure with a raised marking hand beside a spiral">
-  <div>
-    <h1>glyph</h1>
-    <div class="tag">Every agent session, named before it starts.</div>
+<div class="hero">
+  <img src="glyph.svg" alt="A petroglyph figure with a raised marking hand beside a spiral">
+  <h1>glyph</h1>
+  <div class="sub">Every agent session, named before it starts.</div>
+  <div class="cta">
+    <a class="btn primary" href="#install">Install</a>
+    <a class="btn ghost" href="https://github.com/fru-dev3/glyph">GitHub</a>
   </div>
-</header>
+</div>
 
-<p class="lead">Five agents, five machines. This is what you come back to:</p>
+<div class="anatomy">
+  <div class="mark"><span class="s1">billing</span><span class="dot">·</span><wbr><span class="s2">Acme API</span><span class="dot">·</span><wbr><span class="s3">mbp</span><span class="dot">·</span><wbr><span class="s4">2026-09-12·0556</span></div>
+  <div class="keys">
+    <span class="key"><i class="swatch" style="background:var(--c-label)"></i>your label</span>
+    <span class="key"><i class="swatch" style="background:var(--c-proj)"></i>project</span>
+    <span class="key"><i class="swatch" style="background:var(--c-mach)"></i>machine</span>
+    <span class="key"><i class="swatch" style="background:var(--c-when)"></i>when it started</span>
+  </div>
+</div>
 
-<pre class="before">tims-macbook-pro-4-local-transient   <span class="cmt">&#8592; Claude Code, auto-derived</span>
-fru-5e                               <span class="cmt">&#8592; Claude Code, auto-derived</span>
-doc-9b                               <span class="cmt">&#8592; Claude Code, a different machine</span>
-zsh                                  <span class="cmt">&#8592; Codex. no session name at all</span>
-node                                 <span class="cmt">&#8592; Antigravity. same</span></pre>
+<section id="why">
+  <h2>Five agents. Five machines.</h2>
+  <p class="lede">You step away for an hour. This is the list you come back to.</p>
 
-<ul>
-  <li>Two are the same project. You cannot tell which two.</li>
-  <li>One is on a machine you are not sitting at.</li>
-  <li>One has been idle since yesterday.</li>
-  <li>Two are not named at all, because their agent has no such concept.</li>
-</ul>
+  <div class="split">
+    <div class="card bad">
+      <h4>without glyph</h4>
+      <div class="rows muted">
+        tims-macbook-pro-4-local-transient<br>
+        fru-5e<br>
+        doc-9b<br>
+        zsh<br>
+        node
+      </div>
+    </div>
+    <div class="card good">
+      <h4>with glyph</h4>
+      <div class="rows">
+        <span class="s1">billing</span><span class="dot">·</span><wbr><span class="s2">Acme API</span><span class="dot">·</span><wbr><span class="s3">mbp</span><span class="dot">·</span><wbr><span class="s4">0556</span><br>
+        <span class="s1">migration</span><span class="dot">·</span><wbr><span class="s2">Acme API</span><span class="dot">·</span><wbr><span class="s3">air</span><span class="dot">·</span><wbr><span class="s4">0602</span><br>
+        <span class="s1">docs</span><span class="dot">·</span><wbr><span class="s2">Website</span><span class="dot">·</span><wbr><span class="s3">mini</span><span class="dot">·</span><wbr><span class="s4">0611</span><br>
+        <span class="s1">audit</span><span class="dot">·</span><wbr><span class="s2">Payments</span><span class="dot">·</span><wbr><span class="s3">win</span><span class="dot">·</span><wbr><span class="s4">2247</span><br>
+        <span class="s1">scrape</span><span class="dot">·</span><wbr><span class="s2">Atlas</span><span class="dot">·</span><wbr><span class="s3">hetzner</span><span class="dot">·</span><wbr><span class="s4">0640</span>
+      </div>
+    </div>
+  </div>
 
-<p>Turn <code>glyph</code> on and the same five read:</p>
+  <ul class="why">
+    <li>Two are the same project. You cannot tell which.</li>
+    <li>One is on a machine you are not sitting at.</li>
+    <li>One has been idle since yesterday.</li>
+    <li>Two have no name at all — their agent has no such idea.</li>
+  </ul>
+</section>
 
-<pre class="after"><b>billing·Acme API·mbp·2026-09-12·0556</b>        <span class="cmt">&#8592; MacBook Pro</span>
-<b>migration·Acme API·air·2026-09-12·0602</b>      <span class="cmt">&#8592; MacBook Air</span>
-<b>docs·Website·mini·2026-09-12·0611</b>           <span class="cmt">&#8592; Mac mini</span>
-<b>audit·Payments·win·2026-09-11·2247</b>          <span class="cmt">&#8592; Windows box, via WSL</span>
-<b>scrape·Atlas·hetzner·2026-09-12·0640</b>        <span class="cmt">&#8592; cloud server</span></pre>
+<section id="install">
+  <h2>Install</h2>
+  <p class="lede">One file into <code>~/.config/glyph/</code>, one line into <code>~/.zshrc</code>.
+  zsh, and at least one agent CLI.</p>
+  <div class="term">
+    <div class="bar"><i></i><i></i><i></i><b>~</b></div>
+<pre><span class="p">$</span> git clone https://github.com/fru-dev3/glyph.git
+<span class="p">$</span> cd glyph &amp;&amp; ./install.sh &amp;&amp; exec zsh</pre>
+  </div>
+</section>
 
-<p>Label · project · machine · date · time. Every agent, every machine, set
-before the first token.</p>
+<section id="use">
+  <h2>Keep typing what you already type</h2>
+  <p class="lede">One bare word is your label. Anything with a space is a prompt.
+  That rule is the same for every agent.</p>
 
-<p><strong>You could do this by hand.</strong> Rename a Claude session with
-<code>/rename</code>, or long-press it in the mobile app. glyph's argument is
-only that it happens automatically:</p>
+  <h3>Claude Code</h3>
+  <p>The one agent that can name its own session, so the mark becomes the real
+  session name and rides Remote Control to your phone.</p>
+  <div class="term">
+    <div class="bar"><i></i><i></i><i></i><b>claude</b></div>
+<pre><span class="p">$</span> claude billing
+<span class="cmt">launches</span>  claude -n '<span class="s1">billing</span>·<span class="s2">Acme API</span>·<span class="s3">mbp</span>·<span class="s4">2026-09-12·0648</span>' --remote-control
 
-<ul>
-  <li>at launch, so a session is never briefly nameless</li>
-  <li>on every agent, not just the one that supports naming</li>
-  <li>on every machine, with the machine baked into the name</li>
-  <li>with no step to forget and nothing to tidy up afterwards</li>
-</ul>
+<span class="p">$</span> claude billing <span class="out">"fix the webhook retry"</span>
+<span class="cmt">launches</span>  claude -n '<span class="s1">billing</span>·…' --remote-control 'fix the webhook retry'</pre>
+  </div>
 
-<p>It matters most when panes stop being distinguishable — several agents at
-once, or tmux, <a href="https://herdr.dev">herdr</a> and
-<a href="https://github.com/raine/workmux">workmux</a> grids where every pane is
-a lookalike shell.</p>
+  <h3 style="margin-top:30px">Antigravity and Codex</h3>
+  <p>Neither has a session-name flag, so the label never enters the command — it
+  lands on the terminal title, the tmux window and <code>glyph ls</code> instead.</p>
+  <div class="term">
+    <div class="bar"><i></i><i></i><i></i><b>agy · codex</b></div>
+<pre><span class="p">$</span> agy migration
+<span class="cmt">launches</span>  agy
+<span class="cmt">titles</span>    <span class="s1">migration</span>·<span class="s2">Acme API</span>·<span class="s3">mbp</span>·<span class="s4">2026-09-12·0648</span>
 
-<h2>Install</h2>
-<pre>git clone https://github.com/fru-dev3/glyph.git
-cd glyph &amp;&amp; ./install.sh
-exec zsh</pre>
-<p>zsh, and at least one agent CLI. One file into <code>~/.config/glyph/</code>,
-one line into <code>~/.zshrc</code>.</p>
+<span class="p">$</span> codex audit
+<span class="cmt">launches</span>  codex
+<span class="cmt">titles</span>    <span class="s1">audit</span>·<span class="s2">Acme API</span>·<span class="s3">mbp</span>·<span class="s4">2026-09-12·0648</span>
 
-<h2>Use</h2>
-<p>Keep typing the command you already type. The rule is the same everywhere:
-<strong>one bare word is your label, anything with a space is a prompt.</strong></p>
+<span class="p">$</span> codex <span class="out">"refactor auth"</span>
+<span class="cmt">launches</span>  codex 'refactor auth'   <span class="cmt">← a phrase is a prompt</span></pre>
+  </div>
+</section>
 
-<h3>Claude Code</h3>
-<p>Claude is the one agent that can name its own session, so the mark becomes the
-real session name and rides Remote Control to your phone.</p>
-<pre>claude
-<span class="cmt"># launches:  claude -n 'Acme API·mbp·2026-09-12·0648' --remote-control</span>
+<section id="agents">
+  <h2>Six agents, five spellings of “don’t ask”</h2>
+  <p class="lede">Every agent has a flag meaning <em>stop asking me to approve each
+  tool call</em>, and they all spell it differently. <code>GLYPH_YOLO=1</code> sends
+  whichever one is right. It is off unless you ask.</p>
 
-claude billing
-<span class="cmt"># launches:  claude -n 'billing·Acme API·mbp·2026-09-12·0648' --remote-control</span>
+  <div class="agents">
+    <div class="agent"><div class="n">Claude Code <span class="pill real">real name</span></div>
+      <div class="f">--dangerously-skip-permissions</div></div>
+    <div class="agent"><div class="n">Antigravity <span class="pill">title</span></div>
+      <div class="f">--dangerously-skip-permissions</div></div>
+    <div class="agent"><div class="n">Codex <span class="pill">title</span></div>
+      <div class="f">--dangerously-bypass-approvals-and-sandbox</div></div>
+    <div class="agent"><div class="n">Gemini CLI <span class="pill">title</span></div>
+      <div class="f">--yolo</div></div>
+    <div class="agent"><div class="n">Cursor <span class="pill">title</span></div>
+      <div class="f">--force</div></div>
+    <div class="agent"><div class="n">Crush <span class="pill">title</span></div>
+      <div class="f">--yolo</div></div>
+    <div class="agent"><div class="n">Cortex <span class="pill">title</span></div>
+      <div class="f">--dangerously-allow-all-tool-calls</div></div>
+    <div class="agent"><div class="n">OpenCode · pi <span class="pill">title</span></div>
+      <div class="f">—</div></div>
+  </div>
+</section>
 
-claude billing "fix the webhook retry"
-<span class="cmt"># launches:  claude -n 'billing·…' --remote-control 'fix the webhook retry'</span></pre>
+<section id="fleets">
+  <h2>Or open the whole bench</h2>
+  <p class="lede">A preset launches several agents at once, local or over ssh, each
+  pane wearing the mark on its border.</p>
 
-<h3>Antigravity</h3>
-<p><code>agy</code> has no session-name flag, so the label does not go into the
-command at all — it goes on the terminal title, the tmux window and
-<code>glyph ls</code>.</p>
-<pre>agy migration
-<span class="cmt"># launches:  agy</span>
-<span class="cmt"># titles:    migration·Acme API·mbp·2026-09-12·0648</span></pre>
+  <div class="panes">
+    <div class="pane"><div class="lab">Claude Code · <span class="s1">ci</span>·<span class="s2">Acme API</span>·<span class="s3">mbp</span></div><div class="body"></div></div>
+    <div class="pane"><div class="lab">Antigravity · <span class="s1">ci</span>·<span class="s2">Acme API</span>·<span class="s3">mbp</span></div><div class="body"></div></div>
+    <div class="pane"><div class="lab">Codex · <span class="s1">ci</span>·<span class="s2">Acme API</span>·<span class="s3">mbp</span></div><div class="body"></div></div>
+  </div>
 
-<p><code>GLYPH_YOLO=1</code> is separate from naming. Every agent has a flag
-meaning &ldquo;stop asking me to approve each tool call&rdquo;, and they all
-spell it differently. This is one switch that sends the right one.</p>
-<pre>GLYPH_YOLO=1 agy migration
-<span class="cmt"># launches:  agy --dangerously-skip-permissions</span>
-<span class="cmt"># titles:    migration·Acme API·mbp·2026-09-12·0648</span></pre>
-
-<h3>Codex</h3>
-<p>Same shape, different spelling of the same flag.</p>
-<pre>codex audit
-<span class="cmt"># launches:  codex</span>
-<span class="cmt"># titles:    audit·Acme API·mbp·2026-09-12·0648</span>
-
-GLYPH_YOLO=1 codex audit
-<span class="cmt"># launches:  codex --dangerously-bypass-approvals-and-sandbox</span>
-
-codex "refactor auth"
-<span class="cmt"># launches:  codex 'refactor auth'  - a phrase is a prompt, so only the project is marked</span></pre>
-
-<h3>Everything else</h3>
-<pre>glyph ls        <span class="cmt"># recent sessions: when, agent, mark, machine</span>
-glyph agents    <span class="cmt"># installed agents and their auto-approve flags</span>
-glyph name x    <span class="cmt"># the mark this directory would produce</span>
-glyph fleet ci  <span class="cmt"># a preset of agents, each in its own marked pane</span></pre>
-
-<h2>Agents</h2>
-<p>Only Claude Code can name its own session. For every other agent the glyph
-lands on the terminal title, the tmux window, and a local registry, so
-<code>glyph ls</code> and your window list stay readable regardless.</p>
-<table>
-<tr><th>Agent</th><th>Names session</th><th>Auto-approve flag glyph knows</th></tr>
-<tr><td>Claude Code</td><td class="yes">yes</td><td><code>--dangerously-skip-permissions</code></td></tr>
-<tr><td>Antigravity</td><td>title only</td><td><code>--dangerously-skip-permissions</code></td></tr>
-<tr><td>Codex</td><td>title only</td><td><code>--dangerously-bypass-approvals-and-sandbox</code></td></tr>
-<tr><td>Gemini CLI</td><td>title only</td><td><code>--yolo</code></td></tr>
-<tr><td>Cursor</td><td>title only</td><td><code>--force</code></td></tr>
-<tr><td>Crush</td><td>title only</td><td><code>--yolo</code></td></tr>
-<tr><td>Cortex</td><td>title only</td><td><code>--dangerously-allow-all-tool-calls</code></td></tr>
-<tr><td>OpenCode, pi</td><td>title only</td><td>—</td></tr>
-</table>
-<p>Six agents, five spellings of <em>&ldquo;stop asking me to approve every tool
-call&rdquo;</em>. <code>GLYPH_YOLO=1</code> sends whichever one is right. It is off
-unless you ask.</p>
-
-<h2>Fleets</h2>
-<p>Open a whole bench at once, each pane wearing the mark on its border:</p>
-<pre><span class="cmt"># ~/.config/glyph/fleet.conf</span>
-ci      = claude agy codex
+  <div class="term" style="margin-top:18px">
+    <div class="bar"><i></i><i></i><i></i><b>~/.config/glyph/fleet.conf</b></div>
+<pre>ci      = claude agy codex
 review  = claude claude:studio
 cloud   = claude:hetzner codex:hetzner
 
-$ glyph fleet review</pre>
-<ul>
-  <li>A slot is <code>&lt;agent&gt;</code> or <code>&lt;agent&gt;:&lt;ssh-host&gt;</code>.</li>
-  <li>The part after <code>:</code> is an <strong>ssh host</strong>, not the
-      machine tag — the tag is whatever that machine reports for itself.</li>
-  <li>Remote panes <code>cd</code> to the same path, and fall back to a login
-      shell if the agent is not installed there.</li>
-</ul>
+<span class="p">$</span> glyph fleet ci</pre>
+  </div>
+  <ul class="plain" style="margin-top:18px">
+    <li>A slot is <code>&lt;agent&gt;</code> or <code>&lt;agent&gt;:&lt;ssh-host&gt;</code>.</li>
+    <li>The part after <code>:</code> is an <strong>ssh host</strong>, not the machine tag.</li>
+    <li>Remote panes <code>cd</code> to the same path, and fall back to a login shell.</li>
+  </ul>
+</section>
 
-<h2>Machine tags</h2>
-<p>Taken from <code>hostname -s</code>. Macs are recognised by model; everything
-else uses the first word of the hostname.</p>
-<table>
-<tr><th>Hostname</th><th>Tag</th></tr>
-<tr><td><code>laptop</code></td><td><code>mbp</code></td></tr>
-<tr><td><code>air</code></td><td><code>air</code></td></tr>
-<tr><td><code>Mac-mini</code></td><td><code>mini</code></td></tr>
-<tr><td><code>Mac-Studio</code></td><td><code>studio</code></td></tr>
-<tr><td><code>DESKTOP-8KQ2LM1</code> (Windows/WSL)</td><td><code>desktop</code></td></tr>
-<tr><td><code>ubuntu-prod-01</code> (cloud)</td><td><code>ubuntu</code></td></tr>
-<tr><td><code>hetzner-cx41</code></td><td><code>hetzner</code></td></tr>
-</table>
-<p>When that is unhelpful — a Windows box called <code>DESKTOP-8KQ2LM1</code>, or
-a fleet of identically-named cloud instances — name it yourself:</p>
-<pre>export GLYPH_MACHINE=win      <span class="cmt"># or ec2, gpu, prod, laptop…</span></pre>
+<section id="more">
+  <h2>The rest of it</h2>
 
-<h2>Why a shell wrapper</h2>
-<p>A session name has to exist before the process starts, so it can only come
-from argv. Plugins and <code>SessionStart</code> hooks run after that point and
-cannot set it.</p>
-<p>Two things that cost real debugging time, written down so they cost you
-none:</p>
-<ul>
-  <li>Claude Code's <code>--remote-control &lt;name&gt;</code> opens the bridge
-      but does <strong>not</strong> name the session. It comes back as
-      <code>nameSource: "derived"</code>. Only <code>-n</code> sets it, so glyph
-      passes both.</li>
-  <li>In zsh, <code>argv</code> <strong>is</strong> <code>$@</code>. Declaring
-      <code>local -a argv</code> inside a function silently empties the
-      positional parameters.</li>
-</ul>
-<p>glyph does not manage worktrees, panes or fleets beyond launching them. It is
-an identity layer, not a multiplexer, and it composes with whatever you already
-use.</p>
+  <details open>
+    <summary>Machine tags</summary>
+    <p>Taken from <code>hostname -s</code>. Macs are recognised by model; everything
+    else uses the first word of the hostname.</p>
+    <table>
+      <tr><th>Hostname</th><th>Tag</th></tr>
+      <tr><td><code>laptop</code></td><td><code>mbp</code></td></tr>
+      <tr><td><code>air</code></td><td><code>air</code></td></tr>
+      <tr><td><code>Mac-mini</code></td><td><code>mini</code></td></tr>
+      <tr><td><code>Mac-Studio</code></td><td><code>studio</code></td></tr>
+      <tr><td><code>DESKTOP-8KQ2LM1</code> · Windows/WSL</td><td><code>desktop</code></td></tr>
+      <tr><td><code>ubuntu-prod-01</code> · cloud</td><td><code>ubuntu</code></td></tr>
+      <tr><td><code>hetzner-cx41</code></td><td><code>hetzner</code></td></tr>
+    </table>
+    <p>When that is unhelpful, name it yourself:
+    <code>export GLYPH_MACHINE=win</code></p>
+  </details>
+
+  <details>
+    <summary>Configuration</summary>
+    <table>
+      <tr><th>Variable</th><th>Effect</th></tr>
+      <tr><td><code>GLYPH_YOLO=1</code></td><td>Auto-approve tool calls, per-agent flag</td></tr>
+      <tr><td><code>GLYPH_OFF=1</code></td><td>Keep the label, drop the machine and time</td></tr>
+      <tr><td><code>GLYPH_FMT</code></td><td><code>date(1)</code> format for the stamp</td></tr>
+      <tr><td><code>GLYPH_SEP</code></td><td>Separator (default <code>·</code>)</td></tr>
+      <tr><td><code>GLYPH_MACHINE</code></td><td>Machine tag override</td></tr>
+      <tr><td><code>GLYPH_RC=0</code></td><td>Skip Claude's <code>--remote-control</code></td></tr>
+      <tr><td><code>GLYPH_TITLE=0</code></td><td>Do not retitle the terminal or tmux window</td></tr>
+      <tr><td><code>GLYPH_LOG=0</code></td><td>Do not record sessions locally</td></tr>
+      <tr><td><code>GLYPH_DRYRUN=1</code></td><td>Print the argv instead of launching</td></tr>
+    </table>
+    <p>Projects are the git repo's directory, title-cased (<code>acme-api</code> →
+    <code>Acme API</code>); override in <code>~/.config/glyph/names.tsv</code>.
+    <code>-p</code>/<code>--print</code> and subcommands like <code>codex resume</code>
+    pass through untouched.</p>
+  </details>
+
+  <details>
+    <summary>Why a shell wrapper and not a plugin</summary>
+    <p>A session name must exist before the process starts, so it can only come from
+    argv. Plugins and <code>SessionStart</code> hooks run after that.</p>
+    <ul class="plain">
+      <li>Claude Code's <code>--remote-control &lt;name&gt;</code> opens the bridge but does
+          <strong>not</strong> name the session — only <code>-n</code> does. glyph passes both.</li>
+      <li>In zsh, <code>argv</code> <strong>is</strong> <code>$@</code>. Declaring
+          <code>local -a argv</code> silently empties the positional parameters.</li>
+    </ul>
+    <p>glyph is an identity layer, not a multiplexer. Pair it with
+    <a href="https://github.com/raine/workmux">workmux</a>, herdr or plain tmux.</p>
+  </details>
+</section>
 
 <footer>
   <span><a href="https://github.com/fru-dev3/glyph">github.com/fru-dev3/glyph</a> · MIT</span>
