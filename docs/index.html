@@ -60,9 +60,8 @@
   header{display:flex;align-items:center;gap:9px;padding:16px 34px;
          border-bottom:1px solid var(--edge)}
   .hbrand{display:flex;align-items:center;gap:9px;text-decoration:none}
-  header img{width:30px;height:30px;display:block}
-  header .nm{font-weight:700;font-size:16px;letter-spacing:-.015em}
-  header .by{color:var(--faint);font-size:13px}
+  header img{width:32px;height:32px;display:block}
+  header .nm{font-weight:700;font-size:20px;letter-spacing:-.025em}
   header .sp{flex:1}
   header a.l{color:var(--dim);font-size:13px;text-decoration:none}
   header a.l:hover{color:var(--fg)}
@@ -76,7 +75,6 @@
           border-radius:5px;padding:2px 8px;font-size:12.5px;min-width:30px;
           text-align:center}
 
-  .heromark{width:72px;height:72px;display:block;margin:0 0 18px}
   h1{font-size:clamp(30px,5vw,40px);line-height:1.12;letter-spacing:-.028em;
      margin:0 0 18px;font-weight:700}
   h1 .o{color:var(--ochre)}
@@ -247,11 +245,9 @@
 
   <header>
     <a class="hbrand" href="/" aria-label="glyph home">
-      <img src="glyph.svg" width="30" height="30"
-           alt="glyph logo: a petroglyph figure with a raised marking hand beside a spiral">
+      <img src="glyph.svg" width="32" height="32" alt="">
       <span class="nm">glyph</span>
     </a>
-    <span class="by">by fru.dev</span>
     <span class="sp"></span>
     <a class="l" href="#install">Install</a>
     <a class="l" href="#fleet">Fleet</a>
@@ -264,8 +260,6 @@
   </header>
 
   <div class="pad">
-    <img class="heromark" src="glyph.svg" width="72" height="72"
-         alt="glyph: a pecked petroglyph figure beside a spiral">
     <h1>Agents in.<br><span class="o">Named sessions out.</span></h1>
     <p class="intro">A zsh wrapper for Claude, Codex and AGI. It stamps your label, the project, the machine and the time onto
     every session <b>before the process starts</b>, so tmux windows, the web app
@@ -505,6 +499,7 @@ cloud = claude:studio codex:studio</pre></div>
   <div class="pad">
     <footer>
       <span><a href="https://github.com/fru-dev3/glyph">github.com/fru-dev3/glyph</a> · MIT</span>
+      <span>by <a href="https://fru.dev">fru.dev</a></span>
     </footer>
   </div>
 

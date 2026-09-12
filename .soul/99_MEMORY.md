@@ -22,3 +22,11 @@
   quoting, settings, nine cards and image loading. No live SSH agent sessions
   or paid model prompts were run. Gemini CLI is not installed on this machine.
 - Existing website metadata/header/logo work was preserved. No deploy run.
+
+- Hosting verified: glyph.fru.dev points to GitHub Pages, which publishes main's
+  /docs automatically on push. netlify.toml is not the active hosting setup.
+  Fru explicitly authorized deployment in this session. HTTPS certificate was
+  not provisioned when checked; the HTTP site served the committed page.
+- Simplified the opening: one logo with wordmark in the header, removed the
+  duplicate hero logo, and moved creator attribution to the footer. Checked
+  desktop and 375/320px mobile layouts with no overflow.
