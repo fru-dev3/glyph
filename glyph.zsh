@@ -24,6 +24,7 @@
 #   GLYPH_FLEET_BACKEND=auto|herdr|cmux|zellij|wezterm|tmux   fleet workspace backend
 #   ~/.config/glyph/names.tsv    "<dir-name>\t<Display Name>" overrides
 
+typeset -g GLYPH_VERSION=${GLYPH_VERSION:-0.3.0}
 typeset -g GLYPH_STATE=${GLYPH_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/glyph}
 
 # --- agent adapters ---------------------------------------------------------
@@ -38,14 +39,30 @@ GLYPH_YOLO_FLAG=(
   cursor-agent "--force"
   crush        "--yolo"
   cortex       "--dangerously-allow-all-tool-calls"
+  hermes       "--yolo"
   opencode     ""
   pi           ""
+  omni         ""
 )
+
+# Any agent not listed above can be declared in ~/.config/glyph/agents.tsv as
+#   <command><TAB><auto-approve flag><TAB><label>
+# so a new CLI works without waiting for a Glyph release. Blank flag is fine.
+_glyph_load_extra_agents() {
+  local f=${GLYPH_AGENTS:-$HOME/.config/glyph/agents.tsv} line cmd flag lbl
+  [[ -r $f ]] || return 0
+  while IFS=$'\t' read -r cmd flag lbl; do
+    [[ -z $cmd || $cmd == \#* ]] && continue
+    GLYPH_YOLO_FLAG[$cmd]=$flag
+    [[ -n $lbl ]] && GLYPH_LABEL[$cmd]=$lbl
+  done < "$f"
+}
+_glyph_load_extra_agents
 GLYPH_NAME_FLAG=( claude "-n" )
 GLYPH_LABEL=(
   claude "claude-code"  agy "agy"
   codex "codex"  cursor-agent "cursor"  crush "crush"
-  cortex "cortex"  opencode "opencode"  pi "pi"
+  cortex "cortex"  hermes "hermes"  omni "omni"  opencode "opencode"  pi "pi"
 )
 
 # --- pieces of the mark -----------------------------------------------------
@@ -206,6 +223,28 @@ glyph() {
           && printf "%-14s %-14s %s\n" "$a" "${GLYPH_LABEL[$a]}" "${GLYPH_YOLO_FLAG[$a]:-(no yolo flag)}"
       done ;;
     name) shift; _glyph_compose "${1:-}" "$(_glyph_project "$PWD")" ;;
+    version) print -r -- "glyph ${GLYPH_VERSION}" ;;
+    update)
+      local dest=${XDG_CONFIG_HOME:-$HOME/.config}/glyph/glyph.zsh
+      local url=${GLYPH_UPDATE_URL:-https://raw.githubusercontent.com/fru-dev3/glyph/main/glyph.zsh}
+      local tmp=${TMPDIR:-/tmp}/glyph.update.$$
+      print -r -- "fetching $url"
+      if ! command curl -fsSL "$url" -o "$tmp"; then
+        print -ru2 -- "glyph: download failed"; command rm -f "$tmp"; return 1
+      fi
+      if ! command zsh -n "$tmp" 2>/dev/null; then
+        print -ru2 -- "glyph: refusing to install, the downloaded file does not parse"
+        command rm -f "$tmp"; return 1
+      fi
+      if [[ -r $dest ]] && command cmp -s "$tmp" "$dest"; then
+        command rm -f "$tmp"; print -r -- "already up to date (${GLYPH_VERSION})"; return 0
+      fi
+      command mkdir -p "${dest:h}"
+      [[ -r $dest ]] && command cp "$dest" "$dest.bak"
+      command mv "$tmp" "$dest" || return 1
+      print -r -- "updated $dest"
+      [[ -r $dest.bak ]] && print -r -- "previous version kept at $dest.bak"
+      print -r -- "reload it with: exec zsh" ;;
     hosts)
       local h line ts
       print -r -- "ssh config (~/.ssh/config)"
@@ -230,7 +269,9 @@ glyph name [x] print the mark this directory would produce
 glyph fleet init create example fleets without replacing existing presets
 glyph fleet [p] launch a preset of agents, each in its own marked tmux pane
 glyph presets  list the presets in ~/.config/glyph/fleet.conf
-glyph hosts    machines you can put after a colon in a fleet slot" ;;
+glyph hosts    machines you can put after a colon in a fleet slot
+glyph update   fetch the latest glyph.zsh from GitHub
+glyph version  print the installed version" ;;
   esac
 }
 

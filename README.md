@@ -163,6 +163,8 @@ glyph fleet ci  # a preset of agents, each in its own marked pane
 |---|:-:|---|
 | Claude Code | ✔ real session name | `--dangerously-skip-permissions` |
 | Antigravity (`agy`) | title | `--dangerously-skip-permissions` |
+| Hermes | title | `--yolo` |
+| omni | title | — |
 | Codex | title | `--dangerously-bypass-approvals-and-sandbox` |
 | Cursor | title | `--force` |
 | Crush | title | `--yolo` |
@@ -171,6 +173,30 @@ glyph fleet ci  # a preset of agents, each in its own marked pane
 
 Six agents, five spellings of *"stop asking me to approve every tool call"*.
 `GLYPH_YOLO=1` sends whichever one is right. It is off unless you ask.
+
+## Updating
+
+```sh
+glyph update   # fetch the latest glyph.zsh from GitHub
+exec zsh
+glyph version
+```
+
+Refuses to install a file that does not parse, backs up the previous copy to
+`~/.config/glyph/glyph.zsh.bak`, and never touches your config.
+
+## Adding an agent
+
+Any CLI, without waiting for a release — one tab-separated line per agent in
+`~/.config/glyph/agents.tsv`:
+
+```
+openclaw	--yolo	OpenClaw
+grok	--force	Grok
+```
+
+Columns are command, auto-approve flag, label. These merge over the built-ins,
+so you can correct a flag too.
 
 ## Fleets
 
