@@ -302,6 +302,8 @@
   @media(max-width:620px){
     header{padding:14px 20px}.pad{padding:32px 20px}.col>.pad:first-of-type{padding-top:44px;padding-bottom:48px;gap:20px}.col>.pad:first-of-type h1{font-size:52px}.col>.pad:first-of-type .intro{font-size:15px}.mock-body{grid-template-columns:94px 1fr}.mock-side{padding:15px 10px;font-size:10px}.mock-terminal{padding:17px 13px;font-size:10px}.comparison{grid-template-columns:1fr}.agent-cards{grid-template-columns:1fr 1fr}.sw{display:none}.demo .fields{grid-template-columns:1fr}.demo .agent-picker{grid-column:auto}
   }
+  #install,#agents,#fleet,.docs-only{display:none}.col>.rule:has(+.pad#install),.col>.rule:has(+.pad#agents),.col>.rule:has(+.pad#fleet),.col>.rule:has(+.pad.docs-only){display:none}
+  .home-docs-cta{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:24px 28px;border:1px solid var(--edge2);border-radius:14px;background:var(--panel)}.home-docs-cta h2{margin:0;font-size:20px}.home-docs-cta p{margin:4px 0 0;color:var(--dim);font-size:13px}.home-docs-cta a{white-space:nowrap;color:var(--fg);text-decoration:none;border:1px solid var(--edge2);border-radius:999px;padding:8px 13px;font-size:12px}.home-docs-cta a:hover{border-color:var(--ochre)}
 </style>
 </head>
 <body>
@@ -314,9 +316,7 @@
       <span class="nm">glyph</span>
     </a>
     <span class="sp"></span>
-    <a class="l" href="#install">Install</a>
-    <a class="l" href="#fleet">Fleet</a>
-    <a class="l" href="#agents">Agents</a>
+    <a class="l" href="docs.html">Docs</a>
     <a class="star" href="https://github.com/fru-dev3/glyph"
        aria-label="Star glyph on GitHub">
       <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg>
@@ -416,6 +416,8 @@
       </div>
     </details>
   </div>
+
+  <div class="home-docs-cta"><div><h2>Need the command reference?</h2><p>Install, Fleet, adapters, naming, and configuration live in the docs.</p></div><a href="docs.html">Read the docs →</a></div>
 
   <div class="rule"></div>
   <div class="pad signal-section">
@@ -529,7 +531,7 @@ cloud = claude:studio codex:studio</pre></div>
   </div>
 
   <div class="rule"></div>
-  <div class="pad">
+  <div class="pad docs-only">
     <h2>Make it yours</h2>
     <p class="why-intro">The defaults work without a config. Open a section when you want to change something.</p>
     <div class="settings">
