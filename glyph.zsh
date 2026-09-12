@@ -44,7 +44,7 @@ GLYPH_YOLO_FLAG=(
 )
 GLYPH_NAME_FLAG=( claude "-n" )
 GLYPH_LABEL=(
-  claude "claude-code"  agy "agi"  gemini "gemini-cli"
+  claude "claude-code"  agy "agy"  gemini "gemini-cli"
   codex "codex"  cursor-agent "cursor"  crush "crush"
   cortex "cortex"  opencode "opencode"  pi "pi"
 )

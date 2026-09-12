@@ -40,7 +40,7 @@ Turn glyph on and the same five read:
 
 ```
 billing·acme-api·claude-code·laptop·2026-09-12·0556     ← MacBook Pro
-migration·acme-api·agi·studio·2026-09-12·0602           ← Mac Studio
+migration·acme-api·agy·studio·2026-09-12·0602           ← Mac Studio
 docs·website·codex·mini·2026-09-12·0611                ← Mac mini
 audit·payments·claude-code·windows·2026-09-11·2247      ← Windows box, via WSL
 scrape·atlas·codex·hetzner·2026-09-12·0640              ← cloud server

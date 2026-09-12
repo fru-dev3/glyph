@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>glyph — every agent session, named before it starts</title>
-<meta name="description" content="Shell wrapper that names every Claude, Codex and AGI session with lowercase label, project, agent, machine and time tokens before the process starts.">
+<meta name="description" content="Shell wrapper that names every Claude, Codex and AGY session with lowercase label, project, agent, machine and time tokens before the process starts.">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" href="glyph.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:title" content="glyph — every agent session, named before it starts">
-<meta property="og:description" content="Names every Claude, Codex and AGI session before the process starts.">
+<meta property="og:description" content="Names every Claude, Codex and AGY session before the process starts.">
 <meta property="og:image" content="https://glyph.fru.dev/og.png">
 <meta property="og:url" content="https://glyph.fru.dev/">
 <meta property="og:type" content="website">
@@ -31,12 +31,12 @@
  "downloadUrl":"https://github.com/fru-dev3/glyph",
  "codeRepository":"https://github.com/fru-dev3/glyph",
  "programmingLanguage":"Shell",
- "description":"A zsh wrapper that names every AI coding agent session - Claude, Codex and AGI - with lowercase label, project, agent, machine and time tokens before the process starts.",
+ "description":"A zsh wrapper that names every AI coding agent session - Claude, Codex and AGY - with lowercase label, project, agent, machine and time tokens before the process starts.",
  "license":"https://opensource.org/licenses/MIT",
  "isAccessibleForFree":true,
  "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
  "author":{"@type":"Organization","name":"fru.dev","url":"https://fru.dev"},
- "keywords":"Claude, Codex, AGI, tmux, session naming, remote control, AI coding agents, zsh"}
+ "keywords":"Claude, Codex, AGY, tmux, session naming, remote control, AI coding agents, zsh"}
 </script>
 <style>
   :root{
@@ -341,7 +341,7 @@
           <div><span class="prompt">$</span> glyph ls</div>
           <p><strong>checkout-fix</strong>·acme-api·claude-code·macbook-pro·09:12</p>
           <p><strong>review</strong>·docs·codex·ubuntu-studio·09:08</p>
-          <p><strong>fleet-ci</strong>·glyph·agi·windows-dev·09:03</p>
+          <p><strong>fleet-ci</strong>·glyph·agy·windows-dev·09:03</p>
           <div class="cursor">▮</div>
         </div>
       </div>
@@ -356,8 +356,7 @@
       <div class="carousel-head"><span>Launch one agent</span><div role="tablist" aria-label="Agent launch demos">
         <button type="button" class="demo-tab active" data-demo="claude" role="tab" aria-selected="true">Claude Code</button>
         <button type="button" class="demo-tab" data-demo="codex" role="tab" aria-selected="false">Codex</button>
-        <button type="button" class="demo-tab" data-demo="gemini" role="tab" aria-selected="false">Gemini CLI</button>
-        <button type="button" class="demo-tab" data-demo="agi" role="tab" aria-selected="false">AGI</button>
+        <button type="button" class="demo-tab" data-demo="agy" role="tab" aria-selected="false">AGY</button>
       </div></div>
       <img class="fleet-gif" data-demo-image src="demos/claude.gif" alt="Animated Claude Code launch demo">
     </div>
@@ -377,7 +376,7 @@
         <legend>Agent</legend>
         <select id="agent-select" aria-label="Choose an agent">
           <option value="codex">Codex</option>
-          <option value="agy">AGI</option>
+          <option value="agy">AGY</option>
           <option value="claude" selected>Claude</option>
         </select>
       </fieldset>
@@ -422,7 +421,7 @@
         <h3>With glyph</h3>
         <ul>
           <li><strong>checkout-fix</strong>·acme-api·claude-code·mbp·2026-09-12·0556</li>
-          <li><strong>review</strong>·acme-api·agi·mini·2026-09-12·0602</li>
+          <li><strong>review</strong>·acme-api·agy·mini·2026-09-12·0602</li>
           <li><strong>docs</strong>·website·codex·studio·2026-09-12·0611</li>
         </ul>
         <p>Task · project · agent · machine · date · time</p>
@@ -484,7 +483,7 @@
       <article class="agent-card"><h3><img class="" src="agents/codex.png" alt="" width="28" height="28">Codex</h3>
         <span class="agent-kind">Terminal label</span><code>codex checkout-fix</code>
         <details><summary>Auto-approve flag</summary><code>--dangerously-bypass-approvals-and-sandbox</code></details></article>
-      <article class="agent-card"><h3><img class="" src="agents/agi.png" alt="" width="28" height="28">AGI</h3>
+      <article class="agent-card"><h3><img class="" src="agents/agi.png" alt="" width="28" height="28">AGY</h3>
         <span class="agent-kind">Terminal label</span><code>agy checkout-fix</code>
         <details><summary>Auto-approve flag</summary><code>--dangerously-skip-permissions</code></details></article>
       <article class="agent-card"><h3><img class="" src="agents/claude.png" alt="" width="28" height="28">Claude</h3>
@@ -505,9 +504,6 @@
       <article class="agent-card"><h3><img class="monochrome" src="agents/pi.svg" alt="" width="28" height="28">pi</h3>
         <span class="agent-kind">Terminal label</span><code>pi checkout-fix</code>
         <details><summary>Auto-approve flag</summary><code>No extra flag</code></details></article>
-      <article class="agent-card"><h3><img class="" src="agents/gemini.svg" alt="" width="28" height="28">Gemini CLI</h3>
-        <span class="agent-kind">Terminal label</span><code>gemini checkout-fix</code>
-        <details><summary>Auto-approve flag</summary><code>--yolo</code></details></article>
     </div>
     <p class="note">These labels describe what Glyph currently sets. Terminal labels appear in window titles and <code>glyph ls</code>, not inside the agent's conversation list. Fleet adds persistent pane borders. <code>GLYPH_YOLO=1</code> opts into each adapter's auto-approve flag.</p>
   </div>
@@ -515,26 +511,26 @@
   <div class="rule"></div>
   <div class="pad" id="fleet">
     <h2>Glyph Fleet: open agents together</h2>
-    <p class="why-intro">Glyph Fleet opens a saved group of AI agents together in your terminal—one named pane or tab per agent—so Claude, AGI, Codex, and the rest can work side by side.</p>
+    <p class="why-intro">Glyph Fleet opens a saved group of AI agents together in your terminal—one named pane or tab per agent—so Claude Code, Codex, and AGY can work side by side.</p>
     <div class="fleet-preview" aria-label="Example: three panes opened by the ci fleet">
       <div class="fleet-pane"><img src="agents/claude.png" alt=""><b>Claude</b><code>pane 1 · ci · your project</code></div>
-      <div class="fleet-pane"><img src="agents/agi.png" alt=""><b>AGI</b><code>pane 2 · ci · your project</code></div>
+      <div class="fleet-pane"><img src="agents/agi.png" alt=""><b>AGY</b><code>pane 2 · ci · your project</code></div>
       <div class="fleet-pane"><img src="agents/codex.png" alt=""><b>Codex</b><code>pane 3 · ci · your project</code></div>
     </div>
-    <figure class="fleet-static"><img src="fleet-terminal.png" alt="Static terminal screenshot showing Claude Code, Codex, Gemini CLI, and AGI running in named panes"><figcaption>After launch: one workspace, four named agent sessions.</figcaption></figure>
+    <figure class="fleet-static"><img src="fleet-terminal.png" alt="Static terminal screenshot showing Claude Code, Codex, and AGY running in named panes"><figcaption>After launch: one workspace, named agent sessions.</figcaption></figure>
     <div class="fleet-steps">
       <section class="fleet-step">
         <h3>1. Create a fleet once</h3>
         <p>Choose the agents you want to open together. Glyph keeps the group in your local config.</p>
         <div class="code-block"><div class="code-heading"><span>Create your fleets</span><button type="button" class="copy" data-copy="fleet-init" aria-label="Copy fleet setup command">Copy</button></div>
           <pre id="fleet-init">glyph fleet init</pre></div>
-        <p class="note">Adds <code>ci</code> (Claude, AGI, Codex), <code>review</code> (Claude, Codex), and a <code>cloud</code> example. You need tmux and the agent CLIs to launch them.</p>
+        <p class="note">Adds <code>ci</code> (Claude Code, AGY, Codex), <code>review</code> (Claude Code, Codex), and a <code>cloud</code> example. You need tmux and the agent CLIs to launch them.</p>
         <div class="settings"><details><summary>View or customize the config</summary>
           <p>Saved to <code>~/.config/glyph/fleet.conf</code>, or your <code>GLYPH_FLEET_CONF</code> override. Left of <code>=</code> is the fleet name; right is one agent per pane.</p>
           <div class="code-block"><pre>ci = claude agy codex
 review = claude codex
 cloud = claude:studio codex:studio</pre></div>
-          <p>Replace <code>studio</code> with your SSH host before using the cloud example. AGI uses the command <code>agy</code>.</p>
+        <p>Replace <code>studio</code> with your SSH host before using the cloud example. AGY uses the command <code>agy</code>.</p>
         </details></div>
       </section>
       <section class="fleet-step">
@@ -617,7 +613,7 @@ cloud = claude:studio codex:studio</pre></div>
     var raw=lab.value.trim().split(/\s+/)[0]||'';
     var l=esc(token(raw)), p=esc(token(prj.value||'')), a=agentSelect.value;
     var parts=[];
-    var agentName={claude:'claude-code',codex:'codex',agy:'agi'}[a]||a;
+    var agentName={claude:'claude-code',codex:'codex',agy:'agy'}[a]||a;
     if(l) parts.push('<span class="m1">'+l+'</span>');
     if(p && p.toLowerCase()!==l.toLowerCase()) parts.push('<span class="m2">'+p+'</span>');
     parts.push('<span class="m3">'+esc(agentName)+'</span>');
@@ -643,7 +639,7 @@ cloud = claude:studio codex:studio</pre></div>
     }else{
       cm.textContent='$ '+generatedRun;
       nt.innerHTML='Look for this label in the <b>terminal or tmux window title</b> and <b>glyph ls</b>. '+
-        'Glyph does not rename the conversation or app banner inside '+(a==='agy'?'AGI':'Codex')+'. '+
+        'Glyph does not rename the conversation or app banner inside '+(a==='agy'?'AGY':'Codex')+'. '+
         'The app may replace its terminal title after launch. Copying the raw launch command alone does not apply the label; use the command above with Glyph installed.';
     }
   }
@@ -669,8 +665,9 @@ cloud = claude:studio codex:studio</pre></div>
       }
     });
   });
-  var demoImages={claude:'demos/claude.gif',codex:'demos/codex.gif',gemini:'demos/gemini.gif',agy:'demos/agi.gif'};
+  var demoImages={claude:'demos/claude.gif',codex:'demos/codex.gif',agy:'demos/agy.gif'};
   var demoImage=document.querySelector('[data-demo-image]');
+  Object.keys(demoImages).forEach(function(key){var preload=new Image();preload.src=demoImages[key]});
   document.querySelectorAll('[data-demo]').forEach(function(tab){
     tab.addEventListener('click',function(){
       document.querySelectorAll('[data-demo]').forEach(function(item){
