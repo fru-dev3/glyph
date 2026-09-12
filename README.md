@@ -79,43 +79,53 @@ real session name and rides Remote Control to your phone.
 
 ```sh
 claude
-# → claude -n 'Acme API·mbp·2026-09-12·0648' --remote-control
+# launches:  claude -n 'Acme API·mbp·2026-09-12·0648' --remote-control
 
 claude billing
-# → claude -n 'billing·Acme API·mbp·2026-09-12·0648' --remote-control
+# launches:  claude -n 'billing·Acme API·mbp·2026-09-12·0648' --remote-control
 
 claude billing "fix the webhook retry"
-# → claude -n 'billing·…·0648' --remote-control 'fix the webhook retry'
+# launches:  claude -n 'billing·…' --remote-control 'fix the webhook retry'
 ```
 
 Open claude.ai/code or the phone app and that name is what you see in the list.
 
 ### Antigravity
 
-`agy` has no session-name flag, so the mark goes on the terminal title, the tmux
-window, and `glyph ls`.
+`agy` has no session-name flag, so the label does not go into the command at
+all — it goes on the terminal title, the tmux window and `glyph ls`:
 
 ```sh
 agy migration
-# → agy                      window + title: migration·Acme API·mbp·2026-09-12·0648
+# launches:  agy
+# titles:    migration·Acme API·mbp·2026-09-12·0648
+```
 
+`GLYPH_YOLO=1` is separate from naming. Every agent has a flag meaning "stop
+asking me to approve each tool call", and they all spell it differently. This is
+one switch that sends the right one:
+
+```sh
 GLYPH_YOLO=1 agy migration
-# → agy --dangerously-skip-permissions
+# launches:  agy --dangerously-skip-permissions
+# titles:    migration·Acme API·mbp·2026-09-12·0648
 ```
 
 ### Codex
 
-Same as Antigravity — title, tmux window and registry:
+Same shape, different spelling of the same flag:
 
 ```sh
 codex audit
-# → codex                    window + title: audit·Acme API·mbp·2026-09-12·0648
-
-codex "refactor auth"
-# → codex 'refactor auth'    a phrase is a prompt, so only the project is marked
+# launches:  codex
+# titles:    audit·Acme API·mbp·2026-09-12·0648
 
 GLYPH_YOLO=1 codex audit
-# → codex --dangerously-bypass-approvals-and-sandbox
+# launches:  codex --dangerously-bypass-approvals-and-sandbox
+
+codex "refactor auth"
+# launches:  codex 'refactor auth'
+# a phrase is a prompt, so only the project is marked
 ```
 
 ### Everything else
@@ -129,9 +139,9 @@ glyph fleet ci  # a preset of agents, each in its own marked pane
 
 ## Agents
 
-| Agent | Session name | `GLYPH_YOLO=1` sends |
+| Agent | Carries the mark as | `GLYPH_YOLO=1` sends |
 |---|:-:|---|
-| Claude Code | ✔ real name | `--dangerously-skip-permissions` |
+| Claude Code | ✔ real session name | `--dangerously-skip-permissions` |
 | Antigravity | title | `--dangerously-skip-permissions` |
 | Codex | title | `--dangerously-bypass-approvals-and-sandbox` |
 | Gemini CLI | title | `--yolo` |
@@ -140,8 +150,8 @@ glyph fleet ci  # a preset of agents, each in its own marked pane
 | Cortex | title | `--dangerously-allow-all-tool-calls` |
 | OpenCode · pi | title | — |
 
-Five agents, five spellings of the same idea. `GLYPH_YOLO=1` remembers them for
-you. It is off unless you ask.
+Six agents, five spellings of *"stop asking me to approve every tool call"*.
+`GLYPH_YOLO=1` sends whichever one is right. It is off unless you ask.
 
 ## Fleets
 

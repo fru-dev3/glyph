@@ -129,32 +129,40 @@ one line into <code>~/.zshrc</code>.</p>
 <p>Claude is the one agent that can name its own session, so the mark becomes the
 real session name and rides Remote Control to your phone.</p>
 <pre>claude
-<span class="cmt"># &#8594; claude -n 'Acme API·mbp·2026-09-12·0648' --remote-control</span>
+<span class="cmt"># launches:  claude -n 'Acme API·mbp·2026-09-12·0648' --remote-control</span>
 
 claude billing
-<span class="cmt"># &#8594; claude -n 'billing·Acme API·mbp·2026-09-12·0648' --remote-control</span>
+<span class="cmt"># launches:  claude -n 'billing·Acme API·mbp·2026-09-12·0648' --remote-control</span>
 
 claude billing "fix the webhook retry"
-<span class="cmt"># &#8594; ...--remote-control 'fix the webhook retry'</span></pre>
+<span class="cmt"># launches:  claude -n 'billing·…' --remote-control 'fix the webhook retry'</span></pre>
 
 <h3>Antigravity</h3>
-<p><code>agy</code> has no session-name flag, so the mark goes on the terminal
-title, the tmux window, and <code>glyph ls</code>.</p>
+<p><code>agy</code> has no session-name flag, so the label does not go into the
+command at all — it goes on the terminal title, the tmux window and
+<code>glyph ls</code>.</p>
 <pre>agy migration
-<span class="cmt"># &#8594; agy        window + title: migration·Acme API·mbp·2026-09-12·0648</span>
+<span class="cmt"># launches:  agy</span>
+<span class="cmt"># titles:    migration·Acme API·mbp·2026-09-12·0648</span></pre>
 
-GLYPH_YOLO=1 agy migration
-<span class="cmt"># &#8594; agy --dangerously-skip-permissions</span></pre>
+<p><code>GLYPH_YOLO=1</code> is separate from naming. Every agent has a flag
+meaning &ldquo;stop asking me to approve each tool call&rdquo;, and they all
+spell it differently. This is one switch that sends the right one.</p>
+<pre>GLYPH_YOLO=1 agy migration
+<span class="cmt"># launches:  agy --dangerously-skip-permissions</span>
+<span class="cmt"># titles:    migration·Acme API·mbp·2026-09-12·0648</span></pre>
 
 <h3>Codex</h3>
+<p>Same shape, different spelling of the same flag.</p>
 <pre>codex audit
-<span class="cmt"># &#8594; codex      window + title: audit·Acme API·mbp·2026-09-12·0648</span>
-
-codex "refactor auth"
-<span class="cmt"># &#8594; codex 'refactor auth'   a phrase is a prompt, so only the project is marked</span>
+<span class="cmt"># launches:  codex</span>
+<span class="cmt"># titles:    audit·Acme API·mbp·2026-09-12·0648</span>
 
 GLYPH_YOLO=1 codex audit
-<span class="cmt"># &#8594; codex --dangerously-bypass-approvals-and-sandbox</span></pre>
+<span class="cmt"># launches:  codex --dangerously-bypass-approvals-and-sandbox</span>
+
+codex "refactor auth"
+<span class="cmt"># launches:  codex 'refactor auth'  - a phrase is a prompt, so only the project is marked</span></pre>
 
 <h3>Everything else</h3>
 <pre>glyph ls        <span class="cmt"># recent sessions: when, agent, mark, machine</span>
@@ -177,8 +185,9 @@ lands on the terminal title, the tmux window, and a local registry, so
 <tr><td>Cortex</td><td>title only</td><td><code>--dangerously-allow-all-tool-calls</code></td></tr>
 <tr><td>OpenCode, pi</td><td>title only</td><td>—</td></tr>
 </table>
-<p>Five agents, five spellings of the same idea. <code>GLYPH_YOLO=1</code>
-normalises them and each agent gets its own correct flag. It is off by default.</p>
+<p>Six agents, five spellings of <em>&ldquo;stop asking me to approve every tool
+call&rdquo;</em>. <code>GLYPH_YOLO=1</code> sends whichever one is right. It is off
+unless you ask.</p>
 
 <h2>Fleets</h2>
 <p>Open a whole bench at once, each pane wearing the mark on its border:</p>
