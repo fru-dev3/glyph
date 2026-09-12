@@ -30,6 +30,7 @@
   header img{width:132px;height:132px;flex:none}
   h1{font-size:clamp(48px,9vw,76px);margin:0;letter-spacing:-.03em;line-height:1}
   .tag{color:var(--dust);font-size:clamp(17px,2.6vw,21px);margin-top:10px}
+  h3{font-size:17px;margin:30px 0 10px;color:var(--stone);font-weight:600}
   h2{font-size:15px;text-transform:uppercase;letter-spacing:.14em;color:var(--faint);
      margin:56px 0 16px;font-weight:600}
   p{margin:0 0 18px}
@@ -67,29 +68,41 @@
   <img src="/glyph.svg" alt="A petroglyph figure with a raised marking hand beside a spiral">
   <div>
     <h1>glyph</h1>
-    <div class="tag">One identity for every coding agent you run.</div>
+    <div class="tag">Every agent session, named before it starts.</div>
   </div>
 </header>
 
-<p class="lead">Open your agent sessions on a phone, or come back to a machine
-you walked away from an hour ago, and you get this:</p>
+<p class="lead">Five agents running across two machines. This is what you
+come back to:</p>
 
-<pre class="before">tims-macbook-pro-4-local-transient
-fru-5e
-doc-9b
-zsh</pre>
+<pre class="before">tims-macbook-pro-4-local-transient   <span class="cmt">&#8592; Claude Code, auto-derived</span>
+fru-5e                               <span class="cmt">&#8592; Claude Code, auto-derived</span>
+doc-9b                               <span class="cmt">&#8592; Claude Code on the other machine</span>
+zsh                                  <span class="cmt">&#8592; Codex. no session name at all</span>
+node                                 <span class="cmt">&#8592; Antigravity. same</span></pre>
 
-<p>Which machine? Which project? Started when? You cannot tell without opening
-each one. Claude Code names a session from your first message or auto-derives
-one, and most other agents do not name sessions at all.</p>
+<p>Two of them are the same project. One is on a machine you are not sitting at.
+One has been idle since yesterday. You cannot tell which is which without
+opening all five.</p>
 
-<p><code>glyph</code> cuts one mark into every session before it starts:</p>
+<p>Turn <code>glyph</code> on and the same five read:</p>
 
-<pre class="after"><b>billing·Acme API·mbp·2026-09-12·0556</b></pre>
+<pre class="after"><b>billing·Acme API·mbp·2026-09-12·0556
+migration·Acme API·mini·2026-09-12·0602
+docs·Website·mbp·2026-09-12·0611
+audit·Payments·mbp·2026-09-11·2247
+scrape·Atlas·mini·2026-09-12·0640</b></pre>
 
-<p>Your label, the project, the machine, the moment. A glyph is an incised mark,
-and the oldest thing anyone ever did with one was say <em>this is mine, and I
-was here.</em></p>
+<p>Label, project, machine, moment.</p>
+
+<p>Yes, you can rename a Claude session by hand, or long-press it in the mobile
+app, or type <code>/rename</code> once it is running. glyph does it for
+<strong>every session on every agent at launch</strong>, so there is nothing to
+remember and nothing to clean up later. It earns its keep the moment you are
+running more than one agent, more than one project, or more than one machine —
+exactly when tmux, <a href="https://herdr.dev">herdr</a> and
+<a href="https://github.com/raine/workmux">workmux</a> panes all start looking
+identical.</p>
 
 <h2>Install</h2>
 <pre>git clone https://github.com/fru-dev3/glyph.git
@@ -99,19 +112,45 @@ exec zsh</pre>
 one line into <code>~/.zshrc</code>.</p>
 
 <h2>Use</h2>
-<p>Nothing new to learn. Keep typing what you already type.</p>
-<pre>claude                    <span class="cmt"># Acme API·mbp·2026-09-12·0556</span>
-claude billing            <span class="cmt"># billing·Acme API·mbp·2026-09-12·0556</span>
-claude billing "fix X"    <span class="cmt"># same, and "fix X" is the first prompt</span>
-claude "fix the bug"      <span class="cmt"># a quoted phrase is a prompt, not a label</span>
-agy billing               <span class="cmt"># Antigravity, same mark on the window</span>
-codex billing             <span class="cmt"># Codex, same mark</span></pre>
-<p>A single bare word is your label. Anything with a space in it is a prompt.</p>
+<p>Keep typing the command you already type. The rule is the same everywhere:
+<strong>one bare word is your label, anything with a space is a prompt.</strong></p>
 
-<pre>glyph agents      <span class="cmt"># installed agents and their auto-approve flags</span>
-glyph ls          <span class="cmt"># recent sessions: when, agent, mark, machine</span>
-glyph name deploy <span class="cmt"># the mark this directory would produce</span>
-glyph fleet trio  <span class="cmt"># a preset of agents, each in its own marked pane</span></pre>
+<h3>Claude Code</h3>
+<p>Claude is the one agent that can name its own session, so the mark becomes the
+real session name and rides Remote Control to your phone.</p>
+<pre>claude
+<span class="cmt"># &#8594; claude -n 'Acme API·mbp·2026-09-12·0648' --remote-control</span>
+
+claude billing
+<span class="cmt"># &#8594; claude -n 'billing·Acme API·mbp·2026-09-12·0648' --remote-control</span>
+
+claude billing "fix the webhook retry"
+<span class="cmt"># &#8594; ...--remote-control 'fix the webhook retry'</span></pre>
+
+<h3>Antigravity</h3>
+<p><code>agy</code> has no session-name flag, so the mark goes on the terminal
+title, the tmux window, and <code>glyph ls</code>.</p>
+<pre>agy migration
+<span class="cmt"># &#8594; agy        window + title: migration·Acme API·mbp·2026-09-12·0648</span>
+
+GLYPH_YOLO=1 agy migration
+<span class="cmt"># &#8594; agy --dangerously-skip-permissions</span></pre>
+
+<h3>Codex</h3>
+<pre>codex audit
+<span class="cmt"># &#8594; codex      window + title: audit·Acme API·mbp·2026-09-12·0648</span>
+
+codex "refactor auth"
+<span class="cmt"># &#8594; codex 'refactor auth'   a phrase is a prompt, so only the project is marked</span>
+
+GLYPH_YOLO=1 codex audit
+<span class="cmt"># &#8594; codex --dangerously-bypass-approvals-and-sandbox</span></pre>
+
+<h3>Everything else</h3>
+<pre>glyph ls        <span class="cmt"># recent sessions: when, agent, mark, machine</span>
+glyph agents    <span class="cmt"># installed agents and their auto-approve flags</span>
+glyph name x    <span class="cmt"># the mark this directory would produce</span>
+glyph fleet ci  <span class="cmt"># a preset of agents, each in its own marked pane</span></pre>
 
 <h2>Agents</h2>
 <p>Only Claude Code can name its own session. For every other agent the glyph

@@ -14,10 +14,8 @@
     </radialGradient>
   </defs>
 
-  <path d="M14 46 Q4 130 30 206 Q100 238 182 220 Q232 180 228 94 Q212 20 132 8 Q50 4 14 46 Z"
-        fill="url(#rock)"/>
-  <path d="M14 46 Q4 130 30 206 Q100 238 182 220 Q232 180 228 94 Q212 20 132 8 Q50 4 14 46 Z"
-        fill="none" stroke="#2b1e17" stroke-width="3" opacity="0.5"/>
+  <circle cx="120" cy="120" r="114" fill="url(#rock)"/>
+  <circle cx="120" cy="120" r="114" fill="none" stroke="#2b1e17" stroke-width="3" opacity="0.5"/>
 
   <g filter="url(#peck)">
     <!-- the spiral: the oldest mark there is -->

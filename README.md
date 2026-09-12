@@ -8,36 +8,45 @@
 
 `billing·Acme API·mbp·2026-09-12·0556`
 
-[Install](#install) · [Usage](#usage) · [Agents](#agents) · [glyph.fru.dev](https://glyph.fru.dev)
+[Install](#install) · [Usage](#usage) · [Fleets](#fleets) · [glyph.fru.dev](https://glyph.fru.dev)
 
 </div>
 
 ---
 
-You have four agent sessions open. This is your list:
+Five agents running across two machines. This is what you come back to:
 
 ```
-tims-macbook-pro-4-local-transient
-fru-5e
-doc-9b
-zsh
+tims-macbook-pro-4-local-transient   ← Claude Code, auto-derived
+fru-5e                               ← Claude Code, auto-derived
+doc-9b                               ← Claude Code on the other machine
+zsh                                  ← Codex. no session name at all
+node                                 ← Antigravity. same
 ```
 
-Which machine? Which project? Started when? You have to open each one to find
-out. Claude Code names a session from your first message, and most other agents
-never name one at all.
+Two of them are the same project. One is on a machine you are not sitting at.
+One has been idle since yesterday. You cannot tell which is which without
+opening all five.
 
-With glyph, the same four:
+Turn glyph on and the same five read:
 
 ```
 billing·Acme API·mbp·2026-09-12·0556
 migration·Acme API·mini·2026-09-12·0602
 docs·Website·mbp·2026-09-12·0611
-review·Payments·mini·2026-09-11·2247
+audit·Payments·mbp·2026-09-11·2247
+scrape·Atlas·mini·2026-09-12·0640
 ```
 
-Label, project, machine, moment. Every agent, every machine, before the first
-token.
+Label, project, machine, moment.
+
+Yes, you can rename a Claude session by hand, or long-press it in the mobile
+app, or type `/rename` once it is running. glyph does it for **every session on
+every agent at launch**, so there is nothing to remember and nothing to clean up
+later. It earns its keep the moment you are running more than one agent, more
+than one project, or more than one machine — which is exactly when
+[tmux](https://github.com/tmux/tmux), [herdr](https://herdr.dev) and
+[workmux](https://github.com/raine/workmux) panes all start looking identical.
 
 ## Install
 
@@ -51,34 +60,69 @@ agent CLI.
 
 ## Usage
 
-Nothing new to type. Keep using the command you already use:
+Keep typing the command you already type. The rule is the same everywhere:
+
+> **one bare word is your label. anything with a space is a prompt.**
+
+### Claude Code
+
+Claude is the one agent that can name its own session, so the mark becomes the
+real session name and rides Remote Control to your phone.
 
 ```sh
-claude                  # Acme API·mbp·2026-09-12·0556
-claude billing          # billing·Acme API·mbp·2026-09-12·0556
-claude billing "fix X"  # ...and "fix X" is the first prompt
-claude "fix the bug"    # a quoted phrase is a prompt, not a label
-agy billing             # Antigravity, same mark
-codex billing           # Codex, same mark
+claude
+# → claude -n 'Acme API·mbp·2026-09-12·0648' --remote-control
+
+claude billing
+# → claude -n 'billing·Acme API·mbp·2026-09-12·0648' --remote-control
+
+claude billing "fix the webhook retry"
+# → claude -n 'billing·…·0648' --remote-control 'fix the webhook retry'
 ```
 
-One bare word is your label. Anything with a space is a prompt.
+Open claude.ai/code or the phone app and that name is what you see in the list.
+
+### Antigravity
+
+`agy` has no session-name flag, so the mark goes on the terminal title, the tmux
+window, and `glyph ls`.
+
+```sh
+agy migration
+# → agy                      window + title: migration·Acme API·mbp·2026-09-12·0648
+
+GLYPH_YOLO=1 agy migration
+# → agy --dangerously-skip-permissions
+```
+
+### Codex
+
+Same as Antigravity — title, tmux window and registry:
+
+```sh
+codex audit
+# → codex                    window + title: audit·Acme API·mbp·2026-09-12·0648
+
+codex "refactor auth"
+# → codex 'refactor auth'    a phrase is a prompt, so only the project is marked
+
+GLYPH_YOLO=1 codex audit
+# → codex --dangerously-bypass-approvals-and-sandbox
+```
+
+### Everything else
 
 ```sh
 glyph ls        # recent sessions: when, agent, mark, machine
 glyph agents    # what is installed, and each one's auto-approve flag
-glyph fleet ci  # a preset of agents, each in its own marked pane
+glyph name x    # print the mark this directory would produce
 ```
 
 ## Agents
 
-Claude Code takes the mark as a real session name, so it reaches your phone
-through Remote Control. Every other agent gets it on the terminal title, the
-tmux window, and `glyph ls`.
-
 | Agent | Session name | `GLYPH_YOLO=1` sends |
 |---|:-:|---|
-| Claude Code | ✔ | `--dangerously-skip-permissions` |
+| Claude Code | ✔ real name | `--dangerously-skip-permissions` |
 | Antigravity | title | `--dangerously-skip-permissions` |
 | Codex | title | `--dangerously-bypass-approvals-and-sandbox` |
 | Gemini CLI | title | `--yolo` |
@@ -92,7 +136,8 @@ you. It is off unless you ask.
 
 ## Fleets
 
-Open a whole bench at once, local or over ssh, each pane wearing the mark:
+Open a whole bench at once, local or over ssh, each pane wearing the mark on its
+border:
 
 ```ini
 # ~/.config/glyph/fleet.conf
@@ -145,8 +190,7 @@ Two things that cost real debugging time:
   empties the positional parameters.
 
 glyph is an identity layer, not a multiplexer. It launches panes and gets out of
-the way — pair it with [workmux](https://github.com/raine/workmux) or plain tmux
-for the rest.
+the way — pair it with workmux, herdr or plain tmux for the rest.
 
 </details>
 
