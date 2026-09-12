@@ -3,441 +3,195 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Glyph — name every AI agent session before it starts</title>
-<meta name="description" content="Glyph is a zsh wrapper that names every Claude Code, Codex, AGY, Cursor and Cortex session with your label, the project, the machine and the time — so a session list reads at a glance, in tmux, in Herdr, or on your phone.">
+<title>Glyph — every agent session, named</title>
+<meta name="description" content="Glyph names every AI agent session — Claude Code, Codex, AGY, Cursor — with your label, the project, the machine and the time, before the process starts.">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" href="glyph.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="canonical" href="https://glyph.fru.dev/">
 <meta name="robots" content="index,follow,max-image-preview:large">
-<meta name="theme-color" content="#ffffff">
-<meta name="author" content="fru.dev">
+<meta name="theme-color" content="#0e1013">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Glyph">
-<meta property="og:title" content="Glyph — name every AI agent session before it starts">
-<meta property="og:description" content="Your label, the project, the machine, the time. On every agent, before the process starts.">
+<meta property="og:title" content="Glyph — every agent session, named">
+<meta property="og:description" content="Your label, the project, the machine, the time. Before the process starts.">
 <meta property="og:url" content="https://glyph.fru.dev/">
 <meta property="og:image" content="https://glyph.fru.dev/og.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://glyph.fru.dev/og.png">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"SoftwareApplication","name":"Glyph",
- "applicationCategory":"DeveloperApplication","operatingSystem":"macOS, Linux, Windows (WSL)",
- "url":"https://glyph.fru.dev/","codeRepository":"https://github.com/fru-dev3/glyph",
- "downloadUrl":"https://github.com/fru-dev3/glyph","programmingLanguage":"Shell",
- "license":"https://opensource.org/licenses/MIT","isAccessibleForFree":true,
- "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
- "author":{"@type":"Organization","name":"fru.dev","url":"https://fru.dev"},
- "description":"A zsh wrapper that names every AI coding agent session with your label, the project, the machine and the time, before the process starts."}
+"applicationCategory":"DeveloperApplication","operatingSystem":"macOS, Linux, Windows (WSL)",
+"url":"https://glyph.fru.dev/","codeRepository":"https://github.com/fru-dev3/glyph",
+"programmingLanguage":"Shell","license":"https://opensource.org/licenses/MIT",
+"isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
+"author":{"@type":"Organization","name":"fru.dev","url":"https://fru.dev"},
+"description":"Names every AI coding agent session with your label, the project, the machine and the time."}
 </script>
 <style>
   :root{
-    --bg:#ffffff; --bg2:#f6f7f9; --line:#e6e8ec; --line2:#d3d7de;
-    --ink:#0a0b0d; --ink2:#3d4350; --ink3:#6b7280;
-    --brand:#3b4ce2; --brand-soft:#eef0fe;
-    --ok:#0f9d58;
+    --bg:#ffffff; --bg2:#f5f6f8; --line:#e5e7eb; --ink:#08090b; --ink2:#5b6270; --ink3:#8b93a1;
+    --a:#3b4ce2; --b:#0f9d58; --c:#d9822b; --d:#8b5cf6;
     --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
     --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
-    --r:14px;
   }
-  :root:not([data-theme="light"]){}
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --bg:#0e1013; --bg2:#15181d; --line:#242832; --line2:#333947;
-      --ink:#f2f4f8; --ink2:#b3bac7; --ink3:#8891a1;
-      --brand:#8ea2ff; --brand-soft:#1c2340;
-      --ok:#4ade80;
-    }
-  }
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+    --bg:#0b0c0e; --bg2:#121418; --line:#22262e; --ink:#f4f6fa; --ink2:#a9b1bf; --ink3:#79818f;
+    --a:#8ea2ff; --b:#4ade80; --c:#f0a860; --d:#b394ff;}}
   :root[data-theme="dark"]{
-    --bg:#0e1013; --bg2:#15181d; --line:#242832; --line2:#333947;
-    --ink:#f2f4f8; --ink2:#b3bac7; --ink3:#8891a1;
-    --brand:#8ea2ff; --brand-soft:#1c2340;
-    --ok:#4ade80;
-  }
+    --bg:#0b0c0e; --bg2:#121418; --line:#22262e; --ink:#f4f6fa; --ink2:#a9b1bf; --ink3:#79818f;
+    --a:#8ea2ff; --b:#4ade80; --c:#f0a860; --d:#b394ff;}
   *{box-sizing:border-box}
-  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
-       font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
-  .w{max-width:1440px;margin:0 auto;padding:0 44px}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;
+       -webkit-font-smoothing:antialiased}
+  .w{max-width:1500px;margin:0 auto;padding:0 40px}
   a{color:inherit;text-decoration:none}
-  code,kbd{font-family:var(--mono)}
-  h1,h2,h3{letter-spacing:-.03em;margin:0}
+  code{font-family:var(--mono)}
 
-  nav{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 86%,transparent);
-      backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-  nav .w{display:flex;align-items:center;gap:20px;height:64px}
-  .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px}
-  .logo img{width:28px;height:28px;border-radius:7px}
-  .nav-sp{flex:1}
-  nav a.n{color:var(--ink2);font-size:14.5px;font-weight:500}
-  nav a.n:hover{color:var(--ink)}
-  .gh{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);
-      border-radius:9px;padding:7px 12px;font-size:14px;font-weight:600}
-  .gh svg{width:15px;height:15px}
-  .gh b{color:var(--ink3);font-weight:600;font-variant-numeric:tabular-nums;
-        padding-left:8px;border-left:1px solid var(--line)}
-  .gh:hover{border-color:var(--ink3)}
-  .tt{display:grid;place-items:center;width:34px;height:34px;border:1px solid var(--line2);
-      border-radius:9px;background:var(--bg);color:var(--ink2);cursor:pointer;flex:none}
-  .tt:hover{color:var(--ink);border-color:var(--ink3)}
-  .tt svg{width:16px;height:16px}
-  .tt .moon{display:none}
-  :root[data-theme="dark"] .tt .sun{display:none}
-  :root[data-theme="dark"] .tt .moon{display:block}
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]) .tt .sun{display:none}
-    :root:not([data-theme="light"]) .tt .moon{display:block}
-  }
+  nav{display:flex;align-items:center;gap:16px;height:68px;max-width:1500px;margin:0 auto;padding:0 40px}
+  .lg{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px;letter-spacing:-.02em}
+  .lg img{width:26px;height:26px}
+  .sp{flex:1}
+  nav a.q,nav button{color:var(--ink2);font-size:14px;font-weight:500}
+  nav a.q:hover{color:var(--ink)}
+  .ic{display:grid;place-items:center;width:32px;height:32px;border:1px solid var(--line);
+      border-radius:8px;background:transparent;color:var(--ink2);cursor:pointer}
+  .ic:hover{color:var(--ink)}.ic svg{width:15px;height:15px}
+  .ic .moon{display:none}
+  :root[data-theme="dark"] .ic .sun{display:none}:root[data-theme="dark"] .ic .moon{display:block}
+  @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .ic .sun{display:none}
+    :root:not([data-theme="light"]) .ic .moon{display:block}}
+  .star{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:8px;
+        padding:6px 11px;font-size:13.5px;font-weight:600}
+  .star b{color:var(--ink3);padding-left:7px;border-left:1px solid var(--line);font-variant-numeric:tabular-nums}
 
-  .hero{padding:88px 0 72px;border-bottom:1px solid var(--line)}
-  .hero-grid>*{min-width:0}
-  .hero-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:72px;align-items:center}
-  .pill{display:inline-flex;align-items:center;gap:8px;background:var(--brand-soft);
-        color:var(--brand);border-radius:999px;padding:5px 12px;font-size:13px;
-        font-weight:600;margin-bottom:22px}
-  .pill i{width:6px;height:6px;border-radius:50%;background:var(--brand);display:block}
-  h1{font-size:clamp(40px,4.4vw,64px);line-height:1.04;margin-bottom:18px}
-  h1 span{color:var(--ink3)}
-  .sub{font-size:18px;color:var(--ink2);max-width:46ch;margin:0 0 30px}
-  .cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-  .btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:12px 20px;
-       font-weight:600;font-size:15px;border:1px solid transparent}
-  .btn-p{background:var(--ink);color:var(--bg)}
-  .btn-p:hover{background:#242832}
-  .btn-s{border-color:var(--line2);color:var(--ink)}
-  .btn-s:hover{border-color:var(--ink3)}
-  .cmdline{max-width:100%;display:flex;align-items:center;gap:10px;margin-top:18px;background:var(--bg2);
-           border:1px solid var(--line);border-radius:10px;padding:10px 10px 10px 14px;max-width:520px}
-  .cmdline code{flex:1;min-width:0;font-size:12.5px;color:var(--ink2);white-space:nowrap;
-                overflow:hidden;text-overflow:ellipsis}
-  .cmdline .d{color:var(--brand);font-weight:700}
-  .cpy{border:1px solid var(--line2);background:var(--bg);border-radius:7px;padding:6px 11px;
-       font:600 12.5px var(--sans);cursor:pointer;color:var(--ink2);flex:none}
-  .cpy:hover{border-color:var(--ink3);color:var(--ink)}
+  /* 1 — the transformation */
+  .one{padding:clamp(48px,7vw,110px) 0 clamp(56px,7vw,104px);text-align:center}
+  .you{font:600 clamp(13px,1.4vw,16px)/1 var(--mono);color:var(--ink3);margin-bottom:clamp(20px,2.6vw,30px)}
+  .you b{color:var(--ink);font-weight:600}
+  .you .p{color:var(--a)}
+  .arw{display:block;margin:0 auto clamp(20px,2.6vw,30px);width:20px;height:26px;color:var(--ink3);opacity:.5}
+  .mark{font-family:var(--mono);font-weight:700;letter-spacing:-.035em;
+        font-size:clamp(30px,7.4vw,104px);line-height:1.02;word-break:break-word}
+  .mark .s{white-space:nowrap}
+  .mark .x{color:var(--ink3);font-weight:400}
+  .s1{color:var(--a)}.s2{color:var(--b)}.s3{color:var(--c)}.s4{color:var(--d)}
+  .keys{display:flex;justify-content:center;flex-wrap:wrap;gap:clamp(14px,2.4vw,38px);
+        margin-top:clamp(18px,2.4vw,30px);font:600 11.5px var(--sans);letter-spacing:.11em;
+        text-transform:uppercase}
+  .keys i{display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:7px}
+  .keys span{color:var(--ink3)}
+  .sub{margin:clamp(26px,3.2vw,40px) auto 0;max-width:34ch;color:var(--ink2);font-size:clamp(15px,1.5vw,18px)}
+  .go{display:flex;justify-content:center;gap:10px;margin-top:26px;flex-wrap:wrap}
+  .cmd{display:inline-flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line);
+       border-radius:10px;padding:9px 9px 9px 14px;max-width:100%}
+  .cmd code{font-size:12.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cp{border:1px solid var(--line);background:var(--bg);border-radius:7px;padding:6px 11px;
+      font:600 12px var(--sans);color:var(--ink2);cursor:pointer;flex:none}
+  .cp:hover{color:var(--ink)}
 
-  .app{border:1px solid var(--line2);border-radius:var(--r);overflow:hidden;background:var(--bg);
-       box-shadow:0 1px 2px rgba(10,11,13,.05),0 18px 40px -12px rgba(10,11,13,.16)}
-  .app-bar{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line);
-           background:var(--bg2)}
-  .app-bar i{width:9px;height:9px;border-radius:50%;background:var(--line2);display:block}
-  .app-bar b{margin-left:6px;font:600 12px var(--sans);color:var(--ink3)}
-  .app-bar em{margin-left:auto;font-style:normal;font-size:11.5px;color:var(--ok);font-weight:600}
-  .sess{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line)}
-  .sess:last-child{border-bottom:0}
-  .sess img{width:19px;height:19px;flex:none;object-fit:contain}
-  .sess .nm{font:12.5px var(--mono);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .sess .nm b{font-weight:700;color:var(--ink)}
-  .sess .nm span{color:var(--ink3)}
-  .dot{width:7px;height:7px;border-radius:50%;flex:none;margin-left:auto}
-  .dot.on{background:var(--ok);box-shadow:0 0 0 3px rgba(15,157,88,.13)}
-  .dot.off{background:var(--line2)}
+  /* 2 — the wall */
+  .two{background:var(--bg2);border-block:1px solid var(--line);padding:clamp(44px,5vw,76px) 0}
+  .cap{text-align:center;color:var(--ink2);font-size:clamp(15px,1.5vw,18px);margin:0 0 clamp(26px,3vw,40px)}
+  .cap b{color:var(--ink);font-weight:600}
+  .wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:10px}
+  .chip{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:10px;
+        padding:11px 13px;background:var(--bg);font:12px var(--mono);min-width:0}
+  .chip img{width:16px;height:16px;flex:none;object-fit:contain}
+  .chip .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .chip.gh{opacity:.45}
+  .chip.gh .t{color:var(--ink3)}
+  .chip .t b{font-weight:700}
+  .chip .t em{font-style:normal;color:var(--ink3)}
 
-  section{padding:72px 0;border-bottom:1px solid var(--line)}
-  .tint{background:var(--bg2)}
-  .lead{max-width:64ch;margin-bottom:34px}
-  .kicker{font:700 12px var(--sans);letter-spacing:.1em;text-transform:uppercase;
-          color:var(--brand);margin:0 0 12px}
-  h2{font-size:clamp(27px,3.4vw,38px);line-height:1.15;margin-bottom:12px}
-  .lead p{color:var(--ink2);font-size:17px;margin:0}
-
-  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-  .box{border:1px solid var(--line);border-radius:var(--r);background:var(--bg);overflow:hidden}
-  .box h4{margin:0;padding:12px 16px;border-bottom:1px solid var(--line);font-size:12px;
-          letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);font-weight:700}
-  .box.b h4{color:#b4443a}.box.g h4{color:var(--ok)}
-  .box ul{list-style:none;margin:0;padding:14px 16px;font:12.5px/2.1 var(--mono)}
-  .box.b ul{color:var(--ink3);opacity:.75}
-  .box.g ul b{font-weight:700}.box.g ul span{color:var(--ink3)}
-
-  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-  .step{border:1px solid var(--line);border-radius:var(--r);padding:24px;background:var(--bg)}
-  .step .n{width:26px;height:26px;border-radius:8px;background:var(--ink);color:var(--bg);
-           display:grid;place-items:center;font:700 13px var(--sans);margin-bottom:14px}
-  .step h3{font-size:17px;margin-bottom:6px}
-  .step p{margin:0;color:var(--ink2);font-size:14.5px}
-  .step code.bk{display:block;margin-top:12px;background:var(--bg2);border:1px solid var(--line);
-             border-radius:8px;padding:9px 11px;font-size:12px;overflow-x:auto;white-space:nowrap}
-
-  .agents{display:grid;grid-template-columns:repeat(10,1fr);gap:10px}
-  .agent{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--bg);text-align:center}
-  .agent img{width:26px;height:26px;object-fit:contain;margin-bottom:9px}
-  .agent b{display:block;font-size:14px;margin-bottom:3px}
-  .agent span{font-size:11.5px;color:var(--ink3)}
-  .agent.k{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
-  .agent.k span{color:var(--brand);font-weight:600}
-
-  .feat{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
-  .feat h3{font-size:17px;margin-bottom:7px}
-  .feat p{margin:0;color:var(--ink2);font-size:14.5px}
-  .feat .ic{width:34px;height:34px;border-radius:9px;background:var(--brand-soft);color:var(--brand);
-            display:grid;place-items:center;margin-bottom:13px}
-  .feat .ic svg{width:18px;height:18px}
-
-  .fl{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:48px;align-items:center}
-  .panes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  .pane{border:1px solid var(--line2);border-radius:11px;overflow:hidden;background:var(--bg)}
-  .pane .t{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--bg2);
-           border-bottom:1px solid var(--line);font:600 10.5px var(--mono);color:var(--ink2);
-           white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .pane .t img{width:12px;height:12px;object-fit:contain;flex:none}
-  .pane .b{height:70px;padding:10px;display:flex;flex-direction:column;gap:5px}
-  .pane .b i{display:block;height:5px;border-radius:3px;background:var(--line)}
-  .pane .b i:nth-child(2){width:78%}.pane .b i:nth-child(3){width:54%}.pane .b i:nth-child(4){width:66%}
-
-  pre.blk{background:#0b0d11;color:#e9ebf0;border-radius:var(--r);padding:18px 20px;
-          overflow-x:auto;font-size:13px;line-height:1.85;margin:0}
-  pre.blk .c{color:#8d94a6}
-  pre.blk .k{color:#9db4ff}
-
-  .ref{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px}
-  .refcol h3{font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px}
-  .rows{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg)}
-  .row{display:flex;align-items:center;gap:14px;padding:10px 13px;border-bottom:1px solid var(--line);cursor:pointer}
-  .row:last-child{border-bottom:0}
-  .row:hover{background:var(--brand-soft)}
-  .row code{font-size:12.3px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:none;max-width:58%}
-  .row span{font-size:12.5px;color:var(--ink3);margin-left:auto;text-align:right}
-  .row.copied span{color:var(--ok);font-weight:600}
-  pre.blk.sm{font-size:12.5px;padding:14px 16px}
-  .blkwrap{position:relative}
-  .blkwrap .cpy{position:absolute;top:10px;right:10px;background:#1b1e26;border-color:#333844;color:#c9cedb}
-  .blkwrap .cpy:hover{color:#fff;border-color:#5a6070}
-  @media(max-width:940px){.ref{grid-template-columns:1fr}}
-  footer{padding:36px 0 56px;color:var(--ink3);font-size:14px}
-  footer .w{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
-  footer a{color:var(--brand);font-weight:500}
-
-  @media(max-width:1180px){.agents{grid-template-columns:repeat(5,1fr)}}
-  @media(max-width:940px){
-    .hero-grid,.fl{grid-template-columns:1fr;gap:44px}
-    .agents{grid-template-columns:repeat(3,1fr)}
-    .feat,.steps{grid-template-columns:1fr;gap:24px}
-    nav a.n{display:none}
-  }
-  @media(max-width:600px){
-    .w{padding:0 18px}.hero{padding:56px 0 48px}section{padding:58px 0}
-    .cmp,.agents,.panes{grid-template-columns:1fr}
-  }
+  /* 3 — commands */
+  .three{padding:clamp(44px,5vw,76px) 0 clamp(56px,6vw,92px)}
+  .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .r{display:flex;align-items:center;gap:14px;border:1px solid var(--line);border-radius:10px;
+     padding:13px 15px;cursor:pointer;background:var(--bg);min-width:0}
+  .r:hover{border-color:var(--a)}
+  .r code{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .r span{margin-left:auto;color:var(--ink3);font-size:12.5px;white-space:nowrap}
+  .r.ok span{color:var(--b);font-weight:600}
+  .more{text-align:center;margin-top:30px;color:var(--ink3);font-size:14px}
+  .more a{color:var(--a);font-weight:600}
+  footer{border-top:1px solid var(--line);padding:26px 0 44px;color:var(--ink3);font-size:13.5px}
+  footer .w{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  footer a{color:var(--a)}
+  @media(max-width:860px){.grid3{grid-template-columns:1fr}nav a.q{display:none}.w{padding:0 22px}nav{padding:0 22px}}
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="w">
-    <a class="logo" href="/"><img src="glyph.svg" alt="Glyph">Glyph</a>
-    <div class="nav-sp"></div>
-    <a class="n" href="#how">How it works</a>
-    <a class="n" href="#agents">Agents</a>
-    <a class="n" href="docs.html">Docs</a>
-    <button class="tt" id="tt" aria-label="Toggle colour theme" title="Toggle theme">
-      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>
-      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
-    </button>
-    <a class="gh" href="https://github.com/fru-dev3/glyph">
-      <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-      Star <b id="stars">—</b>
-    </a>
-  </div>
+  <a class="lg" href="/"><img src="glyph.svg" alt="">Glyph</a>
+  <div class="sp"></div>
+  <a class="q" href="docs.html">Docs</a>
+  <button class="ic" id="tt" aria-label="Toggle theme">
+    <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+  </button>
+  <a class="star" href="https://github.com/fru-dev3/glyph">★ Star <b id="stars">—</b></a>
 </nav>
 
-<header class="hero">
-  <div class="w hero-grid">
-    <div>
-      <span class="pill"><i></i>Works with 10 agent CLIs</span>
-      <h1>Name every agent session <span>before it starts.</span></h1>
-      <p class="sub">Your label, the project, the machine, the time — stamped on
-      every agent session before the process starts.</p>
-      <div class="cta">
-        <a class="btn btn-p" href="#install">Install Glyph</a>
-        <a class="btn btn-s" href="docs.html">Read the docs</a>
-      </div>
-      <div class="cmdline">
-        <span class="d">$</span>
-        <code id="cmd">git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; ./install.sh</code>
-        <button class="cpy" id="cpy">Copy</button>
-      </div>
-    </div>
-
-    <div class="app" aria-label="A list of running agent sessions">
-      <div class="app-bar"><i></i><i></i><i></i><b>Sessions</b><em>4 running</em></div>
-      <div class="sess"><img src="agents/claude.png" alt=""><span class="nm"><b>checkout-fix</b><span>·acme-api·laptop·09:12</span></span><span class="dot on"></span></div>
-      <div class="sess"><img src="agents/codex.png" alt=""><span class="nm"><b>review</b><span>·docs·studio·09:08</span></span><span class="dot on"></span></div>
-      <div class="sess"><img src="agents/agi.png" alt=""><span class="nm"><b>fleet-ci</b><span>·glyph·desktop·09:03</span></span><span class="dot on"></span></div>
-      <div class="sess"><img src="agents/cursor.png" alt=""><span class="nm"><b>audit</b><span>·payments·hetzner·08:47</span></span><span class="dot off"></span></div>
-    </div>
-  </div>
-</header>
-
-<section class="tint">
+<!-- 1 -->
+<section class="one">
   <div class="w">
-    <div class="lead">
-      <p class="kicker">The problem</p>
-      <h2>Four agents running. None of them say who they are.</h2>
-      <p>Claude Code names a session from your first message. Most agents never name one at all.</p>
+    <p class="you"><span class="p">$</span> claude <b>billing</b></p>
+    <svg class="arw" viewBox="0 0 20 26" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 1v22M3 16l7 7 7-7"/></svg>
+    <h1 class="mark"><span class="s"><span class="s1">billing</span><span class="x">·</span><span class="s2">acme-api</span></span><span class="x">·</span><span class="s"><span class="s3">laptop</span><span class="x">·</span><span class="s4">0912</span></span></h1>
+    <div class="keys">
+      <span><i style="background:var(--a)"></i>your label</span>
+      <span><i style="background:var(--b)"></i>project</span>
+      <span><i style="background:var(--c)"></i>machine</span>
+      <span><i style="background:var(--d)"></i>started</span>
     </div>
-    <div class="cmp">
-      <div class="box b"><h4>Without Glyph</h4>
-        <ul><li>rivers-macbook-pro-4-local-transient</li><li>agent-5e</li><li>doc-9b</li><li>zsh</li><li>node</li></ul>
-      </div>
-      <div class="box g"><h4>With Glyph</h4>
-        <ul>
-          <li><b>checkout-fix</b><span>·acme-api·laptop·0912</span></li>
-          <li><b>review</b><span>·docs·studio·0908</span></li>
-          <li><b>fleet-ci</b><span>·glyph·desktop·0903</span></li>
-          <li><b>audit</b><span>·payments·hetzner·0847</span></li>
-          <li><b>scrape</b><span>·atlas·hetzner·0640</span></li>
-        </ul>
-      </div>
+    <p class="sub">Glyph names every agent session before the process starts.</p>
+    <div class="go">
+      <span class="cmd"><code id="cmd">git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; ./install.sh</code><button class="cp" id="cp">Copy</button></span>
     </div>
   </div>
 </section>
 
-<section id="how">
+<!-- 2 -->
+<section class="two">
   <div class="w">
-    <div class="lead">
-      <p class="kicker">How it works</p>
-      <h2>Keep typing the command you already type.</h2>
-      <p>One bare word is your label. Anything with a space is a prompt.</p>
-    </div>
-    <div class="steps">
-      <div class="step"><div class="n">1</div><h3>Install once</h3>
-        <p>One file, one line in <code>.zshrc</code>.</p>
-        <code class="bk">./install.sh &amp;&amp; exec zsh</code></div>
-      <div class="step"><div class="n">2</div><h3>Run an agent</h3>
-        <p>Add a label. The rest is filled in.</p>
-        <code class="bk">claude checkout-fix</code></div>
-      <div class="step"><div class="n">3</div><h3>Read the list</h3>
-        <p>tmux, Herdr, the web app, your phone.</p>
-        <code class="bk">checkout-fix·acme-api·laptop·0912</code></div>
+    <p class="cap">Ten agents. <b>One naming scheme.</b></p>
+    <div class="wall">
+      <div class="chip gh"><img src="agents/claude.png" alt=""><span class="t">rivers-macbook-pro-4-local</span></div>
+      <div class="chip gh"><img src="agents/codex.png" alt=""><span class="t">zsh</span></div>
+      <div class="chip gh"><img src="agents/agi.png" alt=""><span class="t">node</span></div>
+      <div class="chip gh"><img src="agents/cursor.png" alt=""><span class="t">agent-5e</span></div>
+      <div class="chip"><img src="agents/claude.png" alt=""><span class="t"><b>checkout-fix</b><em>·acme-api·laptop·0912</em></span></div>
+      <div class="chip"><img src="agents/codex.png" alt=""><span class="t"><b>review</b><em>·docs·studio·0908</em></span></div>
+      <div class="chip"><img src="agents/agi.png" alt=""><span class="t"><b>fleet-ci</b><em>·glyph·desktop·0903</em></span></div>
+      <div class="chip"><img src="agents/cursor.png" alt=""><span class="t"><b>audit</b><em>·payments·hetzner·0847</em></span></div>
+      <div class="chip"><img src="agents/crush.png" alt=""><span class="t"><b>scrape</b><em>·atlas·hetzner·0640</em></span></div>
+      <div class="chip"><img src="agents/cortex.svg" alt=""><span class="t"><b>warehouse</b><em>·bi·studio·0821</em></span></div>
+      <div class="chip"><img src="agents/opencode.svg" alt=""><span class="t"><b>docs</b><em>·website·laptop·0755</em></span></div>
+      <div class="chip"><img src="agents/pi.svg" alt=""><span class="t"><b>triage</b><em>·inbox·mini·0712</em></span></div>
     </div>
   </div>
 </section>
 
-<section id="agents" class="tint">
+<!-- 3 -->
+<section class="three">
   <div class="w">
-    <div class="lead">
-      <p class="kicker">Compatibility</p>
-      <h2>Ten agents, one naming scheme.</h2>
-      <p>Claude Code takes it as the real session name. Everywhere else it lands on the window title and <code>glyph ls</code>.</p>
+    <p class="cap">Every command. <b>Click to copy.</b></p>
+    <div class="grid3">
+      <div class="r"><code>claude billing</code><span>named session</span></div>
+      <div class="r"><code>codex review</code><span>marks the window</span></div>
+      <div class="r"><code>glyph ls</code><span>what is running</span></div>
+      <div class="r"><code>glyph fleet ci</code><span>several agents at once</span></div>
+      <div class="r"><code>glyph hosts</code><span>ssh + tailscale</span></div>
+      <div class="r"><code>glyph update</code><span>latest version</span></div>
+      <div class="r"><code>GLYPH_YOLO=1 codex audit</code><span>auto-approve</span></div>
+      <div class="r"><code>GLYPH_DRYRUN=1 claude x</code><span>preview only</span></div>
+      <div class="r"><code>claude billing:mini</code><span>run it over ssh</span></div>
     </div>
-    <div class="agents">
-      <div class="agent k"><img src="agents/claude.png" alt=""><b>Claude Code</b><span>Session name</span></div>
-      <div class="agent"><img src="agents/codex.png" alt=""><b>Codex</b><span>Title</span></div>
-      <div class="agent"><img src="agents/agi.png" alt=""><b>AGY</b><span>Title</span></div>
-      <div class="agent"><img src="agents/cursor.png" alt=""><b>Cursor</b><span>Title</span></div>
-      <div class="agent"><img src="agents/crush.png" alt=""><b>Crush</b><span>Title</span></div>
-      <div class="agent"><img src="agents/cortex.svg" alt=""><b>Cortex</b><span>Title</span></div>
-      <div class="agent"><img src="agents/opencode.svg" alt=""><b>OpenCode</b><span>Title</span></div>
-      <div class="agent"><img src="agents/pi.svg" alt=""><b>pi</b><span>Title</span></div>
-      <div class="agent"><img src="glyph.svg" alt=""><b>Hermes</b><span>Title</span></div>
-      <div class="agent"><img src="glyph.svg" alt=""><b>omni</b><span>Title</span></div>
-    </div>
-    <p style="margin-top:20px;color:var(--ink3);font-size:14px">Missing one? Add it in
-    <code>~/.config/glyph/agents.tsv</code> — command, auto-approve flag, label.</p>
-  </div>
-</section>
-
-<section>
-  <div class="w">
-    <div class="feat">
-      <div><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8"/></svg></div>
-        <h3>One flag for every agent</h3>
-        <p>Every CLI spells auto-approve differently. <code>GLYPH_YOLO=1</code> sends the right one.</p></div>
-      <div><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></div>
-        <h3>Fleets</h3>
-        <p>One preset, several agents, each in its own marked pane.</p></div>
-      <div><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg></div>
-        <h3>Remote machines</h3>
-        <p>Name a machine after a colon. SSH config, known_hosts and Tailscale resolved for you.</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="tint">
-  <div class="w fl">
-    <div>
-      <p class="kicker">Fleets</p>
-      <h2>Open the whole bench with one command.</h2>
-      <p style="color:var(--ink2);margin:0 0 22px">Eleven presets ship with Glyph. Every pane wears the mark.</p>
-      <pre class="blk"><span class="c"># ~/.config/glyph/fleet.conf</span>
-review = claude codex
-ci     = claude agy codex
-cloud  = claude:mini codex:mini
-
-<span class="k">$</span> glyph fleet ci</pre>
-    </div>
-    <div class="panes">
-      <div class="pane"><div class="t"><img src="agents/claude.png" alt="">ci·acme</div><div class="b"><i></i><i></i><i></i><i></i></div></div>
-      <div class="pane"><div class="t"><img src="agents/agi.png" alt="">ci·acme</div><div class="b"><i></i><i></i><i></i><i></i></div></div>
-      <div class="pane"><div class="t"><img src="agents/codex.png" alt="">ci·acme</div><div class="b"><i></i><i></i><i></i><i></i></div></div>
-    </div>
-  </div>
-</section>
-
-<section id="install">
-  <div class="w">
-    <div class="lead">
-      <p class="kicker">Install</p>
-      <h2>zsh, MIT, one file. No daemon.</h2>
-      <p>One file in <code>~/.config/glyph/</code>, one line in <code>.zshrc</code>.</p>
-    </div>
-    <pre class="blk">git clone https://github.com/fru-dev3/glyph.git
-cd glyph &amp;&amp; ./install.sh &amp;&amp; exec zsh
-
-<span class="c"># check it without launching anything</span>
-GLYPH_DRYRUN=1 claude checkout-fix</pre>
-  </div>
-</section>
-
-<section id="reference" class="tint">
-  <div class="w">
-    <div class="lead">
-      <p class="kicker">Reference</p>
-      <h2>Everything, copy-paste ready.</h2>
-      <p>Full detail in the <a href="docs.html" style="color:var(--brand);font-weight:600">docs</a>.</p>
-    </div>
-    <div class="ref">
-      <div class="refcol">
-        <h3>Commands</h3>
-        <div class="rows">
-          <div class="row"><code>claude checkout-fix</code><span>Named session + Remote Control</span></div>
-          <div class="row"><code>codex review</code><span>Marks the window and the registry</span></div>
-          <div class="row"><code>glyph ls</code><span>Recent sessions</span></div>
-          <div class="row"><code>glyph agents</code><span>Installed agents and their flags</span></div>
-          <div class="row"><code>glyph hosts</code><span>SSH + Tailscale machines</span></div>
-          <div class="row"><code>glyph presets</code><span>Fleet presets</span></div>
-          <div class="row"><code>glyph fleet ci</code><span>Launch a fleet</span></div>
-          <div class="row"><code>glyph update</code><span>Get the latest version</span></div>
-        </div>
-      </div>
-      <div class="refcol">
-        <h3>Settings</h3>
-        <div class="rows">
-          <div class="row"><code>GLYPH_YOLO=1</code><span>Auto-approve, per-agent flag</span></div>
-          <div class="row"><code>GLYPH_DRYRUN=1</code><span>Print the argv, launch nothing</span></div>
-          <div class="row"><code>GLYPH_MACHINE=laptop</code><span>Override the machine tag</span></div>
-          <div class="row"><code>GLYPH_OFF=1</code><span>Label only, no machine or time</span></div>
-          <div class="row"><code>GLYPH_SEP=-</code><span>Change the separator</span></div>
-          <div class="row"><code>GLYPH_FMT=%H%M</code><span>Change the timestamp</span></div>
-          <div class="row"><code>GLYPH_RC=0</code><span>Skip Remote Control</span></div>
-          <div class="row"><code>GLYPH_TITLE=0</code><span>Leave titles alone</span></div>
-        </div>
-      </div>
-      <div class="refcol">
-        <h3>Files</h3>
-        <div class="rows">
-          <div class="row"><code>~/.config/glyph/fleet.conf</code><span>Fleet presets</span></div>
-          <div class="row"><code>~/.config/glyph/names.tsv</code><span>Project name overrides</span></div>
-          <div class="row"><code>~/.config/glyph/agents.tsv</code><span>Add your own agent</span></div>
-          <div class="row"><code>~/.local/state/glyph/sessions.tsv</code><span>Local session log</span></div>
-        </div>
-        <h3 style="margin-top:26px">Add an agent</h3>
-        <pre class="blk sm">openclaw&#9;--yolo&#9;OpenClaw</pre>
-      </div>
-    </div>
+    <p class="more">Presets, adapters and settings in the <a href="docs.html">docs</a>.</p>
   </div>
 </section>
 
@@ -449,31 +203,31 @@ GLYPH_DRYRUN=1 claude checkout-fix</pre>
 </footer>
 
 <script>
-document.getElementById('cpy').addEventListener('click',function(){
-  navigator.clipboard.writeText(document.getElementById('cmd').innerText);
-  this.textContent='Copied'; setTimeout(function(){document.getElementById('cpy').textContent='Copy'},1500);
-});
-document.querySelectorAll('pre.blk').forEach(function(pre){
-  var w=document.createElement('div'); w.className='blkwrap';
-  pre.parentNode.insertBefore(w,pre); w.appendChild(pre);
-  var b=document.createElement('button'); b.className='cpy'; b.textContent='Copy';
-  b.addEventListener('click',function(){
-    navigator.clipboard.writeText(pre.innerText);
-    b.textContent='Copied'; setTimeout(function(){b.textContent='Copy'},1500);
+(function(){
+  var r=document.documentElement,s=null;
+  try{s=localStorage.getItem('glyph-theme')}catch(e){}
+  if(s)r.setAttribute('data-theme',s);
+  document.getElementById('tt').onclick=function(){
+    var d=r.getAttribute('data-theme')==='dark'||(!r.getAttribute('data-theme')&&matchMedia('(prefers-color-scheme: dark)').matches);
+    var n=d?'light':'dark';r.setAttribute('data-theme',n);
+    try{localStorage.setItem('glyph-theme',n)}catch(e){}
+  };
+  document.getElementById('cp').onclick=function(){
+    navigator.clipboard.writeText(document.getElementById('cmd').innerText);
+    var b=this;b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1500);
+  };
+  document.querySelectorAll('.r').forEach(function(el){
+    el.onclick=function(){
+      var s=el.querySelector('span'),o=s.textContent;
+      navigator.clipboard.writeText(el.querySelector('code').innerText);
+      el.classList.add('ok');s.textContent='copied';
+      setTimeout(function(){el.classList.remove('ok');s.textContent=o},1200);
+    };
   });
-  w.appendChild(b);
-});
-document.querySelectorAll('.row').forEach(function(r){
-  r.addEventListener('click',function(){
-    var c=r.querySelector('code'), s=r.querySelector('span'), old=s.textContent;
-    navigator.clipboard.writeText(c.innerText);
-    r.classList.add('copied'); s.textContent='Copied';
-    setTimeout(function(){r.classList.remove('copied'); s.textContent=old},1300);
-  });
-});
-fetch('https://api.github.com/repos/fru-dev3/glyph').then(function(r){return r.json()}).then(function(d){
-  if(typeof d.stargazers_count==='number') document.getElementById('stars').textContent=d.stargazers_count;
-}).catch(function(){});
+  fetch('https://api.github.com/repos/fru-dev3/glyph').then(function(r){return r.json()})
+   .then(function(d){if(typeof d.stargazers_count==='number')document.getElementById('stars').textContent=d.stargazers_count})
+   .catch(function(){});
+})();
 </script>
 </body>
 </html>
