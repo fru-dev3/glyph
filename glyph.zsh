@@ -226,6 +226,9 @@ glyph() {
     version) print -r -- "glyph ${GLYPH_VERSION}" ;;
     update)
       local dest=${XDG_CONFIG_HOME:-$HOME/.config}/glyph/glyph.zsh
+      # Follow a symlink and write the file it points at. Installs that link
+      # ~/.config/glyph/glyph.zsh into a synced folder must keep the link.
+      [[ -L $dest ]] && dest=${dest:A}
       local url=${GLYPH_UPDATE_URL:-https://raw.githubusercontent.com/fru-dev3/glyph/main/glyph.zsh}
       local tmp=${TMPDIR:-/tmp}/glyph.update.$$
       print -r -- "fetching $url"
