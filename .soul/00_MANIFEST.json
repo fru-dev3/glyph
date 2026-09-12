@@ -1,9 +1,10 @@
 {
-  "title": "Nametag",
-  "product": "claude-nametag",
+  "title": "Glyph",
+  "product": "glyph",
   "type": "cli",
   "language": "zsh",
-  "summary": "Readable names for Claude Code Remote Control sessions.",
-  "entry": "nametag.zsh",
-  "install": "./install.sh"
+  "summary": "One identity for every coding agent you run: Claude Code, Antigravity, Codex, Gemini and friends.",
+  "entry": "glyph.zsh",
+  "install": "./install.sh",
+  "site": "glyph.fru.dev"
 }
