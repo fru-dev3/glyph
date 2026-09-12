@@ -57,3 +57,11 @@
   Website setup is one copyable command, with config details collapsed.
   Verified fresh/existing configs, no trailing newline, dry run, custom path,
   browser clipboard and mobile layout. Installed wrapper updated locally.
+
+- Agent identity is now included in launch marks: label, project, agent, machine,
+  date/time. Claude uses `Claude Code`; AGI uses `AGI`; other adapters use their
+  display labels. Herdr remains the recommended outer workspace manager; avoid
+  nested Glyph tmux fleets inside Herdr unless a standalone fleet is intended.
+- Updated the vault-linked installed shell wrapper and verified the composed mark
+  plus the existing smoke suite. Website/docs examples updated; no deploy made
+  for this change yet.

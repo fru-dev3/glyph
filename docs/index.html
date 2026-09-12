@@ -335,7 +335,7 @@
           <li><strong>review</strong>·Acme API·mini·2026-09-12·0602</li>
           <li><strong>docs</strong>·Website·studio·2026-09-12·0611</li>
         </ul>
-        <p>Task · project · machine · date · time</p>
+        <p>Task · project · agent · machine · date · time</p>
       </article>
     </div>
     <p class="why-takeaway"><b>Named at launch. Every time.</b>
@@ -369,7 +369,7 @@
     <h2>Use</h2>
     <div class="cmds">
       <div class="k">Label</div>
-      <div class="v"><span class="p">$</span> claude billing <span class="c">→ billing·Acme API·laptop·0648</span></div>
+      <div class="v"><span class="p">$</span> claude billing <span class="c">→ billing·Acme API·Claude·laptop·0648</span></div>
       <div class="k">Prompt</div>
       <div class="v"><span class="p">$</span> claude "fix the retry" <span class="c">→ a phrase is a prompt, not a label</span></div>
       <div class="k">Both</div>
@@ -528,9 +528,11 @@ cloud = claude:studio codex:studio</pre></div>
     var raw=lab.value.trim().split(/\s+/)[0]||'';
     var l=esc(raw), p=esc(title(prj.value||'')), a=document.querySelector('input[name="agent"]:checked').value;
     var parts=[];
+    var agentName={claude:'Claude Code',codex:'Codex',agy:'AGI'}[a]||a;
     if(l) parts.push('<span class="m1">'+l+'</span>');
     if(p && p.toLowerCase()!==l.toLowerCase()) parts.push('<span class="m2">'+p+'</span>');
-    parts.push('<span class="m3">laptop</span>');
+    parts.push('<span class="m3">'+esc(agentName)+'</span>');
+    parts.push('<span class="m4">laptop</span>');
     parts.push('<span class="m4">'+when+'</span>');
     mk.innerHTML=parts.join('<span class="md">\u00b7</span>');
     var plain=mk.textContent;

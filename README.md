@@ -6,7 +6,7 @@
 
 **Every agent session, named before it starts.**
 
-`billing·Acme API·mbp·2026-09-12·0556`
+`billing·Acme API·Claude Code·mbp·2026-09-12·0556`
 
 [![stars](https://img.shields.io/github/stars/fru-dev3/glyph?style=flat&label=stars&color=C4A35A&labelColor=1c1712)](https://github.com/fru-dev3/glyph/stargazers)
 [![license](https://img.shields.io/badge/license-MIT-C4A35A?style=flat&labelColor=1c1712)](LICENSE)
@@ -39,14 +39,14 @@ node                                 ← Antigravity. same
 Turn glyph on and the same five read:
 
 ```
-billing·Acme API·laptop·2026-09-12·0556     ← MacBook Pro
-migration·Acme API·studio·2026-09-12·0602   ← Mac Studio
-docs·Website·mini·2026-09-12·0611           ← Mac mini
-audit·Payments·desktop·2026-09-11·2247      ← Windows box, via WSL
-scrape·Atlas·hetzner·2026-09-12·0640        ← cloud server
+billing·Acme API·Claude Code·laptop·2026-09-12·0556     ← MacBook Pro
+migration·Acme API·AGI·studio·2026-09-12·0602           ← Mac Studio
+docs·Website·Codex·mini·2026-09-12·0611                ← Mac mini
+audit·Payments·Claude Code·desktop·2026-09-11·2247      ← Windows box, via WSL
+scrape·Atlas·Codex·hetzner·2026-09-12·0640              ← cloud server
 ```
 
-Label · project · machine · date · time. Every agent, every machine, set before
+Label · project · agent · machine · date · time. Every agent, every machine, set before
 the first token.
 
 **You could do this by hand.** Rename a Claude session with `/rename`, or
@@ -89,7 +89,7 @@ claude
 # launches:  claude -n 'Acme API·mbp·2026-09-12·0648' --remote-control
 
 claude billing
-# launches:  claude -n 'billing·Acme API·mbp·2026-09-12·0648' --remote-control
+# launches:  claude -n 'billing·Acme API·Claude Code·mbp·2026-09-12·0648' --remote-control
 
 claude billing "fix the webhook retry"
 # launches:  claude -n 'billing·…' --remote-control 'fix the webhook retry'

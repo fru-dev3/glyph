@@ -1,6 +1,6 @@
 # glyph - one identity for every coding agent you run.
 #
-#   claude billing   ->  billing·Acme API·mbp·2026-09-12·0556
+#   claude billing   ->  billing·Acme API·Claude·mbp·2026-09-12·0556
 #   agy billing      ->  same name, on the terminal and tmux window
 #   codex billing    ->  same
 #
@@ -93,10 +93,11 @@ _glyph_project() {
 }
 
 _glyph_compose() {
-  local g=$1 pj=$2 sep=${GLYPH_SEP:-·}
+  local g=$1 pj=$2 agent=${3:-} sep=${GLYPH_SEP:-·}
   local -a parts
   [[ -n $g ]] && parts+=("$g")
   [[ -n $pj && ${(L)pj} != ${(L)g} ]] && parts+=("$pj")
+  [[ -n $agent ]] && parts+=("${GLYPH_LABEL[$agent]:-$agent}")
   if [[ -z ${GLYPH_OFF:-} ]]; then
     parts+=("$(_glyph_machine)")
     parts+=("$(command date +${GLYPH_FMT:-%Y-%m-%d${sep}%H%M})")
@@ -162,7 +163,7 @@ _glyph_launch() {
   if [[ -n $nameflag ]]; then
     for (( i = 1; i <= $#cargs; i++ )); do
       if [[ $cargs[i] == (-n|--name) && -n ${cargs[i+1]:-} ]]; then
-        cargs[i+1]=$(_glyph_compose "$cargs[i+1]" "$proj")
+        cargs[i+1]=$(_glyph_compose "$cargs[i+1]" "$proj" "$agent")
         [[ ${GLYPH_RC:-1} == 1 && " $* " != *" --remote-control "* && " $* " != *" --rc "* ]] \
           && pre+=(--remote-control)
         _glyph_title "$cargs[i+1]"; _glyph_log "$agent" "$cargs[i+1]"
@@ -185,7 +186,7 @@ _glyph_launch() {
     set -- --prompt-interactive "$@"
   fi
 
-  local mark=$(_glyph_compose "$given" "$proj")
+  local mark=$(_glyph_compose "$given" "$proj" "$agent")
   if [[ -n $mark ]]; then
     [[ -n $nameflag ]] && pre+=("$nameflag" "$mark")
     _glyph_title "$mark"; _glyph_log "$agent" "$mark"

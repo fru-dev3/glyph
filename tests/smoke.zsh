@@ -28,7 +28,7 @@ assert_eq "$(agy -p 'fix the retry')" $'<-p>\n<fix the retry>' 'AGY print pass-t
 assert_eq "$(agy models)" '<models>' 'AGY management pass-through'
 assert_eq "$(GLYPH_YOLO=1 agy billing)" '<--dangerously-skip-permissions>' 'AGY opt-in auto approval'
 assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch codex billing)" 'codex' 'Codex consumes label'
-assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch claude billing)" "claude -n 'billing·Acme API·test·stamp' --remote-control" 'Claude naming'
+assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch claude billing)" "claude -n 'billing·Acme API·Claude Code·test·stamp' --remote-control" 'Claude naming'
 for adapter in gemini cursor-agent crush cortex opencode pi; do
   assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch "$adapter" billing)" "$adapter" "$adapter consumes label"
 done
