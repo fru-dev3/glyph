@@ -237,28 +237,63 @@ _glyph_fleet_slots() {              # $1 = preset name -> slots on stdout
   local conf=$(_glyph_fleet_conf) line
   [[ -r $conf ]] || return 1
   line=$(command grep -m1 -E "^[[:space:]]*$1[[:space:]]*=" "$conf" 2>/dev/null) || return 1
-  print -r -- "${line#*=}"
+  line=${line#*=}
+  print -r -- "${line%%\#*}"
 }
 
 _glyph_fleet_init() {
   emulate -L zsh
-  local conf=$(_glyph_fleet_conf) preset line added=0
+  local conf=$(_glyph_fleet_conf) preset body note added=0 wrote_header=0
+
+  # name|slots|what it is for. Only presets whose agents you have installed will
+  # launch; the rest are here as a starting point to edit.
+  local -a examples=(
+    'solo|claude|one agent, named. the everyday case'
+    'review|claude codex|two vendors on the same diff, for a second opinion'
+    'duo|claude gemini|Anthropic and Google side by side'
+    'crosscheck|claude codex gemini|three vendors when the answer has to be right'
+    'ci|claude agy codex|the original three-up bench'
+    'bench|claude codex gemini agy|everything local, one pane each'
+    'google|gemini agy|the Google stack on its own'
+    'pair|claude cursor-agent|a terminal agent beside an editor-native one'
+    'light|crush opencode|lightweight runners for cheap, quick passes'
+    'split|claude codex:studio|one local, one on a remote box'
+    'spread|claude claude:studio|the same agent on two machines'
+    'cloud|claude:studio codex:studio|both agents on the remote box'
+  )
+
   if [[ -n ${GLYPH_DRYRUN:-} ]]; then
-    print -r -- "would add missing ci, review and cloud presets to $conf"
+    print -r -- "would add up to $#examples presets to $conf:"
+    for line in $examples; do
+      printf '  %-11s %s\n' "${line%%|*}" "${${line#*|}%%|*}"
+    done
     return 0
   fi
+
   command mkdir -p "${conf:h}" || return 1
   command touch "$conf" || return 1
-  for line in 'ci = claude agy codex' 'review = claude codex' 'cloud = claude:studio codex:studio'; do
-    preset=${line%% *}
+  if [[ ! -s $conf ]]; then
+    printf '%s\n%s\n' '# glyph fleets: <name> = <agent>[:<ssh-host>] ...' \
+                       '# launch one with: glyph fleet <name>' >> "$conf" || return 1
+    wrote_header=1
+  fi
+
+  local line
+  for line in $examples; do
+    preset=${line%%|*}
+    body=${${line#*|}%%|*}
+    note=${line##*|}
     if ! command grep -qE "^[[:space:]]*${preset}[[:space:]]*=" "$conf"; then
-      printf '\n%s\n' "$line" >> "$conf" || return 1
+      printf '\n# %s\n%s = %s\n' "$note" "$preset" "$body" >> "$conf" || return 1
       (( added += 1 ))
     fi
   done
+
   print -r -- "fleet config: $conf ($added presets added; existing definitions kept)"
-  print -r -- "start a local fleet: glyph fleet ci"
-  print -r -- "cloud is an example: replace studio with your SSH host before using it"
+  print -r -- "see them all:  glyph presets"
+  print -r -- "start one:     glyph fleet review"
+  print -r -- "presets with a host after ':' (split, spread, cloud) are examples -"
+  print -r -- "replace 'studio' with one of your own SSH hosts before using them."
 }
 
 _glyph_fleet_backend() {
@@ -277,23 +312,37 @@ _glyph_fleet_backend() {
 _glyph_fleet_herdr() {
   local preset=$1 mark=$2; shift 2
   command -v herdr >/dev/null 2>&1 || { print -ru2 -- 'glyph: Herdr backend needs herdr'; return 1; }
-  local slot agent machine label tab_output tab_id command_text
+  local slot agent machine label tab_output tab_id pane_id command_text plist entry
   for slot in "$@"; do
     agent=${slot%%:*}; machine=${slot#*:}
     [[ $machine == $slot ]] && machine=local
-    [[ $machine == local ]] || { print -ru2 -- "glyph: Herdr backend does not support SSH slot '$slot'; use tmux backend"; return 1; }
+    [[ $machine == local ]] || { print -ru2 -- "glyph: Herdr backend does not support SSH slot '$slot'; run it with GLYPH_FLEET_BACKEND=tmux"; return 1; }
     label="${GLYPH_LABEL[$agent]:-$agent} · $mark"
     if [[ -n ${GLYPH_DRYRUN:-} ]]; then
       print -r -- "herdr tab  $label  ($agent $preset)"
       continue
     fi
+
     tab_output=$(command herdr tab create --cwd "$PWD" --label "$label" --no-focus 2>/dev/null) || return 1
     tab_id=$(print -r -- "$tab_output" | command sed -n 's/.*"tab_id":"\([^"]*\)".*/\1/p')
     [[ -n $tab_id ]] || { print -ru2 -- 'glyph: could not read Herdr tab id'; return 1; }
-    # Start through an interactive zsh so the installed Glyph wrapper supplies
-    # the agent-specific flags and title. The tab itself carries the full mark.
+
+    # A fresh Herdr tab already owns one shell pane. Run the agent IN that pane.
+    # `herdr agent start --tab` would add a second pane, leaving every tab with
+    # an idle shell sitting next to the agent.
+    plist=$(command herdr pane list 2>/dev/null) || return 1
+    pane_id=""
+    plist=${plist//\},\{/$'\n'}
+    for entry in ${(f)plist}; do
+      if [[ $entry == *"\"tab_id\":\"$tab_id\""* ]]; then
+        pane_id=${${entry##*\"pane_id\":\"}%%\"*}
+        break
+      fi
+    done
+    [[ -n $pane_id ]] || { print -ru2 -- "glyph: could not find the pane for Herdr tab $tab_id"; return 1; }
+
     command_text="${agent} ${(q)preset}"
-    command herdr agent start "$agent" --cwd "$PWD" --tab "$tab_id" --no-focus -- zsh -lic "$command_text" >/dev/null || return 1
+    command herdr pane run "$pane_id" "$command_text" >/dev/null || return 1
   done
 }
 
