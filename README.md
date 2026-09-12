@@ -1,4 +1,4 @@
-<img src="assets/glyph.svg" width="132" align="right" alt="Glyph">
+<img src="assets/glyph-512.png" width="140" align="right" alt="Glyph">
 
 # glyph
 
@@ -31,7 +31,7 @@ here.*
 ## Install
 
 ```sh
-git clone https://github.com/<you>/glyph.git
+git clone https://github.com/fru-dev3/glyph.git
 cd glyph && ./install.sh
 exec zsh
 ```
@@ -58,6 +58,8 @@ A single bare word is your label. Anything with a space in it is a prompt.
 glyph agents      # which agents are installed, and their auto-approve flags
 glyph ls          # recent sessions: when, agent, mark, machine
 glyph name deploy # print the mark this directory would produce
+glyph fleet trio  # a preset of agents, each in its own marked pane
+glyph presets     # what fleet presets are defined
 ```
 
 ## Agents
@@ -83,6 +85,27 @@ Auto-approve is **off** by default. `GLYPH_YOLO=1` turns it on and each agent
 gets its own correct flag, so you stop remembering which one spells it `--yolo`
 and which spells it `--dangerously-bypass-approvals-and-sandbox`.
 
+## Fleets
+
+A preset opens several marked agents at once, locally or over ssh, each in its
+own tmux pane with the mark on the border.
+
+```
+# ~/.config/glyph/fleet.conf
+default = claude agy
+review  = claude claude:mini
+trio    = claude agy codex
+```
+
+```sh
+glyph fleet trio          # three panes, one mark
+glyph fleet claude:mini agy   # ad-hoc, no preset needed
+glyph presets             # what is defined
+```
+
+A slot is `<agent>[:<machine>]`, where the machine is an ssh host. Remote panes
+`cd` to the same path and fall back to a login shell if the agent is missing.
+
 ## Configuration
 
 | Variable | Effect |
@@ -96,6 +119,7 @@ and which spells it `--dangerously-bypass-approvals-and-sandbox`.
 | `GLYPH_TITLE=0` | Do not retitle the terminal or tmux window |
 | `GLYPH_LOG=0` | Do not record sessions locally |
 | `GLYPH_DRYRUN=1` | Print the argv instead of launching |
+| `GLYPH_FLEET_CONF` | Path to the fleet preset file |
 
 The machine tag comes from `hostname -s`: a MacBook Pro becomes `mbp`, a Mac
 mini `mini`, a MacBook Air `air`. Project names come from the git repo's
@@ -108,8 +132,10 @@ directory name, title-cased (`acme-api` → `Acme API`); override any of them in
 `opencode export`, pass through untouched, so scripts and CI behave exactly as
 before. An explicit `--remote-control <name>` is respected as given.
 
-`glyph` does not manage worktrees, panes, or fleets. It is an identity layer,
-not a multiplexer, and it composes with whatever you already use.
+`glyph` does not manage worktrees or long-lived sessions. Fleets only launch
+panes and then get out of the way. It is an identity layer, not a multiplexer:
+pair it with [workmux](https://github.com/raine/workmux) or plain tmux for the
+rest.
 
 ## Why a shell wrapper and not a plugin
 

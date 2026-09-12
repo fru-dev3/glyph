@@ -196,8 +196,96 @@ glyph() {
           && printf "%-14s %-14s %s\n" "$a" "${GLYPH_LABEL[$a]}" "${GLYPH_YOLO_FLAG[$a]:-(no yolo flag)}"
       done ;;
     name) shift; _glyph_compose "${1:-}" "$(_glyph_project "$PWD")" ;;
+    fleet) shift; glyph-fleet "$@" ;;
+    presets)
+      local conf=$(_glyph_fleet_conf)
+      [[ -r $conf ]] && command grep -E "^[[:space:]]*[a-zA-Z0-9_-]+[[:space:]]*=" "$conf" \
+        || print -r -- "no presets yet: write them to $conf" ;;
     *) print -r -- "glyph ls [n]   recent sessions
 glyph agents   installed agents and their auto-approve flags
-glyph name [x] print the mark this directory would produce" ;;
+glyph name [x] print the mark this directory would produce
+glyph fleet [p] launch a preset of agents, each in its own marked tmux pane
+glyph presets  list the presets in ~/.config/glyph/fleet.conf" ;;
   esac
+}
+
+# --- fleet: several marked agents at once ------------------------------------
+# A preset is a line in ~/.config/glyph/fleet.conf:
+#
+#   default = claude agy codex
+#   review  = claude claude:mini
+#   pair    = claude:mini agy
+#
+# Each slot is <agent>[:<machine>]. A machine is an ssh host, or "local".
+# Every pane is launched through the same wrapper, so every pane carries the
+# mark - and the pane border shows it.
+_glyph_fleet_conf() { print -r -- "${GLYPH_FLEET_CONF:-$HOME/.config/glyph/fleet.conf}"; }
+
+_glyph_fleet_slots() {              # $1 = preset name -> slots on stdout
+  local conf=$(_glyph_fleet_conf) line
+  [[ -r $conf ]] || return 1
+  line=$(command grep -m1 -E "^[[:space:]]*$1[[:space:]]*=" "$conf" 2>/dev/null) || return 1
+  print -r -- "${line#*=}"
+}
+
+glyph-fleet() {
+  emulate -L zsh
+  local preset=${1:-default}; shift 2>/dev/null
+  local -a slots
+  if [[ $preset == *:* || -n ${GLYPH_YOLO_FLAG[${preset%%:*}]:-} ]]; then
+    slots=("$preset" "$@")          # slots given directly on the command line
+    preset="ad-hoc"
+  else
+    slots=(${=$(_glyph_fleet_slots "$preset")}) || true
+    if (( ! $#slots )); then
+      print -ru2 -- "glyph: no preset '$preset' in $(_glyph_fleet_conf)"
+      return 1
+    fi
+  fi
+
+  command -v tmux >/dev/null 2>&1 || { print -ru2 -- "glyph: fleet needs tmux"; return 1; }
+
+  local mark=$(_glyph_compose "$preset" "$(_glyph_project "$PWD")")
+  local session="glyph-${preset}-$(command date +%H%M%S)"
+  local n=$#slots i agent machine cmd label
+  local -a panes
+
+  if [[ -n ${GLYPH_DRYRUN:-} ]]; then
+    print -r -- "session $session  ($n panes)  mark: $mark"
+    for i in {1..$n}; do
+      agent=${slots[i]%%:*}; machine=${slots[i]#*:}
+      [[ $machine == $slots[i] ]] && machine=local
+      print -r -- "  pane $i  $agent on $machine"
+    done
+    return 0
+  fi
+
+  panes[1]=$(command tmux new-session -d -s "$session" -c "$PWD" -PF '#{pane_id}')
+  for (( i = 2; i <= n; i++ )); do
+    panes[i]=$(command tmux split-window -t "$session" -c "$PWD" -PF '#{pane_id}')
+    command tmux select-layout -t "$session" tiled >/dev/null 2>&1
+  done
+  command tmux select-layout -t "$session" tiled >/dev/null 2>&1
+  command tmux set-option -t "$session" pane-border-status top >/dev/null 2>&1
+  # #{@label}, not #{pane_title}: an agent sets its own OSC title and would
+  # overwrite anything we put in pane_title.
+  command tmux set-option -t "$session" pane-border-format ' #{@label} ' >/dev/null 2>&1
+
+  for (( i = 1; i <= n; i++ )); do
+    agent=${slots[i]%%:*}; machine=${slots[i]#*:}
+    [[ $machine == $slots[i] ]] && machine=local
+    label="${GLYPH_LABEL[$agent]:-$agent}"
+    if [[ $machine == local ]]; then
+      cmd="$agent ${(q)mark}"
+    else
+      label="$label @$machine"
+      cmd="ssh -t ${(q)machine} 'cd ${(q)PWD} 2>/dev/null; $agent ${(q)mark} || \$SHELL -l'"
+    fi
+    command tmux set-option -p -t "$panes[i]" @label "$label · $mark" >/dev/null 2>&1
+    command tmux send-keys -t "$panes[i]" "$cmd" C-m
+  done
+
+  _glyph_log "fleet:$preset" "$mark"
+  if [[ -n ${TMUX:-} ]]; then command tmux switch-client -t "$session"
+  else command tmux attach -t "$session"; fi
 }
