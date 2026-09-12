@@ -175,7 +175,14 @@ Six agents, five spellings of *"stop asking me to approve every tool call"*.
 
 ## Fleets
 
-Open a whole bench at once, each pane wearing the mark on its border:
+Set up example fleets with one command (existing definitions are kept):
+
+```sh
+glyph fleet init
+```
+
+Then run `glyph fleet ci` from your project folder. Fleet needs tmux and the
+agent CLIs installed. Customize the generated config when needed:
 
 ```ini
 # ~/.config/glyph/fleet.conf

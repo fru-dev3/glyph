@@ -43,5 +43,18 @@ glyph fleet ci
 glyph fleet remote
 [[ $(< "$GLYPH_TEST_TMUX") == *'ssh -t studio'* ]] || { print -ru2 -- 'FAIL: remote fleet command'; exit 1; }
 [[ ! -e "$GLYPH_STATE/sessions.tsv" ]] || { print -ru2 -- 'FAIL: disabled log wrote state'; exit 1; }
+export GLYPH_FLEET_CONF="$test_dir/nested/new-fleet.conf"
+GLYPH_DRYRUN=1 glyph fleet init >/dev/null
+[[ ! -e $GLYPH_FLEET_CONF ]] || { print -ru2 -- 'FAIL: init dry run wrote config'; exit 1; }
+glyph fleet init >/dev/null
+assert_eq "$(_glyph_fleet_slots ci)" ' claude agy codex' 'init creates ci'
+initial=$(< "$GLYPH_FLEET_CONF")
+glyph fleet init >/dev/null
+assert_eq "$(< "$GLYPH_FLEET_CONF")" "$initial" 'init is idempotent'
+printf 'ci = pi' > "$GLYPH_FLEET_CONF"
+glyph fleet init >/dev/null
+assert_eq "$(_glyph_fleet_slots ci)" ' pi' 'init keeps customized preset without trailing newline'
+assert_eq "$(_glyph_fleet_slots review)" ' claude codex' 'init adds missing preset'
+print -r -- 'PASS: one-command fleet init, custom config path, existing definitions, repeat runs and dry run'
 print -r -- 'PASS: AGY labels, prompts, print mode, management commands and opt-in flags'
 print -r -- 'PASS: all nine adapter labels, local/SSH fleet construction and pi/OpenCode ad-hoc fleets'

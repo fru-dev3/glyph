@@ -51,3 +51,9 @@
   opencode and pi all accepted `billing --help` through Glyph, exit 0. This is
   parser/argument smoke coverage, not full interactive-session certification.
   Gemini CLI is absent (exit 127); do not describe all nine as verified locally.
+
+- Added `glyph fleet init`: adds missing ci/review/cloud examples, respects
+  GLYPH_FLEET_CONF, preserves existing definitions, and is safe to repeat.
+  Website setup is one copyable command, with config details collapsed.
+  Verified fresh/existing configs, no trailing newline, dry run, custom path,
+  browser clipboard and mobile layout. Installed wrapper updated locally.

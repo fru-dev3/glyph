@@ -226,6 +226,7 @@ glyph() {
     *) print -r -- "glyph ls [n]   recent sessions
 glyph agents   installed agents and their auto-approve flags
 glyph name [x] print the mark this directory would produce
+glyph fleet init create example fleets without replacing existing presets
 glyph fleet [p] launch a preset of agents, each in its own marked tmux pane
 glyph presets  list the presets in ~/.config/glyph/fleet.conf" ;;
   esac
@@ -250,8 +251,30 @@ _glyph_fleet_slots() {              # $1 = preset name -> slots on stdout
   print -r -- "${line#*=}"
 }
 
+_glyph_fleet_init() {
+  emulate -L zsh
+  local conf=$(_glyph_fleet_conf) preset line added=0
+  if [[ -n ${GLYPH_DRYRUN:-} ]]; then
+    print -r -- "would add missing ci, review and cloud presets to $conf"
+    return 0
+  fi
+  command mkdir -p "${conf:h}" || return 1
+  command touch "$conf" || return 1
+  for line in 'ci = claude agy codex' 'review = claude codex' 'cloud = claude:studio codex:studio'; do
+    preset=${line%% *}
+    if ! command grep -qE "^[[:space:]]*${preset}[[:space:]]*=" "$conf"; then
+      printf '\n%s\n' "$line" >> "$conf" || return 1
+      (( added += 1 ))
+    fi
+  done
+  print -r -- "fleet config: $conf ($added presets added; existing definitions kept)"
+  print -r -- "start a local fleet: glyph fleet ci"
+  print -r -- "cloud is an example: replace studio with your SSH host before using it"
+}
+
 glyph-fleet() {
   emulate -L zsh
+  if [[ ${1:-} == init ]]; then _glyph_fleet_init; return; fi
   local preset=${1:-default}; shift 2>/dev/null
   local -a slots
   if [[ $preset == *:* || ${+GLYPH_YOLO_FLAG[${preset%%:*}]} == 1 ]]; then

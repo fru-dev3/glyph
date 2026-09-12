@@ -433,14 +433,17 @@
     <div class="fleet-steps">
       <section class="fleet-step">
         <h3>1. Set up your fleets</h3>
-        <p>You need tmux, Glyph and the agent CLIs installed. Open the config file and add a line for each group you want.</p>
-        <div class="code-block"><div class="code-heading"><span>Open the config</span><button type="button" class="copy" data-copy="fleet-edit" aria-label="Copy fleet config edit command">Copy</button></div>
-          <pre id="fleet-edit">mkdir -p ~/.config/glyph &amp;&amp; nano ~/.config/glyph/fleet.conf</pre></div>
-        <div class="code-block"><div class="code-heading"><span>~/.config/glyph/fleet.conf</span><button type="button" class="copy" data-copy="fleet-config" aria-label="Copy fleet config example">Copy</button></div>
-          <pre id="fleet-config">ci = claude agy codex
+        <p>With Glyph installed, run this once to create the example fleets. Existing definitions are kept.</p>
+        <div class="code-block"><div class="code-heading"><span>Create your fleets</span><button type="button" class="copy" data-copy="fleet-init" aria-label="Copy fleet setup command">Copy</button></div>
+          <pre id="fleet-init">glyph fleet init</pre></div>
+        <p class="note">Adds <code>ci</code> (Claude, AGI, Codex), <code>review</code> (Claude, Codex), and a <code>cloud</code> example. You need tmux and the agent CLIs to launch them.</p>
+        <div class="settings"><details><summary>View or customize the config</summary>
+          <p>Saved to <code>~/.config/glyph/fleet.conf</code>, or your <code>GLYPH_FLEET_CONF</code> override. Left of <code>=</code> is the fleet name; right is one agent per pane.</p>
+          <div class="code-block"><pre>ci = claude agy codex
 review = claude codex
 cloud = claude:studio codex:studio</pre></div>
-        <p class="note">Left of <code>=</code>: the fleet name. Right: one agent per pane. AGI uses the command <code>agy</code>. Save with Ctrl+O, Enter, then exit with Ctrl+X.</p>
+          <p>Replace <code>studio</code> with your SSH host before using the cloud example. AGI uses the command <code>agy</code>.</p>
+        </details></div>
       </section>
       <section class="fleet-step">
         <h3>2. Check it from your project folder</h3>
