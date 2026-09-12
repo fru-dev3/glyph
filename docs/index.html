@@ -1,29 +1,30 @@
 <!doctype html>
 <html lang="en">
 <head>
-<!-- build 2026-09-12T12:59:08 -->
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>glyph — every agent session, named before it starts</title>
-<meta name="description" content="Shell wrapper that names every Claude, Codex and AGY session with lowercase label, project, agent, machine and time tokens before the process starts.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>glyph — give names to your AI agents</title>
+<meta name="description" content="A zsh wrapper that names every AI coding agent session — Claude Code, Codex, AGY, Cursor and more — with label, project, agent, machine and time, before the process starts.">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" href="glyph.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta property="og:title" content="glyph — every agent session, named before it starts">
-<meta property="og:description" content="Names every Claude, Codex and AGY session before the process starts.">
-<meta property="og:image" content="https://glyph.fru.dev/og.png">
-<meta property="og:url" content="https://glyph.fru.dev/">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://glyph.fru.dev/og.png">
 <link rel="canonical" href="https://glyph.fru.dev/">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="author" content="fru.dev">
-<meta name="theme-color" content="#0d0d0e">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f5f2ec" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#100e0c" media="(prefers-color-scheme: dark)">
 <meta property="og:site_name" content="glyph">
+<meta property="og:type" content="website">
+<meta property="og:title" content="glyph — give names to your AI agents">
+<meta property="og:description" content="Every agent session, named before it starts. Label, project, agent, machine, time.">
+<meta property="og:url" content="https://glyph.fru.dev/">
+<meta property="og:image" content="https://glyph.fru.dev/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="glyph — every agent session, named before it starts">
+<meta property="og:image:alt" content="glyph — give names to your AI agents">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://glyph.fru.dev/og.png">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"SoftwareApplication",
  "name":"glyph","applicationCategory":"DeveloperApplication",
@@ -32,669 +33,466 @@
  "downloadUrl":"https://github.com/fru-dev3/glyph",
  "codeRepository":"https://github.com/fru-dev3/glyph",
  "programmingLanguage":"Shell",
- "description":"A zsh wrapper that names every AI coding agent session - Claude, Codex and AGY - with lowercase label, project, agent, machine and time tokens before the process starts.",
+ "description":"A zsh wrapper that gives every AI coding agent session a readable name - label, project, agent, machine and time - before the process starts.",
  "license":"https://opensource.org/licenses/MIT",
  "isAccessibleForFree":true,
  "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
  "author":{"@type":"Organization","name":"fru.dev","url":"https://fru.dev"},
- "keywords":"Claude, Codex, AGY, tmux, session naming, remote control, AI coding agents, zsh"}
+ "keywords":"Claude Code, Codex, AGY, session naming, tmux, remote control, AI coding agents, zsh"}
 </script>
 <style>
+:root{
+  --paper:#f6f3ed; --ink:#17130f; --dim:#6d6459; --faint:#9d9284;
+  --line:#e0d8ca; --hair:#eae3d7; --gold:#a07b30; --rock:#a08f74; --well:#f0ebe1;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  --pad:clamp(20px,4.4vw,56px);
+}
+@media (prefers-color-scheme: dark){
   :root{
-    --bg:#0d0d0e; --panel:#141416; --edge:#232326; --edge2:#2e2e33;
-    --fg:#e9e9ea; --dim:#8d8d93; --faint:#5f5f66;
-    --ochre:#c2562f;
-    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
-    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+    --paper:#100e0c; --ink:#f2ece2; --dim:#948a7d; --faint:#665e54;
+    --line:#272219; --hair:#1e1a15; --gold:#C4A35A; --rock:#5d5142; --well:#171410;
   }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
-       font-size:14.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
-  .col{max-width:760px;margin:0 auto;border-left:1px solid var(--edge);
-       border-right:1px solid var(--edge);min-height:100vh}
-  .pad{padding:30px 34px}
-  .rule{border-top:1px solid var(--edge)}
-  a{color:var(--fg)}
-  a:hover{color:var(--ochre)}
-  code,.mono{font-family:var(--mono)}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1560px;margin:0 auto;padding:0 var(--pad);width:100%}
+.mi{font:11px/1 var(--mono);letter-spacing:.19em;text-transform:uppercase}
 
-  header{display:flex;align-items:center;gap:9px;padding:16px 34px;
-         border-bottom:1px solid var(--edge)}
-  .hbrand{display:flex;align-items:center;gap:9px;text-decoration:none}
-  header img{width:32px;height:32px;display:block}
-  header .nm{font-weight:700;font-size:20px;letter-spacing:-.025em}
-  header .sp{flex:1}
-  header a.l{color:var(--dim);font-size:13px;text-decoration:none}
-  header a.l:hover{color:var(--fg)}
-  .star{display:inline-flex;align-items:center;gap:7px;text-decoration:none;
-        border:1px solid var(--ochre);border-radius:8px;padding:6px 9px 6px 10px;
-        font-size:13px;font-weight:650;color:var(--fg);background:rgba(194,86,47,.10);
-        transition:background .15s}
-  .star:hover{background:rgba(194,86,47,.22);color:var(--fg)}
-  .star svg{width:14px;height:14px;color:var(--ochre);flex:none}
-  .star b{font-variant-numeric:tabular-nums;background:#000;color:var(--fg);
-          border-radius:5px;padding:2px 8px;font-size:12.5px;min-width:30px;
-          text-align:center}
+/* ---------- nav ---------- */
+nav{position:fixed;inset:0 0 auto 0;z-index:30;height:60px;display:flex;align-items:center;
+  background:color-mix(in srgb,var(--paper) 76%,transparent);
+  backdrop-filter:saturate(160%) blur(16px);-webkit-backdrop-filter:saturate(160%) blur(16px);
+  border-bottom:1px solid transparent;transition:border-color .3s}
+nav.stuck{border-bottom-color:var(--hair)}
+nav .wrap{display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:9px;font-size:17px;letter-spacing:-.02em;font-weight:600}
+.brand img{width:23px;height:23px;border-radius:50%}
+.nl{margin-left:auto;display:flex;align-items:center;gap:clamp(14px,2.2vw,28px)}
+.nl a{color:var(--dim);transition:color .18s}
+.nl a:hover{color:var(--ink)}
+.star{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);
+  border-radius:2px;padding:6px 11px;color:var(--dim)}
+.star:hover{border-color:var(--gold);color:var(--ink)}
+.star svg{width:11px;height:11px;fill:var(--gold)}
+.star b{font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:0}
 
-  h1{font-size:clamp(30px,5vw,40px);line-height:1.12;letter-spacing:-.028em;
-     margin:0 0 18px;font-weight:700}
-  h1 .o{color:var(--ochre)}
-  .intro{color:var(--dim);font-size:14.5px;margin:0;max-width:60ch}
-  .intro b{color:var(--fg);font-weight:600}
+/* ---------- rail ---------- */
+.rail{position:absolute;left:22px;top:50%;transform:translateY(-50%);z-index:1;
+  display:none;flex-direction:column;border:1px solid var(--hair);pointer-events:none}
+.rl{position:relative;width:66px;height:66px;display:grid;place-items:center;
+  border-bottom:1px solid var(--hair)}
+.rl:last-child{border-bottom:0}
+.rl svg{width:26px;height:26px;fill:none;stroke:var(--faint);stroke-width:6;
+  stroke-linecap:round;stroke-linejoin:round;opacity:.75}
+.rl u{position:absolute;right:5px;bottom:3px;text-decoration:none;
+  font:8px var(--mono);letter-spacing:.08em;color:var(--faint);opacity:.6}
+@media(min-width:1240px){.rail{display:flex}
+  .wrap{padding-left:126px}
+  .start .wrap,footer{padding-right:126px}}
 
-  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:20px}
-  .chip{display:inline-flex;align-items:center;border:1px solid var(--edge2);
-        border-radius:6px;overflow:hidden;font-size:11.5px}
-  .chip i{padding:4px 8px;font-style:normal;color:var(--dim);background:#17171a}
-  .chip b{padding:4px 8px;font-family:var(--mono);font-weight:500;color:var(--fg)}
+/* ---------- hero ---------- */
+.hero{position:relative;min-height:100svh;display:grid;align-content:center;padding:96px 0 74px;overflow:hidden}
+#rock{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;
+  -webkit-mask-image:linear-gradient(100deg,transparent 0%,transparent 46%,rgba(0,0,0,.3) 58%,rgba(0,0,0,.85) 74%,#000 88%);
+  mask-image:linear-gradient(100deg,transparent 0%,transparent 46%,rgba(0,0,0,.3) 58%,rgba(0,0,0,.85) 74%,#000 88%)}
+.hero .wrap{position:relative;z-index:1}
+.col{max-width:min(72ch,58vw);min-width:0}
+.eyebrow{color:var(--gold);margin:0 0 26px}
+h1{margin:0;font-size:clamp(42px,6.6vw,96px);line-height:.98;letter-spacing:-.045em;
+  font-weight:500;text-wrap:balance}
+h1 span{display:block}
+h1 .g{color:var(--gold)}
+.lede{margin:28px 0 0;max-width:52ch;font-size:clamp(15.5px,1.25vw,18px);color:var(--dim)}
 
-  .demo{border:1px solid var(--edge2);border-radius:10px;background:var(--panel);padding:20px}
-  .demo .lbl{font-size:17px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);
-             margin-bottom:9px}
-  .fields{display:flex;gap:10px;flex-wrap:wrap}
-  .fld{flex:1;min-width:132px;display:flex;flex-direction:column;gap:5px}
-  .fld>span{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--dim);text-transform:uppercase}
-  .fld input{background:#0f0f11;border:1px solid var(--edge2);color:var(--fg);
-        border-radius:7px;padding:8px 11px;font:13.5px var(--mono);outline:none;
-        min-width:0;width:100%}
-  .fld input:focus{border-color:var(--ochre)}
-  .agent-picker{border:0;padding:0;margin:15px 0 0;min-width:0}
-  .agent-picker legend{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--faint);
-    text-transform:uppercase;margin-bottom:7px;padding:0}
-  .agent-options{display:flex;gap:8px}
-  .agent-option{position:relative;flex:1;min-width:0;cursor:pointer}
-  .agent-option input{position:absolute;opacity:0;width:1px;height:1px}
-  .agent-option span{display:flex;align-items:center;justify-content:center;gap:8px;
-    border:1px solid var(--edge2);border-radius:7px;padding:9px 10px;
-    background:#0f0f11;font-size:13.5px;font-weight:600}
-  .agent-option img{width:28px;height:28px;object-fit:contain}
-  .agent-option input:checked + span{border-color:var(--ochre);background:#201914}
-  .agent-option input:focus-visible + span{outline:2px solid var(--fg);outline-offset:3px}
-  .agent-option:hover span{border-color:var(--dim)}
-  .generated{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;min-width:0}
-  .generated .ov{flex:1}
-  .out{margin-top:18px;border-top:1px solid var(--edge)}
-  .orow{display:grid;grid-template-columns:96px 1fr;gap:0 16px;padding:10px 0;
-        border-bottom:1px solid var(--edge)}
-  .orow:last-child{border-bottom:0;padding-bottom:0}
-  .ok{color:var(--fg);font-size:12px;font-weight:700;padding-top:2px}
-  .ov{min-width:0;overflow-wrap:anywhere}
-  .ov.mono{font-family:var(--mono);font-size:12.6px;color:var(--dim)}
-  .leg{display:block;margin-top:7px;font-size:11px;color:var(--faint)}
-  .leg b{font-weight:400;margin-left:9px}
-  .leg b:first-child{margin-left:0}
-  .outmark{font-family:var(--mono);font-size:clamp(13px,2.2vw,16px);overflow-wrap:anywhere;
-           line-height:1.7;display:block}
-  .m1{color:var(--ochre);font-weight:600} .m2{color:var(--fg)}
-  .m3{color:#8fa8c9} .m4{color:var(--dim)} .md{color:var(--faint)}
-  .outcmd{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:11px;
-          overflow-wrap:anywhere}
-  .outcmd .p{color:var(--ochre)}
-  .automatic .generated{opacity:.5}.automatic .ok{color:var(--faint)}.automatic .copy{color:var(--faint)}
-  .note{color:var(--faint);font-size:12px;margin-top:12px}
-  .ov.note{margin-top:0;font-size:12.5px;line-height:1.55}
+/* tabs + command bar */
+.tabs{margin:46px 0 0;display:flex;align-items:center;gap:22px;flex-wrap:wrap;
+  border-bottom:1px solid var(--hair);padding-bottom:0}
+.tabs button{border:0;background:none;padding:0 0 10px;cursor:pointer;color:var(--faint);
+  font:11px/1 var(--mono);letter-spacing:.19em;text-transform:uppercase;
+  border-bottom:1px solid transparent;margin-bottom:-1px;transition:.18s}
+.tabs button:hover{color:var(--dim)}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--gold)}
+.tabs .os{margin-left:auto;color:var(--faint);padding-bottom:10px}
+.bar{display:flex;align-items:stretch;border:1px solid var(--line);border-top:0;
+  background:var(--well);min-width:0}
+.bar .p{display:flex;justify-content:center;width:46px;flex:none;color:var(--gold);
+  font:14px/1.45 var(--mono);padding-top:16px;border-right:1px solid var(--line)}
+.bar code{flex:1;min-width:0;padding:16px 18px;font:14px/1.45 var(--mono);color:var(--ink);
+  overflow-wrap:anywhere;letter-spacing:-.01em}
+.bar button{flex:none;border:0;border-left:1px solid var(--line);background:none;cursor:pointer;
+  padding:0 22px;color:var(--dim);font:11px var(--mono);letter-spacing:.19em;text-transform:uppercase;
+  transition:.18s}
+.bar button:hover{color:var(--ink);background:color-mix(in srgb,var(--gold) 10%,transparent)}
+.out{margin:14px 0 0;display:flex;gap:11px;align-items:baseline;color:var(--dim);
+  font:13px/1.5 var(--mono);overflow-wrap:anywhere;min-width:0}
+.out i{font-style:normal;color:var(--faint);flex:none}
+.out b{color:var(--gold);font-weight:600}
+.out .t{color:var(--ink)}
 
-  h2{font-size:16.5px;margin:0 0 18px;font-weight:700;letter-spacing:-.01em}
-  .dl{display:grid;grid-template-columns:104px 1fr;gap:0 20px}
-  .dl>dt{color:var(--faint);font-size:12.5px;padding:11px 0;border-top:1px solid var(--edge)}
-  .dl>dd{margin:0;padding:11px 0;border-top:1px solid var(--edge);color:var(--dim)}
-  .dl>dt:first-of-type,.dl>dd:first-of-type{border-top:0;padding-top:0}
-  .dl b{color:var(--fg);font-weight:600}
-  .dl code{color:var(--fg);font-size:12.5px}
+.works{margin:52px 0 0}
+.works p{margin:0 0 18px;color:var(--faint)}
+.logos{display:flex;align-items:center;gap:clamp(20px,2.6vw,38px);flex-wrap:wrap}
+.logos img{width:27px;height:27px;object-fit:contain;border-radius:5px;
+  opacity:.8;transition:opacity .2s,transform .2s}
+.logos img:hover{opacity:1;transform:translateY(-2px)}
 
-  .cmds{display:grid;grid-template-columns:104px 1fr;gap:0 20px}
-  .cmds>div{padding:8px 0;border-top:1px solid var(--edge)}
-  .cmds>div:nth-child(-n+2){border-top:0;padding-top:0}
-  .cmds .k{color:var(--faint);font-size:12.5px}
-  .cmds .v{font-family:var(--mono);font-size:12.8px}
-  .cmds .v .p{color:var(--ochre);user-select:none}
-  .cmds .v .c{color:var(--faint)}
+.footline{position:absolute;left:0;right:0;bottom:22px;z-index:1}
+.footline .wrap{display:flex;align-items:center;gap:20px;color:var(--faint)}
+.footline a:hover{color:var(--ink)}
+.footline .sp{margin-left:auto}
 
-  table{width:100%;border-collapse:collapse;font-size:12.8px}
-  td{padding:9px 12px 9px 0;border-top:1px solid var(--edge);vertical-align:top}
-  tr:first-child td{border-top:0;padding-top:0}
-  td.a{white-space:nowrap;width:130px}
-  td.a img{width:24px;height:24px;vertical-align:middle;margin-right:7px;object-fit:contain}
-  td.b{color:var(--faint);white-space:nowrap;width:56px;font-size:11.5px}
-  td.c{font-family:var(--mono);color:var(--dim);font-size:11.8px;word-break:break-all}
-  .real{color:var(--ochre)}
+/* ---------- sections ---------- */
+section{padding:clamp(84px,12vh,140px) 0;border-top:1px solid var(--hair)}
+.eyeb{color:var(--faint);margin:0 0 24px}
+h2{margin:0;font-size:clamp(28px,4vw,54px);line-height:1.02;letter-spacing:-.04em;
+  font-weight:500;text-wrap:balance}
+.say{margin:22px 0 0;max-width:56ch;font-size:clamp(15.5px,1.15vw,17.5px);color:var(--dim)}
+.say code{font:.9em var(--mono);color:var(--ink);background:var(--well);
+  border:1px solid var(--hair);padding:2px 7px}
 
-  .why-intro{color:var(--dim);margin:-7px 0 20px;max-width:52ch}
-  .comparison{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .comparison article{min-width:0;border:1px solid var(--edge2);border-radius:9px;padding:18px;background:var(--panel)}
-  .comparison h3{font-size:14px;margin:0 0 14px}
-  .comparison ul{list-style:none;padding:0;margin:0;font:11.5px/1.7 var(--mono)}
-  .comparison li{padding:9px 0;overflow-wrap:anywhere;border-top:1px solid var(--edge)}
-  .comparison li:first-child{border:0;padding-top:0}
-  .comparison .before{color:var(--dim)}
-  .comparison .after{border-color:var(--ochre)}
-  .comparison .after strong{color:var(--ochre);font-weight:500}
-  .comparison p{font-size:12px;color:var(--dim);margin:12px 0 0}
-  .why-takeaway{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin:18px 0 0}
-  .why-takeaway span{color:var(--dim);font-size:13px}
-  .section-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
-  .section-heading h2{margin:0}
-  .copy{border:1px solid var(--edge2);border-radius:6px;background:var(--panel);
-    color:var(--fg);padding:6px 10px;font:12px var(--sans);cursor:pointer;white-space:nowrap}
-  .copy:hover{border-color:var(--ochre)}
-  .copy:focus-visible{outline:2px solid var(--fg);outline-offset:3px}
-  .install-steps{list-style:none;padding:0;margin:0;border:1px solid var(--edge2);border-radius:9px;overflow:hidden}
-  .install-steps li{display:grid;grid-template-columns:1fr auto;gap:5px 12px;padding:14px 16px;background:var(--panel);border-top:1px solid var(--edge)}
-  .install-steps li:first-child{border-top:0}
-  .step-label{color:var(--dim);font-size:12px}
-  .install-steps code{grid-column:1;grid-row:2;font-size:12px;overflow-wrap:anywhere;min-width:0}
-  .install-steps .copy{grid-column:2;grid-row:1 / 3;align-self:center}
-  .copy-status{min-height:1.5em;color:var(--dim);font-size:12px;margin:8px 0 0}
-  .quick-install{display:flex;align-items:center;gap:10px;max-width:520px;margin:0;padding:9px 9px 9px 14px;border:1px solid var(--edge2);border-radius:10px;background:#0b0b0c}.quick-install .kicker{color:var(--ochre);font:13px var(--mono);user-select:none}.quick-install code{flex:1;min-width:0;color:var(--fg);font:12.5px/1.6 var(--mono);white-space:normal;overflow-wrap:anywhere}.quick-install .copy{background:transparent;padding:5px 9px}
-  @media (max-width:540px){
-    .comparison{grid-template-columns:1fr}
-    .agent-option span{gap:4px;padding:9px 5px;font-size:12px}
-    .agent-option img{width:24px;height:24px}
-    .orow{grid-template-columns:1fr;gap:4px}
-  }
-  .fleet-steps{display:grid;gap:18px}
-  .fleet-step{min-width:0}
-  .fleet-step h3{font-size:14px;margin:0 0 7px}
-  .fleet-step p{color:var(--dim);font-size:13px;margin:0 0 10px}
-  .code-block{border:1px solid var(--edge2);border-radius:8px;overflow:hidden;background:var(--panel);margin-top:8px}
-  .code-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 12px;border-bottom:1px solid var(--edge);color:var(--dim);font-size:12px}
-  .code-heading span{overflow-wrap:anywhere;min-width:0}
-  .code-block pre{padding:13px;margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.8 var(--mono)}
-  .fleet-preview{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0 22px}
-  .fleet-pane{border:1px solid var(--edge2);border-radius:7px;padding:12px;min-width:0;background:var(--panel)}
-  .fleet-pane img{width:24px;height:24px;vertical-align:middle;margin-right:5px}
-  .fleet-pane b{font-size:12px}
-  .fleet-pane code{display:block;font-size:11px;color:var(--dim);margin-top:8px;overflow-wrap:anywhere}
-  .fleet-gif,.fleet-static img{display:block;width:100%;height:auto;border:1px solid #463329;border-radius:14px;background:#0d0d0f;box-shadow:0 18px 50px rgba(0,0,0,.2)}
-  .fleet-gif{margin:22px 0 8px}.fleet-static{margin:22px 0 28px}.fleet-static figcaption{color:var(--faint);font-size:12px;margin-top:8px}
-  .demo-carousel{margin-top:14px}.carousel-head{display:flex;align-items:center;justify-content:space-between;gap:14px;color:var(--dim);font-size:12px}.carousel-head [role=tablist]{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.demo-tab{border:1px solid var(--edge2);border-radius:999px;padding:6px 10px;background:transparent;color:var(--dim);font:11px var(--sans);cursor:pointer}.demo-tab:hover,.demo-tab.active{border-color:var(--ochre);color:var(--fg);background:#211814}.demo-carousel .fleet-gif{margin:14px 0 0}
-  .live-demo{margin-top:14px;border:1px solid #463329;border-radius:14px;overflow:hidden;background:#0d0d0f;box-shadow:0 18px 50px rgba(0,0,0,.2)}.live-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--edge);color:var(--dim);font:13px var(--mono)}.live-head i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#60463b;margin-right:5px}.live-head i:first-child{background:var(--ochre)}.live-head b{color:#d7a27b;font-weight:500}.live-command{margin:22px 22px 0;border:1px solid var(--edge);border-radius:9px;padding:15px 17px;font:18px var(--mono);color:var(--fg)}.live-command>span:first-child{color:var(--ochre)}.live-cursor{color:var(--ochre);font-style:normal;animation:cursor-blink 1s steps(2,end) infinite}.live-pane{margin:0 22px 22px;border:1px solid #383238;border-radius:11px;background:#171518;padding:22px;display:flex;flex-direction:column;gap:13px;opacity:0;transform:translateY(10px);transition:opacity .7s ease,transform .7s ease}.live-pane.show{opacity:1;transform:none;border-color:#9c5c3d}.live-title{display:flex;align-items:center;gap:10px}.live-title img{width:30px;height:30px;object-fit:contain}.live-pane strong{font:600 18px var(--mono);color:var(--fg)}.live-pane span{font:16px var(--mono);color:#d9a078;overflow-wrap:anywhere}.live-pane small{font:15px var(--mono);color:#86aa8b}.live-pane code{margin-top:auto;color:var(--faint);font:13px var(--mono)}
-  .live-label{font:11px var(--sans);font-style:normal;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:4px}
-  @media(max-width:620px){.carousel-head{align-items:flex-start;flex-direction:column}.carousel-head [role=tablist]{justify-content:flex-start}.live-command{font-size:16px}.live-pane span{font-size:13px}}
-  .fleet-screen{border:1px solid #463329;border-radius:14px;overflow:hidden;background:#100f10;margin:22px 0 8px;box-shadow:0 18px 50px rgba(0,0,0,.2)}
-  .screen-head,.screen-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 15px;color:var(--dim);font:11px var(--mono);border-bottom:1px solid var(--edge)}
-  .screen-head i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#604336;margin-right:4px}.screen-head i:first-child{background:var(--ochre)}.screen-head b{color:#d5a37e;font-weight:500}
-  .screen-command{padding:17px 18px;font:13px var(--mono);color:var(--fg);border-bottom:1px solid var(--edge)}.screen-command>span{color:var(--ochre)}.screen-command .type-text{display:inline-block;overflow:hidden;vertical-align:bottom;white-space:nowrap;font-weight:400;animation:type-command 7s steps(15,end) infinite}.screen-command em{color:var(--faint);font-style:normal;margin-left:10px}
-  .screen-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px;min-height:132px}.screen-pane{display:flex;flex-direction:column;gap:9px;padding:14px;border:1px solid var(--edge2);border-radius:9px;background:#161416;opacity:0;transform:translateY(10px);animation:pane-loop 7s ease-in-out infinite}.screen-pane strong{font:600 12px var(--mono);color:var(--fg)}.screen-pane span{font:11px var(--mono);color:#d9a078;overflow-wrap:anywhere}.screen-pane small{color:#84a889;font:11px var(--mono)}.pane-claude{animation-delay:.65s}.pane-agy{animation-delay:1.05s}.pane-codex{animation-delay:1.45s}
-  .screen-foot{border-top:1px solid var(--edge);border-bottom:0;color:var(--faint)}.screen-cursor{color:var(--ochre);animation:cursor-blink 1s steps(2,end) infinite}.screen-caption{color:var(--faint);font-size:12px;margin:0 0 22px}
-  @keyframes type-command{0%,8%{width:0}32%,100%{width:8.8em}}
-  @keyframes pane-loop{0%,12%{opacity:0;transform:translateY(10px)}22%,76%{opacity:1;transform:none}88%,100%{opacity:0;transform:translateY(-6px)}}
-  @keyframes mock-line{0%,12%{opacity:0;transform:translateX(-5px)}24%,78%{opacity:1;transform:none}90%,100%{opacity:.35}}
-  @keyframes cursor-blink{50%{opacity:.15}}
-  @keyframes mock-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-  @media(prefers-reduced-motion:reduce){.screen-command .type-text{animation:none;width:auto}.screen-pane{animation:none;opacity:1;transform:none}.mock-terminal p{animation:none;opacity:1}.screen-cursor{animation:none}}
-  .settings{display:grid;gap:10px}
-  .settings details{border:1px solid var(--edge2);border-radius:8px;padding:14px 16px;min-width:0}
-  .settings summary{cursor:pointer;font-size:14px;font-weight:600}
-  .settings p{color:var(--dim);font-size:13px;margin:12px 0 0}
-  .settings code{font-size:12px;overflow-wrap:anywhere}
-  .settings dl{display:grid;grid-template-columns:minmax(110px,auto) 1fr;gap:9px 16px;font-size:12px}
-  .settings dt{color:var(--fg);overflow-wrap:anywhere}
-  .settings dd{margin:0;color:var(--dim)}
-  @media(max-width:540px){
-    .fleet-preview{grid-template-columns:1fr}
-    .screen-grid{grid-template-columns:1fr;min-height:0}.screen-pane{min-height:74px}.screen-command em{display:block;margin:7px 0 0}.screen-head,.screen-foot{font-size:10px}
-    .settings dl{grid-template-columns:1fr;gap:5px}
-    .settings dd{margin-bottom:8px}
-  }
-  .agent-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-  .agent-card{min-width:0;padding:14px;border:1px solid var(--edge2);border-radius:8px;background:var(--panel)}
-  .agent-card h3{display:flex;align-items:center;gap:8px;font-size:14px;margin:0 0 9px}
-  .agent-card img{object-fit:contain}
-  img.monochrome{filter:invert(1)}
-  .agent-kind{display:block;font-size:11px;color:var(--dim);margin-bottom:8px}
-  .agent-card code{font-size:11px;overflow-wrap:anywhere}
-  .agent-card details{font-size:11px;color:var(--dim);margin-top:12px}
-  .agent-card summary{cursor:pointer;margin-bottom:5px}
-  @media(max-width:540px){.agent-cards{grid-template-columns:repeat(2,1fr)}}
-  footer{color:var(--faint);font-size:12.5px;display:flex;justify-content:space-between;
-         gap:14px;flex-wrap:wrap}
-  footer a{color:var(--dim)}
-  @media (max-width:620px){
-    .pad{padding:26px 20px}
-    header{padding:14px 20px}
-    .dl,.cmds{grid-template-columns:1fr;gap:0}
-    .dl>dt{padding-bottom:0}
-    .dl>dd{padding-top:4px;border-top:0}
-    header a.l{display:none}
-    td.a{width:auto}
-  }
+.anatomy{margin-top:clamp(46px,6vw,80px);display:flex;flex-wrap:wrap;align-items:flex-start;
+  border-top:1px solid var(--hair);padding-top:26px}
+.tok{min-width:0;display:flex;flex-direction:column;gap:11px;padding-right:clamp(14px,2.4vw,34px)}
+.tok em{font-style:normal;font:clamp(14px,2.1vw,31px)/1 var(--mono);letter-spacing:-.025em;
+  color:var(--ink);overflow-wrap:anywhere}
+.tok.key em{color:var(--gold)}
+.tok u{text-decoration:none;font:9.5px var(--mono);letter-spacing:.17em;
+  text-transform:uppercase;color:var(--faint)}
+.sep{align-self:flex-start;padding-right:clamp(14px,2.4vw,34px);
+  font:clamp(14px,2.1vw,31px)/1 var(--mono);color:var(--line)}
 
-  /* Homepage layout: roomy, product-led, and easy to scan. */
-  body{background:radial-gradient(circle at 78% 4%,rgba(194,86,47,.12),transparent 34rem),var(--bg)}
-  .col{max-width:1160px;background:rgba(13,13,14,.78)}
-  header{padding:18px 44px;gap:22px;position:sticky;top:0;z-index:5;background:rgba(13,13,14,.88);backdrop-filter:blur(14px)}
-  header .sp{margin-left:auto}
-  header a.l{font-size:12px;letter-spacing:.05em;text-transform:uppercase}
-  header .nm{font-size:21px}
-  .pad{padding:42px 64px}
-  .col>.pad:first-of-type{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr);gap:56px;align-items:center;padding-top:72px;padding-bottom:72px}
-  .col>.pad:first-of-type>*{min-width:0}
-  
-  .hero-copy{min-width:0}
-  .col>.pad:first-of-type h1{font-size:clamp(38px,4.2vw,56px);line-height:1.04;letter-spacing:-.028em;margin:0 0 18px;text-wrap:balance}
-  .col>.pad:first-of-type .intro{font-size:16.5px;line-height:1.65;max-width:44ch;margin:0 0 26px;color:var(--dim)}
-  .eyebrow{display:flex;align-items:center;gap:9px;color:var(--ochre);font:600 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;margin:0 0 20px}
-  .eyebrow img{display:block;opacity:.95}
-  
-  .chips{margin-top:0;gap:8px}
-  .chip{border-radius:999px;background:rgba(255,255,255,.02)}
-  .chip i,.chip b{padding:6px 10px}
-  .hero-visual{min-width:0;border:1px solid #2b2521;border-radius:14px;background:#0f0e0f;box-shadow:0 20px 54px rgba(0,0,0,.34);overflow:hidden}
-  .mock-bar,.mock-tabs{display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--edge);padding:13px 16px;color:var(--dim);font:11px var(--mono)}
-  .mock-bar b{margin-left:auto;color:#d8a47b;font-weight:500}
-  .mock-dots{display:flex;gap:5px}.mock-dots i{width:7px;height:7px;border-radius:50%;background:#594139}.mock-dots i:first-child{background:#c2562f}
-  .mock-tabs{gap:6px;padding:8px 10px;overflow:hidden;min-width:0}.mock-tabs span{padding:6px 9px;white-space:nowrap;border-radius:5px}.mock-tabs .active{color:var(--fg);background:#2a1c17}
-  .mock-body{display:grid;grid-template-columns:130px minmax(0,1fr);min-height:265px}.mock-body>*{min-width:0}.mock-side{display:flex;flex-direction:column;gap:13px;padding:18px 14px;border-right:1px solid var(--edge);font:11px var(--mono);color:var(--dim)}.mock-side b{color:var(--fg);font-weight:500}.side-label{color:var(--faint);font-size:9px;letter-spacing:.14em}
-  .mock-terminal{min-width:0;padding:18px 18px 20px;font:12px/1.75 var(--mono);color:var(--dim)}
-  .mock-cmd{margin-bottom:12px}.mock-terminal .prompt{color:var(--ochre)}.mock-terminal p{margin:7px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0;animation:mock-in .5s ease-out forwards}.mock-terminal p:nth-of-type(2){animation-delay:.18s}.mock-terminal p:nth-of-type(3){animation-delay:.36s}.mock-terminal strong{color:#e0a071;font-weight:500}.cursor{color:var(--ochre);margin-top:16px}
-  .rule{border-color:#29282b}
-  .section-heading h2,h2{font-size:26px;letter-spacing:-.035em}
-  .hero-meta{margin:16px 0 0;color:var(--faint);font-size:12.5px}
-  .why-intro{font-size:15px;line-height:1.6}
-  .why-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin-top:22px;
-           background:var(--edge);border:1px solid var(--edge);border-radius:13px;overflow:hidden}
-  .why-row>div{background:#141416;padding:20px 22px;min-width:0}
-  .why-row b{display:block;color:var(--fg);font-size:15px;margin-bottom:6px}
-  .why-row span{color:var(--dim);font-size:13.5px;line-height:1.6}
-  @media(max-width:820px){.why-row{grid-template-columns:1fr}}
-  #fleet .why-intro{max-width:none}
-  .comparison{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.comparison article{padding:24px;border-radius:14px}.comparison h3{font-size:17px}.comparison ul{font-size:12px}.comparison .after{background:linear-gradient(145deg,#181513,#211711);border-color:#69402f}
-  .install-steps,.code-block,.settings details,.demo,.agent-card,.fleet-pane{border-radius:13px}
-  .demo{padding:28px;background:linear-gradient(145deg,#171416,#121214)}
-  .demo .lbl{font-size:12px;letter-spacing:.16em;color:var(--ochre)}
-  .try-it{border:1px solid var(--edge2);border-radius:14px;background:var(--panel);overflow:hidden}.try-it>summary{padding:18px 22px;cursor:pointer;color:var(--fg);font-size:17px;font-weight:700;list-style:none}.try-it>summary::-webkit-details-marker{display:none}.try-it>summary::after{content:'＋';float:right;color:var(--ochre);font-weight:400}.try-it[open]>summary::after{content:'−'}.try-it .demo{border-top:1px solid var(--edge)}
-  .demo .fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(250px,1.15fr);align-items:end;gap:10px}
-  .demo .agent-picker{margin:0;min-width:0}
-  .agent-picker select{display:block;width:100%;height:42px;padding:0 34px 0 12px;border:1px solid var(--edge2);border-radius:8px;background:#0f0f11;color:var(--fg);font:13px var(--mono);outline:none;cursor:pointer}
-  .agent-picker select:focus{border-color:var(--ochre);outline:2px solid rgba(194,86,47,.2);outline-offset:2px}
-  .agent-cards{grid-template-columns:repeat(4,1fr);gap:14px}.agent-card{padding:18px}.agent-card h3{font-size:16px}
-  .fleet-preview{gap:12px}.fleet-pane{padding:16px}
-  footer{padding-bottom:10px}
-  @media(max-width:820px){
-    .col>.pad:first-of-type{grid-template-columns:1fr;padding-top:56px}.hero-visual{grid-column:1;grid-row:auto;width:100%;transform:none}.col>.pad:first-of-type h1{max-width:none}.agent-cards{grid-template-columns:repeat(2,1fr)}
-  }
-  @media(max-width:620px){
-    header{padding:14px 20px}.pad{padding:32px 20px}.col>.pad:first-of-type{padding-top:44px;padding-bottom:48px;gap:20px}.col>.pad:first-of-type h1{font-size:52px}.col>.pad:first-of-type .intro{font-size:15px}.mock-body{grid-template-columns:94px 1fr}.mock-side{padding:15px 10px;font-size:10px}.mock-terminal{padding:17px 13px;font-size:10px}.comparison{grid-template-columns:1fr}.agent-cards{grid-template-columns:1fr 1fr}.sw{display:none}.demo .fields{grid-template-columns:1fr}.demo .agent-picker{grid-column:auto}.home-docs-cta{margin:0 20px;align-items:flex-start;flex-direction:column}
-  }
-  #install,#agents,#fleet,.docs-only{display:none}.col>.rule:has(+.pad#install),.col>.rule:has(+.pad#agents),.col>.rule:has(+.pad#fleet),.col>.rule:has(+.pad.docs-only){display:none}
-  .home-endcap{display:flex;align-items:center;gap:14px;margin:0 64px;padding:16px 0;border-top:1px solid var(--edge);border-bottom:1px solid var(--edge);font-size:12px;color:var(--dim)}.home-endcap strong{color:var(--fg);font-size:14px}.home-endcap span{margin-right:auto}.home-endcap a{color:var(--fg);text-decoration:none;border:1px solid var(--edge2);border-radius:999px;padding:8px 14px;white-space:nowrap;font-weight:600}.home-endcap a:hover{border-color:var(--ochre)}.home-endcap a.primary{background:var(--ochre);border-color:var(--ochre);color:#140d09}.home-endcap a.primary:hover{filter:brightness(1.08)}
-  @media(max-width:620px){.home-endcap{margin:0 20px;align-items:flex-start;flex-wrap:wrap}.home-endcap span{flex-basis:100%;order:3}.home-endcap a{order:2}}
-  @media(max-width:620px){.quick-install{align-items:flex-start;flex-wrap:wrap}.quick-install .kicker{width:100%}.quick-install code{flex-basis:calc(100% - 62px);font-size:11px;white-space:normal;overflow-wrap:anywhere}.quick-install .copy{margin-left:auto}}
+.compare{margin-top:clamp(46px,6vw,80px);display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--hair)}
+.pane{min-width:0;padding:clamp(20px,2.4vw,32px);border-right:1px solid var(--hair)}
+.pane:last-child{border-right:0}
+.pane h3{margin:0 0 22px;color:var(--faint);font:11px var(--mono);
+  letter-spacing:.19em;text-transform:uppercase;font-weight:400}
+.pane.on h3{color:var(--gold)}
+.pane ul{margin:0;padding:0}
+.pane li{list-style:none;font:clamp(10.5px,.99vw,13.5px)/2 var(--mono);color:var(--faint);
+  overflow-wrap:anywhere;letter-spacing:-.01em}
+.pane.on li{color:var(--dim)}
+.pane.on li b{color:var(--gold);font-weight:600}
+
+.points{margin-top:clamp(46px,5vw,68px);display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3vw,48px)}
+.pt{min-width:0;border-top:1px solid var(--hair);padding-top:24px}
+.pt svg{width:30px;height:30px;stroke:var(--gold);fill:none;stroke-width:6;
+  stroke-linecap:round;stroke-linejoin:round;margin-bottom:18px;display:block}
+.pt b{display:block;font-size:16.5px;letter-spacing:-.02em;font-weight:600;margin-bottom:8px}
+.pt p{margin:0;font-size:14.5px;color:var(--dim)}
+
+.start{text-align:center;padding:clamp(84px,11vh,124px) 0}
+.start h2{max-width:16ch;margin-inline:auto}
+.start .kit{max-width:820px;margin:38px auto 0;text-align:left}
+.start .links{margin-top:26px;display:flex;gap:26px;justify-content:center;color:var(--dim)}
+.start .links a:hover{color:var(--gold)}
+
+footer{border-top:1px solid var(--hair);padding:26px 0;display:flex;flex-wrap:wrap;
+  gap:8px 24px;align-items:center;color:var(--faint)}
+footer a:hover{color:var(--ink)}
+footer .sp{margin-left:auto}
+
+@media(max-width:1000px){
+  .col{max-width:none}
+  #rock{-webkit-mask-image:linear-gradient(170deg,transparent 0%,rgba(0,0,0,.35) 46%,#000 82%);
+        mask-image:linear-gradient(170deg,transparent 0%,rgba(0,0,0,.35) 46%,#000 82%)}
+}
+@media(max-width:760px){
+  .hero{min-height:auto;padding:104px 0 56px}
+  #rock{opacity:.5}
+  .logos{gap:14px}
+  .logos img{width:25px;height:25px}
+  .nl a.hide{display:none}
+  .bar{flex-wrap:wrap}
+  .bar .p{display:none}
+  .bar code{flex-basis:100%;padding:15px 16px;font-size:12.5px}
+  .bar button{flex-basis:100%;border-left:0;border-top:1px solid var(--line);padding:13px}
+  .tabs{gap:16px}
+  .tabs .os{display:none}
+  .footline{position:static;margin-top:44px}
+  .compare{grid-template-columns:minmax(0,1fr)}
+  .pane{border-right:0;border-bottom:1px solid var(--hair)}
+  .pane:last-child{border-bottom:0}
+  .points{grid-template-columns:minmax(0,1fr);gap:30px}
+  .start .links{flex-wrap:wrap;gap:18px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
 
-<div class="col">
-
-  <header>
-    <a class="hbrand" href="/" aria-label="glyph home">
-      <img src="glyph.svg" width="32" height="32" alt="">
-      <span class="nm">glyph</span>
-    </a>
-    <span class="sp"></span>
-    <a class="l" href="docs.html">Docs</a>
-    <a class="star" href="https://github.com/fru-dev3/glyph"
-       aria-label="Star glyph on GitHub">
-      <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg>
-      <span class="sw">Star</span><b id="stars">—</b>
-    </a>
-  </header>
-
-  <div class="pad">
-    <div class="hero-copy">
-      <p class="eyebrow"><img src="glyph.svg" width="22" height="22" alt="">Clear names for AI agent sessions</p>
-      <h1>Know which agent<br><span class="o">is running.</span></h1>
-      <p class="intro">Glyph gives every session a memorable name you can recognise
-      in your terminal, in Herdr, or on your phone.</p>
-      <div class="quick-install" aria-label="Install Glyph">
-        <span class="kicker">$</span>
-        <code id="home-install">git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; ./install.sh</code>
-        <button type="button" class="copy" data-copy="home-install" aria-label="Copy install command">Copy</button>
-      </div>
-      <p class="hero-meta">zsh · MIT · one file in <code>~/.config/glyph/</code> · no daemon</p>
-    </div>
-
-    <div class="hero-visual" aria-label="Glyph session list preview">
-      <div class="mock-bar"><span class="mock-dots"><i></i><i></i><i></i></span><span>glyph · sessions</span><b>4 running</b></div>
-      <div class="mock-terminal">
-        <div class="mock-cmd"><span class="prompt">$</span> glyph ls</div>
-        <p><strong>checkout-fix</strong>·acme-api·claude·laptop·09:12</p>
-        <p><strong>review</strong>·docs·codex·studio·09:08</p>
-        <p><strong>fleet-ci</strong>·glyph·agy·desktop·09:03</p>
-        <p><strong>audit</strong>·payments·claude·hetzner·08:47</p>
-        <div class="cursor">▮</div>
-      </div>
-    </div>
+<nav id="nav"><div class="wrap">
+  <a class="brand" href="/"><img src="glyph.svg" alt="">glyph</a>
+  <div class="nl mi">
+    <a href="#about">About</a>
+    <a href="#why">Why</a>
+    <a href="docs.html">Docs</a>
+    <a class="hide" href="https://github.com/fru-dev3/glyph">GitHub&nbsp;&#8599;</a>
+    <a class="star" href="https://github.com/fru-dev3/glyph/stargazers" aria-label="GitHub stars">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+      <b id="stars">&mdash;</b></a>
   </div>
+</div></nav>
 
-  <div class="rule"></div>
-  <div class="pad" id="why">
-    <h2>Why it matters now</h2>
-    <p class="screen-caption">One agent in one terminal needed no name. Nine do.</p>
-    <div class="why-row">
-      <div><b>Parallel</b><span>Worktrees and fleets keep several agents alive at once. Anonymous panes make it guesswork which is which.</span></div>
-      <div><b>Multi-machine</b><span>Laptop, desktop, cloud box. Nothing in a session list says where the work is actually running.</span></div>
-      <div><b>On your phone</b><span>Remote Control puts a permission prompt on your lock screen. You need to know who is asking before you say yes.</span></div>
-    </div>
+<header class="hero">
+  <canvas id="rock" aria-hidden="true"></canvas>
+  <div class="rail" aria-hidden="true">
+        <div class="rl" title="Figure"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M42 27a8 8 0 1 0 16 0a8 8 0 1 0 -16 0M50 35v38M50 44 32 27M50 44l18-17M50 73 40 95M50 73l10 22M50 19v-9"/></svg><u>01</u></div>
+        <div class="rl" title="Spiral"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50.0 50.0L50.3 50.1L50.6 50.2L50.9 50.4L51.1 50.8L51.2 51.2L51.2 51.6L51.0 52.0L50.8 52.5L50.5 52.9L50.0 53.3L49.4 53.6L48.8 53.7L48.1 53.8L47.3 53.7L46.5 53.5L45.8 53.1L45.0 52.5L44.4 51.8L43.9 51.0L43.5 50.0L43.2 48.9L43.2 47.8L43.3 46.6L43.7 45.4L44.2 44.2L45.0 43.1L46.0 42.1L47.2 41.3L48.5 40.6L50.0 40.2L51.6 40.0L53.2 40.1L54.9 40.4L56.5 41.0L58.1 41.9L59.5 43.1L60.8 44.5L61.8 46.2L62.6 48.0L63.1 50.0L63.2 52.1L63.1 54.2L62.5 56.4L61.6 58.5L60.4 60.4L58.8 62.2L57.0 63.7L54.8 64.9L52.5 65.8L50.0 66.3L47.4 66.5L44.7 66.2L42.1 65.4L39.6 64.3L37.3 62.7L35.2 60.8L33.4 58.5L32.0 55.9L30.9 53.0L30.4 50.0L30.3 46.9L30.7 43.7L31.6 40.6L33.1 37.7L35.0 35.0L37.3 32.5L40.1 30.5L43.1 28.9L46.5 27.7L50.0 27.1L53.6 27.1L57.3 27.6L60.8 28.7L64.2 30.4L67.3 32.7L70.1 35.4L72.4 38.6L74.3 42.1L75.5 46.0L76.2 50.0L76.2 54.1L75.5 58.3L74.2 62.3L72.2 66.1L69.6 69.6L66.5 72.7L62.9 75.3L58.9 77.4L54.6 78.7L50.0 79.4L45.3 79.4L40.7 78.6L36.2 77.1L31.9 74.9L28.0 72.0L24.6 68.4L21.7 64.4L19.5 59.9L18.0 55.1L17.3 50.0L17.4 44.8L18.3 39.7L20.0 34.7L22.5 30.0"/></svg><u>02</u></div>
+        <div class="rl" title="Sheep"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M28 48h38M34 48v24M43 48v24M55 48v24M63 48v24M66 48 76 36 88 34M78 34c10-10-2-18-12-10M28 48 21 39"/></svg><u>03</u></div>
+        <div class="rl" title="Sun"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M41 50a9 9 0 1 0 18 0a9 9 0 1 0 -18 0M31 50a19 19 0 1 0 38 0a19 19 0 1 0 -38 0M73.0 50.0L83.0 50.0M66.3 66.3L73.3 73.3M50.0 73.0L50.0 83.0M33.7 66.3L26.7 73.3M27.0 50.0L17.0 50.0M33.7 33.7L26.7 26.7M50.0 27.0L50.0 17.0M66.3 33.7L73.3 26.7"/></svg><u>04</u></div>
+        <div class="rl" title="Snake"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M10 60c10-22 22-22 32 0s22 22 32 0c5-11 11-13 16-8M86.8 52a3.2 3.2 0 1 0 6.4 0a3.2 3.2 0 1 0 -6.4 0"/></svg><u>05</u></div>
+        <div class="rl" title="Tally"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M30 30v40M42 28v40M54 30v40M66 28v40M24 40 72 62"/></svg><u>06</u></div>
+        <div class="rl" title="Bird"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 36v38M50 43 16 30M50 43 84 30M16 30l-3 9M84 30l3 9M45 28a5 5 0 1 0 10 0a5 5 0 1 0 -10 0M50 74 41 88M50 74l9 14"/></svg><u>07</u></div>
+        <div class="rl" title="Ladder"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M36 16v70M64 16v70M36 28h28M36 42h28M36 56h28M36 70h28"/></svg><u>08</u></div>
   </div>
+  <div class="wrap"><div class="col">
+    <p class="eyebrow mi">Identity for AI agents</p>
+    <h1><span>Give names to</span><span class="g">your AI agents.</span></h1>
+    <p class="lede">One zsh wrapper. Every session gets a readable mark &mdash; label, project,
+      agent, machine, time &mdash; set before the first token, on every agent and every machine.</p>
 
-  <div class="rule"></div>
-  <div class="pad" id="demo">
-    <h2>Watch it name a session</h2>
-    <p class="screen-caption">Pick an agent. The name is built before the process starts.</p>
-    <div class="demo-carousel" data-demo-carousel>
-      <div class="carousel-head"><span>Launch one agent</span><div role="tablist" aria-label="Agent launch demos">
-        <button type="button" class="demo-tab active" data-demo="claude" role="tab" aria-selected="true">Claude Code</button>
-        <button type="button" class="demo-tab" data-demo="codex" role="tab" aria-selected="false">Codex</button>
-        <button type="button" class="demo-tab" data-demo="agy" role="tab" aria-selected="false">AGY</button>
-      </div></div>
-      <div class="live-demo" data-live-demo aria-live="polite">
-        <div class="live-head"><span><i></i><i></i><i></i> herdr · glyph</span><b>launch demo</b></div>
-        <div class="live-command"><span>$</span> <span data-live-command></span><i class="live-cursor">▮</i></div>
-        <div class="live-pane" data-live-pane>
-          <div class="live-title"><img data-live-logo src="agents/claude.png" alt=""><strong data-live-title>Claude Code</strong></div>
-          <em class="live-label">Glyph session name</em>
-          <span data-live-mark>checkout-fix·acme-api·claude-code</span>
-          <small data-live-status>remote control ready</small>
-          <code data-live-repeat>$ claude checkout-fix</code>
-        </div>
+    <div class="tabs" role="tablist">
+      <button role="tab" data-k="install" aria-selected="true">Install</button>
+      <button role="tab" data-k="claude" aria-selected="false">Claude</button>
+      <button role="tab" data-k="codex" aria-selected="false">Codex</button>
+      <button role="tab" data-k="agy" aria-selected="false">AGY</button>
+      <button role="tab" data-k="fleet" aria-selected="false">Fleet</button>
+      <span class="os mi">zsh &middot; macos &middot; linux &middot; wsl</span>
+    </div>
+    <div class="bar">
+      <span class="p" aria-hidden="true">$</span>
+      <code id="cmd">git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; ./install.sh</code>
+      <button id="copy" type="button">Copy</button>
+    </div>
+    <p class="out" id="out"><i>&rarr;</i><span class="t">one file into ~/.config/glyph, one line into ~/.zshrc</span></p>
+
+    <div class="works">
+      <p class="mi">Works with</p>
+      <div class="logos">
+      <img src="agents/claude.png" alt="Claude Code" title="Claude Code">
+      <img src="agents/codex.png" alt="Codex" title="Codex">
+      <img src="agents/agi.png" alt="AGY" title="AGY">
+      <img src="agents/cursor.png" alt="Cursor" title="Cursor">
+      <img src="agents/crush.png" alt="Crush" title="Crush">
+      <img src="agents/cortex.svg" alt="Cortex" title="Cortex">
+      <img src="agents/opencode.svg" alt="OpenCode" title="OpenCode">
+      <img src="agents/pi.svg" alt="pi" title="pi">
       </div>
     </div>
+  </div></div>
+  <div class="footline mi"><div class="wrap">
+    <span>MIT</span><a href="https://github.com/fru-dev3/glyph">Source</a>
+    <span class="sp"><a href="#about">Scroll &darr;</a></span>
+  </div></div>
+</header>
+
+<section id="about"><div class="wrap">
+  <p class="eyeb mi">About</p>
+  <h2>One shell wrapper. Six tokens.</h2>
+  <p class="say">Keep typing <code>claude</code>, <code>codex</code>, <code>agy</code>. Glyph reads
+    where you are and what you asked for, builds the mark, and hands it to the agent at launch.</p>
+  <div class="anatomy">
+    <div class="tok key"><em>billing</em><u>Label</u></div><div class="sep">&middot;</div>
+    <div class="tok"><em>acme-api</em><u>Project</u></div><div class="sep">&middot;</div>
+    <div class="tok"><em>claude-code</em><u>Agent</u></div><div class="sep">&middot;</div>
+    <div class="tok"><em>mbp</em><u>Machine</u></div><div class="sep">&middot;</div>
+    <div class="tok"><em>2026-09-12</em><u>Date</u></div><div class="sep">&middot;</div>
+    <div class="tok"><em>0556</em><u>Time</u></div>
   </div>
+</div></section>
 
-  <div class="rule"></div>
-  <div class="pad">
-    <details class="try-it" id="try-it" open>
-      <summary>Try it</summary>
-      <div class="demo">
-      <div class="fields">
-        <label class="fld"><span>Your label</span>
-          <input id="lab" value="checkout-fix" spellcheck="false"></label>
-        <label class="fld"><span>Project folder</span>
-          <input id="prj" value="acme-api" spellcheck="false"></label>
-      <fieldset class="agent-picker">
-        <legend>Agent</legend>
-        <select id="agent-select" aria-label="Choose an agent">
-          <option value="codex">Codex</option>
-          <option value="agy">AGY</option>
-          <option value="claude" selected>Claude</option>
-        </select>
-      </fieldset>
-      </div>
-
-      <div class="out">
-        <div class="orow"><span class="ok">You type</span>
-          <div class="generated"><span class="ov mono" id="typed"></span><button type="button" class="copy" data-copy="generated-typed" aria-label="Copy the command you type">Copy</button></div></div>
-        <div class="orow automatic"><span class="ok">Glyph runs automatically</span>
-          <div class="generated"><span class="ov mono" id="cm"></span><button type="button" class="copy" data-copy="generated-run" aria-label="Copy generated launch command">Copy</button></div></div>
-        <div class="orow"><span class="ok" id="mark-label">Session name</span>
-          <span class="ov"><span class="outmark" id="mk"></span>
-            <span class="leg">
-              <b class="m1">■</b> label
-              <b class="m2">■</b> project
-              <b class="m3">■</b> agent
-              <b class="m4">■</b> machine
-              <b class="m4">■</b> started
-            </span></span></div>
-        <div class="orow"><span class="ok">Meaning</span>
-          <span class="ov note" id="nt"></span></div>
-      </div>
-      </div>
-    </details>
+<section id="why"><div class="wrap">
+  <p class="eyeb mi">Why</p>
+  <h2>Five agents running. Which one is yours?</h2>
+  <div class="compare">
+    <div class="pane"><h3>Without</h3><ul>
+      <li>macbook-pro-4-local-transient</li><li>agent-5e</li><li>doc-9b</li><li>zsh</li><li>node</li>
+    </ul></div>
+    <div class="pane on"><h3>With glyph</h3><ul>
+      <li><b>billing</b>&middot;acme-api&middot;claude-code&middot;laptop&middot;0556</li>
+      <li><b>migration</b>&middot;acme-api&middot;agy&middot;studio&middot;0602</li>
+      <li><b>docs</b>&middot;website&middot;codex&middot;mini&middot;0611</li>
+      <li><b>audit</b>&middot;payments&middot;claude-code&middot;windows&middot;2247</li>
+      <li><b>scrape</b>&middot;atlas&middot;codex&middot;hetzner&middot;0640</li>
+    </ul></div>
   </div>
-
-  <div class="home-endcap"><strong>Run an agent. Glyph gives it a name.</strong><span>Works in Herdr, your terminal, and remote sessions.</span><a class="primary" href="https://github.com/fru-dev3/glyph">★ Star on GitHub</a><a href="docs.html">Read the docs</a></div>
-
-  <div class="rule"></div>
-  <div class="pad" id="install">
-    <div class="section-heading">
-      <h2>Install</h2>
-      <button class="copy" type="button" data-copy="all">Copy all</button>
+  <div class="points">
+    <div class="pt">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 26v52M50 38 32 22M50 38l18-16M50 78 38 96M50 78l12 18"/><circle cx="50" cy="18" r="8"/></svg>
+      <b>Every agent</b><p>Claude Code, Codex, AGY, Cursor, Crush, Cortex, OpenCode, pi &mdash; and any other CLI you add in one line.</p>
     </div>
-    <ol class="install-steps">
-      <li><span class="step-label">1. Clone</span>
-        <code id="cmd-clone">git clone https://github.com/fru-dev3/glyph.git</code>
-        <button class="copy" type="button" data-copy="cmd-clone" aria-label="Copy clone command">Copy</button></li>
-      <li><span class="step-label">2. Install</span>
-        <code id="cmd-install">cd glyph &amp;&amp; ./install.sh &amp;&amp; exec zsh</code>
-        <button class="copy" type="button" data-copy="cmd-install" aria-label="Copy install command">Copy</button></li>
-      <li><span class="step-label">3. Verify</span>
-        <code id="cmd-verify">GLYPH_DRYRUN=1 claude checkout-fix</code>
-        <button class="copy" type="button" data-copy="cmd-verify" aria-label="Copy verify command">Copy</button></li>
-    </ol>
-    <p class="copy-status" role="status" aria-live="polite" id="copy-status"></p>
-    <p class="note">Copies one file to <code>~/.config/glyph/</code> and adds one
-    line to <code>~/.zshrc</code>.</p>
-  </div>
-
-  <div class="rule"></div>
-  <div class="pad" id="agents">
-    <h2>Agent adapters</h2>
-    <p class="why-intro">The demo features three agents. Glyph also wraps these CLIs when they are installed.</p>
-    <div class="agent-cards">
-      <article class="agent-card"><h3><img class="" src="agents/codex.png" alt="" width="28" height="28">Codex</h3>
-        <span class="agent-kind">Terminal label</span><code>codex checkout-fix</code>
-        <details><summary>Auto-approve flag</summary><code>--dangerously-bypass-approvals-and-sandbox</code></details></article>
-      <article class="agent-card"><h3><img class="" src="agents/agi.png" alt="" width="28" height="28">AGY</h3>
-        <span class="agent-kind">Terminal label</span><code>agy checkout-fix</code>
-        <details><summary>Auto-approve flag</summary><code>--dangerously-skip-permissions</code></details></article>
-      <article class="agent-card"><h3><img class="" src="agents/claude.png" alt="" width="28" height="28">Claude</h3>
-        <span class="agent-kind">Session name</span><code>claude checkout-fix</code>
-        <details><summary>Auto-approve flag</summary><code>--dangerously-skip-permissions</code></details></article>
-      <article class="agent-card"><h3><img class="" src="agents/cursor.png" alt="" width="28" height="28">Cursor</h3>
-        <span class="agent-kind">Terminal label</span><code>cursor-agent checkout-fix</code>
-        <details><summary>Auto-approve flag</summary><code>--force</code></details></article>
-      <article class="agent-card"><h3><img class="" src="agents/crush.png" alt="" width="28" height="28">Crush</h3>
-        <span class="agent-kind">Terminal label</span><code>crush checkout-fix</code>
-        <details><summary>Auto-approve flag</summary><code>--yolo</code></details></article>
-      <article class="agent-card"><h3><img class="" src="agents/cortex.svg" alt="" width="28" height="28">Snowflake Cortex</h3>
-        <span class="agent-kind">Terminal label</span><code>cortex checkout-fix</code>
-        <details><summary>Auto-approve flag</summary><code>--dangerously-allow-all-tool-calls</code></details></article>
-      <article class="agent-card"><h3><img class="monochrome" src="agents/opencode.svg" alt="" width="28" height="28">OpenCode</h3>
-        <span class="agent-kind">Terminal label</span><code>opencode checkout-fix</code>
-        <details><summary>Auto-approve flag</summary><code>No extra flag</code></details></article>
-      <article class="agent-card"><h3><img class="monochrome" src="agents/pi.svg" alt="" width="28" height="28">pi</h3>
-        <span class="agent-kind">Terminal label</span><code>pi checkout-fix</code>
-        <details><summary>Auto-approve flag</summary><code>No extra flag</code></details></article>
+    <div class="pt">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M20 24h60M20 50h60M20 76h60M34 24v52M66 24v52"/></svg>
+      <b>Every machine</b><p>The machine is part of the mark, so a pane on your laptop never reads the same as one running over SSH.</p>
     </div>
-    <p class="note">These labels describe what Glyph currently sets. Terminal labels appear in window titles and <code>glyph ls</code>, not inside the agent's conversation list. Fleet adds persistent pane borders. <code>GLYPH_YOLO=1</code> opts into each adapter's auto-approve flag.</p>
-  </div>
-
-  <div class="rule"></div>
-  <div class="pad" id="fleet">
-    <h2>Glyph Fleet: open agents together</h2>
-    <p class="why-intro">Open a saved group in one command. Each agent gets its own named pane or tab.</p>
-    <div class="fleet-preview" aria-label="Example: three panes opened by the ci fleet">
-      <div class="fleet-pane"><img src="agents/claude.png" alt=""><b>Claude</b><code>pane 1 · ci · your project</code></div>
-      <div class="fleet-pane"><img src="agents/agi.png" alt=""><b>AGY</b><code>pane 2 · ci · your project</code></div>
-      <div class="fleet-pane"><img src="agents/codex.png" alt=""><b>Codex</b><code>pane 3 · ci · your project</code></div>
-    </div>
-    <figure class="fleet-static"><img src="fleet-terminal.png" alt="Static terminal screenshot showing Claude Code, Codex, and AGY running in named panes"><figcaption>After launch: one workspace, named agent sessions.</figcaption></figure>
-    <div class="fleet-steps">
-      <section class="fleet-step">
-        <h3>1. Create a fleet once</h3>
-        <p>Run once to create the default fleets.</p>
-        <div class="code-block"><div class="code-heading"><span>Create your fleets</span><button type="button" class="copy" data-copy="fleet-init" aria-label="Copy fleet setup command">Copy</button></div>
-          <pre id="fleet-init">glyph fleet init</pre></div>
-        <p class="note">Creates <code>ci</code>, <code>review</code>, and <code>cloud</code> in your local config.</p>
-        <div class="settings"><details><summary>View or customize the config</summary>
-          <p>Saved to <code>~/.config/glyph/fleet.conf</code>, or your <code>GLYPH_FLEET_CONF</code> override. Left of <code>=</code> is the fleet name; right is one agent per pane.</p>
-          <div class="code-block"><pre>ci = claude agy codex
-review = claude codex
-cloud = claude:studio codex:studio</pre></div>
-        <p>Replace <code>studio</code> with your SSH host before using the cloud example. AGY uses the command <code>agy</code>.</p>
-        </details></div>
-      </section>
-      <section class="fleet-step">
-        <h3>2. Preview the launch</h3>
-        <p>Preview the group without launching anything.</p>
-        <div class="code-block"><div class="code-heading"><span>Preview the ci fleet</span><button type="button" class="copy" data-copy="fleet-preview" aria-label="Copy fleet preview command">Copy</button></div>
-          <pre id="fleet-preview">GLYPH_DRYRUN=1 glyph fleet ci</pre></div>
-      </section>
-      <section class="fleet-step">
-        <h3>3. Open the fleet</h3>
-        <p>Open one named pane or tab per agent in your current workspace.</p>
-        <div class="code-block"><div class="code-heading"><span>Start the ci fleet</span><button type="button" class="copy" data-copy="fleet-launch" aria-label="Copy fleet launch command">Copy</button></div>
-          <pre id="fleet-launch">glyph fleet ci</pre></div>
-        <p class="note">Use <code>glyph presets</code> to list fleets. Choose a workspace with <code>GLYPH_FLEET_BACKEND</code>.</p>
-      </section>
-    </div>
-    <div class="settings" style="margin-top:20px">
-      <details><summary>Run agents on another machine</summary>
-        <p><code>claude:studio</code> means Claude on the SSH host <code>studio</code>. Replace it with a host you can already reach using SSH.</p>
-        <p>Install Glyph and the agent on that machine, source Glyph in its zsh config, and keep the project at the same path. Then run <code>glyph fleet cloud</code>.</p>
-        <p>The agent's mark uses that machine's own tag. Glyph's pane border also shows the SSH host so you can tell remote panes apart.</p>
-      </details>
+    <div class="pt">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M22 78 78 22M78 22H52M78 22v26M22 34v44h44"/></svg>
+      <b>Before the first token</b><p>Set from argv at launch. No hook, no plugin, nothing to rename afterwards, nothing to tidy up.</p>
     </div>
   </div>
+</div></section>
 
-  <div class="rule"></div>
-  <div class="pad docs-only">
-    <h2>Make it yours</h2>
-    <p class="why-intro">The defaults work without a config. Open a section when you want to change something.</p>
-    <div class="settings">
-      <details><summary>Change your machine or project name</summary>
-        <p>Every mark is lowercase. Hyphens join words inside a field; <code>·</code> separates fields: <code>checkout-fix·acme-api·claude-code·mbp·2026-09-12·0648</code>.</p>
-        <p>Glyph detects Mac model, WSL/Windows, Ubuntu, and generic Linux. It cannot know a Windows release or tablet model reliably, so set one explicitly: <code>export GLYPH_MACHINE=windows-10</code>.</p>
-        <p>For a project override, add a line to <code>~/.config/glyph/names.tsv</code>: the folder name, a tab, then the name. It is normalized to lowercase hyphenated form.</p>
-      </details>
-      <details><summary>Adjust naming and launch options</summary>
-        <dl>
-          <dt><code>GLYPH_OFF=1</code></dt><dd>Keep the label and project; omit machine and time.</dd>
-          <dt><code>GLYPH_SEP</code></dt><dd>Change the separator between name parts. Default: ·</dd>
-          <dt><code>GLYPH_FMT</code></dt><dd>Set the date format. Default: %Y-%m-%d·%H%M</dd>
-          <dt><code>GLYPH_RC=0</code></dt><dd>Skip Claude's Remote Control flag.</dd>
-          <dt><code>GLYPH_TITLE=0</code></dt><dd>Leave terminal and tmux window titles unchanged.</dd>
-          <dt><code>GLYPH_LOG=0</code></dt><dd>Skip the local session log.</dd>
-          <dt><code>GLYPH_DRYRUN=1</code></dt><dd>Preview the command instead of launching an agent.</dd>
-          <dt><code>GLYPH_YOLO=1</code></dt><dd>Enable the agent's auto-approve flag. Off by default.</dd>
-        </dl>
-      </details>
-      <details><summary>How Glyph fits your workflow</summary>
-        <p>The wrapper builds the mark before launching the agent. For Claude, it passes <code>-n</code> for the session name and <code>--remote-control</code> for the phone bridge.</p>
-        <p>Print-mode runs and recognized subcommands, such as <code>claude --print</code> and <code>codex resume</code>, pass through.</p>
-        <p>Herdr is the recommended outer workspace: launch agents inside existing Herdr tabs and Glyph labels them. <code>glyph fleet</code> currently creates a standalone tmux session, so running it inside Herdr nests tmux. Use Fleet outside Herdr until a native Herdr Fleet backend exists.</p>
-      </details>
+<section class="start"><div class="wrap">
+  <h2>Name the next one.</h2>
+  <div class="kit">
+    <div class="bar" style="border-top:1px solid var(--line)">
+      <span class="p" aria-hidden="true">$</span>
+      <code id="cmd2">git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; ./install.sh &amp;&amp; exec zsh</code>
+      <button id="copy2" type="button">Copy</button>
     </div>
   </div>
+  <div class="links mi"><a href="docs.html">Docs</a><a href="https://github.com/fru-dev3/glyph">GitHub &#8599;</a><a href="https://github.com/fru-dev3/glyph/stargazers">Star</a></div>
+</div></section>
 
-  <div class="rule"></div>
-  <div class="pad">
-    <footer>
-      <span><a href="https://github.com/fru-dev3/glyph">github.com/fru-dev3/glyph</a> · MIT</span>
-      <span>by <a href="https://fru.dev">fru.dev</a></span>
-    </footer>
-  </div>
+<div class="wrap"><footer class="mi">
+  <span>MIT</span><a href="docs.html">Docs</a><a href="https://github.com/fru-dev3/glyph">Source</a>
+  <span class="sp"><a href="https://fru.dev">fru.dev</a></span>
+</footer></div>
 
-</div>
+<svg id="defs" style="position:fixed;width:0;height:0;overflow:hidden" aria-hidden="true"></svg>
 
 <script>
+var nav=document.getElementById('nav');
+addEventListener('scroll',function(){nav.classList.toggle('stuck',scrollY>10)},{passive:true});
+
+/* ---- tabs ---- */
+var TAB={
+  install:['git clone https://github.com/fru-dev3/glyph.git && cd glyph && ./install.sh',
+           null,'one file into ~/.config/glyph, one line into ~/.zshrc'],
+  claude :['claude billing','billing','·acme-api·claude-code·mbp·2026-09-12·0556'],
+  codex  :['codex audit','audit','·acme-api·codex·mbp·2026-09-12·0602'],
+  agy    :['agy migration','migration','·acme-api·agy·mbp·2026-09-12·0611'],
+  fleet  :['glyph fleet ci',null,'three agents, three panes, three marks — one command']
+};
+var cmdEl=document.getElementById('cmd'),outEl=document.getElementById('out');
+document.querySelectorAll('.tabs button').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('.tabs button').forEach(function(x){x.setAttribute('aria-selected','false')});
+    b.setAttribute('aria-selected','true');
+    var t=TAB[b.dataset.k];
+    cmdEl.textContent=t[0];
+    outEl.innerHTML='<i>&rarr;</i>'+(t[1]
+      ? '<span class="t"><b>'+t[1]+'</b>'+t[2]+'</span>'
+      : '<span class="t">'+t[2]+'</span>');
+  })});
+
+/* ---- copy ---- */
+[['copy','cmd'],['copy2','cmd2']].forEach(function(p){
+  var b=document.getElementById(p[0]);
+  b.addEventListener('click',function(){
+    navigator.clipboard.writeText(document.getElementById(p[1]).textContent).then(function(){
+      b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1500)})})});
+
+/* ---- stars ---- */
+fetch('https://api.github.com/repos/fru-dev3/glyph').then(function(r){return r.json()})
+  .then(function(d){if(typeof d.stargazers_count==='number')
+    document.getElementById('stars').textContent=d.stargazers_count}).catch(function(){});
+
+/* ---- pecked petroglyphs ---- */
 (function(){
-  var lab=document.getElementById('lab'), prj=document.getElementById('prj'),
-      agentSelect=document.getElementById('agent-select'), mk=document.getElementById('mk'),
-      cm=document.getElementById('cm'), nt=document.getElementById('nt');
-  var generatedTyped='', generatedRun='';
-  var YOLO={claude:'--dangerously-skip-permissions',codex:'--dangerously-bypass-approvals-and-sandbox',
-            agy:'--dangerously-skip-permissions'};
-  function token(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
-  function pad(n){return (n<10?'0':'')+n}
-  function esc(s){return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
-  function render(){
-    var d=new Date(), when=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())
-          +'\u00b7'+pad(d.getHours())+pad(d.getMinutes());
-    var raw=lab.value.trim().split(/\s+/)[0]||'';
-    var l=esc(token(raw)), p=esc(token(prj.value||'')), a=agentSelect.value;
-    var parts=[];
-    var agentName={claude:'claude-code',codex:'codex',agy:'agy'}[a]||a;
-    if(l) parts.push('<span class="m1">'+l+'</span>');
-    if(p && p.toLowerCase()!==l.toLowerCase()) parts.push('<span class="m2">'+p+'</span>');
-    parts.push('<span class="m3">'+esc(agentName)+'</span>');
-    parts.push('<span class="m4">your-machine</span>');
-    parts.push('<span class="m4">'+when+'</span>');
-    mk.innerHTML=parts.join('<span class="md">\u00b7</span>');
-    var plain=mk.textContent;
-    function quote(value){return "'"+value.replace(/'/g,"'\\''")+"'";}
-    generatedTyped=a+(raw?' '+quote(raw):'');
-    document.getElementById('mark-label').textContent=a==='claude'?'Session name':'Terminal label';
-    generatedRun=a==='claude'?'command claude -n '+quote(plain)+' --remote-control':'command '+a;
+  var cv=document.getElementById('rock'),ctx=cv.getContext('2d'),defs=document.getElementById('defs');
+  var NS='http://www.w3.org/2000/svg';
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    var multi=/\s/.test(lab.value.trim());
-    document.getElementById('typed').innerHTML=
-      '<span class="p">$</span> '+a+(raw?' '+esc(raw):'')+
-      (multi?'   <span style="color:var(--faint)">'+
-        '\u2190 only the first word is the label; a quoted phrase is a prompt</span>':'');
+  function circ(cx,cy,r){return 'M'+(cx-r)+' '+cy+'a'+r+' '+r+' 0 1 0 '+(2*r)+' 0a'+r+' '+r+' 0 1 0 '+(-2*r)+' 0'}
+  function spiral(cx,cy,turns,rmax){var d='',n=turns*46;
+    for(var i=0;i<=n;i++){var t=i/n,a=t*turns*Math.PI*2,r=t*rmax;
+      d+=(i?'L':'M')+(cx+Math.cos(a)*r).toFixed(1)+' '+(cy+Math.sin(a)*r).toFixed(1)}return d}
+  function rays(cx,cy,r0,r1,n){var a=[];for(var i=0;i<n;i++){var t=i/n*Math.PI*2;
+    a.push('M'+(cx+Math.cos(t)*r0).toFixed(1)+' '+(cy+Math.sin(t)*r0).toFixed(1)+
+           'L'+(cx+Math.cos(t)*r1).toFixed(1)+' '+(cy+Math.sin(t)*r1).toFixed(1))}return a}
 
-    if(a==='claude'){
-      cm.textContent='$ '+generatedRun;
-      nt.innerHTML='<b>-n</b> sets the session name; <b>--remote-control</b> opens the '+
-        'bridge so the named session appears in the web app and on your phone.';
-    }else{
-      cm.textContent='$ '+generatedRun;
-      nt.innerHTML='Look for this label in the <b>terminal or tmux window title</b> and <b>glyph ls</b>. '+
-        'Glyph does not rename the conversation or app banner inside '+(a==='agy'?'AGY':'Codex')+'. '+
-        'The app may replace its terminal title after launch. Copying the raw launch command alone does not apply the label; use the command above with Glyph installed.';
-    }
+  var FIGS=[
+    [circ(50,27,8),'M50 35v38','M50 44 32 27','M50 44l18-17','M50 73 40 95','M50 73l10 22',
+     'M40 95 33 99','M60 95l7 4','M50 19v-9','M44 14 38 5','M56 14l6-9'],
+    [spiral(50,50,3.1,36)],
+    ['M28 48h38','M34 48v24','M43 48v24','M55 48v24','M63 48v24','M66 48 76 36 88 34',
+     'M78 34c10-10-2-18-12-10','M28 48 21 39'],
+    [circ(50,50,9),circ(50,50,19)].concat(rays(50,50,23,33,8)),
+    ['M10 60c10-22 22-22 32 0s22 22 32 0c5-11 11-13 16-8',circ(90,52,3.2)],
+    ['M30 30v40','M42 28v40','M54 30v40','M66 28v40','M24 40 72 62'],
+    ['M50 36v38','M50 43 16 30','M50 43 84 30','M16 30l-3 9','M84 30l3 9',
+     circ(50,28,5),'M50 74 41 88','M50 74l9 14','M50 74v16'],
+    ['M36 16v70','M64 16v70','M36 28h28','M36 42h28','M36 56h28','M36 70h28'],
+    ['M38 62c0 16 24 16 24 0V48','M40 50V31','M47 50V25','M54 50V26','M61 50V33','M39 57 26 46'],
+    ['M36 26a28 28 0 1 0 0 48',circ(70,50,5)]
+  ];
+
+  var SAMPLED=FIGS.map(function(paths){
+    var pts=[];
+    paths.forEach(function(d){
+      var p=document.createElementNS(NS,'path');p.setAttribute('d',d);defs.appendChild(p);
+      var L=p.getTotalLength(),n=Math.max(2,Math.round(L/2.6));
+      for(var i=0;i<=n;i++){var q=p.getPointAtLength(L*i/n);pts.push([q.x-50,q.y-50])}
+      defs.removeChild(p)});
+    return pts});
+
+  var W=0,H=0,DPR=1,inst=[],rockColor='#a08f74';
+  function readColor(){rockColor=getComputedStyle(document.body).getPropertyValue('--rock').trim()||rockColor}
+  function rnd(a,b){return a+Math.random()*(b-a)}
+
+  function spawn(i,now){
+    var big=W>1000;
+    var cols=big?3:2,rows=big?3:4;
+    /* bias into the right side of the hero, where the mask lets them through */
+    var x0=big?W*0.50:0, span=W-x0;
+    var cell=i%(cols*rows),cx=cell%cols,cy=(cell/cols)|0;
+    var size=rnd(big?140:92,big?235:145),m=size*0.6+10;
+    /* never repeat a figure that is already on the wall */
+    var used={};for(var q=0;q<inst.length;q++)if(q!==i&&inst[q])used[inst[q].f]=1;
+    var pick=(Math.random()*SAMPLED.length)|0,guard=0;
+    while(used[pick]&&guard++<20)pick=(Math.random()*SAMPLED.length)|0;
+    return {f:pick,
+      x:Math.min(W-m,Math.max(m,x0+(cx+rnd(.15,.85))*(span/cols))),
+      y:Math.min(H-m,Math.max(m,(cy+rnd(.15,.85))*(H/rows))),
+      s:size/100,r:rnd(-.16,.16),
+      t0:now+rnd(0,reduce?0:5200),
+      peck:rnd(3400,6400),hold:rnd(4500,9500),fade:rnd(1800,3400),
+      a:rnd(.6,1),seed:Math.random()*1000}}
+
+  function resize(){
+    DPR=Math.min(2,devicePixelRatio||1);
+    var r=cv.getBoundingClientRect();W=r.width;H=r.height;
+    if(!W||!H)return;
+    cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);
+    readColor();
+    var n=W>1200?9:W>800?7:5,now=performance.now();
+    inst=[];for(var i=0;i<n;i++)inst.push(spawn(i,now));
   }
-  [lab,prj].forEach(function(el){el.addEventListener('input',render)});
-  agentSelect.addEventListener('change',render);
-  render();
-  var copyStatus=document.getElementById('copy-status');
-  document.querySelectorAll('[data-copy]').forEach(function(button){
-    button.addEventListener('click',async function(){
-      var target=button.dataset.copy;
-      var text=target==='generated-typed'?generatedTyped:target==='generated-run'?generatedRun:target==='all'
-        ? document.getElementById('cmd-clone').textContent+
-          " && cd glyph && ./install.sh && zsh -ic 'GLYPH_DRYRUN=1 claude checkout-fix; exec zsh'"
-        : document.getElementById(target).textContent;
-      try{
-        await navigator.clipboard.writeText(text);
-        button.textContent='Copied';
-        clearTimeout(button.copyReset);
-        button.copyReset=setTimeout(function(){button.textContent=target==='all'?'Copy all':'Copy'},2000);
-        copyStatus.textContent=target==='all'?'All commands copied. Paste once to install and verify.':'Command copied.';
-      }catch(error){
-        copyStatus.textContent='Could not access the clipboard. Select and copy the command text.';
-      }
-    });
-  });
-  var demoSpecs={
-    claude:{title:'Claude Code',logo:'agents/claude.png',command:'claude checkout-fix',mark:'checkout-fix·acme-api·claude-code',status:'remote control ready'},
-    codex:{title:'Codex',logo:'agents/codex.png',command:'codex review',mark:'review·acme-api·codex',status:'ready'},
-    agy:{title:'AGY',logo:'agents/agi.png',command:'agy docs',mark:'docs·website·agy',status:'ready'}
-  };
-  var liveTimer,liveCurrent='claude',liveCommand=document.querySelector('[data-live-command]'),livePane=document.querySelector('[data-live-pane]'),liveTitle=document.querySelector('[data-live-title]'),liveLogo=document.querySelector('[data-live-logo]'),liveMark=document.querySelector('[data-live-mark]'),liveStatus=document.querySelector('[data-live-status]'),liveRepeat=document.querySelector('[data-live-repeat]');
-  function playDemo(key){
-    clearTimeout(liveTimer); liveCurrent=key; var spec=demoSpecs[key];
-    liveCommand.textContent=''; livePane.classList.remove('show'); liveTitle.textContent=spec.title; liveLogo.src=spec.logo; liveLogo.alt=spec.title+' logo'; liveMark.textContent=spec.mark; liveStatus.textContent=spec.status; liveRepeat.textContent='$ '+spec.command;
-    var index=0;
-    function type(){
-      if(index<spec.command.length){liveCommand.textContent+=spec.command.charAt(index++);liveTimer=setTimeout(type,115);return}
-      liveTimer=setTimeout(function(){livePane.classList.add('show');liveTimer=setTimeout(function(){playDemo(liveCurrent)},6500)},900);
-    }
-    liveTimer=setTimeout(type,500);
+
+  function draw(now){
+    ctx.clearRect(0,0,W,H);ctx.fillStyle=rockColor;
+    for(var k=0;k<inst.length;k++){
+      var o=inst[k],age=now-o.t0;
+      if(age<0)continue;
+      var life=o.peck+o.hold+o.fade;
+      if(age>life){inst[k]=spawn(k,now+rnd(200,2800));continue}
+      var prog=reduce?1:Math.min(1,age/o.peck);
+      var alpha=o.a*(age>o.peck+o.hold?1-(age-o.peck-o.hold)/o.fade:1);
+      var pts=SAMPLED[o.f],upto=Math.round(pts.length*prog);
+      var cos=Math.cos(o.r),sin=Math.sin(o.r),s=o.s;
+      for(var i=0;i<upto;i++){
+        var p=pts[i];
+        var j1=Math.sin((i+o.seed)*12.9898)*43758.5453,j2=Math.sin((i+o.seed)*78.233)*12345.6789;
+        j1-=Math.floor(j1);j2-=Math.floor(j2);
+        var px=p[0]+(j1-.5)*1.1,py=p[1]+(j2-.5)*1.1;
+        var X=o.x+(px*cos-py*sin)*s,Y=o.y+(px*sin+py*cos)*s;
+        var fresh=upto-i<5?1.35:1;
+        ctx.globalAlpha=alpha*(.62+j1*.38);
+        ctx.beginPath();ctx.arc(X,Y,(1+j2*.65)*Math.min(1.7,s)*fresh,0,6.2832);ctx.fill();
+      }}
+    ctx.globalAlpha=1;requestAnimationFrame(draw);
   }
-  playDemo('claude');
-  var demoOrder=['claude','codex','agy'],demoPosition=0;
-  document.querySelectorAll('[data-demo]').forEach(function(tab){
-    tab.addEventListener('click',function(){
-      demoPosition=Math.max(0,demoOrder.indexOf(tab.dataset.demo));
-      document.querySelectorAll('[data-demo]').forEach(function(item){
-        var selected=item===tab;
-        item.classList.toggle('active',selected);
-        item.setAttribute('aria-selected',selected?'true':'false');
-      });
-      playDemo(tab.dataset.demo);
-    });
-  });
-  setInterval(function(){
-    demoPosition=(demoPosition+1)%demoOrder.length;
-    var next=document.querySelector('[data-demo="'+demoOrder[demoPosition]+'"]');
-    if(next) next.click();
-  },11000);
-  fetch('https://api.github.com/repos/fru-dev3/glyph').then(function(r){return r.json()})
-    .then(function(d){if(typeof d.stargazers_count==='number')
-      document.getElementById('stars').textContent=d.stargazers_count;}).catch(function(){});
+
+  addEventListener('resize',function(){clearTimeout(window.__rz);window.__rz=setTimeout(resize,180)});
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',readColor);
+  resize();requestAnimationFrame(draw);
 })();
 </script>
 </body>
