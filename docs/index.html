@@ -206,6 +206,8 @@
   .fleet-gif,.fleet-static img{display:block;width:100%;height:auto;border:1px solid #463329;border-radius:14px;background:#0d0d0f;box-shadow:0 18px 50px rgba(0,0,0,.2)}
   .fleet-gif{margin:22px 0 8px}.fleet-static{margin:22px 0 28px}.fleet-static figcaption{color:var(--faint);font-size:12px;margin-top:8px}
   .demo-carousel{border:1px solid var(--edge2);border-radius:14px;padding:14px;background:#111013;margin-top:14px}.carousel-head{display:flex;align-items:center;justify-content:space-between;gap:14px;color:var(--dim);font-size:12px}.carousel-head [role=tablist]{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.demo-tab{border:1px solid var(--edge2);border-radius:999px;padding:6px 10px;background:transparent;color:var(--dim);font:11px var(--sans);cursor:pointer}.demo-tab:hover,.demo-tab.active{border-color:var(--ochre);color:var(--fg);background:#211814}.demo-carousel .fleet-gif{margin:14px 0 0}
+  .live-demo{margin-top:14px;min-height:360px;border:1px solid #463329;border-radius:14px;overflow:hidden;background:#0d0d0f;box-shadow:0 18px 50px rgba(0,0,0,.2)}.live-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--edge);color:var(--dim);font:13px var(--mono)}.live-head i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#60463b;margin-right:5px}.live-head i:first-child{background:var(--ochre)}.live-head b{color:#d7a27b;font-weight:500}.live-command{margin:22px;border:1px solid var(--edge);border-radius:9px;padding:17px 18px;font:20px var(--mono);color:var(--fg);min-height:60px}.live-command>span:first-child{color:var(--ochre)}.live-cursor{color:var(--ochre);font-style:normal;animation:cursor-blink 1s steps(2,end) infinite}.live-pane{margin:0 22px 22px;min-height:190px;border:1px solid #383238;border-radius:11px;background:#171518;padding:22px;display:flex;flex-direction:column;gap:13px;opacity:0;transform:translateY(10px);transition:opacity .7s ease,transform .7s ease}.live-pane.show{opacity:1;transform:none;border-color:#9c5c3d}.live-pane strong{font:600 18px var(--mono);color:var(--fg)}.live-pane span{font:16px var(--mono);color:#d9a078;overflow-wrap:anywhere}.live-pane small{font:15px var(--mono);color:#86aa8b}.live-pane code{margin-top:auto;color:var(--faint);font:13px var(--mono)}
+  @media(max-width:620px){.carousel-head{align-items:flex-start;flex-direction:column}.carousel-head [role=tablist]{justify-content:flex-start}.live-command{font-size:16px}.live-pane span{font-size:13px}}
   .fleet-screen{border:1px solid #463329;border-radius:14px;overflow:hidden;background:#100f10;margin:22px 0 8px;box-shadow:0 18px 50px rgba(0,0,0,.2)}
   .screen-head,.screen-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 15px;color:var(--dim);font:11px var(--mono);border-bottom:1px solid var(--edge)}
   .screen-head i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#604336;margin-right:4px}.screen-head i:first-child{background:var(--ochre)}.screen-head b{color:#d5a37e;font-weight:500}
@@ -358,7 +360,16 @@
         <button type="button" class="demo-tab" data-demo="codex" role="tab" aria-selected="false">Codex</button>
         <button type="button" class="demo-tab" data-demo="agy" role="tab" aria-selected="false">AGY</button>
       </div></div>
-      <img class="fleet-gif" data-demo-image src="demos/claude.gif" alt="Animated Claude Code launch demo">
+      <div class="live-demo" data-live-demo aria-live="polite">
+        <div class="live-head"><span><i></i><i></i><i></i> herdr · glyph</span><b>launch demo</b></div>
+        <div class="live-command"><span>$</span> <span data-live-command></span><i class="live-cursor">▮</i></div>
+        <div class="live-pane" data-live-pane>
+          <strong data-live-title>Claude Code</strong>
+          <span data-live-mark>checkout-fix·acme-api·claude-code</span>
+          <small data-live-status>remote control ready</small>
+          <code data-live-repeat>$ claude checkout-fix</code>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -451,28 +462,6 @@
     <p class="copy-status" role="status" aria-live="polite" id="copy-status"></p>
     <p class="note">Copies one file to <code>~/.config/glyph/</code> and adds one
     line to <code>~/.zshrc</code>.</p>
-  </div>
-
-  <div class="rule"></div>
-  <div class="pad">
-    <h2>Type a short label. Get a named session.</h2>
-    <p class="why-intro">You type the simple command you already know. Glyph uses the first word as the label, adds the project, agent, machine, and time, then launches the agent with that name attached.</p>
-    <div class="cmds">
-      <div class="k">You type</div>
-      <div class="v"><span class="p">$</span> claude checkout-fix <span class="c">→ label: checkout-fix</span></div>
-      <div class="k">Glyph adds</div>
-      <div class="v"><span class="p">$</span> <b>checkout-fix·acme-api·claude-code·laptop·0648</b> <span class="c">→ the name shown in your terminal and phone</span></div>
-      <div class="k">Prompt too</div>
-      <div class="v"><span class="p">$</span> claude checkout-fix "fix the retry" <span class="c">→ label plus prompt</span></div>
-      <div class="k">Claude</div>
-      <div class="v"><span class="p">$</span> claude checkout-fix <span class="c">→ named session + Remote Control bridge</span></div>
-      <div class="k">Any agent</div>
-      <div class="v"><span class="p">$</span> codex audit <span class="c">→ the same naming pattern</span></div>
-      <div class="k">Fleet</div>
-      <div class="v"><span class="p">$</span> glyph fleet ci <span class="c">→ opens the saved group together</span></div>
-      <div class="k">List</div>
-      <div class="v"><span class="p">$</span> glyph ls <span class="c">→ see every name, agent, and machine</span></div>
-    </div>
   </div>
 
   <div class="rule"></div>
@@ -665,9 +654,23 @@ cloud = claude:studio codex:studio</pre></div>
       }
     });
   });
-  var demoImages={claude:'demos/claude.gif',codex:'demos/codex.gif',agy:'demos/agy.gif'};
-  var demoImage=document.querySelector('[data-demo-image]');
-  Object.keys(demoImages).forEach(function(key){var preload=new Image();preload.src=demoImages[key]});
+  var demoSpecs={
+    claude:{title:'Claude Code',command:'claude checkout-fix',mark:'checkout-fix·acme-api·claude-code',status:'remote control ready'},
+    codex:{title:'Codex',command:'codex review',mark:'review·acme-api·codex',status:'ready'},
+    agy:{title:'AGY',command:'agy docs',mark:'docs·website·agy',status:'ready'}
+  };
+  var liveTimer,liveCurrent='claude',liveCommand=document.querySelector('[data-live-command]'),livePane=document.querySelector('[data-live-pane]'),liveTitle=document.querySelector('[data-live-title]'),liveMark=document.querySelector('[data-live-mark]'),liveStatus=document.querySelector('[data-live-status]'),liveRepeat=document.querySelector('[data-live-repeat]');
+  function playDemo(key){
+    clearTimeout(liveTimer); liveCurrent=key; var spec=demoSpecs[key];
+    liveCommand.textContent=''; livePane.classList.remove('show'); liveTitle.textContent=spec.title; liveMark.textContent=spec.mark; liveStatus.textContent=spec.status; liveRepeat.textContent='$ '+spec.command;
+    var index=0;
+    function type(){
+      if(index<spec.command.length){liveCommand.textContent+=spec.command.charAt(index++);liveTimer=setTimeout(type,115);return}
+      liveTimer=setTimeout(function(){livePane.classList.add('show');liveTimer=setTimeout(function(){playDemo(liveCurrent)},6500)},900);
+    }
+    liveTimer=setTimeout(type,500);
+  }
+  playDemo('claude');
   document.querySelectorAll('[data-demo]').forEach(function(tab){
     tab.addEventListener('click',function(){
       document.querySelectorAll('[data-demo]').forEach(function(item){
@@ -675,8 +678,7 @@ cloud = claude:studio codex:studio</pre></div>
         item.classList.toggle('active',selected);
         item.setAttribute('aria-selected',selected?'true':'false');
       });
-      demoImage.src=demoImages[tab.dataset.demo];
-      demoImage.alt='Animated '+tab.textContent+' launch demo';
+      playDemo(tab.dataset.demo);
     });
   });
   fetch('https://api.github.com/repos/fru-dev3/glyph').then(function(r){return r.json()})
