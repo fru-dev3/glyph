@@ -207,6 +207,7 @@
   .fleet-gif{margin:22px 0 8px}.fleet-static{margin:22px 0 28px}.fleet-static figcaption{color:var(--faint);font-size:12px;margin-top:8px}
   .demo-carousel{border:1px solid var(--edge2);border-radius:14px;padding:14px;background:#111013;margin-top:14px}.carousel-head{display:flex;align-items:center;justify-content:space-between;gap:14px;color:var(--dim);font-size:12px}.carousel-head [role=tablist]{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.demo-tab{border:1px solid var(--edge2);border-radius:999px;padding:6px 10px;background:transparent;color:var(--dim);font:11px var(--sans);cursor:pointer}.demo-tab:hover,.demo-tab.active{border-color:var(--ochre);color:var(--fg);background:#211814}.demo-carousel .fleet-gif{margin:14px 0 0}
   .live-demo{margin-top:14px;min-height:360px;border:1px solid #463329;border-radius:14px;overflow:hidden;background:#0d0d0f;box-shadow:0 18px 50px rgba(0,0,0,.2)}.live-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--edge);color:var(--dim);font:13px var(--mono)}.live-head i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#60463b;margin-right:5px}.live-head i:first-child{background:var(--ochre)}.live-head b{color:#d7a27b;font-weight:500}.live-command{margin:22px;border:1px solid var(--edge);border-radius:9px;padding:17px 18px;font:20px var(--mono);color:var(--fg);min-height:60px}.live-command>span:first-child{color:var(--ochre)}.live-cursor{color:var(--ochre);font-style:normal;animation:cursor-blink 1s steps(2,end) infinite}.live-pane{margin:0 22px 22px;min-height:190px;border:1px solid #383238;border-radius:11px;background:#171518;padding:22px;display:flex;flex-direction:column;gap:13px;opacity:0;transform:translateY(10px);transition:opacity .7s ease,transform .7s ease}.live-pane.show{opacity:1;transform:none;border-color:#9c5c3d}.live-pane strong{font:600 18px var(--mono);color:var(--fg)}.live-pane span{font:16px var(--mono);color:#d9a078;overflow-wrap:anywhere}.live-pane small{font:15px var(--mono);color:#86aa8b}.live-pane code{margin-top:auto;color:var(--faint);font:13px var(--mono)}
+  .live-label{font:11px var(--sans);font-style:normal;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:4px}
   @media(max-width:620px){.carousel-head{align-items:flex-start;flex-direction:column}.carousel-head [role=tablist]{justify-content:flex-start}.live-command{font-size:16px}.live-pane span{font-size:13px}}
   .fleet-screen{border:1px solid #463329;border-radius:14px;overflow:hidden;background:#100f10;margin:22px 0 8px;box-shadow:0 18px 50px rgba(0,0,0,.2)}
   .screen-head,.screen-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 15px;color:var(--dim);font:11px var(--mono);border-bottom:1px solid var(--edge)}
@@ -233,7 +234,7 @@
     .settings dl{grid-template-columns:1fr;gap:5px}
     .settings dd{margin-bottom:8px}
   }
-  .agent-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .agent-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
   .agent-card{min-width:0;padding:14px;border:1px solid var(--edge2);border-radius:8px;background:var(--panel)}
   .agent-card h3{display:flex;align-items:center;gap:8px;font-size:14px;margin:0 0 9px}
   .agent-card img{object-fit:contain}
@@ -282,6 +283,7 @@
   .rule{border-color:#29282b}
   .section-heading h2,h2{font-size:26px;letter-spacing:-.035em}
   .why-intro{font-size:15px;line-height:1.6}
+  #fleet .why-intro{max-width:none}
   .comparison{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.comparison article{padding:24px;border-radius:14px}.comparison h3{font-size:17px}.comparison ul{font-size:12px}.comparison .after{background:linear-gradient(145deg,#181513,#211711);border-color:#69402f}
   .install-steps,.code-block,.settings details,.demo,.agent-card,.fleet-pane{border-radius:13px}
   .demo{padding:28px;background:linear-gradient(145deg,#171416,#121214)}
@@ -291,7 +293,7 @@
   .demo .agent-picker{margin:0;min-width:0}
   .agent-picker select{display:block;width:100%;height:42px;padding:0 34px 0 12px;border:1px solid var(--edge2);border-radius:8px;background:#0f0f11;color:var(--fg);font:13px var(--mono);outline:none;cursor:pointer}
   .agent-picker select:focus{border-color:var(--ochre);outline:2px solid rgba(194,86,47,.2);outline-offset:2px}
-  .agent-cards{grid-template-columns:repeat(3,1fr);gap:14px}.agent-card{padding:18px}.agent-card h3{font-size:16px}
+  .agent-cards{grid-template-columns:repeat(4,1fr);gap:14px}.agent-card{padding:18px}.agent-card h3{font-size:16px}
   .fleet-preview{gap:12px}.fleet-pane{padding:16px}
   footer{padding-bottom:10px}
   @media(max-width:820px){
@@ -365,6 +367,7 @@
         <div class="live-command"><span>$</span> <span data-live-command></span><i class="live-cursor">▮</i></div>
         <div class="live-pane" data-live-pane>
           <strong data-live-title>Claude Code</strong>
+          <em class="live-label">Glyph session name</em>
           <span data-live-mark>checkout-fix·acme-api·claude-code</span>
           <small data-live-status>remote control ready</small>
           <code data-live-repeat>$ claude checkout-fix</code>
@@ -415,31 +418,11 @@
   </div>
 
   <div class="rule"></div>
-  <div class="pad">
+  <div class="pad signal-section">
     <h2>Know which session is which.</h2>
-    <p class="why-intro">Several agents. Different machines. One glance to find the right session.</p>
-    <div class="comparison">
-      <article class="before">
-        <h3>Unlabeled sessions</h3>
-        <ul>
-          <li>agent-5e</li>
-          <li>zsh</li>
-          <li>node</li>
-        </ul>
-        <p>Which project? Which machine? What task?</p>
-      </article>
-      <article class="after">
-        <h3>Named by Glyph</h3>
-        <ul>
-          <li><strong>checkout-fix</strong>·acme-api·claude-code·mbp·2026-09-12·0556</li>
-          <li><strong>review</strong>·acme-api·agy·mini·2026-09-12·0602</li>
-          <li><strong>docs</strong>·website·codex·studio·2026-09-12·0611</li>
-        </ul>
-        <p>Task · project · agent · machine · date · time</p>
-      </article>
-    </div>
-    <p class="why-takeaway"><b>Named at launch. Every time.</b>
-      <span>No manual renaming to remember.</span></p>
+    <p class="why-intro">The same name follows the session from your terminal to Herdr, another machine, or your phone.</p>
+    <div class="signal-mark"><span>checkout-fix</span>·acme-api·claude-code·studio·09:12</div>
+    <p class="screen-caption">Named at launch. Every time.</p>
   </div>
 
   <div class="rule"></div>
@@ -500,7 +483,7 @@
   <div class="rule"></div>
   <div class="pad" id="fleet">
     <h2>Glyph Fleet: open agents together</h2>
-    <p class="why-intro">Glyph Fleet opens a saved group of AI agents together in your terminal—one named pane or tab per agent—so Claude Code, Codex, and AGY can work side by side.</p>
+    <p class="why-intro">Open a saved group in one command. Each agent gets its own named pane or tab.</p>
     <div class="fleet-preview" aria-label="Example: three panes opened by the ci fleet">
       <div class="fleet-pane"><img src="agents/claude.png" alt=""><b>Claude</b><code>pane 1 · ci · your project</code></div>
       <div class="fleet-pane"><img src="agents/agi.png" alt=""><b>AGY</b><code>pane 2 · ci · your project</code></div>
@@ -671,8 +654,10 @@ cloud = claude:studio codex:studio</pre></div>
     liveTimer=setTimeout(type,500);
   }
   playDemo('claude');
+  var demoOrder=['claude','codex','agy'],demoPosition=0;
   document.querySelectorAll('[data-demo]').forEach(function(tab){
     tab.addEventListener('click',function(){
+      demoPosition=Math.max(0,demoOrder.indexOf(tab.dataset.demo));
       document.querySelectorAll('[data-demo]').forEach(function(item){
         var selected=item===tab;
         item.classList.toggle('active',selected);
@@ -681,6 +666,11 @@ cloud = claude:studio codex:studio</pre></div>
       playDemo(tab.dataset.demo);
     });
   });
+  setInterval(function(){
+    demoPosition=(demoPosition+1)%demoOrder.length;
+    var next=document.querySelector('[data-demo="'+demoOrder[demoPosition]+'"]');
+    if(next) next.click();
+  },11000);
   fetch('https://api.github.com/repos/fru-dev3/glyph').then(function(r){return r.json()})
     .then(function(d){if(typeof d.stargazers_count==='number')
       document.getElementById('stars').textContent=d.stargazers_count;}).catch(function(){});
