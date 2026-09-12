@@ -268,7 +268,9 @@
   .install-steps,.code-block,.settings details,.demo,.agent-card,.fleet-pane{border-radius:13px}
   .demo{padding:28px;background:linear-gradient(145deg,#171416,#121214)}
   .demo .lbl{font-size:12px;letter-spacing:.16em;color:var(--ochre)}
-  .agent-option span{padding:13px 10px;border-radius:10px}.agent-option img{width:30px;height:30px}
+  .demo .fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(250px,1.15fr);align-items:end;gap:10px}
+  .demo .agent-picker{margin:0;min-width:0}
+  .agent-options{gap:6px}.agent-option span{padding:8px 7px;border-radius:8px;font-size:12px;white-space:nowrap}.agent-option img{width:23px;height:23px}
   .agent-cards{grid-template-columns:repeat(3,1fr);gap:14px}.agent-card{padding:18px}.agent-card h3{font-size:16px}
   .fleet-preview{gap:12px}.fleet-pane{padding:16px}
   footer{padding-bottom:10px}
@@ -276,7 +278,7 @@
     .col>.pad:first-of-type{grid-template-columns:1fr;padding-top:56px}.hero-visual{grid-column:1;grid-row:auto;width:100%;transform:none}.col>.pad:first-of-type h1{max-width:12ch}.agent-cards{grid-template-columns:repeat(2,1fr)}
   }
   @media(max-width:620px){
-    header{padding:14px 20px}.pad{padding:32px 20px}.col>.pad:first-of-type{padding-top:44px;padding-bottom:48px;gap:20px}.col>.pad:first-of-type h1{font-size:52px}.col>.pad:first-of-type .intro{font-size:15px}.mock-body{grid-template-columns:94px 1fr}.mock-side{padding:15px 10px;font-size:10px}.mock-terminal{padding:17px 13px;font-size:10px}.comparison{grid-template-columns:1fr}.agent-cards{grid-template-columns:1fr 1fr}.sw{display:none}
+    header{padding:14px 20px}.pad{padding:32px 20px}.col>.pad:first-of-type{padding-top:44px;padding-bottom:48px;gap:20px}.col>.pad:first-of-type h1{font-size:52px}.col>.pad:first-of-type .intro{font-size:15px}.mock-body{grid-template-columns:94px 1fr}.mock-side{padding:15px 10px;font-size:10px}.mock-terminal{padding:17px 13px;font-size:10px}.comparison{grid-template-columns:1fr}.agent-cards{grid-template-columns:1fr 1fr}.sw{display:none}.demo .fields{grid-template-columns:1fr}.demo .agent-picker{grid-column:auto}.agent-option span{font-size:13px;padding:9px 7px}
   }
 </style>
 </head>
@@ -303,9 +305,7 @@
   <div class="pad">
     <div class="eyebrow">Terminal identity for agent work</div>
     <h1>Agents in.<br><span class="o">Named sessions out.</span></h1>
-    <p class="intro">A zsh wrapper for Claude, Codex and AGI. It stamps lowercase label, project, agent, machine and time tokens onto
-    every session <b>before the process starts</b>, so tmux windows, the web app
-    and your phone all read at a glance. No daemon, no plugin, one file.</p>
+    <p class="intro">Name every agent session before it starts, so every pane tells you the task, project, agent, machine, and time.</p>
 
     <div class="chips">
       <span class="chip"><i>install</i><b>./install.sh</b></span>
@@ -339,7 +339,6 @@
           <input id="lab" value="billing" spellcheck="false"></label>
         <label class="fld"><span>Project folder</span>
           <input id="prj" value="acme-api" spellcheck="false"></label>
-      </div>
       <fieldset class="agent-picker">
         <legend>Agent</legend>
         <div class="agent-options">
@@ -351,6 +350,7 @@
             <span><img src="agents/claude.png" alt="" width="28" height="28">Claude</span></label>
         </div>
       </fieldset>
+      </div>
 
       <div class="out">
         <div class="orow"><span class="ok">You type</span>
