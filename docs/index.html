@@ -86,10 +86,18 @@ nav .wrap{display:flex;align-items:center;gap:10px}
 .rl{position:relative;width:66px;height:66px;display:grid;place-items:center;
   border-bottom:1px solid var(--hair)}
 .rl:last-child{border-bottom:0}
-.rl svg{width:26px;height:26px;fill:none;stroke:var(--faint);stroke-width:6;
-  stroke-linecap:round;stroke-linejoin:round;opacity:.75}
+.rl svg{width:29px;height:29px;fill:none;stroke:var(--faint);stroke-width:6;
+  stroke-linecap:round;stroke-linejoin:round;opacity:.45;
+  animation:railglow 11s ease-in-out infinite;animation-delay:calc(var(--i) * 1.15s)}
+.rl::before{content:"";position:absolute;inset:0;background:var(--gold);opacity:0;
+  animation:railwash 11s ease-in-out infinite;animation-delay:calc(var(--i) * 1.15s)}
 .rl u{position:absolute;right:5px;bottom:3px;text-decoration:none;
-  font:8px var(--mono);letter-spacing:.08em;color:var(--faint);opacity:.6}
+  font:8px var(--mono);letter-spacing:.08em;color:var(--faint);opacity:.45;
+  animation:railnum 11s ease-in-out infinite;animation-delay:calc(var(--i) * 1.15s)}
+@keyframes railglow{0%,62%,100%{opacity:.42;stroke:var(--faint)}
+  72%,80%{opacity:1;stroke:var(--gold)}}
+@keyframes railwash{0%,62%,100%{opacity:0}72%,80%{opacity:.05}}
+@keyframes railnum{0%,62%,100%{opacity:.45;color:var(--faint)}72%,80%{opacity:1;color:var(--gold)}}
 @media(min-width:1240px){.rail{display:flex}
   .wrap{padding-left:126px}
   .start .wrap,footer{padding-right:126px}}
@@ -131,9 +139,10 @@ h1 .g{color:var(--gold)}
   padding:0 20px;color:var(--dim);font:11px var(--mono);letter-spacing:.19em;text-transform:uppercase;
   transition:.18s}
 .bar button:hover{color:var(--ink);background:color-mix(in srgb,var(--gold) 10%,transparent)}
-.out{margin:14px 0 0;min-height:1.5em;display:flex;gap:11px;align-items:baseline;color:var(--dim);
+.out{margin:14px 0 0;min-height:1.5em;display:flex;gap:13px;align-items:baseline;color:var(--dim);
   font:13px/1.5 var(--mono);overflow-wrap:anywhere;min-width:0}
-.out i{font-style:normal;color:var(--faint);flex:none}
+.out i{font-style:normal;flex:none;color:var(--gold);font-size:10px;letter-spacing:.17em;
+  text-transform:uppercase;border:1px solid var(--line);padding:3px 8px;border-radius:2px}
 .out b{color:var(--gold);font-weight:600}
 .out .t{color:var(--ink)}
 
@@ -160,13 +169,18 @@ h2{margin:0;font-size:clamp(28px,4vw,54px);line-height:1.02;letter-spacing:-.04e
 
 /* --- the name, built one token at a time --- */
 .build{margin-top:clamp(44px,5.5vw,72px);border-top:1px solid var(--hair);padding-top:26px}
+.btag{margin:0 0 20px;color:var(--faint);transition:color .5s}
+.btag.done{color:var(--gold)}
 .anatomy{display:flex;flex-wrap:wrap;align-items:flex-start;row-gap:18px}
-.tok{min-width:0;display:flex;flex-direction:column;gap:10px;padding-right:clamp(12px,1.9vw,26px)}
+.tok{min-width:0;display:flex;flex-direction:column;gap:10px;padding-right:clamp(12px,1.9vw,26px);
+  transition:padding-right .7s cubic-bezier(.22,.68,.24,1),gap .5s ease}
 .tok em{font-style:normal;font:clamp(13px,1.55vw,23px)/1.15 var(--mono);letter-spacing:-.025em;
   color:var(--ink);overflow-wrap:anywhere;min-height:1.15em;
   opacity:.18;transition:opacity .35s,color .35s}
-.tok u{text-decoration:none;font:9.5px var(--mono);letter-spacing:.17em;
-  text-transform:uppercase;color:var(--faint);opacity:.25;transition:opacity .35s,color .35s}
+.tok u{text-decoration:none;font:9.5px/1.1 var(--mono);letter-spacing:.17em;height:1.1em;overflow:hidden;
+  text-transform:uppercase;color:var(--faint);opacity:.25;white-space:nowrap;
+  transition:opacity .35s,color .35s,height .55s cubic-bezier(.22,.68,.24,1),
+             width .55s cubic-bezier(.22,.68,.24,1)}
 .tok.lit em{opacity:1}
 .tok.lit u{opacity:1}
 .tok.now em{color:var(--gold)}
@@ -176,11 +190,19 @@ h2{margin:0;font-size:clamp(28px,4vw,54px);line-height:1.02;letter-spacing:-.04e
   background:var(--gold);vertical-align:-.14em;opacity:0}
 .tok.now em::after{opacity:1;animation:blink .9s steps(1,end) infinite}
 @keyframes blink{50%{opacity:0}}
-.sep{align-self:flex-start;padding-right:clamp(12px,1.9vw,26px);opacity:.2;transition:opacity .35s;
+.sep{align-self:flex-start;padding-right:clamp(12px,1.9vw,26px);opacity:.2;
+  transition:opacity .35s,padding-right .7s cubic-bezier(.22,.68,.24,1),color .5s;
   font:clamp(13px,1.55vw,23px)/1.15 var(--mono);color:var(--line)}
 .sep.lit{opacity:1}
+/* the six columns close up into one unbroken string */
+.anatomy.tight .tok,.anatomy.tight .sep{padding-right:0}
+.anatomy.tight .tok{gap:0}
+.anatomy.tight .tok u{height:0;width:0;opacity:0}
+.anatomy.tight .sep{color:var(--dim)}
+.anatomy.tight .tok em::after{display:none}
 
 .gloss{margin:26px 0 0;min-height:1.5em;color:var(--dim);font-size:15px}
+.gloss code{font:.92em var(--mono);color:var(--gold)}
 .gloss span{display:inline-block;opacity:0;transform:translateY(5px);
   transition:opacity .3s,transform .3s}
 .gloss span.in{opacity:1;transform:none}
@@ -304,20 +326,20 @@ footer .sp{margin-left:auto}
 <header class="hero">
   <canvas id="rock" aria-hidden="true"></canvas>
   <div class="rail" aria-hidden="true">
-        <div class="rl" title="Figure"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M42 27a8 8 0 1 0 16 0a8 8 0 1 0 -16 0M50 35v38M50 44 32 27M50 44l18-17M50 73 40 95M50 73l10 22M50 19v-9"/></svg><u>01</u></div>
-        <div class="rl" title="Spiral"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50.0 50.0L50.3 50.1L50.6 50.2L50.9 50.4L51.1 50.8L51.2 51.2L51.2 51.6L51.0 52.0L50.8 52.5L50.5 52.9L50.0 53.3L49.4 53.6L48.8 53.7L48.1 53.8L47.3 53.7L46.5 53.5L45.8 53.1L45.0 52.5L44.4 51.8L43.9 51.0L43.5 50.0L43.2 48.9L43.2 47.8L43.3 46.6L43.7 45.4L44.2 44.2L45.0 43.1L46.0 42.1L47.2 41.3L48.5 40.6L50.0 40.2L51.6 40.0L53.2 40.1L54.9 40.4L56.5 41.0L58.1 41.9L59.5 43.1L60.8 44.5L61.8 46.2L62.6 48.0L63.1 50.0L63.2 52.1L63.1 54.2L62.5 56.4L61.6 58.5L60.4 60.4L58.8 62.2L57.0 63.7L54.8 64.9L52.5 65.8L50.0 66.3L47.4 66.5L44.7 66.2L42.1 65.4L39.6 64.3L37.3 62.7L35.2 60.8L33.4 58.5L32.0 55.9L30.9 53.0L30.4 50.0L30.3 46.9L30.7 43.7L31.6 40.6L33.1 37.7L35.0 35.0L37.3 32.5L40.1 30.5L43.1 28.9L46.5 27.7L50.0 27.1L53.6 27.1L57.3 27.6L60.8 28.7L64.2 30.4L67.3 32.7L70.1 35.4L72.4 38.6L74.3 42.1L75.5 46.0L76.2 50.0L76.2 54.1L75.5 58.3L74.2 62.3L72.2 66.1L69.6 69.6L66.5 72.7L62.9 75.3L58.9 77.4L54.6 78.7L50.0 79.4L45.3 79.4L40.7 78.6L36.2 77.1L31.9 74.9L28.0 72.0L24.6 68.4L21.7 64.4L19.5 59.9L18.0 55.1L17.3 50.0L17.4 44.8L18.3 39.7L20.0 34.7L22.5 30.0"/></svg><u>02</u></div>
-        <div class="rl" title="Sheep"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M28 48h38M34 48v24M43 48v24M55 48v24M63 48v24M66 48 76 36 88 34M78 34c10-10-2-18-12-10M28 48 21 39"/></svg><u>03</u></div>
-        <div class="rl" title="Sun"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M41 50a9 9 0 1 0 18 0a9 9 0 1 0 -18 0M31 50a19 19 0 1 0 38 0a19 19 0 1 0 -38 0M73.0 50.0L83.0 50.0M66.3 66.3L73.3 73.3M50.0 73.0L50.0 83.0M33.7 66.3L26.7 73.3M27.0 50.0L17.0 50.0M33.7 33.7L26.7 26.7M50.0 27.0L50.0 17.0M66.3 33.7L73.3 26.7"/></svg><u>04</u></div>
-        <div class="rl" title="Snake"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M10 60c10-22 22-22 32 0s22 22 32 0c5-11 11-13 16-8M86.8 52a3.2 3.2 0 1 0 6.4 0a3.2 3.2 0 1 0 -6.4 0"/></svg><u>05</u></div>
-        <div class="rl" title="Tally"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M30 30v40M42 28v40M54 30v40M66 28v40M24 40 72 62"/></svg><u>06</u></div>
-        <div class="rl" title="Bird"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 36v38M50 43 16 30M50 43 84 30M16 30l-3 9M84 30l3 9M45 28a5 5 0 1 0 10 0a5 5 0 1 0 -10 0M50 74 41 88M50 74l9 14"/></svg><u>07</u></div>
-        <div class="rl" title="Ladder"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M36 16v70M64 16v70M36 28h28M36 42h28M36 56h28M36 70h28"/></svg><u>08</u></div>
+        <div class="rl" style="--i:0" title="Figure"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M42 27a8 8 0 1 0 16 0a8 8 0 1 0 -16 0M50 35v38M50 44 32 27M50 44l18-17M50 73 40 95M50 73l10 22M50 19v-9"/></svg><u>01</u></div>
+        <div class="rl" style="--i:1" title="Spiral"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50.0 50.0L50.3 50.1L50.6 50.2L50.9 50.4L51.1 50.8L51.2 51.2L51.2 51.6L51.0 52.0L50.8 52.5L50.5 52.9L50.0 53.3L49.4 53.6L48.8 53.7L48.1 53.8L47.3 53.7L46.5 53.5L45.8 53.1L45.0 52.5L44.4 51.8L43.9 51.0L43.5 50.0L43.2 48.9L43.2 47.8L43.3 46.6L43.7 45.4L44.2 44.2L45.0 43.1L46.0 42.1L47.2 41.3L48.5 40.6L50.0 40.2L51.6 40.0L53.2 40.1L54.9 40.4L56.5 41.0L58.1 41.9L59.5 43.1L60.8 44.5L61.8 46.2L62.6 48.0L63.1 50.0L63.2 52.1L63.1 54.2L62.5 56.4L61.6 58.5L60.4 60.4L58.8 62.2L57.0 63.7L54.8 64.9L52.5 65.8L50.0 66.3L47.4 66.5L44.7 66.2L42.1 65.4L39.6 64.3L37.3 62.7L35.2 60.8L33.4 58.5L32.0 55.9L30.9 53.0L30.4 50.0L30.3 46.9L30.7 43.7L31.6 40.6L33.1 37.7L35.0 35.0L37.3 32.5L40.1 30.5L43.1 28.9L46.5 27.7L50.0 27.1L53.6 27.1L57.3 27.6L60.8 28.7L64.2 30.4L67.3 32.7L70.1 35.4L72.4 38.6L74.3 42.1L75.5 46.0L76.2 50.0L76.2 54.1L75.5 58.3L74.2 62.3L72.2 66.1L69.6 69.6L66.5 72.7L62.9 75.3L58.9 77.4L54.6 78.7L50.0 79.4L45.3 79.4L40.7 78.6L36.2 77.1L31.9 74.9L28.0 72.0L24.6 68.4L21.7 64.4L19.5 59.9L18.0 55.1L17.3 50.0L17.4 44.8L18.3 39.7L20.0 34.7L22.5 30.0"/></svg><u>02</u></div>
+        <div class="rl" style="--i:2" title="Sheep"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M28 48h38M34 48v24M43 48v24M55 48v24M63 48v24M66 48 76 36 88 34M78 34c10-10-2-18-12-10M28 48 21 39"/></svg><u>03</u></div>
+        <div class="rl" style="--i:3" title="Sun"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M41 50a9 9 0 1 0 18 0a9 9 0 1 0 -18 0M31 50a19 19 0 1 0 38 0a19 19 0 1 0 -38 0M73.0 50.0L83.0 50.0M66.3 66.3L73.3 73.3M50.0 73.0L50.0 83.0M33.7 66.3L26.7 73.3M27.0 50.0L17.0 50.0M33.7 33.7L26.7 26.7M50.0 27.0L50.0 17.0M66.3 33.7L73.3 26.7"/></svg><u>04</u></div>
+        <div class="rl" style="--i:4" title="Snake"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M10 60c10-22 22-22 32 0s22 22 32 0c5-11 11-13 16-8M86.8 52a3.2 3.2 0 1 0 6.4 0a3.2 3.2 0 1 0 -6.4 0"/></svg><u>05</u></div>
+        <div class="rl" style="--i:5" title="Tally"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M30 30v40M42 28v40M54 30v40M66 28v40M24 40 72 62"/></svg><u>06</u></div>
+        <div class="rl" style="--i:6" title="Bird"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 36v38M50 43 16 30M50 43 84 30M16 30l-3 9M84 30l3 9M45 28a5 5 0 1 0 10 0a5 5 0 1 0 -10 0M50 74 41 88M50 74l9 14"/></svg><u>07</u></div>
+        <div class="rl" style="--i:7" title="Ladder"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M36 16v70M64 16v70M36 28h28M36 42h28M36 56h28M36 70h28"/></svg><u>08</u></div>
   </div>
   <div class="wrap"><div class="col">
-    <p class="eyebrow mi">Identity for AI agents</p>
+    <p class="eyebrow mi">Terminal session names</p>
     <h1><span>Give names to</span><span class="g">your AI agents.</span></h1>
-    <p class="lede">A readable name on every session, carried to the web app and your phone.
-      Like <code>/rename</code>, but you never have to remember it.</p>
+    <p class="lede">Your terminal session names itself at launch, in tmux, in Herdr, or in a bare
+      shell. Like <code>/rename</code>, but you never run it.</p>
 
     <div class="tabs" role="tablist">
       <button role="tab" data-k="install" aria-selected="true">Install</button>
@@ -325,7 +347,7 @@ footer .sp{margin-left:auto}
       <button role="tab" data-k="codex" aria-selected="false">Codex</button>
       <button role="tab" data-k="agy" aria-selected="false">AGY</button>
       <button role="tab" data-k="fleet" aria-selected="false">Fleet</button>
-      <span class="os mi">zsh &middot; macos &middot; linux &middot; wsl</span>
+      <span class="os mi">zsh &middot; tmux &middot; herdr &middot; zellij &middot; wezterm</span>
     </div>
     <div class="bar">
       <span class="p" aria-hidden="true">$</span>
@@ -356,12 +378,13 @@ footer .sp{margin-left:auto}
 
 <section id="about"><div class="wrap">
   <p class="eyeb mi">About</p>
-  <h2>One shell wrapper. Six tokens.</h2>
+  <h2>Six tokens. One session name.</h2>
   <p class="say">Keep typing <code>claude</code>, <code>codex</code>, <code>agy</code>. Glyph reads
     where you are and what you asked for, builds the name, and hands it to the agent at launch.
     That is the <code class="k">/rename</code> you meant to run, already done.</p>
   <div class="build" id="build">
-    <div class="anatomy">
+    <p class="btag mi" id="btag">Six tokens</p>
+    <div class="anatomy" id="anatomy">
       <div class="tok key" data-v="billing" data-g="what you are working on"><em></em><u>Label</u></div><div class="sep">&middot;</div>
       <div class="tok" data-v="acme-api" data-g="the repo you launched from"><em></em><u>Project</u></div><div class="sep">&middot;</div>
       <div class="tok" data-v="claude-code" data-g="which agent answered"><em></em><u>Agent</u></div><div class="sep">&middot;</div>
@@ -470,9 +493,9 @@ document.querySelectorAll('.tabs button').forEach(function(b){
     b.setAttribute('aria-selected','true');
     var t=TAB[b.dataset.k];
     cmdEl.textContent=t[0];fits();
-    outEl.innerHTML=!t[2] ? '' : '<i>&rarr;</i>'+(t[1]
-      ? '<span class="t"><b>'+t[1]+'</b>'+t[2]+'</span>'
-      : '<span class="t">'+t[2]+'</span>');
+    outEl.innerHTML=!t[2] ? '' : (t[1]
+      ? '<i>session name</i><span class="t"><b>'+t[1]+'</b>'+t[2]+'</span>'
+      : '<i>opens</i><span class="t">'+t[2]+'</span>');
   })});
 
 /* ---- copy ---- */
@@ -487,8 +510,11 @@ document.querySelectorAll('.tabs button').forEach(function(b){
   var root=document.getElementById('build');if(!root)return;
   var toks=[].slice.call(root.querySelectorAll('.tok')),
       seps=[].slice.call(root.querySelectorAll('.sep')),
+      anat=document.getElementById('anatomy'),
+      btag=document.getElementById('btag'),
       gloss=document.getElementById('gloss'),
       srf=document.getElementById('surfaces'),
+      DONE='That whole string is the session name, set at launch. No <code>/rename</code> to run.',
       reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,
       timers=[],running=false;
 
@@ -499,14 +525,15 @@ document.querySelectorAll('.tabs button').forEach(function(b){
     clearAll();running=false;
     toks.forEach(function(t){t.classList.remove('lit','now');t.querySelector('em').textContent=''});
     seps.forEach(function(x){x.classList.remove('lit')});
+    anat.classList.remove('tight');btag.classList.remove('done');btag.textContent='Six tokens';
     gloss.textContent='';gloss.classList.remove('in');srf.classList.remove('in');
   }
   function finish(){
     toks.forEach(function(t){t.classList.add('lit');t.classList.remove('now');
       t.querySelector('em').textContent=t.dataset.v});
     seps.forEach(function(x){x.classList.add('lit')});
-    gloss.textContent='One name. The same one in your terminal, in every pane, and on your phone.';
-    gloss.classList.add('in');srf.classList.add('in');
+    anat.classList.add('tight');btag.classList.add('done');btag.textContent='Session name';
+    gloss.innerHTML=DONE;gloss.classList.add('in');srf.classList.add('in');
   }
 
   function play(){
@@ -526,12 +553,13 @@ document.querySelectorAll('.tabs button').forEach(function(b){
       t+=v.length*26+430;
       at(t-120,function(){tok.classList.remove('now')});
     });
-    at(t+180,function(){
+    at(t+140,function(){
       gloss.classList.remove('in');
-      setTimeout(function(){
-        gloss.textContent='One name. The same one in your terminal, in every pane, and on your phone.';
-        gloss.classList.add('in')},140);
-      srf.classList.add('in');
+      anat.classList.add('tight');
+      btag.classList.add('done');btag.textContent='Session name';
+    });
+    at(t+700,function(){
+      gloss.innerHTML=DONE;gloss.classList.add('in');srf.classList.add('in');
     });
   }
 
@@ -595,24 +623,47 @@ fetch('https://api.github.com/repos/fru-dev3/glyph').then(function(r){return r.j
   function readColor(){rockColor=getComputedStyle(document.body).getPropertyValue('--rock').trim()||rockColor}
   function rnd(a,b){return a+Math.random()*(b-a)}
 
-  function spawn(i,now){
+  /* how far a point sits outside the box the copy occupies */
+  function clearance(x,y){
+    if(!safe)return 1e6;
+    var dx=Math.max(safe.x0-x,x-safe.x1),dy=Math.max(safe.y0-y,y-safe.y1);
+    return Math.max(dx,dy);
+  }
+
+  function spawn(i,now,seedPhase){
     var big=W>1000;
-    var cols=big?3:2,rows=big?3:4;
-    /* bias into the right side of the hero, where the mask lets them through */
-    var x0=big?W*0.30:0, span=W-x0;
+    var cols=big?4:2,rows=big?3:4;
     var cell=i%(cols*rows),cx=cell%cols,cy=(cell/cols)|0;
-    var size=rnd(big?140:92,big?235:145),m=size*0.6+10;
-    /* never repeat a figure that is already on the wall */
+    var size=rnd(big?140:92,big?230:145),m=size*0.6+10;
+
+    /* never repeat a figure already on the wall */
     var used={};for(var q=0;q<inst.length;q++)if(q!==i&&inst[q])used[inst[q].f]=1;
     var pick=(Math.random()*SAMPLED.length)|0,guard=0;
     while(used[pick]&&guard++<20)pick=(Math.random()*SAMPLED.length)|0;
-    return {f:pick,
-      x:Math.min(W-m,Math.max(m,x0+(cx+rnd(.15,.85))*(span/cols))),
-      y:Math.min(H-m,Math.max(m,(cy+rnd(.15,.85))*(H/rows))),
-      s:size/100,r:rnd(-.16,.16),
-      t0:now+rnd(0,reduce?0:5200),
-      peck:rnd(3400,6400),hold:rnd(4500,9500),fade:rnd(1800,3400),
-      a:rnd(.6,1),seed:Math.random()*1000}}
+
+    /* place it clear of the copy, so a figure is never half erased */
+    var want=size*0.30,bx=0,by=0,best=-1e9;
+    for(var k=0;k<20;k++){
+      var jx=(cell+k)%(cols*rows),ax=jx%cols,ay=(jx/cols)|0;
+      var px=Math.min(W-m,Math.max(m,(ax+rnd(.12,.88))*(W/cols))),
+          py=Math.min(H-m,Math.max(m,(ay+rnd(.12,.88))*(H/rows))),
+          c=clearance(px,py);
+      /* and keep its distance from the figures already up */
+      for(var q=0;q<inst.length;q++){
+        if(q===i||!inst[q])continue;
+        var d=Math.hypot(px-inst[q].x,py-inst[q].y)-(size+inst[q].s*100)*0.42;
+        if(d<c)c=d;
+      }
+      if(c>best){best=c;bx=px;by=py}
+      if(c>=want)break;
+    }
+
+    var peck=rnd(2800,4600),hold=rnd(9000,17000),fade=rnd(2400,4200);
+    return {f:pick,x:bx,y:by,s:size/100,r:rnd(-.16,.16),
+      /* on first paint, scatter them through the cycle so some are already finished */
+      t0:reduce?now:(seedPhase?now-Math.random()*(peck+hold):now+rnd(120,2600)),
+      peck:peck,hold:hold,fade:fade,
+      a:rnd(.62,1),seed:Math.random()*1000}}
 
   function resize(){
     DPR=Math.min(2,devicePixelRatio||1);
@@ -623,8 +674,8 @@ fetch('https://api.github.com/repos/fru-dev3/glyph').then(function(r){return r.j
       safe={x0:c.left-r.left-14,x1:c.right-r.left+14,y0:c.top-r.top-14,y1:c.bottom-r.top+14}}
     cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);
     readColor();
-    var n=W>1200?9:W>800?7:5,now=performance.now();
-    inst=[];for(var i=0;i<n;i++)inst.push(spawn(i,now));
+    var n=W>1200?8:W>800?6:4,now=performance.now();
+    inst=[];for(var i=0;i<n;i++)inst.push(spawn(i,now,true));
   }
 
   function draw(now){
@@ -633,7 +684,7 @@ fetch('https://api.github.com/repos/fru-dev3/glyph').then(function(r){return r.j
       var o=inst[k],age=now-o.t0;
       if(age<0)continue;
       var life=o.peck+o.hold+o.fade;
-      if(age>life){inst[k]=spawn(k,now+rnd(200,2800));continue}
+      if(age>life){inst[k]=spawn(k,now);continue}
       var prog=reduce?1:Math.min(1,age/o.peck);
       var alpha=o.a*(age>o.peck+o.hold?1-(age-o.peck-o.hold)/o.fade:1);
       var pts=SAMPLED[o.f],upto=Math.round(pts.length*prog);
@@ -645,7 +696,7 @@ fetch('https://api.github.com/repos/fru-dev3/glyph').then(function(r){return r.j
         var px=p[0]+(j1-.5)*1.1,py=p[1]+(j2-.5)*1.1;
         var X=o.x+(px*cos-py*sin)*s,Y=o.y+(px*sin+py*cos)*s;
         var fresh=upto-i<5?1.35:1,shy=1;
-        if(safe&&X>safe.x0&&X<safe.x1&&Y>safe.y0&&Y<safe.y1)shy=.1;
+        if(safe&&X>safe.x0&&X<safe.x1&&Y>safe.y0&&Y<safe.y1)shy=.22;
         ctx.globalAlpha=alpha*(.62+j1*.38)*shy;
         ctx.beginPath();ctx.arc(X,Y,(1+j2*.65)*Math.min(1.7,s)*fresh,0,6.2832);ctx.fill();
       }}

@@ -1,66 +1,301 @@
 <!doctype html>
-<html lang="en"><head><!-- build 2026-09-12T12:59:08 --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Glyph docs: install, commands, Fleet, adapters, naming</title><meta name="description" content="Glyph installation, commands, Fleet, adapters, naming, and configuration reference."><link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" href="glyph.svg" type="image/svg+xml">
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>glyph docs</title>
+<meta name="description" content="Glyph reference: install, how a session name is built, launching agents, auto-approve, Fleet, remote agents over SSH and Tailscale, workspace backends, every command and every environment variable.">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="glyph.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="canonical" href="https://glyph.fru.dev/docs.html">
 <meta name="robots" content="index,follow,max-image-preview:large">
-<meta name="theme-color" content="#0d0d0e">
 <meta name="author" content="fru.dev">
-<meta property="og:type" content="article">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f6f3ed" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#100e0c" media="(prefers-color-scheme: dark)">
 <meta property="og:site_name" content="glyph">
-<meta property="og:title" content="Glyph docs: install, commands, Fleet, adapters, naming">
-<meta property="og:description" content="Glyph installation, commands, Fleet, adapters, naming, and configuration reference.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="glyph docs">
+<meta property="og:description" content="Install, naming, launching agents, Fleet, remote agents, every command and every environment variable.">
 <meta property="og:url" content="https://glyph.fru.dev/docs.html">
 <meta property="og:image" content="https://glyph.fru.dev/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://glyph.fru.dev/og.png">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"TechArticle",
- "headline":"Glyph docs","url":"https://glyph.fru.dev/docs.html",
- "description":"Glyph installation, commands, Fleet, adapters, naming, and configuration reference.",
+ "headline":"glyph docs","url":"https://glyph.fru.dev/docs.html",
+ "description":"Install, naming, launching agents, Fleet, remote agents, every command and every environment variable.",
  "author":{"@type":"Organization","name":"fru.dev","url":"https://fru.dev"},
  "isPartOf":{"@type":"WebSite","name":"glyph","url":"https://glyph.fru.dev/"}}
 </script>
-<style>
-:root{--bg:#0d0d0e;--panel:#141416;--edge:#29282d;--fg:#eeeef0;--dim:#99979f;--faint:#66646c;--accent:#c2562f;--mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.65 var(--sans)}a{color:var(--fg)}a:hover{color:var(--accent)}code,pre{font-family:var(--mono)}.shell{max-width:1180px;margin:auto;padding:0 36px}header{height:76px;display:flex;align-items:center;gap:24px;border-bottom:1px solid var(--edge)}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:700;font-size:20px}.brand img{width:30px;height:30px}.spacer{flex:1}header a{color:var(--dim);font-size:13px;text-decoration:none}.github{border:1px solid var(--edge);border-radius:999px;padding:6px 12px}.layout{display:grid;grid-template-columns:210px minmax(0,760px);gap:70px;padding:64px 0 90px}.toc{position:sticky;top:28px;align-self:start}.toc strong{display:block;color:var(--fg);font-size:12px;text-transform:uppercase;letter-spacing:.14em;margin-bottom:14px}.toc a{display:block;color:var(--dim);text-decoration:none;padding:5px 0;font-size:13px}main h1{font-size:clamp(42px,7vw,68px);line-height:1;letter-spacing:-.06em;margin:0 0 18px}main h2{font-size:26px;letter-spacing:-.035em;margin:62px 0 10px}main h3{font-size:17px;margin:28px 0 8px}main p{color:var(--dim);max-width:70ch}main code{color:#e5b089;font-size:.92em}main pre{position:relative;background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:18px 20px;color:var(--fg);overflow:auto;font-size:13px}main pre code{color:var(--fg)}.copy{position:absolute;right:10px;top:10px;border:1px solid var(--edge);background:transparent;color:var(--dim);border-radius:6px;padding:5px 9px;cursor:pointer}.copy:hover{border-color:var(--accent);color:var(--fg)}.note{font-size:13px;color:var(--faint)}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.card{border:1px solid var(--edge);border-radius:10px;padding:16px;background:var(--panel)}.card b{display:block;margin-bottom:4px}.card code{display:block;overflow-wrap:anywhere}.card b{display:flex;align-items:center;gap:9px}.card b img{width:25px;height:25px;object-fit:contain}.result-label{display:block;margin-top:15px;color:var(--faint);font-size:11px;text-transform:uppercase;letter-spacing:.1em}.result{display:block;margin-top:4px;color:var(--dim);font:11px var(--mono);overflow-wrap:anywhere}.preview-note{display:flex;align-items:baseline;gap:12px;margin-top:12px;padding:12px 14px;border-left:2px solid var(--accent);background:#171311}.preview-note b{font-size:12px;white-space:nowrap}.preview-note code{font-size:11px}.preview-note span{color:var(--faint);font-size:12px;margin-left:auto}@media(max-width:800px){.preview-note{align-items:flex-start;flex-direction:column;gap:3px}.preview-note span{margin-left:0}}.mark{border-left:3px solid var(--accent);padding:14px 18px;background:#171311;font:15px var(--mono);overflow-wrap:anywhere}.mark strong{color:#e0a071}@media(max-width:800px){.shell{padding:0 20px}.layout{grid-template-columns:1fr;gap:20px;padding-top:36px}.toc{position:static;display:flex;gap:14px;overflow:auto;padding-bottom:8px}.toc strong{display:none}.toc a{white-space:nowrap}header a:not(.github){display:none}.grid{grid-template-columns:1fr}}
-</style></head><body><div class="shell"><header><a class="brand" href="/"><img src="glyph.svg" alt="">glyph</a><span class="spacer"></span><a href="/">Home</a><a class="github" href="https://github.com/fru-dev3/glyph">GitHub</a></header>
-<div class="layout"><nav class="toc"><strong>Docs</strong><a href="#start">Getting started</a><a href="#launch">Launch agents</a><a href="#fleet">Manage Fleet</a><a href="#update">Updating</a><a href="#remote">Remote agents</a><a href="#adapters">Adapters</a><a href="#naming">Naming</a><a href="#config">Configuration</a><a href="#backends">Workspace harnesses</a></nav><main>
-<h1>Glyph docs.</h1><p>Installation, commands, Fleet, adapters, naming, and configuration in one reference.</p>
-<h2 id="start">Getting started</h2><p>Install Glyph, reload zsh, then verify without launching an agent.</p><pre><button class="copy" data-copy="start-code">Copy</button><code id="start-code">git clone https://github.com/fru-dev3/glyph.git<br>cd glyph &amp;&amp; ./install.sh &amp;&amp; exec zsh<br>GLYPH_DRYRUN=1 claude checkout-fix</code></pre><p class="note">The installer copies the wrapper to <code>~/.config/glyph/</code> and updates <code>~/.zshrc</code>.</p>
-<h2 id="launch">Launch agents</h2><p>These commands start one agent through Glyph. The agent command stays familiar; Glyph adds the session name before launch.</p><div class="grid launch-grid"><div class="card"><b>Claude Code</b><code>claude checkout-fix</code><span class="result-label">Glyph names it</span><strong class="result">checkout-fix·acme-api·claude-code·studio·09:12</strong></div><div class="card"><b>Codex</b><code>codex review</code><span class="result-label">Glyph names it</span><strong class="result">review·acme-api·codex·studio·09:12</strong></div><div class="card"><b>AGY</b><code>agy docs</code><span class="result-label">Glyph names it</span><strong class="result">docs·website·agy·studio·09:12</strong></div></div><div class="preview-note"><b>Want to preview?</b><code>GLYPH_DRYRUN=1 claude checkout-fix</code><span>Prints the generated name without opening the agent.</span></div><h3>Session list</h3><pre><button class="copy" data-copy="ls-code">Copy</button><code id="ls-code">glyph ls</code></pre><p class="note">This lists names Glyph has recorded. It does not open a workspace.</p>
-<h2 id="fleet">Manage Fleet</h2><p>These commands manage saved groups of agents. Fleet uses whichever workspace harness you choose below.</p><h3>Create the example fleets</h3><pre><button class="copy" data-copy="fleet-init-code">Copy</button><code id="fleet-init-code">glyph fleet init</code></pre><p class="note">Writes twelve starting presets to <code>~/.config/glyph/fleet.conf</code> without touching definitions you already have. Run it again any time; it only adds what is missing.</p>
-<div class="grid preset-grid">
-<div class="card"><b>solo</b><code>claude</code><p class="note">One agent, named. The everyday case.</p></div>
-<div class="card"><b>review</b><code>claude codex</code><p class="note">Two vendors on the same diff, for a second opinion.</p></div>
-<div class="card"><b>duo</b><code>claude agy</code><p class="note">Anthropic and Google side by side.</p></div>
-<div class="card"><b>ci</b><code>claude agy codex</code><p class="note">The three-up bench: Claude, AGY, Codex.</p></div>
-<div class="card"><b>bench</b><code>claude codex agy cursor-agent</code><p class="note">Everything local, one pane each.</p></div>
-<div class="card"><b>pair</b><code>claude cursor-agent</code><p class="note">A terminal agent beside an editor-native one.</p></div>
-<div class="card"><b>deep</b><code>claude cortex</code><p class="note">A coding agent next to a warehouse-native one.</p></div>
-<div class="card"><b>light</b><code>crush opencode</code><p class="note">Lightweight runners for cheap, quick passes.</p></div>
-<div class="card"><b>split</b><code>claude codex:studio</code><p class="note">One local, one on a remote box.</p></div>
-<div class="card"><b>spread</b><code>claude claude:studio</code><p class="note">The same agent on two machines.</p></div>
-<div class="card"><b>cloud</b><code>claude:studio codex:studio</code><p class="note">Both agents on the remote box.</p></div>
-</div>
-<p class="note">A slot is <code>&lt;agent&gt;</code> or <code>&lt;agent&gt;:&lt;machine&gt;</code>. Replace <code>studio</code> with one of your own machines. See <a href="#update">Updating</a><a href="#remote">Remote agents</a>.</p>
-<h3>Preview, then open</h3><pre><button class="copy" data-copy="fleet-preview-code">Copy</button><code id="fleet-preview-code">GLYPH_DRYRUN=1 glyph fleet ci<br>glyph fleet ci</code></pre><p class="note">The default <code>ci</code> group contains Claude Code, AGY, and Codex. Fleet is the only layer that opens multiple agents.</p>
-<h2 id="update">Updating</h2><p>Glyph is one file. Pull the latest straight from GitHub:</p>
-<pre><button class="copy" data-copy="update-code">Copy</button><code id="update-code">glyph update<br>exec zsh<br>glyph version</code></pre>
-<p class="note">It downloads <code>glyph.zsh</code>, refuses to install anything that does not parse, keeps your previous copy at <code>~/.config/glyph/glyph.zsh.bak</code>, and leaves your <code>fleet.conf</code>, <code>names.tsv</code> and <code>agents.tsv</code> untouched. Point <code>GLYPH_UPDATE_URL</code> elsewhere to track a fork.</p>
-<h2 id="remote">Remote agents</h2><p>Any slot can name a machine. Glyph opens an SSH session in that pane, changes to the same working directory, and launches the agent through the remote Glyph wrapper so it gets that agent's own flags and its own mark.</p>
-<pre><button class="copy" data-copy="remote-code">Copy</button><code id="remote-code">glyph hosts<br>glyph fleet split          # claude here, codex on the remote box<br>GLYPH_DRYRUN=1 glyph fleet cloud</code></pre>
-<h3>How a machine name is resolved</h3><p>Glyph tries these in order, and stops at the first hit:</p>
-<div class="grid"><div class="card"><b>1 · SSH config</b><code>Host mini</code><p class="note">An entry in <code>~/.ssh/config</code> always wins.</p></div>
-<div class="card"><b>2 · known_hosts</b><code>mini</code><p class="note">A name SSH already trusts, so the pane never stalls on a fingerprint prompt.</p></div>
-<div class="card"><b>3 · Tailscale</b><code>mini → mini.tailnet.ts.net</code><p class="note">Short machine names are matched against your tailnet and expanded to MagicDNS.</p></div>
-<div class="card"><b>4 · Literal</b><code>user@10.0.0.5</code><p class="note">Anything else is passed to SSH untouched.</p></div></div>
-<p class="note">Run <code>glyph hosts</code> to list every machine you can put after the colon: your SSH config entries, plus tailnet machines with their online status. Tailscale is optional and detected automatically; nothing changes if you do not use it.</p>
-<div class="preview-note"><b>First connection</b><code>ssh mini</code><span>Accept the host key once by hand. After that, remote panes start clean.</span></div>
-<p class="note">Remote slots work on every backend (Herdr, tmux, cmux, Zellij and WezTerm) because they all build the same SSH command. Glyph is not tied to any one workspace tool; with no workspace running, Fleet falls back to tmux.</p>
-<h2 id="adapters">Adapters</h2><p>Glyph keeps the command you already know and adds the same readable session name around it. A wrapper is defined only for agents actually on your PATH.</p>
-<h3>Adding an agent yourself</h3><p>Any CLI can be wired up without waiting for a release. One tab-separated line per agent in <code>~/.config/glyph/agents.tsv</code>:</p>
-<pre><button class="copy" data-copy="agents-tsv">Copy</button><code id="agents-tsv">openclaw&#9;--yolo&#9;OpenClaw<br>grok&#9;--force&#9;Grok</code></pre>
-<p class="note">Columns are <b>command</b>, <b>auto-approve flag</b>, <b>label</b>. Leave the flag empty if the agent has none. These merge over the built-ins, so you can also correct a flag Glyph gets wrong.</p><div class="grid adapter-grid"><div class="card"><b><img src="agents/claude.png" alt="">Claude Code</b><code>claude label</code><p class="note">Session name and Remote Control.</p></div><div class="card"><b><img src="agents/codex.png" alt="">Codex</b><code>codex label</code></div><div class="card"><b><img src="agents/agi.png" alt="">AGY</b><code>agy label</code><p class="note">Google’s terminal agent (Antigravity).</p></div><div class="card"><b><img src="agents/cursor.png" alt="">Cursor</b><code>cursor-agent label</code></div><div class="card"><b><img src="agents/crush.png" alt="">Crush</b><code>crush label</code></div><div class="card"><b><img src="agents/cortex.svg" alt="">Snowflake Cortex</b><code>cortex label</code><p class="note">Snowflake’s Cortex coding agent.</p></div><div class="card"><b><img src="agents/opencode.svg" alt="">OpenCode</b><code>opencode label</code></div><div class="card"><b><img src="agents/pi.svg" alt="">pi</b><code>pi label</code></div></div>
-<h2 id="naming">Naming</h2><p>Glyph builds one lowercase, hyphenated mark from label, project, agent, machine, and start time.</p><div class="mark"><strong>checkout-fix</strong>·acme-api·claude-code·studio·2026-09-12·0912</div><p>Machine identity comes from ComputerName or hostname. Override it with <code>GLYPH_MACHINE</code>. Project aliases live in <code>~/.config/glyph/names.tsv</code>.</p>
-<h2 id="config">Configuration</h2><div class="grid"><div class="card"><b><code>GLYPH_OFF=1</code></b>Omit machine and time.</div><div class="card"><b><code>GLYPH_TITLE=0</code></b>Leave terminal titles unchanged.</div><div class="card"><b><code>GLYPH_LOG=0</code></b>Skip the local session log.</div><div class="card"><b><code>GLYPH_YOLO=1</code></b>Enable auto-approve.</div><div class="card"><b><code>GLYPH_DRYRUN=1</code></b>Print instead of launch.</div><div class="card"><b><code>GLYPH_FLEET_CONF</code></b>Use another Fleet config path.</div></div>
-<h2 id="backends">Workspace harnesses</h2><p>Harnesses decide where Fleet opens. They do not change how you launch a single agent.</p><div class="grid"><div class="card"><b>Herdr</b><code>GLYPH_FLEET_BACKEND=herdr glyph fleet ci</code><p class="note">One Herdr tab per local agent.</p></div><div class="card"><b>cmux</b><code>GLYPH_FLEET_BACKEND=cmux glyph fleet ci</code><p class="note">One cmux workspace per local agent.</p></div><div class="card"><b>Zellij</b><code>GLYPH_FLEET_BACKEND=zellij glyph fleet ci</code><p class="note">One named Zellij pane per local agent.</p></div><div class="card"><b>WezTerm</b><code>GLYPH_FLEET_BACKEND=wezterm glyph fleet ci</code><p class="note">One WezTerm tab per local agent.</p></div><div class="card"><b>tmux</b><code>GLYPH_FLEET_BACKEND=tmux glyph fleet ci</code><p class="note">Tiled panes; supports SSH slots.</p></div><div class="card"><b>Automatic</b><code>GLYPH_FLEET_BACKEND=auto glyph fleet ci</code><p class="note">Detects Herdr or cmux, then uses tmux.</p></div></div>
-</main></div></div><script>document.querySelectorAll('[data-copy]').forEach(function(b){b.addEventListener('click',function(){navigator.clipboard.writeText(document.getElementById(b.dataset.copy).textContent).then(function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1500)})})})</script></body></html>
+<style>:root{
+  --paper:#f6f3ed; --ink:#17130f; --dim:#6d6459; --faint:#9d9284;
+  --line:#e0d8ca; --hair:#eae3d7; --gold:#a07b30; --well:#f0ebe1;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  --pad:clamp(20px,4.4vw,56px);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#100e0c; --ink:#f2ece2; --dim:#948a7d; --faint:#665e54;
+    --line:#272219; --hair:#1e1a15; --gold:#C4A35A; --well:#171410;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:16px/1.65 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1560px;margin:0 auto;padding:0 var(--pad);width:100%}
+.mi{font:11px/1 var(--mono);letter-spacing:.19em;text-transform:uppercase}
+.dim{color:var(--dim)}
+
+nav.top{position:fixed;inset:0 0 auto 0;z-index:30;height:60px;display:flex;align-items:center;
+  background:color-mix(in srgb,var(--paper) 78%,transparent);
+  backdrop-filter:saturate(160%) blur(16px);-webkit-backdrop-filter:saturate(160%) blur(16px);
+  border-bottom:1px solid var(--hair)}
+nav.top .wrap{display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:9px;font-size:17px;letter-spacing:-.02em;font-weight:600}
+.brand img{width:23px;height:23px;border-radius:50%}
+.nl{margin-left:auto;display:flex;align-items:center;gap:clamp(14px,2.2vw,28px)}
+.nl a{color:var(--dim);transition:color .18s}
+.nl a:hover{color:var(--ink)}
+.star{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);
+  border-radius:2px;padding:6px 11px;color:var(--dim)}
+.star svg{width:11px;height:11px;fill:var(--gold)}
+.star b{font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:0}
+
+.layout{display:grid;grid-template-columns:212px minmax(0,1fr);gap:clamp(32px,5vw,86px);
+  padding:104px 0 110px;align-items:start}
+.toc{position:sticky;top:88px;min-width:0}
+.toc strong{display:block;color:var(--faint);margin-bottom:16px;
+  font:11px var(--mono);letter-spacing:.19em;text-transform:uppercase;font-weight:400}
+.toc a{display:block;color:var(--dim);font-size:13.5px;padding:5px 0 5px 13px;
+  border-left:1px solid var(--hair);transition:.18s}
+.toc a:hover,.toc a.on{color:var(--ink);border-left-color:var(--gold)}
+main{min-width:0;max-width:920px}
+
+h1{margin:0;font-size:clamp(38px,5.4vw,68px);line-height:1;letter-spacing:-.045em;font-weight:500}
+.sub{margin:20px 0 0;max-width:62ch;font-size:17px;color:var(--dim)}
+h2{margin:clamp(60px,6.5vw,92px) 0 6px;font-size:clamp(24px,2.6vw,34px);letter-spacing:-.035em;
+  font-weight:500;scroll-margin-top:84px;padding-top:26px;border-top:1px solid var(--hair)}
+h3{margin:36px 0 10px;font-size:16.5px;letter-spacing:-.015em;font-weight:600}
+p{margin:12px 0 0;color:var(--dim);max-width:74ch}
+p.note{font-size:13.5px;color:var(--faint);margin-top:10px;max-width:74ch}
+main code{font:.9em var(--mono);color:var(--gold);letter-spacing:-.01em;overflow-wrap:anywhere}
+ul{margin:14px 0 0;padding-left:19px;color:var(--dim);max-width:74ch}
+li{margin:6px 0}
+li b{color:var(--ink);font-weight:600}
+
+.bar{display:flex;align-items:stretch;border:1px solid var(--line);background:var(--well);
+  margin:18px 0 0;min-width:0}
+.bar .p{display:flex;justify-content:center;width:40px;flex:none;color:var(--gold);
+  font:13px/1.7 var(--mono);padding-top:15px;border-right:1px solid var(--line)}
+.bar code{flex:1;min-width:0;padding:15px 17px;font:13px/1.7 var(--mono);color:var(--ink);
+  overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+.bar code::-webkit-scrollbar{display:none}
+.bar button{flex:none;border:0;border-left:1px solid var(--line);background:none;cursor:pointer;
+  padding:0 18px;color:var(--dim);font:11px var(--mono);letter-spacing:.19em;
+  text-transform:uppercase;transition:.18s}
+.bar button:hover{color:var(--ink);background:color-mix(in srgb,var(--gold) 10%,transparent)}
+
+.tw{margin:20px 0 0;overflow-x:auto;border:1px solid var(--hair)}
+table{border-collapse:collapse;width:100%;min-width:520px}
+th{text-align:left;font:10px var(--mono);letter-spacing:.17em;text-transform:uppercase;
+  color:var(--faint);font-weight:400;padding:12px 16px;border-bottom:1px solid var(--hair);white-space:nowrap}
+td{padding:12px 16px;border-bottom:1px solid var(--hair);font-size:14px;vertical-align:top;color:var(--ink)}
+tr:last-child td{border-bottom:0}
+td img{width:19px;height:19px;object-fit:contain;border-radius:4px;vertical-align:-4px}
+.noimg{display:inline-block;width:19px}
+td b{font-weight:600}
+
+.mark{margin:22px 0 0;border-left:2px solid var(--gold);background:var(--well);
+  padding:14px 18px;font:15px var(--mono);overflow-wrap:anywhere}
+.mark b{color:var(--gold)}
+.callout{margin:22px 0 0;border:1px solid var(--hair);background:var(--well);padding:16px 18px;max-width:74ch}
+.callout b{display:block;margin-bottom:5px;font-size:13.5px;color:var(--ink)}
+.callout p{margin:0;font-size:14px}
+
+footer{border-top:1px solid var(--hair);margin-top:80px;padding:26px 0;display:flex;flex-wrap:wrap;
+  gap:8px 24px;align-items:center;color:var(--faint)}
+footer a:hover{color:var(--ink)}
+footer .sp{margin-left:auto}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:minmax(0,1fr);gap:16px;padding-top:86px}
+  .toc{position:static;display:flex;gap:16px;overflow-x:auto;padding-bottom:12px;
+    border-bottom:1px solid var(--hair)}
+  .toc strong{display:none}
+  .toc a{white-space:nowrap;border-left:0;padding:4px 0}
+  .nl a.hide{display:none}
+  .bar{flex-wrap:wrap}
+  .bar .p{display:none}
+  .bar code{flex-basis:100%;font-size:12px;padding:14px 15px;white-space:pre-wrap;overflow-wrap:anywhere}
+  .bar button{flex-basis:100%;border-left:0;border-top:1px solid var(--line);padding:12px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<nav class="top"><div class="wrap">
+  <a class="brand" href="/"><img src="glyph.svg" alt="">glyph</a>
+  <div class="nl mi">
+    <a href="/">Home</a>
+    <a class="hide" href="https://github.com/fru-dev3/glyph">GitHub&nbsp;&#8599;</a>
+    <a class="star" href="https://github.com/fru-dev3/glyph/stargazers" aria-label="GitHub stars">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+      <b id="stars">&middot;&middot;</b></a>
+  </div>
+</div></nav>
+
+<div class="wrap"><div class="layout">
+<nav class="toc"><strong>Docs</strong><a href="#start">Getting started</a><a href="#name">How a name is built</a><a href="#launch">Launching agents</a><a href="#yolo">Auto-approve</a><a href="#agents">Agents</a><a href="#fleet">Fleet</a><a href="#remote">Remote agents</a><a href="#backends">Workspace backends</a><a href="#commands">Command reference</a><a href="#config">Configuration</a><a href="#update">Updating</a><a href="#trouble">Troubleshooting</a><a href="#uninstall">Uninstall</a></nav>
+<main>
+
+<h1>Docs</h1>
+<p class="sub">Glyph is one zsh file. It names your terminal session at launch, then gets out of the way.
+Everything it can do is on this page.</p>
+
+<h2 id="start">Getting started</h2>
+<p>zsh, and at least one agent CLI on your PATH. Nothing else.</p>
+<div class="bar"><span class="p">$</span><code id="i1">git clone https://github.com/fru-dev3/glyph.git<br>cd glyph &amp;&amp; ./install.sh<br>exec zsh</code><button data-copy="i1" type="button">Copy</button></div><p class="note">The installer copies one file to <code>~/.config/glyph/glyph.zsh</code> and adds one source line to <code>~/.zshrc</code>. Re-running it is safe.</p>
+<h3>Check it without launching anything</h3>
+<div class="bar"><span class="p">$</span><code id="i2">glyph version<br>glyph agents<br>GLYPH_DRYRUN=1 claude billing</code><button data-copy="i2" type="button">Copy</button></div><p class="note"><code>GLYPH_DRYRUN=1</code> prints the exact argv Glyph would run and stops there. Nothing starts, nothing is recorded.</p>
+<h3>Then launch for real</h3>
+<div class="bar"><span class="p">$</span><code id="i3">claude billing</code><button data-copy="i3" type="button">Copy</button></div>
+<div class="mark"><b>billing</b>&middot;acme-api&middot;claude-code&middot;mbp&middot;2026-09-12&middot;0556</div>
+<p class="note">That string is the session name. On Claude Code it is the real session name and rides Remote Control to the web app and your phone. On every other agent it lands on the terminal title, the tmux window, and <code>glyph ls</code>.</p>
+
+<h2 id="name">How a name is built</h2>
+<p>Six tokens joined by <code>&middot;</code>, all lowercase, hyphens inside words.</p>
+<div class="tw"><table><thead><tr><th>Token</th><th>Comes from</th><th>Example</th></tr></thead><tbody><tr><td><b>Label</b></td><td>the one bare word you typed</td><td><code>billing</code></td></tr><tr><td><b>Project</b></td><td>the git repo directory you launched from</td><td><code>acme-api</code></td></tr><tr><td><b>Agent</b></td><td>which wrapper ran</td><td><code>claude-code</code></td></tr><tr><td><b>Machine</b></td><td><code>scutil --get ComputerName</code> on macOS, hostname elsewhere</td><td><code>mbp</code></td></tr><tr><td><b>Date</b></td><td>launch date</td><td><code>2026-09-12</code></td></tr><tr><td><b>Time</b></td><td>launch time</td><td><code>0556</code></td></tr></tbody></table></div>
+<h3>The rule for arguments</h3>
+<p>One bare word is a label. Anything with a space is a prompt.</p>
+<div class="bar"><span class="p">$</span><code id="n1">claude                          # project only<br>claude billing                  # labelled<br>claude billing "fix the retry"  # labelled, with a prompt<br>claude "fix the retry"          # a phrase is a prompt, so no label</code><button data-copy="n1" type="button">Copy</button></div>
+<p class="note">Flags like <code>-p</code> and subcommands like <code>claude mcp</code> or <code>codex resume</code> pass through untouched, so scripts and CI behave exactly as before.</p>
+<h3>Machine tags</h3>
+<p>Normalised to lowercase hyphenated form. <code>Rivers MacBook Pro</code> becomes <code>rivers-macbook-pro</code>, <code>DESKTOP-8KQ2LM1</code> becomes <code>desktop-8kq2lm1</code>. Glyph never guesses a model or an OS release. If yours reads badly, set it:</p>
+<div class="bar"><span class="p">$</span><code id="n2">export GLYPH_MACHINE=laptop</code><button data-copy="n2" type="button">Copy</button></div>
+<h3>Project overrides</h3>
+<p>One tab-separated line per directory in <code>~/.config/glyph/names.tsv</code>. Overrides are normalised the same way.</p>
+<div class="bar"><span class="p">$</span><code id="n3">fd-apps-memosa	memosa<br>acme_api_v2	acme-api</code><button data-copy="n3" type="button">Copy</button></div>
+<h3>Preview any name</h3>
+<div class="bar"><span class="p">$</span><code id="n4">glyph name<br>glyph name billing</code><button data-copy="n4" type="button">Copy</button></div>
+
+<h2 id="launch">Launching agents</h2>
+<p>Keep typing the command you already type. Glyph only adds the name.</p>
+<h3>Claude Code</h3>
+<p>The one agent that can name its own session, so the name becomes the real session name and reaches Remote Control.</p>
+<div class="bar"><span class="p">$</span><code id="l1">claude billing<br># runs: claude -n 'billing·acme-api·claude-code·mbp·2026-09-12·0556' --remote-control</code><button data-copy="l1" type="button">Copy</button></div><p class="note">Turn Remote Control off with <code>GLYPH_RC=0</code>.</p>
+<h3>Everyone else</h3>
+<p>No agent but Claude has a session-name flag, so the name goes on the terminal title, the tmux window and the registry instead.</p>
+<div class="bar"><span class="p">$</span><code id="l2">codex audit<br>agy migration<br>cursor-agent pair</code><button data-copy="l2" type="button">Copy</button></div>
+<p class="note">Agents may overwrite the terminal title after launch. Fleet keeps its own pane-border labels, which they cannot touch.</p>
+<h3>See what you have running</h3>
+<div class="bar"><span class="p">$</span><code id="l3">glyph ls<br>glyph ls 50</code><button data-copy="l3" type="button">Copy</button></div>
+
+<h2 id="yolo">Auto-approve</h2>
+<p>Every agent has a flag meaning "stop asking me to approve each tool call", and they all spell it differently. <code>GLYPH_YOLO=1</code> sends whichever one is right for the agent you are launching.</p>
+<div class="bar"><span class="p">$</span><code id="y1">GLYPH_YOLO=1 codex audit<br># runs: codex --dangerously-bypass-approvals-and-sandbox</code><button data-copy="y1" type="button">Copy</button></div>
+<div class="callout"><b>Separate from naming</b>
+<p>Naming always happens. Auto-approve never happens unless you set the variable on that command, or export it yourself.</p></div>
+
+<h2 id="agents">Agents</h2>
+<p>A wrapper is defined only for agents actually on your PATH. Run <code>glyph agents</code> to see yours.</p>
+<div class="tw"><table><thead><tr><th>Agent</th><th>Command</th><th>Carries the name as</th><th>GLYPH_YOLO=1 sends</th></tr></thead><tbody><tr><td><img src="agents/claude.png" alt=""> Claude Code</td><td><code>claude</code></td><td>real session name</td><td><code>--dangerously-skip-permissions</code></td></tr><tr><td><img src="agents/codex.png" alt=""> Codex</td><td><code>codex</code></td><td>title</td><td><code>--dangerously-bypass-approvals-and-sandbox</code></td></tr><tr><td><img src="agents/agi.png" alt=""> AGY</td><td><code>agy</code></td><td>title</td><td><code>--dangerously-skip-permissions</code></td></tr><tr><td><img src="agents/cursor.png" alt=""> Cursor</td><td><code>cursor-agent</code></td><td>title</td><td><code>--force</code></td></tr><tr><td><img src="agents/crush.png" alt=""> Crush</td><td><code>crush</code></td><td>title</td><td><code>--yolo</code></td></tr><tr><td><img src="agents/cortex.svg" alt=""> Snowflake Cortex</td><td><code>cortex</code></td><td>title</td><td><code>--dangerously-allow-all-tool-calls</code></td></tr><tr><td><span class="noimg"></span> Hermes</td><td><code>hermes</code></td><td>title</td><td><code>--yolo</code></td></tr><tr><td><span class="noimg"></span> omni</td><td><code>omni</code></td><td>title</td><td><span class="dim">none</span></td></tr><tr><td><img src="agents/opencode.svg" alt=""> OpenCode</td><td><code>opencode</code></td><td>title</td><td><span class="dim">none</span></td></tr><tr><td><img src="agents/pi.svg" alt=""> pi</td><td><code>pi</code></td><td>title</td><td><span class="dim">none</span></td></tr></tbody></table></div>
+<h3>Add your own</h3>
+<p>Any CLI, without waiting for a release. One tab-separated line per agent in <code>~/.config/glyph/agents.tsv</code>: command, auto-approve flag, label. Leave the flag empty if it has none.</p>
+<div class="bar"><span class="p">$</span><code id="a1">openclaw	--yolo	OpenClaw<br>grok	--force	Grok</code><button data-copy="a1" type="button">Copy</button></div><p class="note">These merge over the built-ins, so you can also correct a flag Glyph gets wrong.</p>
+
+<h2 id="fleet">Fleet</h2>
+<p>One preset launches several agents at once, each in its own marked pane. Fleet is the only part of Glyph that opens anything.</p>
+<div class="bar"><span class="p">$</span><code id="f1">glyph fleet init<br>glyph presets<br>glyph fleet review</code><button data-copy="f1" type="button">Copy</button></div>
+<h3>The presets fleet init writes</h3>
+<p>It only adds what is missing, so it never touches presets you already wrote. Replace <code>studio</code> with one of your own machines.</p>
+<div class="tw"><table><thead><tr><th>Preset</th><th>Slots</th><th>What it is for</th></tr></thead><tbody><tr><td><b>solo</b></td><td><code>claude</code></td><td><span class="dim">one agent, named. the everyday case</span></td></tr><tr><td><b>review</b></td><td><code>claude codex</code></td><td><span class="dim">two vendors on the same diff, for a second opinion</span></td></tr><tr><td><b>duo</b></td><td><code>claude agy</code></td><td><span class="dim">Anthropic and Google side by side</span></td></tr><tr><td><b>ci</b></td><td><code>claude agy codex</code></td><td><span class="dim">the three-up bench</span></td></tr><tr><td><b>bench</b></td><td><code>claude codex agy cursor-agent</code></td><td><span class="dim">everything local, one pane each</span></td></tr><tr><td><b>pair</b></td><td><code>claude cursor-agent</code></td><td><span class="dim">a terminal agent beside an editor-native one</span></td></tr><tr><td><b>deep</b></td><td><code>claude cortex</code></td><td><span class="dim">a coding agent next to a warehouse-native one</span></td></tr><tr><td><b>light</b></td><td><code>crush opencode</code></td><td><span class="dim">lightweight runners for cheap, quick passes</span></td></tr><tr><td><b>split</b></td><td><code>claude codex:studio</code></td><td><span class="dim">one local, one on a remote box</span></td></tr><tr><td><b>spread</b></td><td><code>claude claude:studio</code></td><td><span class="dim">the same agent on two machines</span></td></tr><tr><td><b>cloud</b></td><td><code>claude:studio codex:studio</code></td><td><span class="dim">both agents on the remote box</span></td></tr></tbody></table></div>
+<h3>Without a preset</h3>
+<p>Name the agents directly and Fleet runs them as an ad-hoc group.</p>
+<div class="bar"><span class="p">$</span><code id="f2">glyph fleet claude codex<br>glyph fleet claude agy codex:studio</code><button data-copy="f2" type="button">Copy</button></div>
+<h3>Preview before opening panes</h3>
+<div class="bar"><span class="p">$</span><code id="f3">GLYPH_DRYRUN=1 glyph fleet ci</code><button data-copy="f3" type="button">Copy</button></div><p class="note">Prints the backend, the session, and one line per pane. Opens nothing.</p>
+<p class="note">Presets live in <code>~/.config/glyph/fleet.conf</code> as <code>name = slot slot slot</code>. Edit it by hand any time.</p>
+
+<h2 id="remote">Remote agents</h2>
+<p>A slot is <code>&lt;agent&gt;</code> or <code>&lt;agent&gt;:&lt;machine&gt;</code>. For a remote slot Glyph opens SSH in that pane, changes to the same working directory, and launches the agent through the remote Glyph wrapper, so it gets that agent's own flags and its own name.</p>
+<div class="bar"><span class="p">$</span><code id="r1">glyph hosts<br>glyph fleet split<br>GLYPH_DRYRUN=1 glyph fleet cloud</code><button data-copy="r1" type="button">Copy</button></div>
+<h3>How a machine name resolves</h3>
+<p>First hit wins.</p>
+<div class="tw"><table><thead><tr><th>Order</th><th>Source</th><th>Example</th></tr></thead><tbody><tr><td><b>1</b></td><td>An entry in <code>~/.ssh/config</code></td><td><code>Host mini</code></td></tr><tr><td><b>2</b></td><td>A name in <code>~/.ssh/known_hosts</code>, so the pane never stalls on a fingerprint prompt</td><td><code>mac-mini</code></td></tr><tr><td><b>3</b></td><td>Tailscale, where a short name expands to its MagicDNS name</td><td><code>mini &rarr; mini.tailnet.ts.net</code></td></tr><tr><td><b>4</b></td><td>Anything else, passed to SSH untouched</td><td><code>user@10.0.0.5</code></td></tr></tbody></table></div>
+<div class="callout"><b>Accept the host key once</b>
+<p>Run <code>ssh &lt;host&gt;</code> by hand the first time. After that, remote panes start clean.</p></div>
+<p class="note">Tailscale is optional and detected automatically; nothing changes if you do not use it. Remote slots work on every backend, because they all build the same SSH command.</p>
+
+<h2 id="backends">Workspace backends</h2>
+<p>Backends decide where Fleet opens panes. They change nothing about launching a single agent.</p>
+<div class="tw"><table><thead><tr><th>Backend</th><th>What it does</th></tr></thead><tbody><tr><td><b>auto</b></td><td><span class="dim">Herdr, then cmux, then Zellij, then WezTerm, then tmux.</span></td></tr><tr><td><b>herdr</b></td><td><span class="dim">One Herdr tab per slot, each running in the tab's own pane.</span></td></tr><tr><td><b>cmux</b></td><td><span class="dim">One cmux workspace per slot.</span></td></tr><tr><td><b>zellij</b></td><td><span class="dim">One named Zellij pane per slot.</span></td></tr><tr><td><b>wezterm</b></td><td><span class="dim">One WezTerm tab per slot.</span></td></tr><tr><td><b>tmux</b></td><td><span class="dim">Tiled panes in a new tmux session.</span></td></tr></tbody></table></div>
+<div class="bar"><span class="p">$</span><code id="b1">GLYPH_FLEET_BACKEND=herdr glyph fleet ci</code><button data-copy="b1" type="button">Copy</button></div><p class="note">Glyph is not tied to any one workspace tool. With none running, Fleet falls back to tmux.</p>
+
+<h2 id="commands">Command reference</h2>
+<div class="tw"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody><tr><td><code>glyph name [label]</code></td><td><span class="dim">Print the session name this directory would produce. Nothing is launched.</span></td></tr><tr><td><code>glyph ls [n]</code></td><td><span class="dim">The last n recorded sessions (default 20): time, agent, name, machine.</span></td></tr><tr><td><code>glyph agents</code></td><td><span class="dim">Every agent found on your PATH, its label, and its auto-approve flag.</span></td></tr><tr><td><code>glyph hosts</code></td><td><span class="dim">Machines you can put after a colon in a Fleet slot: SSH config entries, then tailnet peers.</span></td></tr><tr><td><code>glyph presets</code></td><td><span class="dim">The Fleet presets currently defined.</span></td></tr><tr><td><code>glyph fleet init</code></td><td><span class="dim">Write the example presets, keeping any you already have. Safe to re-run.</span></td></tr><tr><td><code>glyph fleet &lt;preset&gt;</code></td><td><span class="dim">Launch a preset, one marked pane per slot.</span></td></tr><tr><td><code>glyph fleet &lt;agent&gt; [&lt;agent&gt;...]</code></td><td><span class="dim">Launch an ad-hoc fleet without defining a preset first.</span></td></tr><tr><td><code>glyph update</code></td><td><span class="dim">Fetch the latest glyph.zsh from GitHub.</span></td></tr><tr><td><code>glyph version</code></td><td><span class="dim">The installed version.</span></td></tr></tbody></table></div>
+
+<h2 id="config">Configuration</h2>
+<h3>Behaviour</h3>
+<div class="tw"><table><thead><tr><th>Variable</th><th>Default</th><th>Effect</th></tr></thead><tbody><tr><td><code>GLYPH_YOLO=1</code></td><td><span class="dim">off</span></td><td>Send each agent's auto-approve flag.</td></tr><tr><td><code>GLYPH_DRYRUN=1</code></td><td><span class="dim">off</span></td><td>Print the argv that would run. Launch nothing, record nothing.</td></tr><tr><td><code>GLYPH_OFF=1</code></td><td><span class="dim">off</span></td><td>Keep the label and project, drop the machine and time.</td></tr><tr><td><code>GLYPH_SEP</code></td><td><span class="dim">·</span></td><td>Separator between tokens.</td></tr><tr><td><code>GLYPH_FMT</code></td><td><span class="dim">%Y-%m-%d·%H%M</span></td><td>date(1) format for the stamp.</td></tr><tr><td><code>GLYPH_MACHINE</code></td><td><span class="dim">computer name</span></td><td>Machine tag, when the hostname does not read well.</td></tr><tr><td><code>GLYPH_RC=0</code></td><td><span class="dim">on</span></td><td>Do not add Claude's --remote-control.</td></tr><tr><td><code>GLYPH_TITLE=0</code></td><td><span class="dim">on</span></td><td>Leave the terminal and tmux titles alone.</td></tr><tr><td><code>GLYPH_LOG=0</code></td><td><span class="dim">on</span></td><td>Do not record sessions locally.</td></tr><tr><td><code>GLYPH_FLEET_BACKEND</code></td><td><span class="dim">auto</span></td><td>auto, herdr, cmux, zellij, wezterm or tmux.</td></tr></tbody></table></div>
+<h3>Paths</h3>
+<div class="tw"><table><thead><tr><th>Variable</th><th>Default</th><th>Points at</th></tr></thead><tbody><tr><td><code>GLYPH_FLEET_CONF</code></td><td><span class="dim">~/.config/glyph/fleet.conf</span></td><td>Fleet presets.</td></tr><tr><td><code>GLYPH_AGENTS</code></td><td><span class="dim">~/.config/glyph/agents.tsv</span></td><td>Extra agents you define.</td></tr><tr><td><code>GLYPH_MAP</code></td><td><span class="dim">~/.config/glyph/names.tsv</span></td><td>Project name overrides.</td></tr><tr><td><code>GLYPH_STATE</code></td><td><span class="dim">~/.local/state/glyph</span></td><td>Session registry (honours XDG_STATE_HOME).</td></tr><tr><td><code>GLYPH_UPDATE_URL</code></td><td><span class="dim">GitHub raw glyph.zsh</span></td><td>Where glyph update pulls from. Point it at a fork.</td></tr><tr><td><code>GLYPH_SSH_CONFIG</code></td><td><span class="dim">~/.ssh/config</span></td><td>Where host resolution reads SSH hosts.</td></tr><tr><td><code>GLYPH_KNOWN_HOSTS</code></td><td><span class="dim">~/.ssh/known_hosts</span></td><td>Where host resolution reads trusted hosts.</td></tr><tr><td><code>GLYPH_TAILSCALE</code></td><td><span class="dim">auto-detected</span></td><td>Path to the tailscale binary.</td></tr></tbody></table></div>
+<h3>Files on disk</h3>
+<div class="tw"><table><thead><tr><th>Path</th><th>What it is</th></tr></thead><tbody><tr><td><code>~/.config/glyph/glyph.zsh</code></td><td>The wrapper itself. Replaced by <code>glyph update</code>; a symlink here is followed, not overwritten.</td></tr><tr><td><code>~/.config/glyph/fleet.conf</code></td><td>Fleet presets, one <code>name = slots</code> per line.</td></tr><tr><td><code>~/.config/glyph/agents.tsv</code></td><td>Extra agents: command, auto-approve flag, label, tab separated.</td></tr><tr><td><code>~/.config/glyph/names.tsv</code></td><td>Project overrides: directory name, display name, tab separated.</td></tr><tr><td><code>~/.local/state/glyph/sessions.tsv</code></td><td>What <code>glyph ls</code> reads. Delete it any time.</td></tr><tr><td><code>~/.zshrc</code></td><td>One source line, added by the installer.</td></tr></tbody></table></div>
+
+<h2 id="update">Updating</h2>
+<div class="bar"><span class="p">$</span><code id="u1">glyph update<br>exec zsh<br>glyph version</code><button data-copy="u1" type="button">Copy</button></div>
+<ul>
+<li>Refuses to install a file that does not parse.</li>
+<li>Keeps the previous copy at <code>~/.config/glyph/glyph.zsh.bak</code>.</li>
+<li>Follows a symlink and writes the file it points at, so an install linked into a synced folder keeps its link.</li>
+<li>Never touches <code>fleet.conf</code>, <code>names.tsv</code> or <code>agents.tsv</code>.</li>
+<li>Point <code>GLYPH_UPDATE_URL</code> somewhere else to track a fork.</li>
+</ul>
+<p class="note">Shells you already have open keep the old wrapper until you run <code>exec zsh</code> in them.</p>
+
+<h2 id="trouble">Troubleshooting</h2>
+<div class="tw"><table><thead><tr><th>Symptom</th><th>Fix</th></tr></thead><tbody><tr><td><b><code>agy billing</code> reports an unexpected argument</b></td><td><span class="dim">An older wrapper is still loaded in that shell. Run <code>exec zsh</code>.</span></td></tr><tr><td><b>A Fleet pane stalls on a host key fingerprint</b></td><td><span class="dim">Accept the key by hand once with <code>ssh &lt;host&gt;</code>, then the pane starts clean.</span></td></tr><tr><td><b><code>glyph fleet</code> opens a nested tmux inside Herdr</b></td><td><span class="dim">Set <code>GLYPH_FLEET_BACKEND=herdr</code>, or run Fleet outside Herdr.</span></td></tr><tr><td><b>Claude's startup banner does not show the name</b></td><td><span class="dim">It never does. Read <code>~/.claude/sessions/&lt;pid&gt;.json</code>, or look at the session list on the web or your phone.</span></td></tr><tr><td><b>The machine tag reads badly</b></td><td><span class="dim">Set it yourself: <code>export GLYPH_MACHINE=laptop</code>.</span></td></tr><tr><td><b>Nothing happens at all</b></td><td><span class="dim">Confirm the source line is in <code>~/.zshrc</code>, then run <code>glyph version</code>. If that fails, re-run <code>./install.sh</code>.</span></td></tr></tbody></table></div>
+<h3>Two things that cost real debugging time</h3>
+<ul>
+<li><b>Claude's <code>--remote-control &lt;name&gt;</code> does not name the session.</b> It opens the bridge, and the session still comes back as <code>nameSource: "derived"</code>. Only <code>-n</code> sets the name, so Glyph passes both.</li>
+<li><b>In zsh, <code>argv</code> is <code>$@</code>.</b> Declaring <code>local -a argv</code> in a function silently empties the positional parameters. Worth knowing if you fork this.</li>
+</ul>
+
+<h2 id="uninstall">Uninstall</h2>
+<div class="bar"><span class="p">$</span><code id="un1"># remove the glyph source line from ~/.zshrc<br>rm -rf ~/.config/glyph<br>rm -rf ~/.local/state/glyph   # optional: the session registry<br>exec zsh</code><button data-copy="un1" type="button">Copy</button></div><p class="note">Nothing else was installed and no agent config was modified, so that is the whole of it.</p>
+
+<footer class="mi">
+  <span>MIT</span><a href="/">Home</a><a href="https://github.com/fru-dev3/glyph">Source</a>
+  <span class="sp"><a href="https://fru.dev">fru.dev</a></span>
+</footer>
+</main>
+</div></div>
+
+<script>document.querySelectorAll('[data-copy]').forEach(function(b){
+  b.addEventListener('click',function(){
+    var t=document.getElementById(b.dataset.copy).innerText
+      .split('\n').filter(function(l){return l.trim() && l.trim().charAt(0)!=='#'}).join('\n');
+    navigator.clipboard.writeText(t).then(function(){
+      b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1500)})})});
+
+fetch('https://api.github.com/repos/fru-dev3/glyph').then(function(r){return r.json()})
+  .then(function(d){if(typeof d.stargazers_count==='number')
+    document.getElementById('stars').textContent=d.stargazers_count}).catch(function(){});
+
+var links=[].slice.call(document.querySelectorAll('.toc a')),
+    heads=links.map(function(a){return document.querySelector(a.getAttribute('href'))});
+function spy(){
+  var i=heads.length-1;
+  while(i>0 && heads[i] && heads[i].getBoundingClientRect().top>150)i--;
+  links.forEach(function(a,n){a.classList.toggle('on',n===i)});
+}
+addEventListener('scroll',spy,{passive:true});spy();
+</script>
+</body>
+</html>
