@@ -67,11 +67,16 @@ lookalike shell.
 
 ```sh
 git clone https://github.com/fru-dev3/glyph.git
-cd glyph && ./install.sh && exec zsh
+cd glyph && source ./install.sh
 ```
 
 One file into `~/.config/glyph/`, one line into `~/.zshrc`. zsh and at least one
 agent CLI.
+
+`source` matters. Run as `./install.sh` it is a child process, and a child
+cannot define functions in the shell that started it, so you would have to
+reload before glyph exists. Sourcing installs and loads in one step. If you
+already ran it the other way, `. ~/.config/glyph/glyph.zsh` catches you up.
 
 ## Usage
 
@@ -200,10 +205,12 @@ Six agents, five spellings of *"stop asking me to approve every tool call"*.
 ## Updating
 
 ```sh
-glyph update   # fetch the latest glyph.zsh from GitHub
-exec zsh
+glyph update   # fetch the latest glyph.zsh from GitHub, and load it here
 glyph version
 ```
+
+It loads the new file into the shell you ran it in, so there is nothing to
+reload. Other shells you already have open keep the old one until `exec zsh`.
 
 Refuses to install a file that does not parse, backs up the previous copy to
 `~/.config/glyph/glyph.zsh.bak`, and never touches your config.

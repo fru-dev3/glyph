@@ -29,7 +29,9 @@
 #   GLYPH_FLEET_BACKEND=auto|herdr|cmux|zellij|wezterm|tmux   fleet workspace backend
 #   ~/.config/glyph/names.tsv    "<dir-name>\t<Display Name>" overrides
 
-typeset -g GLYPH_VERSION=${GLYPH_VERSION:-0.4.0}
+# The version belongs to this file, not the environment: an in-place reload
+# after `glyph update` must report the file it just loaded.
+typeset -g GLYPH_VERSION=0.4.0
 typeset -g GLYPH_STATE=${GLYPH_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/glyph}
 
 # --- agent adapters ---------------------------------------------------------
@@ -308,7 +310,15 @@ glyph() {
       command mv "$tmp" "$dest" || return 1
       print -r -- "updated $dest"
       [[ -r $dest.bak ]] && print -r -- "previous version kept at $dest.bak"
-      print -r -- "reload it with: exec zsh" ;;
+      # Load the new file into this shell straight away. zsh has already copied
+      # the body of the function we are running, so redefining it here is safe.
+      if source "$dest" 2>/dev/null; then
+        print -r -- "loaded in this shell, now ${GLYPH_VERSION}"
+        print -r -- "other open shells keep the old one until you run: exec zsh"
+      else
+        print -ru2 -- "glyph: could not load the new file, reload with: exec zsh"
+        return 1
+      fi ;;
     hosts)
       local h line ts
       print -r -- "ssh config (~/.ssh/config)"

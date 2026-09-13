@@ -351,7 +351,7 @@ footer .sp{margin-left:auto}
     </div>
     <div class="bar">
       <span class="p" aria-hidden="true">$</span>
-      <code id="cmd">git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; ./install.sh</code>
+      <code id="cmd">git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; source ./install.sh</code>
       <button id="copy" type="button">Copy</button>
     </div>
     <p class="out" id="out"></p>
@@ -460,7 +460,7 @@ footer .sp{margin-left:auto}
   <div class="kit">
     <div class="bar" style="border-top:1px solid var(--line)">
       <span class="p" aria-hidden="true">$</span>
-      <code id="cmd2">git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; ./install.sh &amp;&amp; exec zsh</code>
+      <code id="cmd2">git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; source ./install.sh</code>
       <button id="copy2" type="button">Copy</button>
     </div>
   </div>
@@ -480,7 +480,7 @@ addEventListener('scroll',function(){nav.classList.toggle('stuck',scrollY>10)},{
 
 /* ---- tabs ---- */
 var TAB={
-  install:['git clone https://github.com/fru-dev3/glyph.git && cd glyph && ./install.sh',null,''],
+  install:['git clone https://github.com/fru-dev3/glyph.git && cd glyph && source ./install.sh',null,''],
   claude :['claude billing','billing','·acme-api·claude-code·mbp·2026-09-12·0556'],
   codex  :['codex audit','audit','·acme-api·codex·mbp·2026-09-12·0602'],
   agy    :['agy migration','migration','·acme-api·agy·mbp·2026-09-12·0611'],
