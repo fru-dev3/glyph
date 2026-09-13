@@ -255,6 +255,11 @@ glyph presets        # list them
 glyph fleet review   # launch one
 ```
 
+Fleet on tmux is one session, one window, one tiled pane per slot. Glyph leaves
+you in the first pane and turns the mouse on for that session so a click moves
+between them (`ctrl-b o` and `ctrl-b` plus an arrow also work). Set
+`GLYPH_FLEET_MOUSE=0` to leave the mouse alone.
+
 ### Remote agents
 
 A slot is `<agent>` or `<agent>:<machine>`. Glyph opens SSH in that pane, cds to

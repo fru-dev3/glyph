@@ -688,7 +688,7 @@ glyph-fleet() {
   command tmux set-option -t "$session" pane-border-status top >/dev/null 2>&1
   # #{@label}, not #{pane_title}: an agent sets its own OSC title and would
   # overwrite anything we put in pane_title.
-  command tmux set-option -t "$session" pane-border-format ' #{@label} ' >/dev/null 2>&1
+  command tmux set-option -t "$session" pane-border-format ' #{pane_index} · #{@label} ' >/dev/null 2>&1
 
   for (( i = 1; i <= n; i++ )); do
     agent=${slots[i]%%:*}; machine=${slots[i]#*:}
@@ -699,6 +699,15 @@ glyph-fleet() {
     command tmux set-option -p -t "$panes[i]" @label "$label · $mark" >/dev/null 2>&1
     command tmux send-keys -t "$panes[i]" "$cmd" C-m
   done
+
+  # split-window focuses each new pane, so without this you land in the last
+  # slot and the earlier ones only surface as you exit your way back.
+  command tmux select-pane -t "$panes[1]" >/dev/null 2>&1
+
+  # tmux defaults `mouse off`, so clicking another pane does nothing at all.
+  # Scoped to this session, so a global preference elsewhere is untouched.
+  [[ ${GLYPH_FLEET_MOUSE:-1} == 1 ]] \
+    && command tmux set-option -t "$session" mouse on >/dev/null 2>&1
 
   _glyph_log "fleet:$preset" "$mark"
   if [[ -n ${TMUX:-} ]]; then command tmux switch-client -t "$session"
