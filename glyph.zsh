@@ -60,6 +60,12 @@ _glyph_load_extra_agents() {
   [[ -r $f ]] || return 0
   while IFS=$'\t' read -r cmd flag lbl; do
     [[ -z $cmd || $cmd == \#* ]] && continue
+    # This name is used to define a shell function, so refuse anything that
+    # could close that definition and open something else.
+    if [[ $cmd != ${cmd//[^A-Za-z0-9_.-]/} ]]; then
+      print -ru2 -- "glyph: ignoring agent '$cmd' in $f, name must be [A-Za-z0-9_.-]"
+      continue
+    fi
     GLYPH_YOLO_FLAG[$cmd]=$flag
     [[ -n $lbl ]] && GLYPH_LABEL[$cmd]=$lbl
   done < "$f"
@@ -255,6 +261,9 @@ _glyph_launch() {
 
 # Define a wrapper for each agent that is actually installed.
 for _g_agent in ${(k)GLYPH_YOLO_FLAG}; do
+  # Belt and braces: the built-in table is safe, but a name reaching eval is
+  # worth checking at the point of use as well as on the way in.
+  [[ -n $_g_agent && $_g_agent == ${_g_agent//[^A-Za-z0-9_.-]/} ]] || continue
   if command -v "$_g_agent" >/dev/null 2>&1; then
     eval "${_g_agent//-/_}() { _glyph_launch ${(q)_g_agent} \"\$@\" }"
     [[ $_g_agent == *-* ]] && eval "function ${_g_agent}() { _glyph_launch ${(q)_g_agent} \"\$@\" }"
@@ -300,12 +309,16 @@ _glyph_win_name() {
 }
 
 _glyph_codex_line() {
-  local f l
-  for f in $(command ls -t ~/.codex/sessions/**/*.jsonl(N) 2>/dev/null | head -40); do
-    l=$(command grep '"rate_limits"' "$f" 2>/dev/null | tail -1)
-    [[ -n $l ]] && { print -r -- "$l"; return 0 }
-  done
-  return 1
+  # Only a record that actually carries a window: a session that has not hit a
+  # limit writes "primary":null, and plenty of recent ones do, so walking the
+  # newest few files is not enough. One grep over all of them, newest match
+  # wins. Roughly 3s over 3000 rollouts, and the result is cached upstream.
+  local files=(~/.codex/sessions/**/*.jsonl(N)) hit
+  (( $#files )) || return 1
+  hit=$(LC_ALL=C command grep -l '"primary":{' $files 2>/dev/null \
+        | command xargs ls -t 2>/dev/null | command head -1)
+  [[ -n $hit ]] || return 1
+  command grep '"primary":{' "$hit" 2>/dev/null | command tail -1
 }
 _glyph_codex_window() {
   local blk=$(print -r -- "$1" | command sed -n "s/.*\"$2\":{\([^}]*\)}.*/\1/p")
@@ -358,12 +371,15 @@ _glyph_claude_live() {
   blob=$(command security find-generic-password -s "Claude Code-credentials" -w 2>/dev/null) || return 1
   at=$(print -r -- "$blob" | command sed -n 's/.*"accessToken":"\([^"]*\)".*/\1/p')
   [[ -n $at ]] || return 1
+  # The token goes in over stdin, never on the command line: anything in argv
+  # is readable by every other process on the machine via ps.
   for host in ${GLYPH_CLAUDE_API:-https://api.anthropic.com} https://code.claude.com; do
-    out=$(command curl -fsS --max-time 12 -H "Authorization: Bearer $at" \
-      -H "anthropic-beta: oauth-2025-04-20" \
-      "$host/api/oauth/usage?at_wall=1&skip_spend=1" 2>/dev/null) || continue
-    [[ -n $out ]] && { print -r -- "$out"; return 0 }
+    out=$(printf 'header = "Authorization: Bearer %s"\nheader = "anthropic-beta: oauth-2025-04-20"\nurl = "%s/api/oauth/usage?at_wall=1&skip_spend=1"\n' \
+            "$at" "$host" \
+          | command curl -fsS --max-time 12 --config - 2>/dev/null) || continue
+    [[ -n $out ]] && { print -r -- "$out"; unset at blob; return 0 }
   done
+  unset at blob
   return 1
 }
 
@@ -671,6 +687,9 @@ glyph() {
       # Follow a symlink and write the file it points at. Installs that link
       # ~/.config/glyph/glyph.zsh into a synced folder must keep the link.
       [[ -L $dest ]] && dest=${dest:A}
+      # Trust model: HTTPS to GitHub, and that is all. The zsh -n check below
+      # only proves the file parses, it is not a signature. Point
+      # GLYPH_UPDATE_URL somewhere you trust, or update by hand.
       local url=${GLYPH_UPDATE_URL:-https://raw.githubusercontent.com/fru-dev3/glyph/main/glyph.zsh}
       local tmp=${TMPDIR:-/tmp}/glyph.update.$$
       print -r -- "fetching $url"

@@ -1,1 +1,8 @@
 .DS_Store
+
+# Netlify CLI working directory: link state, and a vendored node_modules that
+# has no business in a public repo for a one-file shell tool.
+.netlify/
+
+# local backups the updater leaves behind
+*.bak
