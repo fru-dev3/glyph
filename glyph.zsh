@@ -31,7 +31,7 @@
 
 # The version belongs to this file, not the environment: an in-place reload
 # after `glyph update` must report the file it just loaded.
-typeset -g GLYPH_VERSION=0.4.1
+typeset -g GLYPH_VERSION=0.5.0
 typeset -g GLYPH_STATE=${GLYPH_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/glyph}
 
 # --- agent adapters ---------------------------------------------------------
@@ -128,6 +128,11 @@ _glyph_claude_session() {
   local pid=${CLAUDE_PID:-$PPID}
   [[ -n $pid && -r $HOME/.claude/sessions/$pid.json ]] || return 1
   print -r -- "$HOME/.claude/sessions/$pid.json"
+}
+
+# A bare number out of that file (pid), without needing jq.
+_glyph_session_num() {
+  command sed -n "s/.*\"$2\"[[:space:]]*:[[:space:]]*\\([0-9][0-9]*\\).*/\\1/p" "$1" 2>/dev/null | head -1
 }
 
 # "name" out of that file, without needing jq.
@@ -271,12 +276,110 @@ glyph() {
           && printf "%-14s %-14s %s\n" "$a" "${GLYPH_LABEL[$a]}" "${GLYPH_YOLO_FLAG[$a]:-(no yolo flag)}"
       done ;;
     name) shift; _glyph_compose "${1:-}" "$(_glyph_project "$PWD")" ;;
+    doctor)
+      local ok=0 bad=0
+      # Always returns 0: a bare (( n++ )) is false when n is 0, which would
+      # make every `_gd ok ... || _gd ...` fire both branches.
+      _gd() { printf '  %-4s %s\n' "$1" "$2"
+              if [[ $1 == ok ]]; then (( ok++ )); else (( bad++ )); fi
+              return 0 }
+      print -r -- "glyph doctor"
+      print -r -- ""
+      local dfile=${XDG_CONFIG_HOME:-$HOME/.config}/glyph/glyph.zsh
+      if [[ -r $dfile ]]; then
+        if [[ -L $dfile ]]; then _gd ok "wrapper: $dfile -> ${dfile:A}"
+        else _gd ok "wrapper: $dfile"; fi
+      else
+        _gd FAIL "wrapper missing at $dfile, re-run install.sh"
+      fi
+      # version on disk vs version in this shell
+      local onfile=$(command sed -n 's/^typeset -g GLYPH_VERSION=\(.*\)$/\1/p' "${dfile:A}" 2>/dev/null | head -1)
+      # older builds wrote ${GLYPH_VERSION:-x}; take the default out of it
+      [[ $onfile == '${GLYPH_VERSION:-'*'}' ]] && onfile=${${onfile#*:-}%\}}
+      if [[ -z $onfile ]]; then _gd warn "cannot read the version out of the file"
+      elif [[ $onfile == $GLYPH_VERSION ]]; then _gd ok "version: $GLYPH_VERSION, shell matches disk"
+      else _gd warn "version: shell has $GLYPH_VERSION, disk has $onfile. run: exec zsh"; fi
+      # the source line
+      if command grep -qF 'glyph.zsh' "$HOME/.zshrc" 2>/dev/null; then
+        _gd ok "~/.zshrc sources it"
+      else
+        _gd FAIL "~/.zshrc has no source line, new shells will not load glyph"
+      fi
+      # wrappers actually defined
+      local w defined=() missing=()
+      for w in ${(ok)GLYPH_YOLO_FLAG}; do
+        command -v "$w" >/dev/null 2>&1 || continue
+        if [[ $(whence -w "$w" 2>/dev/null) == *function ]]; then defined+=("$w"); else missing+=("$w"); fi
+      done
+      (( $#defined )) && _gd ok "wrapped: ${(j:, :)defined}"
+      (( $#missing )) && _gd FAIL "on PATH but NOT wrapped: ${(j:, :)missing} (run: exec zsh)"
+      (( $#defined || $#missing )) || _gd warn "no known agent CLI found on PATH"
+      # where fleet would open
+      local be=$(_glyph_fleet_backend 2>/dev/null)
+      [[ -n $be ]] && _gd ok "fleet backend: $be" || _gd warn "no fleet backend detected"
+      # writable state
+      if command mkdir -p "$GLYPH_STATE" 2>/dev/null && [[ -w $GLYPH_STATE ]]; then
+        _gd ok "registry: $GLYPH_STATE"
+      else
+        _gd warn "registry not writable: $GLYPH_STATE (glyph ls will stay empty)"
+      fi
+      # config files, all optional
+      local c
+      for c in fleet.conf agents.tsv names.tsv; do
+        [[ -r ${XDG_CONFIG_HOME:-$HOME/.config}/glyph/$c ]] && _gd ok "config: $c"
+      done
+      # this shell
+      [[ -n ${CLAUDECODE:-} ]] && _gd ok "running inside Claude Code, so 'glyph mark --send' works here"
+      print -r -- ""
+      if (( bad )); then print -r -- "$ok ok, $bad to look at"; return 1
+      else print -r -- "$ok ok, nothing to fix"; fi ;;
+    ps)
+      # What is running right now, as opposed to `ls`, which is a log of
+      # launches glyph itself performed.
+      shift
+      local psfix=0
+      [[ ${1:-} == --fix ]] && psfix=1
+      local d=$HOME/.claude/sessions f pid nm src br cwd kind rc n=0 fixable=0
+      printf "%-8s %-46s %-6s %-4s %-7s %s\n" AGENT NAME NAMED RC PID CWD
+      for f in $d/*.json(N); do
+        pid=$(_glyph_session_num "$f" pid)
+        [[ -n $pid ]] || continue
+        command kill -0 "$pid" 2>/dev/null || continue
+        nm=$(_glyph_session_field "$f" name)
+        src=$(_glyph_session_field "$f" nameSource)
+        br=$(_glyph_session_field "$f" bridgeSessionId)
+        cwd=$(_glyph_session_field "$f" cwd)
+        if [[ $nm == *${GLYPH_SEP:-·}* ]]; then kind=glyph
+        elif [[ $src == user ]]; then kind=user
+        else kind=auto; fi
+        [[ -n $br ]] && rc=on || rc=off
+        [[ $kind == glyph && $rc == on ]] || (( fixable++ ))
+        printf "%-8s %-46s %-6s %-4s %-7s %s\n" \
+          claude "${nm:-(unnamed)}" "$kind" "$rc" "$pid" "${cwd/#$HOME/~}"
+        (( n++ ))
+      done
+      (( n )) || { print -r -- "no live Claude sessions"; return 0; }
+      print -r -- ""
+      print -r -- "$n live, $fixable without a glyph name or without Remote Control"
+      if (( psfix )); then
+        print -r -- ""
+        print -r -- "glyph cannot type into another session's pane from here."
+        print -r -- "in each one that needs it, run:  glyph mark <label> --send"
+      elif (( fixable )); then
+        print -r -- "run 'glyph mark <label> --send' inside one to fix it"
+      fi ;;
     mark)
       # Name a session that is already open. Sets everything glyph can still
       # reach from outside the agent, and prints the one line only the agent
       # itself can run.
       shift
-      local mklabel=${1:-} mkagent=${2:-} mkmark mksf mkcur
+      local mksend=0 mkargs=()
+      local a
+      for a in "$@"; do
+        [[ $a == --send ]] && { mksend=1; continue; }
+        mkargs+=("$a")
+      done
+      local mklabel=${mkargs[1]:-} mkagent=${mkargs[2]:-} mkmark mksf mkcur
       [[ -n $mkagent ]] || mkagent=$(_glyph_current_agent) || mkagent=""
       mkmark=$(_glyph_compose "$mklabel" "$(_glyph_project "$PWD")" "$mkagent")
       if [[ -n ${GLYPH_DRYRUN:-} ]]; then
@@ -308,6 +411,37 @@ glyph() {
         print -r -- "  /remote-control"
         print -r -- "    (the second one turns on Remote Control, which a launch"
         print -r -- "     would have done for you. it cannot be set from out here.)"
+      fi
+      if (( mksend )); then
+        print -r -- ""
+        if [[ -z ${CLAUDECODE:-} ]]; then
+          print -ru2 -- "glyph: --send only works from inside an agent session."
+          print -ru2 -- "       from a plain shell it would type into the shell itself."
+          return 1
+        fi
+        local sent=""
+        if [[ -n ${HERDR_PANE_ID:-} ]] && command -v herdr >/dev/null 2>&1; then
+          command herdr pane send-text "$HERDR_PANE_ID" "/rename $mkmark" >/dev/null 2>&1 \
+            && command herdr pane send-keys "$HERDR_PANE_ID" Enter >/dev/null 2>&1 \
+            && sent=herdr
+          if [[ -n $sent && -z $mkbridge ]]; then
+            command sleep 1
+            command herdr pane send-text "$HERDR_PANE_ID" "/remote-control" >/dev/null 2>&1 \
+              && command herdr pane send-keys "$HERDR_PANE_ID" Enter >/dev/null 2>&1
+          fi
+        elif [[ -n ${TMUX_PANE:-} ]]; then
+          command tmux send-keys -t "$TMUX_PANE" "/rename $mkmark" C-m 2>/dev/null && sent=tmux
+          if [[ -n $sent && -z $mkbridge ]]; then
+            command sleep 1
+            command tmux send-keys -t "$TMUX_PANE" "/remote-control" C-m 2>/dev/null
+          fi
+        fi
+        if [[ -n $sent ]]; then
+          print -r -- "sent it into this pane over $sent. watch the prompt above."
+        else
+          print -ru2 -- "glyph: no pane to send to (need Herdr or tmux). paste it by hand."
+          return 1
+        fi
       fi ;;
     version) print -r -- "glyph ${GLYPH_VERSION}" ;;
     update)
@@ -364,6 +498,9 @@ glyph() {
 glyph agents   installed agents and their auto-approve flags
 glyph name [x] print the mark this directory would produce
 glyph mark [x] name a session that is already open, as far as glyph can reach
+glyph mark [x] --send  and type the /rename into the agent for you
+glyph ps       every agent session running right now, named or not
+glyph doctor   check the install and say what is wrong
 glyph fleet init create example fleets without replacing existing presets
 glyph fleet [p] launch a preset of agents, each in its own marked tmux pane
 glyph presets  list the presets in ~/.config/glyph/fleet.conf
