@@ -21,10 +21,15 @@
 #   GLYPH_TITLE=0     do not retitle the terminal / tmux window
 #   GLYPH_LOG=0       do not record sessions to the local registry
 #   GLYPH_DRYRUN=1    print the argv instead of launching
+#
+# Already inside a session you started without glyph? `glyph mark [label]`
+# applies everything glyph can still reach: the terminal title, the tmux
+# window, the registry. Only the agent can rename itself, so it also hands
+# you the /rename line to paste.
 #   GLYPH_FLEET_BACKEND=auto|herdr|cmux|zellij|wezterm|tmux   fleet workspace backend
 #   ~/.config/glyph/names.tsv    "<dir-name>\t<Display Name>" overrides
 
-typeset -g GLYPH_VERSION=${GLYPH_VERSION:-0.3.0}
+typeset -g GLYPH_VERSION=${GLYPH_VERSION:-0.4.0}
 typeset -g GLYPH_STATE=${GLYPH_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/glyph}
 
 # --- agent adapters ---------------------------------------------------------
@@ -109,11 +114,39 @@ _glyph_compose() {
   print -r -- "${(pj:$sep:)parts}"
 }
 
+# Which agent owns this shell, when the agent says so in the environment.
+# Only Claude Code is verified; pass the name explicitly for anything else.
+_glyph_current_agent() {
+  [[ -n ${CLAUDECODE:-} ]] && { print -r -- claude; return 0; }
+  return 1
+}
+
+# The session file Claude Code keeps for this shell, if there is one.
+_glyph_claude_session() {
+  local pid=${CLAUDE_PID:-$PPID}
+  [[ -n $pid && -r $HOME/.claude/sessions/$pid.json ]] || return 1
+  print -r -- "$HOME/.claude/sessions/$pid.json"
+}
+
+# "name" out of that file, without needing jq.
+_glyph_session_field() {
+  command sed -n "s/.*\"$2\"[[:space:]]*:[[:space:]]*\"\\([^\"]*\\)\".*/\\1/p" "$1" 2>/dev/null | head -1
+}
+
+# Records what it actually reached in GLYPH_TITLE_DID, and returns 0 only if
+# that is something. `glyph mark` reports exactly this and nothing more.
+typeset -g GLYPH_TITLE_DID=""
 _glyph_title() {
-  [[ ${GLYPH_TITLE:-1} == 1 ]] || return 0
-  printf '\033]2;%s\007\033]1;%s\007' "$1" "$1"
-  [[ -n ${TMUX:-} ]] && command tmux rename-window "$1" 2>/dev/null
-  return 0
+  GLYPH_TITLE_DID=""
+  [[ ${GLYPH_TITLE:-1} == 1 ]] || return 1
+  # Straight to the controlling terminal: the escape must not land in stdout,
+  # where a pipe or a redirect would capture it as garbage. The subshell keeps
+  # the "device not configured" error quiet when there is no terminal at all.
+  ( printf '\033]2;%s\007\033]1;%s\007' "$1" "$1" > /dev/tty ) 2>/dev/null \
+    && GLYPH_TITLE_DID="terminal"
+  [[ -n ${TMUX:-} ]] && command tmux rename-window "$1" 2>/dev/null \
+    && GLYPH_TITLE_DID="${GLYPH_TITLE_DID:+$GLYPH_TITLE_DID }tmux"
+  [[ -n $GLYPH_TITLE_DID ]]
 }
 
 _glyph_log() {
@@ -223,6 +256,34 @@ glyph() {
           && printf "%-14s %-14s %s\n" "$a" "${GLYPH_LABEL[$a]}" "${GLYPH_YOLO_FLAG[$a]:-(no yolo flag)}"
       done ;;
     name) shift; _glyph_compose "${1:-}" "$(_glyph_project "$PWD")" ;;
+    mark)
+      # Name a session that is already open. Sets everything glyph can still
+      # reach from outside the agent, and prints the one line only the agent
+      # itself can run.
+      shift
+      local mklabel=${1:-} mkagent=${2:-} mkmark mksf mkcur
+      [[ -n $mkagent ]] || mkagent=$(_glyph_current_agent) || mkagent=""
+      mkmark=$(_glyph_compose "$mklabel" "$(_glyph_project "$PWD")" "$mkagent")
+      if [[ -n ${GLYPH_DRYRUN:-} ]]; then
+        print -r -- "$mkmark"
+        print -r -- "  dry run: nothing set, nothing recorded"
+        return 0
+      fi
+      _glyph_title "$mkmark"
+      print -r -- "$mkmark"
+      [[ $GLYPH_TITLE_DID == *terminal* ]] && print -r -- "  set the terminal title"
+      [[ $GLYPH_TITLE_DID == *tmux* ]]     && print -r -- "  renamed the tmux window"
+      [[ -n ${TMUX:-} ]] && command tmux set-option -p @label "$mkmark" >/dev/null 2>&1
+      _glyph_log "mark" "$mkmark"
+      [[ ${GLYPH_LOG:-1} == 1 ]] && print -r -- "  recorded it in glyph ls"
+      if mksf=$(_glyph_claude_session); then
+        mkcur=$(_glyph_session_field "$mksf" name)
+        print -r -- ""
+        print -r -- "this Claude session is still called '${mkcur:-unnamed}'"
+      fi
+      print -r -- ""
+      print -r -- "an agent can only rename itself. paste this into it:"
+      print -r -- "  /rename $mkmark" ;;
     version) print -r -- "glyph ${GLYPH_VERSION}" ;;
     update)
       local dest=${XDG_CONFIG_HOME:-$HOME/.config}/glyph/glyph.zsh
@@ -269,6 +330,7 @@ glyph() {
     *) print -r -- "glyph ls [n]   recent sessions
 glyph agents   installed agents and their auto-approve flags
 glyph name [x] print the mark this directory would produce
+glyph mark [x] name a session that is already open, as far as glyph can reach
 glyph fleet init create example fleets without replacing existing presets
 glyph fleet [p] launch a preset of agents, each in its own marked tmux pane
 glyph presets  list the presets in ~/.config/glyph/fleet.conf

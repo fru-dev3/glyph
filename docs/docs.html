@@ -151,7 +151,7 @@ footer .sp{margin-left:auto}
 </div></nav>
 
 <div class="wrap"><div class="layout">
-<nav class="toc"><strong>Docs</strong><a href="#start">Getting started</a><a href="#name">How a name is built</a><a href="#launch">Launching agents</a><a href="#yolo">Auto-approve</a><a href="#agents">Agents</a><a href="#fleet">Fleet</a><a href="#remote">Remote agents</a><a href="#backends">Workspace backends</a><a href="#commands">Command reference</a><a href="#config">Configuration</a><a href="#update">Updating</a><a href="#trouble">Troubleshooting</a><a href="#uninstall">Uninstall</a></nav>
+<nav class="toc"><strong>Docs</strong><a href="#start">Getting started</a><a href="#name">How a name is built</a><a href="#launch">Launching agents</a><a href="#already">Sessions already open</a><a href="#yolo">Auto-approve</a><a href="#agents">Agents</a><a href="#fleet">Fleet</a><a href="#remote">Remote agents</a><a href="#backends">Workspace backends</a><a href="#commands">Command reference</a><a href="#config">Configuration</a><a href="#update">Updating</a><a href="#trouble">Troubleshooting</a><a href="#uninstall">Uninstall</a></nav>
 <main>
 
 <h1>Docs</h1>
@@ -196,6 +196,27 @@ Everything it can do is on this page.</p>
 <h3>See what you have running</h3>
 <div class="bar"><span class="p">$</span><code id="l3">glyph ls<br>glyph ls 50</code><button data-copy="l3" type="button">Copy</button></div>
 
+<h2 id="already">Sessions already open</h2>
+<p>Glyph names a session from argv, so a session you started without it never got a name.
+<code>glyph mark</code> applies everything Glyph can still reach from outside the agent, and
+prints the one line only the agent itself can run.</p>
+<div class="bar"><span class="p">$</span><code id="mk1">glyph mark hotfix</code><button data-copy="mk1" type="button">Copy</button></div>
+<div class="mark"><b>hotfix</b>&middot;acme-api&middot;claude-code&middot;mbp&middot;2026-09-12&middot;2107<br>
+<span class="dim">&nbsp;&nbsp;set the terminal title</span><br>
+<span class="dim">&nbsp;&nbsp;renamed the tmux window</span><br>
+<span class="dim">&nbsp;&nbsp;recorded it in glyph ls</span><br><br>
+<span class="dim">this Claude session is still called 'fru-3e'</span><br><br>
+<span class="dim">an agent can only rename itself. paste this into it:</span><br>
+&nbsp;&nbsp;/rename <b>hotfix</b>&middot;acme-api&middot;claude-code&middot;mbp&middot;2026-09-12&middot;2107</div>
+<p class="note">It reports only the surfaces it actually reached. No terminal, no tmux, or
+<code>GLYPH_TITLE=0</code> and the matching line is simply absent.</p>
+<h3>What it cannot do</h3>
+<div class="tw"><table><thead><tr><th>Surface</th><th>After launch</th></tr></thead><tbody><tr><td><b>Terminal title</b></td><td><span class="dim">Yes. Written straight to <code>/dev/tty</code>, so it never lands in a pipe.</span></td></tr><tr><td><b>tmux window and pane label</b></td><td><span class="dim">Yes.</span></td></tr><tr><td><b><code>glyph ls</code> registry</b></td><td><span class="dim">Yes, recorded as a <code>mark</code> row.</span></td></tr><tr><td><b>The agent's own session name</b></td><td><span class="dim">Only from inside it. Glyph prints the <code>/rename</code> line to paste.</span></td></tr><tr><td><b>Remote Control bridge</b></td><td><span class="dim">No. The bridge is opened at launch or not at all, so a session started without it will not reach your phone.</span></td></tr></tbody></table></div>
+<p>Inside Claude Code it detects the agent from <code>CLAUDECODE</code> and reads the live session
+name out of <code>~/.claude/sessions/&lt;pid&gt;.json</code>, so you can see what the session is
+called before you change it. For any other agent, name it yourself:</p>
+<div class="bar"><span class="p">$</span><code id="mk2">glyph mark audit codex</code><button data-copy="mk2" type="button">Copy</button></div>
+
 <h2 id="yolo">Auto-approve</h2>
 <p>Every agent has a flag meaning "stop asking me to approve each tool call", and they all spell it differently. <code>GLYPH_YOLO=1</code> sends whichever one is right for the agent you are launching.</p>
 <div class="bar"><span class="p">$</span><code id="y1">GLYPH_YOLO=1 codex audit<br># runs: codex --dangerously-bypass-approvals-and-sandbox</code><button data-copy="y1" type="button">Copy</button></div>
@@ -238,7 +259,7 @@ Everything it can do is on this page.</p>
 <div class="bar"><span class="p">$</span><code id="b1">GLYPH_FLEET_BACKEND=herdr glyph fleet ci</code><button data-copy="b1" type="button">Copy</button></div><p class="note">Glyph is not tied to any one workspace tool. With none running, Fleet falls back to tmux.</p>
 
 <h2 id="commands">Command reference</h2>
-<div class="tw"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody><tr><td><code>glyph name [label]</code></td><td><span class="dim">Print the session name this directory would produce. Nothing is launched.</span></td></tr><tr><td><code>glyph ls [n]</code></td><td><span class="dim">The last n recorded sessions (default 20): time, agent, name, machine.</span></td></tr><tr><td><code>glyph agents</code></td><td><span class="dim">Every agent found on your PATH, its label, and its auto-approve flag.</span></td></tr><tr><td><code>glyph hosts</code></td><td><span class="dim">Machines you can put after a colon in a Fleet slot: SSH config entries, then tailnet peers.</span></td></tr><tr><td><code>glyph presets</code></td><td><span class="dim">The Fleet presets currently defined.</span></td></tr><tr><td><code>glyph fleet init</code></td><td><span class="dim">Write the example presets, keeping any you already have. Safe to re-run.</span></td></tr><tr><td><code>glyph fleet &lt;preset&gt;</code></td><td><span class="dim">Launch a preset, one marked pane per slot.</span></td></tr><tr><td><code>glyph fleet &lt;agent&gt; [&lt;agent&gt;...]</code></td><td><span class="dim">Launch an ad-hoc fleet without defining a preset first.</span></td></tr><tr><td><code>glyph update</code></td><td><span class="dim">Fetch the latest glyph.zsh from GitHub.</span></td></tr><tr><td><code>glyph version</code></td><td><span class="dim">The installed version.</span></td></tr></tbody></table></div>
+<div class="tw"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody><tr><td><code>glyph name [label]</code></td><td><span class="dim">Print the session name this directory would produce. Nothing is launched.</span></td></tr><tr><td><code>glyph mark [label] [agent]</code></td><td><span class="dim">Name a session that is already open: terminal title, tmux, registry, and the <code>/rename</code> line to paste.</span></td></tr><tr><td><code>glyph ls [n]</code></td><td><span class="dim">The last n recorded sessions (default 20): time, agent, name, machine.</span></td></tr><tr><td><code>glyph agents</code></td><td><span class="dim">Every agent found on your PATH, its label, and its auto-approve flag.</span></td></tr><tr><td><code>glyph hosts</code></td><td><span class="dim">Machines you can put after a colon in a Fleet slot: SSH config entries, then tailnet peers.</span></td></tr><tr><td><code>glyph presets</code></td><td><span class="dim">The Fleet presets currently defined.</span></td></tr><tr><td><code>glyph fleet init</code></td><td><span class="dim">Write the example presets, keeping any you already have. Safe to re-run.</span></td></tr><tr><td><code>glyph fleet &lt;preset&gt;</code></td><td><span class="dim">Launch a preset, one marked pane per slot.</span></td></tr><tr><td><code>glyph fleet &lt;agent&gt; [&lt;agent&gt;...]</code></td><td><span class="dim">Launch an ad-hoc fleet without defining a preset first.</span></td></tr><tr><td><code>glyph update</code></td><td><span class="dim">Fetch the latest glyph.zsh from GitHub.</span></td></tr><tr><td><code>glyph version</code></td><td><span class="dim">The installed version.</span></td></tr></tbody></table></div>
 
 <h2 id="config">Configuration</h2>
 <h3>Behaviour</h3>

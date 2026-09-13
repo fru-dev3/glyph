@@ -58,7 +58,7 @@ automatically:
 - on every machine, with the machine baked into the name
 - with no step to forget and nothing to tidy up afterwards
 
-It matters most when panes stop being distinguishable — several agents at once,
+It matters most when panes stop being distinguishable: several agents at once,
 or [tmux](https://github.com/tmux/tmux), [herdr](https://herdr.dev) and
 [workmux](https://github.com/raine/workmux) grids where every pane is a
 lookalike shell.
@@ -100,7 +100,7 @@ Open claude.ai/code or the phone app and that name is what you see in the list.
 ### Antigravity
 
 `agy` has no session-name flag, so the label does not go into the command at
-all — it goes on the terminal title, the tmux window and `glyph ls`:
+all. It goes on the terminal title, the tmux window and `glyph ls`:
 
 ```sh
 agy migration
@@ -148,10 +148,33 @@ codex "refactor auth"
 # a phrase is a prompt, so only the project is marked
 ```
 
+### A session that is already open
+
+Glyph names a session from argv, so one you started without it never got a
+name. `glyph mark` applies everything Glyph can still reach from outside the
+agent, and prints the one line only the agent itself can run:
+
+```sh
+glyph mark hotfix
+# hotfix·acme-api·claude-code·mbp·2026-09-12·2107
+#   set the terminal title
+#   renamed the tmux window
+#   recorded it in glyph ls
+#
+# this Claude session is still called 'fru-3e'
+#
+# an agent can only rename itself. paste this into it:
+#   /rename hotfix·acme-api·claude-code·mbp·2026-09-12·2107
+```
+
+It reports only the surfaces it actually reached. The Remote Control bridge is
+the one thing it cannot add: that is opened at launch or not at all.
+
 ### Everything else
 
 ```sh
 glyph ls        # recent sessions: when, agent, mark, machine
+glyph mark x    # name a session that is already open
 glyph agents    # what is installed, and each one's auto-approve flag
 glyph name x    # print the mark this directory would produce
 glyph fleet ci  # a preset of agents, each in its own marked pane
@@ -164,12 +187,12 @@ glyph fleet ci  # a preset of agents, each in its own marked pane
 | Claude Code | ✔ real session name | `--dangerously-skip-permissions` |
 | Antigravity (`agy`) | title | `--dangerously-skip-permissions` |
 | Hermes | title | `--yolo` |
-| omni | title | — |
+| omni | title | none |
 | Codex | title | `--dangerously-bypass-approvals-and-sandbox` |
 | Cursor | title | `--force` |
 | Crush | title | `--yolo` |
 | Cortex | title | `--dangerously-allow-all-tool-calls` |
-| OpenCode · pi | title | — |
+| OpenCode · pi | title | none |
 
 Six agents, five spellings of *"stop asking me to approve every tool call"*.
 `GLYPH_YOLO=1` sends whichever one is right. It is off unless you ask.
@@ -187,7 +210,7 @@ Refuses to install a file that does not parse, backs up the previous copy to
 
 ## Adding an agent
 
-Any CLI, without waiting for a release — one tab-separated line per agent in
+Any CLI, without waiting for a release. One tab-separated line per agent in
 `~/.config/glyph/agents.tsv`:
 
 ```
@@ -232,16 +255,16 @@ its own flags and its own mark.
 `glyph hosts` lists everything you can put after the colon. A machine name
 resolves in this order:
 
-1. **SSH config** — a `Host` entry in `~/.ssh/config` always wins
-2. **known_hosts** — a name SSH already trusts, so the pane never stalls on a
+1. **SSH config**: a `Host` entry in `~/.ssh/config` always wins
+2. **known_hosts**: a name SSH already trusts, so the pane never stalls on a
    fingerprint prompt
-3. **Tailscale** — a short machine name is expanded to its MagicDNS name
-4. **Literal** — anything else (`user@10.0.0.5`) goes to SSH untouched
+3. **Tailscale**: a short machine name is expanded to its MagicDNS name
+4. **Literal**: anything else (`user@10.0.0.5`) goes to SSH untouched
 
 Tailscale is optional and detected automatically. Accept a new host's key by
 hand once (`ssh mini`) before using it in a fleet.
 
-Remote slots work on **every** backend — Herdr, tmux, cmux, Zellij, WezTerm —
+Remote slots work on **every** backend (Herdr, tmux, cmux, Zellij, WezTerm)
 because they all build the same SSH command. Glyph is not tied to any one
 workspace tool; with none running, Fleet falls back to tmux.
 
@@ -298,7 +321,7 @@ argv. Plugins and `SessionStart` hooks run after that and cannot set it.
 Two things that cost real debugging time:
 
 - Claude Code's `--remote-control <name>` opens the bridge but does **not** name
-  the session — it comes back as `nameSource: "derived"`. Only `-n` sets it, so
+  the session. It comes back as `nameSource: "derived"`. Only `-n` sets it, so
   glyph passes both. To see a session's real name, read
   `~/.claude/sessions/<pid>.json`; the startup banner shows neither.
 - In zsh, `argv` **is** `$@`. Declaring `local -a argv` in a function silently
