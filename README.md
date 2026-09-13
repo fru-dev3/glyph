@@ -163,17 +163,19 @@ agent, and prints the one line only the agent itself can run:
 glyph mark hotfix
 # hotfix·acme-api·claude-code·mbp·2026-09-12·2107
 #   set the terminal title
-#   renamed the tmux window
+#   renamed the Herdr pane
 #   recorded it in glyph ls
 #
 # this Claude session is still called 'fru-3e'
 #
 # an agent can only rename itself. paste this into it:
 #   /rename hotfix·acme-api·claude-code·mbp·2026-09-12·2107
+#   /remote-control
 ```
 
-It reports only the surfaces it actually reached. The Remote Control bridge is
-the one thing it cannot add: that is opened at launch or not at all.
+It reports only the surfaces it actually reached. Remote Control cannot be
+switched on from outside the session, but Claude Code can do it from inside with
+`/remote-control`, so Glyph offers that line whenever the bridge is off.
 
 ### Everything else
 

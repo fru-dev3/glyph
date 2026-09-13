@@ -203,15 +203,24 @@ prints the one line only the agent itself can run.</p>
 <div class="bar"><span class="p">$</span><code id="mk1">glyph mark hotfix</code><button data-copy="mk1" type="button">Copy</button></div>
 <div class="mark"><b>hotfix</b>&middot;acme-api&middot;claude-code&middot;mbp&middot;2026-09-12&middot;2107<br>
 <span class="dim">&nbsp;&nbsp;set the terminal title</span><br>
-<span class="dim">&nbsp;&nbsp;renamed the tmux window</span><br>
+<span class="dim">&nbsp;&nbsp;renamed the Herdr pane</span><br>
 <span class="dim">&nbsp;&nbsp;recorded it in glyph ls</span><br><br>
 <span class="dim">this Claude session is still called 'fru-3e'</span><br><br>
 <span class="dim">an agent can only rename itself. paste this into it:</span><br>
-&nbsp;&nbsp;/rename <b>hotfix</b>&middot;acme-api&middot;claude-code&middot;mbp&middot;2026-09-12&middot;2107</div>
-<p class="note">It reports only the surfaces it actually reached. No terminal, no tmux, or
+&nbsp;&nbsp;/rename <b>hotfix</b>&middot;acme-api&middot;claude-code&middot;mbp&middot;2026-09-12&middot;2107<br>
+&nbsp;&nbsp;/remote-control</div>
+<p class="note">It reports only the surfaces it actually reached. No terminal, no tmux, no Herdr, or
 <code>GLYPH_TITLE=0</code> and the matching line is simply absent.</p>
+<h3>Inside Herdr</h3>
+<p>Herdr sets no <code>TMUX</code>, so the tmux path never applies there. Glyph renames the
+Herdr pane instead, through <code>herdr pane rename</code>. That label belongs to Herdr, which
+is the point: an agent cannot overwrite it with its own terminal title, and Codex and AGY both
+do exactly that a second after they start.</p>
+<p class="note">This applies to normal launches too, not just <code>glyph mark</code>. In plain
+tmux Glyph now also turns off <code>allow-rename</code> and <code>automatic-rename</code> on the
+window, for the same reason.</p>
 <h3>What it cannot do</h3>
-<div class="tw"><table><thead><tr><th>Surface</th><th>After launch</th></tr></thead><tbody><tr><td><b>Terminal title</b></td><td><span class="dim">Yes. Written straight to <code>/dev/tty</code>, so it never lands in a pipe.</span></td></tr><tr><td><b>tmux window and pane label</b></td><td><span class="dim">Yes.</span></td></tr><tr><td><b><code>glyph ls</code> registry</b></td><td><span class="dim">Yes, recorded as a <code>mark</code> row.</span></td></tr><tr><td><b>The agent's own session name</b></td><td><span class="dim">Only from inside it. Glyph prints the <code>/rename</code> line to paste.</span></td></tr><tr><td><b>Remote Control bridge</b></td><td><span class="dim">No. The bridge is opened at launch or not at all, so a session started without it will not reach your phone.</span></td></tr></tbody></table></div>
+<div class="tw"><table><thead><tr><th>Surface</th><th>After launch</th></tr></thead><tbody><tr><td><b>Terminal title</b></td><td><span class="dim">Yes. Written straight to <code>/dev/tty</code>, so it never lands in a pipe.</span></td></tr><tr><td><b>tmux window and pane label</b></td><td><span class="dim">Yes.</span></td></tr><tr><td><b><code>glyph ls</code> registry</b></td><td><span class="dim">Yes, recorded as a <code>mark</code> row.</span></td></tr><tr><td><b>The agent's own session name</b></td><td><span class="dim">Only from inside it. Glyph prints the <code>/rename</code> line to paste.</span></td></tr><tr><td><b>Remote Control bridge</b></td><td><span class="dim">Not from outside, but Claude Code can switch it on from inside with <code>/remote-control</code>. Glyph reads <code>bridgeSessionId</code> and offers that line only when the bridge is actually off.</span></td></tr></tbody></table></div>
 <p>Inside Claude Code it detects the agent from <code>CLAUDECODE</code> and reads the live session
 name out of <code>~/.claude/sessions/&lt;pid&gt;.json</code>, so you can see what the session is
 called before you change it. For any other agent, name it yourself:</p>

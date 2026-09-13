@@ -31,7 +31,7 @@
 
 # The version belongs to this file, not the environment: an in-place reload
 # after `glyph update` must report the file it just loaded.
-typeset -g GLYPH_VERSION=0.4.0
+typeset -g GLYPH_VERSION=0.4.1
 typeset -g GLYPH_STATE=${GLYPH_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/glyph}
 
 # --- agent adapters ---------------------------------------------------------
@@ -146,8 +146,21 @@ _glyph_title() {
   # the "device not configured" error quiet when there is no terminal at all.
   ( printf '\033]2;%s\007\033]1;%s\007' "$1" "$1" > /dev/tty ) 2>/dev/null \
     && GLYPH_TITLE_DID="terminal"
-  [[ -n ${TMUX:-} ]] && command tmux rename-window "$1" 2>/dev/null \
-    && GLYPH_TITLE_DID="${GLYPH_TITLE_DID:+$GLYPH_TITLE_DID }tmux"
+  # Herdr sets no TMUX, so the tmux branch below never fires inside it. Its own
+  # pane label is the only surface an agent cannot overwrite with an OSC title,
+  # which is why codex and agy showed nothing here before.
+  if [[ -n ${HERDR_PANE_ID:-} ]] && command -v herdr >/dev/null 2>&1; then
+    command herdr pane rename "$HERDR_PANE_ID" "$1" >/dev/null 2>&1 \
+      && GLYPH_TITLE_DID="${GLYPH_TITLE_DID:+$GLYPH_TITLE_DID }herdr"
+  fi
+  if [[ -n ${TMUX:-} ]]; then
+    # Without these two, the agent's own OSC title renames the window straight
+    # back and the name we just set lasts about a second.
+    command tmux set-window-option allow-rename off >/dev/null 2>&1
+    command tmux set-window-option automatic-rename off >/dev/null 2>&1
+    command tmux rename-window "$1" 2>/dev/null \
+      && GLYPH_TITLE_DID="${GLYPH_TITLE_DID:+$GLYPH_TITLE_DID }tmux"
+  fi
   [[ -n $GLYPH_TITLE_DID ]]
 }
 
@@ -274,18 +287,28 @@ glyph() {
       _glyph_title "$mkmark"
       print -r -- "$mkmark"
       [[ $GLYPH_TITLE_DID == *terminal* ]] && print -r -- "  set the terminal title"
+      [[ $GLYPH_TITLE_DID == *herdr* ]]    && print -r -- "  renamed the Herdr pane"
       [[ $GLYPH_TITLE_DID == *tmux* ]]     && print -r -- "  renamed the tmux window"
       [[ -n ${TMUX:-} ]] && command tmux set-option -p @label "$mkmark" >/dev/null 2>&1
       _glyph_log "mark" "$mkmark"
       [[ ${GLYPH_LOG:-1} == 1 ]] && print -r -- "  recorded it in glyph ls"
+      local mkbridge=""
       if mksf=$(_glyph_claude_session); then
         mkcur=$(_glyph_session_field "$mksf" name)
+        # A quoted id means the bridge is up; `null` leaves this empty.
+        mkbridge=$(_glyph_session_field "$mksf" bridgeSessionId)
         print -r -- ""
         print -r -- "this Claude session is still called '${mkcur:-unnamed}'"
+        [[ -n $mkbridge ]] && print -r -- "Remote Control is already on"
       fi
       print -r -- ""
       print -r -- "an agent can only rename itself. paste this into it:"
-      print -r -- "  /rename $mkmark" ;;
+      print -r -- "  /rename $mkmark"
+      if [[ -n $mksf && -z $mkbridge ]]; then
+        print -r -- "  /remote-control"
+        print -r -- "    (the second one turns on Remote Control, which a launch"
+        print -r -- "     would have done for you. it cannot be set from out here.)"
+      fi ;;
     version) print -r -- "glyph ${GLYPH_VERSION}" ;;
     update)
       local dest=${XDG_CONFIG_HOME:-$HOME/.config}/glyph/glyph.zsh
