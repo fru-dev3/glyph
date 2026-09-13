@@ -88,16 +88,16 @@ nav .wrap{display:flex;align-items:center;gap:10px}
 .rl:last-child{border-bottom:0}
 .rl svg{width:29px;height:29px;fill:none;stroke:var(--faint);stroke-width:6;
   stroke-linecap:round;stroke-linejoin:round;opacity:.45;
-  animation:railglow 11s ease-in-out infinite;animation-delay:calc(var(--i) * 1.15s)}
+  animation:railglow 4.8s ease-in-out infinite;animation-delay:calc(var(--i) * .6s)}
 .rl::before{content:"";position:absolute;inset:0;background:var(--gold);opacity:0;
-  animation:railwash 11s ease-in-out infinite;animation-delay:calc(var(--i) * 1.15s)}
+  animation:railwash 4.8s ease-in-out infinite;animation-delay:calc(var(--i) * .6s)}
 .rl u{position:absolute;right:5px;bottom:3px;text-decoration:none;
   font:8px var(--mono);letter-spacing:.08em;color:var(--faint);opacity:.45;
-  animation:railnum 11s ease-in-out infinite;animation-delay:calc(var(--i) * 1.15s)}
-@keyframes railglow{0%,62%,100%{opacity:.42;stroke:var(--faint)}
-  72%,80%{opacity:1;stroke:var(--gold)}}
-@keyframes railwash{0%,62%,100%{opacity:0}72%,80%{opacity:.05}}
-@keyframes railnum{0%,62%,100%{opacity:.45;color:var(--faint)}72%,80%{opacity:1;color:var(--gold)}}
+  animation:railnum 4.8s ease-in-out infinite;animation-delay:calc(var(--i) * .6s)}
+@keyframes railglow{0%,55%,100%{opacity:.42;stroke:var(--faint)}
+  68%,80%{opacity:1;stroke:var(--gold)}}
+@keyframes railwash{0%,55%,100%{opacity:0}68%,80%{opacity:.06}}
+@keyframes railnum{0%,55%,100%{opacity:.45;color:var(--faint)}68%,80%{opacity:1;color:var(--gold)}}
 @media(min-width:1240px){.rail{display:flex}
   .wrap{padding-left:126px}
   .start .wrap,footer{padding-right:126px}}
