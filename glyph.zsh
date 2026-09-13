@@ -31,7 +31,7 @@
 
 # The version belongs to this file, not the environment: an in-place reload
 # after `glyph update` must report the file it just loaded.
-typeset -g GLYPH_VERSION=0.5.0
+typeset -g GLYPH_VERSION=0.6.0
 typeset -g GLYPH_STATE=${GLYPH_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/glyph}
 
 # --- agent adapters ---------------------------------------------------------
@@ -263,6 +263,228 @@ done
 unset _g_agent
 
 # glyph itself: a tiny front door.
+# ---- usage: what is left, and when it comes back -------------------------
+# Codex writes its own rate limits to disk, so that part is exact and free.
+# Claude does not: token counts here are read back out of the transcripts,
+# and the real quota needs --live. Nothing is guessed.
+
+_glyph_bar() {
+  local p=${1%%.*} i n out=""
+  (( p < 0 )) && p=0; (( p > 100 )) && p=100
+  n=$(( (p * 16 + 50) / 100 ))
+  for (( i = 0; i < 16; i++ )); do (( i < n )) && out+="█" || out+="░"; done
+  print -rn -- "$out"
+}
+_glyph_dur() {
+  local s=$1
+  (( s <= 0 )) && { print -rn -- "now"; return }
+  local d=$(( s / 86400 )) h=$(( (s % 86400) / 3600 )) m=$(( (s % 3600) / 60 ))
+  if (( d )); then print -rn -- "${d}d ${h}h"
+  elif (( h )); then print -rn -- "${h}h ${m}m"
+  else print -rn -- "${m}m"; fi
+}
+_glyph_n() {
+  local n=$1
+  if   (( n >= 1000000000 )); then printf '%.1fG' $(( n / 1000000000.0 ))
+  elif (( n >= 1000000 ));    then printf '%.1fM' $(( n / 1000000.0 ))
+  elif (( n >= 1000 ));       then printf '%.0fk' $(( n / 1000.0 ))
+  else printf '%d' $n; fi
+}
+_glyph_win_name() {
+  case $1 in
+    300) print -rn -- "5h" ;; 10080) print -rn -- "weekly" ;; 1440) print -rn -- "daily" ;;
+    "")  print -rn -- "?" ;;
+    *)   if (( $1 % 1440 == 0 )); then print -rn -- "$(( $1 / 1440 ))d"
+         else print -rn -- "$(( $1 / 60 ))h"; fi ;;
+  esac
+}
+
+_glyph_codex_line() {
+  local f l
+  for f in $(command ls -t ~/.codex/sessions/**/*.jsonl(N) 2>/dev/null | head -40); do
+    l=$(command grep '"rate_limits"' "$f" 2>/dev/null | tail -1)
+    [[ -n $l ]] && { print -r -- "$l"; return 0 }
+  done
+  return 1
+}
+_glyph_codex_window() {
+  local blk=$(print -r -- "$1" | command sed -n "s/.*\"$2\":{\([^}]*\)}.*/\1/p")
+  [[ -n $blk ]] || return 1
+  local pct=$(print -r -- "$blk" | command sed -n 's/.*"used_percent":\([0-9.]*\).*/\1/p')
+  local win=$(print -r -- "$blk" | command sed -n 's/.*"window_minutes":\([0-9]*\).*/\1/p')
+  local rst=$(print -r -- "$blk" | command sed -n 's/.*"resets_at":\([0-9]*\).*/\1/p')
+  [[ -n $pct ]] || return 1
+  print -r -- "$pct|$win|$rst"
+}
+
+# Both windows in one pass. grep does the heavy lifting: it drops 690MB of
+# transcript to the ~28k lines that carry a token count before awk sees any
+# of it, which is the difference between 40 seconds and 6. Cached either way.
+_glyph_claude_scan() {
+  local cache=$GLYPH_STATE/usage.cache ttl=${GLYPH_USAGE_TTL:-600} now=$(command date +%s)
+  if [[ -r $cache ]]; then
+    local stamp=$(command head -1 "$cache" 2>/dev/null)
+    [[ $stamp == <-> ]] && (( now - stamp < ttl )) && { command tail -n +2 "$cache"; return 0 }
+  fi
+  local files=(~/.claude/projects/*/*.jsonl(Nm-7))
+  (( $#files )) || { print -r -- "5h 0 0 0 0"; print -r -- "7d 0 0 0 0"; return 0 }
+  [[ -t 2 ]] && print -ru2 -- "glyph: reading $#files transcripts, a few seconds..."
+  local c5=$(command date -u -v-5H +%Y-%m-%dT%H:%M:%S 2>/dev/null || command date -u -d '5 hours ago' +%Y-%m-%dT%H:%M:%S)
+  local c7=$(command date -u -v-7d +%Y-%m-%dT%H:%M:%S 2>/dev/null || command date -u -d '7 days ago' +%Y-%m-%dT%H:%M:%S)
+  local out
+  out=$(LC_ALL=C command grep -h '"output_tokens":' $files 2>/dev/null | LC_ALL=C command awk -v c5="$c5" -v c7="$c7" '
+    { if (!match($0,/"timestamp":"[^"]+"/)) next
+      ts=substr($0,RSTART+13,RLENGTH-14); if (ts<c7) next
+      i=o=cr=cw=0
+      if (match($0,/"input_tokens":[0-9]+/))                 i=substr($0,RSTART+15,RLENGTH-15)
+      if (match($0,/"output_tokens":[0-9]+/))                o=substr($0,RSTART+16,RLENGTH-16)
+      if (match($0,/"cache_read_input_tokens":[0-9]+/))     cr=substr($0,RSTART+26,RLENGTH-26)
+      if (match($0,/"cache_creation_input_tokens":[0-9]+/)) cw=substr($0,RSTART+30,RLENGTH-30)
+      if (i+o+cr+cw==0) next
+      I7+=i;O7+=o;C7+=cr+cw;n7++
+      if (ts>=c5){I5+=i;O5+=o;C5+=cr+cw;n5++} }
+    END{printf "5h %d %d %d %d\n7d %d %d %d %d\n",I5,O5,C5,n5,I7,O7,C7,n7}')
+  [[ -n $out ]] || { print -r -- "5h 0 0 0 0"; print -r -- "7d 0 0 0 0"; return 0 }
+  if command mkdir -p "$GLYPH_STATE" 2>/dev/null; then
+    { print -r -- "$now"; print -r -- "$out" } > "$cache" 2>/dev/null
+  fi
+  print -r -- "$out"
+}
+
+# The real quota, from the same endpoint Claude Code itself calls. Opt-in:
+# the only part of glyph that touches the network.
+_glyph_claude_live() {
+  local blob at host out
+  blob=$(command security find-generic-password -s "Claude Code-credentials" -w 2>/dev/null) || return 1
+  at=$(print -r -- "$blob" | command sed -n 's/.*"accessToken":"\([^"]*\)".*/\1/p')
+  [[ -n $at ]] || return 1
+  for host in ${GLYPH_CLAUDE_API:-https://api.anthropic.com} https://code.claude.com; do
+    out=$(command curl -fsS --max-time 12 -H "Authorization: Bearer $at" \
+      -H "anthropic-beta: oauth-2025-04-20" \
+      "$host/api/oauth/usage?at_wall=1&skip_spend=1" 2>/dev/null) || continue
+    [[ -n $out ]] && { print -r -- "$out"; return 0 }
+  done
+  return 1
+}
+
+glyph-usage() {
+  emulate -L zsh
+  setopt local_options no_nomatch
+  local want="" live=0 asjson=0 a
+  for a in "$@"; do
+    case $a in
+      --live) live=1 ;;
+      --json) asjson=1 ;;
+      --refresh) command rm -f "$GLYPH_STATE/usage.cache" 2>/dev/null ;;
+      claude|codex|agy) want=$a ;;
+      *) print -ru2 -- "glyph usage [claude|codex|agy] [--live] [--json] [--refresh]"; return 1 ;;
+    esac
+  done
+  local now=$(command date +%s)
+  local cline=$(_glyph_codex_line) cprim="" csec="" cplan="" ctot=""
+  if [[ -n $cline ]]; then
+    cprim=$(_glyph_codex_window "$cline" primary)
+    csec=$(_glyph_codex_window "$cline" secondary)
+    cplan=$(print -r -- "$cline" | command sed -n 's/.*"plan_type":"\([^"]*\)".*/\1/p')
+    ctot=$(print -r -- "$cline" | command sed -n 's/.*"total_token_usage":{[^}]*"total_tokens":\([0-9]*\).*/\1/p')
+  fi
+  local scan=("${(@f)$(_glyph_claude_scan)}")
+  local t5=(${=scan[1]}) t7=(${=scan[2]})
+
+  if (( asjson )); then
+    print -r -- "{\"codex\":{\"plan\":\"${cplan}\",\"primary\":\"${cprim}\",\"secondary\":\"${csec}\",\"total_tokens\":${ctot:-0}},"
+    print -r -- " \"claude\":{\"h5\":{\"in\":${t5[2]:-0},\"out\":${t5[3]:-0},\"cache\":${t5[4]:-0},\"calls\":${t5[5]:-0}},"
+    print -r -- "            \"d7\":{\"in\":${t7[2]:-0},\"out\":${t7[3]:-0},\"cache\":${t7[4]:-0},\"calls\":${t7[5]:-0}}},"
+    print -r -- " \"agy\":null}"
+    return 0
+  fi
+
+  local w pct win rst
+  if [[ $want == codex ]]; then
+    print -r -- "codex"
+    [[ -n $cline ]] || { print -r -- "  no rate limit record in ~/.codex/sessions yet"; return 0 }
+    print -r -- "  plan            ${cplan:-unknown}"
+    for w in "$cprim" "$csec"; do
+      [[ -n $w ]] || continue
+      pct=${w%%|*}; rst=${w##*|}; win=${${w#*|}%%|*}
+      print -r -- ""
+      print -r -- "  window          $(_glyph_win_name $win)  (${win}m)"
+      print -r -- "  used            $(_glyph_bar $pct)  ${pct}%"
+      print -r -- "  resets in       $(_glyph_dur $(( rst - now )))  ($(command date -r $rst '+%a %d %b %H:%M' 2>/dev/null))"
+    done
+    local cred=$(print -r -- "$cline" | command sed -n 's/.*"balance":"\([^"]*\)".*/\1/p')
+    print -r -- ""
+    [[ -n $cred ]] && print -r -- "  credits         $cred"
+    [[ -n $ctot ]] && print -r -- "  session tokens  $(_glyph_n $ctot)"
+    return 0
+  fi
+
+  if [[ $want == agy ]]; then
+    print -r -- "agy"
+    print -r -- "  Antigravity exposes no quota. No token counts in its transcripts,"
+    print -r -- "  no usage flag on the CLI. Nothing to read, so nothing is guessed."
+    return 0
+  fi
+
+  if [[ $want == claude ]]; then
+    print -r -- "claude"
+    local lbl t
+    for lbl in 5h 7d; do
+      [[ $lbl == 5h ]] && t=($t5) || t=($t7)
+      print -r -- ""
+      print -r -- "  window          $lbl"
+      print -r -- "  calls           ${t[5]:-0}"
+      print -r -- "  input           $(_glyph_n ${t[2]:-0})"
+      print -r -- "  output          $(_glyph_n ${t[3]:-0})"
+      print -r -- "  cache           $(_glyph_n ${t[4]:-0})"
+    done
+    print -r -- ""
+    if (( live )); then
+      local j=$(_glyph_claude_live)
+      if [[ -n $j ]]; then print -r -- "  quota  $j"
+      else print -r -- "  quota  unavailable: not signed in, offline, or the endpoint moved"; fi
+    else
+      print -r -- "  Counts are what your transcripts recorded, not what you are billed."
+      print -r -- "  Where each window starts and ends is decided server side and is never"
+      print -r -- "  written to disk, so glyph will not guess it. Add --live for the real"
+      print -r -- "  percentages and reset times."
+    fi
+    return 0
+  fi
+
+  print -r -- "glyph usage"
+  print -r -- ""
+  if [[ -n $cprim ]]; then
+    for w in "$cprim" "$csec"; do
+      [[ -n $w ]] || continue
+      pct=${w%%|*}; rst=${w##*|}; win=${${w#*|}%%|*}
+      printf "  %-7s %-6s %-7s %s %4s%%  resets in %s\n" \
+        codex "${cplan:--}" "$(_glyph_win_name $win)" "$(_glyph_bar $pct)" "${pct%%.*}" "$(_glyph_dur $(( rst - now )))"
+    done
+  else
+    printf "  %-7s %s\n" codex "no rate limit record in ~/.codex/sessions yet"
+  fi
+  if (( live )); then
+    local j=$(_glyph_claude_live)
+    [[ -n $j ]] && printf "  %-7s %s\n" claude "$j" \
+                || printf "  %-7s %s\n" claude "quota unavailable"
+  else
+    printf "  %-7s %-6s %-7s %s\n" claude "-" "5h/wk" "quota is server side, add --live"
+  fi
+  printf "  %-7s %s\n" agy "not exposed"
+  print -r -- ""
+  print -r -- "  tokens seen locally (transcripts, not billing)"
+  printf "  %-7s %-6s in %-7s out %-8s cache %-8s %s calls\n" \
+    claude 5h "$(_glyph_n ${t5[2]:-0})" "$(_glyph_n ${t5[3]:-0})" "$(_glyph_n ${t5[4]:-0})" "${t5[5]:-0}"
+  printf "  %-7s %-6s in %-7s out %-8s cache %-8s %s calls\n" \
+    ""     7d "$(_glyph_n ${t7[2]:-0})" "$(_glyph_n ${t7[3]:-0})" "$(_glyph_n ${t7[4]:-0})" "${t7[5]:-0}"
+  [[ -n $ctot ]] && printf "  %-7s %-6s %s\n" codex "total" "$(_glyph_n $ctot)"
+  print -r -- ""
+  print -r -- "  glyph usage claude | codex | agy   detail"
+  print -r -- "  glyph usage --live                 real quota from Anthropic"
+  print -r -- "  glyph usage --refresh              rescan now instead of using the cache"
+}
+
 glyph() {
   case ${1:-help} in
     ls|log)
@@ -490,6 +712,7 @@ glyph() {
       fi
       print -r -- "use any of these after a colon, e.g. glyph fleet cloud with codex:mini" ;;
     fleet) shift; glyph-fleet "$@" ;;
+    usage) shift; glyph-usage "$@" ;;
     presets)
       local conf=$(_glyph_fleet_conf)
       [[ -r $conf ]] && command grep -E "^[[:space:]]*[a-zA-Z0-9_-]+[[:space:]]*=" "$conf" \
@@ -501,6 +724,7 @@ glyph mark [x] name a session that is already open, as far as glyph can reach
 glyph mark [x] --send  and type the /rename into the agent for you
 glyph ps       every agent session running right now, named or not
 glyph doctor   check the install and say what is wrong
+glyph usage    tokens and quota across agents [claude|codex|agy] [--live]
 glyph fleet init create example fleets without replacing existing presets
 glyph fleet [p] launch a preset of agents, each in its own marked tmux pane
 glyph presets  list the presets in ~/.config/glyph/fleet.conf
