@@ -181,6 +181,9 @@ switched on from outside the session, but Claude Code can do it from inside with
 
 ```sh
 glyph ls        # recent sessions: when, agent, mark, machine
+glyph ps        # every agent session alive right now, named or not
+glyph usage     # quota and token counts across agents
+glyph doctor    # check the install and say what is wrong
 glyph mark x    # name a session that is already open
 glyph agents    # what is installed, and each one's auto-approve flag
 glyph name x    # print the mark this directory would produce
@@ -259,6 +262,21 @@ Fleet on tmux is one session, one window, one tiled pane per slot. Glyph leaves
 you in the first pane and turns the mouse on for that session so a click moves
 between them (`ctrl-b o` and `ctrl-b` plus an arrow also work). Set
 `GLYPH_FLEET_MOUSE=0` to leave the mouse alone.
+
+### Usage and quota
+
+```sh
+glyph usage           # summary across agents
+glyph usage codex     # both windows, plan, credits
+glyph usage claude    # token counts for 5h and 7d
+glyph usage --live    # the real percentages, from Anthropic
+```
+
+Codex writes its own rate limits to disk, so its 5h and weekly windows are
+exact and offline. Claude does not: token counts come from your transcripts,
+and the quota itself needs `--live`, which reads the Keychain token and asks
+Anthropic. That is the only network request glyph makes besides `glyph update`.
+AGY exposes nothing and is reported as such rather than guessed.
 
 ### Remote agents
 

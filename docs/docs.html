@@ -160,7 +160,7 @@ footer .sp{margin-left:auto}
 </div></nav>
 
 <div class="wrap"><div class="layout">
-<nav class="toc"><strong>Docs</strong><a href="#start">Getting started</a><a href="#name">How a name is built</a><a href="#launch">Launching agents</a><a href="#already">Sessions already open</a><a href="#yolo">Auto-approve</a><a href="#agents">Agents</a><a href="#fleet">Fleet</a><a href="#remote">Remote agents</a><a href="#backends">Workspace backends</a><a href="#commands">Command reference</a><a href="#config">Configuration</a><a href="#update">Updating</a><a href="#trouble">Troubleshooting</a><a href="#uninstall">Uninstall</a></nav>
+<nav class="toc"><strong>Docs</strong><a href="#start">Getting started</a><a href="#name">How a name is built</a><a href="#launch">Launching agents</a><a href="#already">Sessions already open</a><a href="#ps">What is running</a><a href="#usage">Usage and quota</a><a href="#yolo">Auto-approve</a><a href="#agents">Agents</a><a href="#fleet">Fleet</a><a href="#remote">Remote agents</a><a href="#backends">Workspace backends</a><a href="#commands">Command reference</a><a href="#config">Configuration</a><a href="#update">Updating</a><a href="#doctor">Doctor</a><a href="#trouble">Troubleshooting</a><a href="#uninstall">Uninstall</a></nav>
 <main>
 
 <h1>Docs</h1>
@@ -220,6 +220,13 @@ prints the one line only the agent itself can run.</p>
 &nbsp;&nbsp;/remote-control</div>
 <p class="note">It reports only the surfaces it actually reached. No terminal, no tmux, no Herdr, or
 <code>GLYPH_TITLE=0</code> and the matching line is simply absent.</p>
+<h3>Let it type the commands for you</h3>
+<p>Add <code>--send</code> and Glyph types the <code>/rename</code> into the pane itself, over
+<code>herdr pane send-text</code> or <code>tmux send-keys</code>, following it with
+<code>/remote-control</code> when the bridge is off.</p>
+<div class="bar"><span class="p">$</span><code id="mk3">glyph mark hotfix --send</code><button data-copy="mk3" type="button">Copy</button></div>
+<p class="note">It refuses outside an agent session, where the keystrokes would land in your
+shell instead. If the agent is mid-answer the text queues until it is ready.</p>
 <h3>Inside Herdr</h3>
 <p>Herdr sets no <code>TMUX</code>, so the tmux path never applies there. Glyph renames the
 Herdr pane instead, through <code>herdr pane rename</code>. That label belongs to Herdr, which
@@ -234,6 +241,42 @@ window, for the same reason.</p>
 name out of <code>~/.claude/sessions/&lt;pid&gt;.json</code>, so you can see what the session is
 called before you change it. For any other agent, name it yourself:</p>
 <div class="bar"><span class="p">$</span><code id="mk2">glyph mark audit codex</code><button data-copy="mk2" type="button">Copy</button></div>
+
+<h2 id="ps">What is running</h2>
+<p><code>glyph ls</code> is a log of launches Glyph performed. <code>glyph ps</code> is the other
+question: what is alive right now, including sessions Glyph never started.</p>
+<div class="bar"><span class="p">$</span><code id="ps1">glyph ps</code><button data-copy="ps1" type="button">Copy</button></div>
+<div class="mark" style="font-size:12.5px">AGENT&nbsp;&nbsp;&nbsp;NAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NAMED&nbsp;&nbsp;RC&nbsp;&nbsp;&nbsp;PID<br>
+claude&nbsp;&nbsp;<b>billing</b>&middot;acme-api&middot;claude-code&middot;mbp&nbsp;&nbsp;glyph&nbsp;&nbsp;on&nbsp;&nbsp;&nbsp;60129<br>
+claude&nbsp;&nbsp;fru-3c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto&nbsp;&nbsp;&nbsp;off&nbsp;&nbsp;96624<br><br>
+<span class="dim">11 live, 10 without a glyph name or without Remote Control</span></div>
+<p><b>NAMED</b> is <code>glyph</code> when the name has Glyph's shape, <code>user</code> when
+someone set it by hand, <code>auto</code> when the agent derived it. <b>RC</b> is whether Remote
+Control is on, so you can see at a glance which sessions your phone cannot reach.</p>
+<p class="note">Reads the live session files and checks each pid, so it lists only what is
+actually running. Claude Code today: the other agents do not publish a session registry.</p>
+
+<h2 id="usage">Usage and quota</h2>
+<p>How much is left, and when it comes back, across agents.</p>
+<div class="bar"><span class="p">$</span><code id="us1">glyph usage</code><button data-copy="us1" type="button">Copy</button></div>
+<div class="mark" style="font-size:12.5px">codex&nbsp;&nbsp;plus&nbsp;&nbsp;5h&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;████████████████&nbsp;&nbsp;&nbsp;98%&nbsp;&nbsp;resets in 10m<br>
+codex&nbsp;&nbsp;plus&nbsp;&nbsp;weekly&nbsp;&nbsp;█████░░░░░░░░░░░&nbsp;&nbsp;&nbsp;31%&nbsp;&nbsp;resets in 5d 20h<br>
+claude&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5h/wk&nbsp;&nbsp;&nbsp;quota is server side, add --live<br>
+agy&nbsp;&nbsp;&nbsp;&nbsp;not exposed</div>
+<p>Each agent is a different story, and Glyph says which is which rather than blending them:</p>
+<div class="tw"><table><thead><tr><th>Agent</th><th>Quota and reset</th><th>Token counts</th></tr></thead><tbody>
+<tr><td><b>Codex</b></td><td><span class="dim">Exact and offline. Every rollout carries a <code>rate_limits</code> record with the window, percent used and reset time, so both the 5h and weekly windows come straight off disk.</span></td><td><span class="dim">Yes</span></td></tr>
+<tr><td><b>Claude Code</b></td><td><span class="dim">Not on disk. Window boundaries are decided server side, so <code>--live</code> asks Anthropic directly, authorised from the Keychain.</span></td><td><span class="dim">Yes, from the transcripts</span></td></tr>
+<tr><td><b>AGY</b></td><td><span class="dim">Not exposed. No usage flag on the CLI, no token fields in its transcripts.</span></td><td><span class="dim">No</span></td></tr>
+</tbody></table></div>
+<h3>Detail for one agent</h3>
+<div class="bar"><span class="p">$</span><code id="us2">glyph usage claude<br>glyph usage codex<br>glyph usage --live<br>glyph usage --json</code><button data-copy="us2" type="button">Copy</button></div>
+<div class="callout"><b>Token counts are not billing</b>
+<p>They are what your own transcripts recorded, which is useful for seeing where the volume went, but it is not the number your plan is measured against. For that, use <code>--live</code>.</p></div>
+<p class="note">Reading a large transcript history takes a few seconds, so the result is cached
+for ten minutes. <code>--refresh</code> rescans now, <code>GLYPH_USAGE_TTL</code> changes the
+window. <code>--live</code> is the only part of Glyph that makes a network request; the token is
+passed to curl over stdin so it never appears in <code>ps</code>.</p>
 
 <h2 id="yolo">Auto-approve</h2>
 <p>Every agent has a flag meaning "stop asking me to approve each tool call", and they all spell it differently. <code>GLYPH_YOLO=1</code> sends whichever one is right for the agent you are launching.</p>
@@ -290,13 +333,13 @@ sets it on the Fleet session, never on your global tmux config.</p>
 <div class="bar"><span class="p">$</span><code id="b1">GLYPH_FLEET_BACKEND=herdr glyph fleet ci</code><button data-copy="b1" type="button">Copy</button></div><p class="note">Glyph is not tied to any one workspace tool. With none running, Fleet falls back to tmux.</p>
 
 <h2 id="commands">Command reference</h2>
-<div class="tw"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody><tr><td><code>glyph name [label]</code></td><td><span class="dim">Print the session name this directory would produce. Nothing is launched.</span></td></tr><tr><td><code>glyph mark [label] [agent]</code></td><td><span class="dim">Name a session that is already open: terminal title, tmux, registry, and the <code>/rename</code> line to paste.</span></td></tr><tr><td><code>glyph ls [n]</code></td><td><span class="dim">The last n recorded sessions (default 20): time, agent, name, machine.</span></td></tr><tr><td><code>glyph agents</code></td><td><span class="dim">Every agent found on your PATH, its label, and its auto-approve flag.</span></td></tr><tr><td><code>glyph hosts</code></td><td><span class="dim">Machines you can put after a colon in a Fleet slot: SSH config entries, then tailnet peers.</span></td></tr><tr><td><code>glyph presets</code></td><td><span class="dim">The Fleet presets currently defined.</span></td></tr><tr><td><code>glyph fleet init</code></td><td><span class="dim">Write the example presets, keeping any you already have. Safe to re-run.</span></td></tr><tr><td><code>glyph fleet &lt;preset&gt;</code></td><td><span class="dim">Launch a preset, one marked pane per slot.</span></td></tr><tr><td><code>glyph fleet &lt;agent&gt; [&lt;agent&gt;...]</code></td><td><span class="dim">Launch an ad-hoc fleet without defining a preset first.</span></td></tr><tr><td><code>glyph update</code></td><td><span class="dim">Fetch the latest glyph.zsh from GitHub.</span></td></tr><tr><td><code>glyph version</code></td><td><span class="dim">The installed version.</span></td></tr></tbody></table></div>
+<div class="tw"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody><tr><td><code>glyph name [label]</code></td><td><span class="dim">Print the session name this directory would produce. Nothing is launched.</span></td></tr><tr><td><code>glyph ps</code></td><td><span class="dim">Every agent session alive right now, named or not, with Remote Control state.</span></td></tr><tr><td><code>glyph usage [agent]</code></td><td><span class="dim">Quota and token counts across agents. <code>--live</code>, <code>--json</code>, <code>--refresh</code>.</span></td></tr><tr><td><code>glyph doctor</code></td><td><span class="dim">Check the install and report what is wrong. Non-zero exit when something needs attention.</span></td></tr><tr><td><code>glyph mark [label] [agent] --send</code></td><td><span class="dim">As below, but types the <code>/rename</code> into the agent instead of printing it.</span></td></tr><tr><td><code>glyph mark [label] [agent]</code></td><td><span class="dim">Name a session that is already open: terminal title, tmux, registry, and the <code>/rename</code> line to paste.</span></td></tr><tr><td><code>glyph ls [n]</code></td><td><span class="dim">The last n recorded sessions (default 20): time, agent, name, machine.</span></td></tr><tr><td><code>glyph agents</code></td><td><span class="dim">Every agent found on your PATH, its label, and its auto-approve flag.</span></td></tr><tr><td><code>glyph hosts</code></td><td><span class="dim">Machines you can put after a colon in a Fleet slot: SSH config entries, then tailnet peers.</span></td></tr><tr><td><code>glyph presets</code></td><td><span class="dim">The Fleet presets currently defined.</span></td></tr><tr><td><code>glyph fleet init</code></td><td><span class="dim">Write the example presets, keeping any you already have. Safe to re-run.</span></td></tr><tr><td><code>glyph fleet &lt;preset&gt;</code></td><td><span class="dim">Launch a preset, one marked pane per slot.</span></td></tr><tr><td><code>glyph fleet &lt;agent&gt; [&lt;agent&gt;...]</code></td><td><span class="dim">Launch an ad-hoc fleet without defining a preset first.</span></td></tr><tr><td><code>glyph update</code></td><td><span class="dim">Fetch the latest glyph.zsh from GitHub.</span></td></tr><tr><td><code>glyph version</code></td><td><span class="dim">The installed version.</span></td></tr></tbody></table></div>
 
 <h2 id="config">Configuration</h2>
 <h3>Behaviour</h3>
 <div class="tw"><table><thead><tr><th>Variable</th><th>Default</th><th>Effect</th></tr></thead><tbody><tr><td><code>GLYPH_YOLO=1</code></td><td><span class="dim">off</span></td><td>Send each agent's auto-approve flag.</td></tr><tr><td><code>GLYPH_DRYRUN=1</code></td><td><span class="dim">off</span></td><td>Print the argv that would run. Launch nothing, record nothing.</td></tr><tr><td><code>GLYPH_OFF=1</code></td><td><span class="dim">off</span></td><td>Keep the label and project, drop the machine and time.</td></tr><tr><td><code>GLYPH_SEP</code></td><td><span class="dim">·</span></td><td>Separator between tokens.</td></tr><tr><td><code>GLYPH_FMT</code></td><td><span class="dim">%Y-%m-%d·%H%M</span></td><td>date(1) format for the stamp.</td></tr><tr><td><code>GLYPH_MACHINE</code></td><td><span class="dim">computer name</span></td><td>Machine tag, when the hostname does not read well.</td></tr><tr><td><code>GLYPH_RC=0</code></td><td><span class="dim">on</span></td><td>Do not add Claude's --remote-control.</td></tr><tr><td><code>GLYPH_TITLE=0</code></td><td><span class="dim">on</span></td><td>Leave the terminal and tmux titles alone.</td></tr><tr><td><code>GLYPH_LOG=0</code></td><td><span class="dim">on</span></td><td>Do not record sessions locally.</td></tr><tr><td><code>GLYPH_FLEET_MOUSE=0</code></td><td><span class="dim">on</span></td><td>Do not turn the mouse on for the Fleet tmux session.</td></tr><tr><td><code>GLYPH_FLEET_BACKEND</code></td><td><span class="dim">auto</span></td><td>auto, herdr, cmux, zellij, wezterm or tmux.</td></tr></tbody></table></div>
 <h3>Paths</h3>
-<div class="tw"><table><thead><tr><th>Variable</th><th>Default</th><th>Points at</th></tr></thead><tbody><tr><td><code>GLYPH_FLEET_CONF</code></td><td><span class="dim">~/.config/glyph/fleet.conf</span></td><td>Fleet presets.</td></tr><tr><td><code>GLYPH_AGENTS</code></td><td><span class="dim">~/.config/glyph/agents.tsv</span></td><td>Extra agents you define.</td></tr><tr><td><code>GLYPH_MAP</code></td><td><span class="dim">~/.config/glyph/names.tsv</span></td><td>Project name overrides.</td></tr><tr><td><code>GLYPH_STATE</code></td><td><span class="dim">~/.local/state/glyph</span></td><td>Session registry (honours XDG_STATE_HOME).</td></tr><tr><td><code>GLYPH_UPDATE_URL</code></td><td><span class="dim">GitHub raw glyph.zsh</span></td><td>Where glyph update pulls from. Point it at a fork.</td></tr><tr><td><code>GLYPH_SSH_CONFIG</code></td><td><span class="dim">~/.ssh/config</span></td><td>Where host resolution reads SSH hosts.</td></tr><tr><td><code>GLYPH_KNOWN_HOSTS</code></td><td><span class="dim">~/.ssh/known_hosts</span></td><td>Where host resolution reads trusted hosts.</td></tr><tr><td><code>GLYPH_TAILSCALE</code></td><td><span class="dim">auto-detected</span></td><td>Path to the tailscale binary.</td></tr></tbody></table></div>
+<div class="tw"><table><thead><tr><th>Variable</th><th>Default</th><th>Points at</th></tr></thead><tbody><tr><td><code>GLYPH_USAGE_TTL</code></td><td><span class="dim">600</span></td><td>Seconds to cache the transcript scan behind <code>glyph usage</code>.</td></tr><tr><td><code>GLYPH_CLAUDE_API</code></td><td><span class="dim">api.anthropic.com</span></td><td>Host <code>glyph usage --live</code> asks for quota.</td></tr><tr><td><code>GLYPH_FLEET_CONF</code></td><td><span class="dim">~/.config/glyph/fleet.conf</span></td><td>Fleet presets.</td></tr><tr><td><code>GLYPH_AGENTS</code></td><td><span class="dim">~/.config/glyph/agents.tsv</span></td><td>Extra agents you define.</td></tr><tr><td><code>GLYPH_MAP</code></td><td><span class="dim">~/.config/glyph/names.tsv</span></td><td>Project name overrides.</td></tr><tr><td><code>GLYPH_STATE</code></td><td><span class="dim">~/.local/state/glyph</span></td><td>Session registry (honours XDG_STATE_HOME).</td></tr><tr><td><code>GLYPH_UPDATE_URL</code></td><td><span class="dim">GitHub raw glyph.zsh</span></td><td>Where glyph update pulls from. Point it at a fork.</td></tr><tr><td><code>GLYPH_SSH_CONFIG</code></td><td><span class="dim">~/.ssh/config</span></td><td>Where host resolution reads SSH hosts.</td></tr><tr><td><code>GLYPH_KNOWN_HOSTS</code></td><td><span class="dim">~/.ssh/known_hosts</span></td><td>Where host resolution reads trusted hosts.</td></tr><tr><td><code>GLYPH_TAILSCALE</code></td><td><span class="dim">auto-detected</span></td><td>Path to the tailscale binary.</td></tr></tbody></table></div>
 <h3>Files on disk</h3>
 <div class="tw"><table><thead><tr><th>Path</th><th>What it is</th></tr></thead><tbody><tr><td><code>~/.config/glyph/glyph.zsh</code></td><td>The wrapper itself. Replaced by <code>glyph update</code>; a symlink here is followed, not overwritten.</td></tr><tr><td><code>~/.config/glyph/fleet.conf</code></td><td>Fleet presets, one <code>name = slots</code> per line.</td></tr><tr><td><code>~/.config/glyph/agents.tsv</code></td><td>Extra agents: command, auto-approve flag, label, tab separated.</td></tr><tr><td><code>~/.config/glyph/names.tsv</code></td><td>Project overrides: directory name, display name, tab separated.</td></tr><tr><td><code>~/.local/state/glyph/sessions.tsv</code></td><td>What <code>glyph ls</code> reads. Delete it any time.</td></tr><tr><td><code>~/.zshrc</code></td><td>One source line, added by the installer.</td></tr></tbody></table></div>
 
@@ -311,6 +354,16 @@ sets it on the Fleet session, never on your global tmux config.</p>
 <li>Point <code>GLYPH_UPDATE_URL</code> somewhere else to track a fork.</li>
 </ul>
 <p class="note">Other shells you already had open keep the old wrapper until you run <code>exec zsh</code> in them.</p>
+
+<h2 id="doctor">Doctor</h2>
+<p>Before troubleshooting by hand, ask Glyph what it thinks is wrong.</p>
+<div class="bar"><span class="p">$</span><code id="dr1">glyph doctor</code><button data-copy="dr1" type="button">Copy</button></div>
+<p>It checks the wrapper path and whether it is a symlink, version drift between the file on disk
+and the copy loaded in this shell, the <code>~/.zshrc</code> line, which agents are on your PATH
+but not actually wrapped, the Fleet backend it would use, the registry, and your config files.
+It exits non-zero when something needs attention, so it works in a script.</p>
+<p class="note">The check that catches most confusion is version drift: an updated file on disk
+and an older copy still loaded in the shell you are typing in.</p>
 
 <h2 id="trouble">Troubleshooting</h2>
 <div class="tw"><table><thead><tr><th>Symptom</th><th>Fix</th></tr></thead><tbody><tr><td><b><code>command not found: glyph</code> right after installing</b></td><td><span class="dim">The installer ran as a child process and could not touch your shell. Run <code>. ~/.config/glyph/glyph.zsh</code>, or use <code>source ./install.sh</code> next time.</span></td></tr><tr><td><b><code>agy billing</code> reports an unexpected argument</b></td><td><span class="dim">An older wrapper is still loaded in that shell. Run <code>exec zsh</code>.</span></td></tr><tr><td><b>A Fleet pane stalls on a host key fingerprint</b></td><td><span class="dim">Accept the key by hand once with <code>ssh &lt;host&gt;</code>, then the pane starts clean.</span></td></tr><tr><td><b><code>glyph fleet</code> opens a nested tmux inside Herdr</b></td><td><span class="dim">Set <code>GLYPH_FLEET_BACKEND=herdr</code>, or run Fleet outside Herdr.</span></td></tr><tr><td><b>Claude's startup banner does not show the name</b></td><td><span class="dim">It never does. Read <code>~/.claude/sessions/&lt;pid&gt;.json</code>, or look at the session list on the web or your phone.</span></td></tr><tr><td><b>The machine tag reads badly</b></td><td><span class="dim">Set it yourself: <code>export GLYPH_MACHINE=laptop</code>.</span></td></tr><tr><td><b>Nothing happens at all</b></td><td><span class="dim">Confirm the source line is in <code>~/.zshrc</code>, then run <code>glyph version</code>. If that fails, re-run <code>./install.sh</code>.</span></td></tr></tbody></table></div>
