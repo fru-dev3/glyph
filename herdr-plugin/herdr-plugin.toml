@@ -1,0 +1,31 @@
+id = "glyph.usage"
+name = "Glyph Usage"
+version = "0.1.0"
+min_herdr_version = "0.7.4"
+description = "Quota and token usage across Claude Code, Codex and AGY, in a Herdr pane. Reads local agent files, no daemon, no telemetry."
+platforms = ["macos", "linux"]
+
+# No build step. The plugin is two shell scripts and it drives the glyph CLI,
+# which the user installs separately. Nothing is compiled or downloaded.
+
+# The point of the plugin. Herdr shows which agents are running; this shows
+# what is left to run them with.
+[[panes]]
+id = "usage"
+title = "Agent usage"
+placement = "overlay"
+command = ["bin/usage-pane"]
+
+[[actions]]
+id = "usage"
+title = "Glyph: agent usage"
+description = "Quota and token counts across Claude Code, Codex and AGY"
+contexts = ["global", "workspace", "tab", "pane"]
+command = ["bin/usage-pane", "--once"]
+
+[[actions]]
+id = "mark"
+title = "Glyph: name this pane"
+description = "Label this pane with a glyph mark: label, project, agent, machine, time"
+contexts = ["pane"]
+command = ["bin/mark-pane"]

@@ -1,0 +1,49 @@
+#!/bin/sh
+# Render `glyph usage` in a Herdr pane. Refreshes on a timer; q or ctrl-c quits.
+# --once prints a single snapshot and exits, for the action rather than the pane.
+set -u
+
+INTERVAL="${GLYPH_HERDR_INTERVAL:-60}"
+ONCE=0
+[ "${1:-}" = "--once" ] && ONCE=1
+
+# The plugin drives the glyph CLI rather than reimplementing it. glyph is a zsh
+# function, not a binary, so it has to be sourced into a zsh before it exists.
+GLYPH="${XDG_CONFIG_HOME:-$HOME/.config}/glyph/glyph.zsh"
+
+if [ ! -r "$GLYPH" ]; then
+  printf '\n  Glyph is not installed.\n\n'
+  printf '  This plugin is a view over the glyph CLI, which lives separately:\n'
+  printf '    git clone https://github.com/fru-dev3/glyph.git\n'
+  printf '    cd glyph && source ./install.sh\n\n'
+  printf '  Then reopen this pane.\n\n'
+  [ "$ONCE" = 1 ] || { printf '  Press any key to close. '; read -r _ 2>/dev/null; }
+  exit 1
+fi
+
+if ! command -v zsh >/dev/null 2>&1; then
+  printf '\n  Glyph needs zsh, which is not on PATH.\n\n'
+  exit 1
+fi
+
+render() {
+  zsh -c ". '$GLYPH' >/dev/null 2>&1; glyph usage ${GLYPH_HERDR_ARGS:-}" 2>&1
+}
+
+if [ "$ONCE" = 1 ]; then
+  render
+  exit 0
+fi
+
+# Pane mode: clear, draw, wait. `read -t` is not POSIX, so fall back to sleep
+# where the shell does not support it.
+while : ; do
+  printf '\033[H\033[2J'
+  render
+  printf '\n  refreshing every %ss  ·  q to quit\n' "$INTERVAL"
+  if read -t "$INTERVAL" -r key 2>/dev/null; then
+    case "$key" in q|Q) break ;; esac
+  else
+    [ $? -gt 128 ] || sleep "$INTERVAL"
+  fi
+done

@@ -1,0 +1,12 @@
+#!/bin/sh
+# Label the current Herdr pane with a glyph mark. Herdr gives us the pane in
+# HERDR_PANE_ID; glyph builds the name and renames the pane itself.
+set -u
+
+GLYPH="${XDG_CONFIG_HOME:-$HOME/.config}/glyph/glyph.zsh"
+[ -r "$GLYPH" ] || { printf 'glyph is not installed: see https://glyph.fru.dev\n' >&2; exit 1; }
+command -v zsh >/dev/null 2>&1 || { printf 'glyph needs zsh\n' >&2; exit 1; }
+
+# Context arrives as JSON; the label is optional and glyph falls back to the
+# project name on its own when there is none.
+exec zsh -c ". '$GLYPH' >/dev/null 2>&1; glyph mark ${1:-}"
