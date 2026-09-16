@@ -278,6 +278,19 @@ and the quota itself needs `--live`, which reads the Keychain token and asks
 Anthropic. That is the only network request glyph makes besides `glyph update`.
 AGY exposes nothing and is reported as such rather than guessed.
 
+### Herdr plugin
+
+Herdr shows which agents are running. It has no view of what is left to run
+them with, so glyph ships one as a plugin:
+
+```sh
+herdr plugin install fru-dev3/glyph/herdr-plugin
+```
+
+An **Agent usage** pane with both Codex windows, Claude token counts and AGY
+reported honestly as not exposed, plus an action to name the current pane.
+Needs Herdr 0.7.4. See [herdr-plugin/](herdr-plugin/).
+
 ### Remote agents
 
 A slot is `<agent>` or `<agent>:<machine>`. Glyph opens SSH in that pane, cds to
