@@ -1,0 +1,6 @@
+{
+  "name": "glyph",
+  "version": "0.7.0",
+  "description": "Name every agent session at launch, list what is running, and read quota across Claude Code, Codex and AGY. A zsh wrapper, no daemon, no telemetry.",
+  "contextFileName": "GEMINI.md"
+}

@@ -1,0 +1,10 @@
+{
+  "name": "glyph",
+  "version": "0.7.0",
+  "description": "Ask Claude what agent sessions are running and how much quota is left, across Claude Code, Codex and AGY. Wraps the glyph CLI.",
+  "author": { "name": "fru.dev", "url": "https://fru.dev" },
+  "homepage": "https://glyph.fru.dev",
+  "repository": "https://github.com/fru-dev3/glyph",
+  "license": "MIT",
+  "keywords": ["sessions", "usage", "quota", "tmux", "herdr", "codex", "naming"]
+}
