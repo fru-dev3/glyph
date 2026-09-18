@@ -148,10 +148,13 @@ h1 .g{color:var(--gold)}
 
 .works{margin:52px 0 0}
 .works p{margin:0 0 18px;color:var(--faint)}
-.logos{display:flex;align-items:center;gap:clamp(20px,2.6vw,38px);flex-wrap:wrap}
+.logos{display:flex;align-items:center;gap:clamp(20px,2.6vw,38px);flex-wrap:wrap;row-gap:16px}
 .logos img{width:27px;height:27px;object-fit:contain;border-radius:5px;
   opacity:.8;transition:opacity .2s,transform .2s}
 .logos img:hover{opacity:1;transform:translateY(-2px)}
+.works p.also{margin:26px 0 0;color:var(--faint)}
+.also a{color:var(--dim);border-bottom:1px solid var(--line);transition:.18s}
+.also a:hover{color:var(--gold);border-bottom-color:var(--gold)}
 
 .footline{position:absolute;left:0;right:0;bottom:22px;z-index:1}
 .footline .wrap{display:flex;align-items:center;gap:20px;color:var(--faint)}
@@ -377,6 +380,7 @@ footer .sp{margin-left:auto}
       <img src="agents/opencode.svg" alt="OpenCode" title="OpenCode">
       <img src="agents/pi.svg" alt="pi" title="pi">
       </div>
+      <p class="also mi">Also a <a href="https://herdr.dev/plugins/">Herdr plugin</a> &#8599;</p>
     </div>
   </div></div>
   <div class="footline mi"><div class="wrap">
