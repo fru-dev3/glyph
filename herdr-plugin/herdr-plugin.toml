@@ -1,6 +1,6 @@
 id = "glyph.usage"
 name = "Glyph Usage"
-version = "0.1.0"
+version = "0.2.0"
 min_herdr_version = "0.7.4"
 description = "Quota and token usage across Claude Code, Codex and AGY, in a Herdr pane. Reads local agent files, no daemon, no telemetry."
 platforms = ["macos", "linux"]
@@ -22,6 +22,13 @@ title = "Glyph: agent usage"
 description = "Quota and token counts across Claude Code, Codex and AGY"
 contexts = ["global", "workspace", "tab", "pane"]
 command = ["bin/usage-pane", "--once"]
+
+[[actions]]
+id = "agent"
+title = "Glyph: new agent pane"
+description = "Split a pane and start an agent through glyph, already named and already auto-approving"
+contexts = ["pane", "tab"]
+command = ["bin/agent-pane"]
 
 [[actions]]
 id = "mark"

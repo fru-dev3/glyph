@@ -30,9 +30,21 @@ assert_eq "$(GLYPH_YOLO=1 agy billing)" '<--dangerously-skip-permissions>' 'AGY 
 assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch codex billing)" 'codex' 'Codex consumes label'
 assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch claude billing)" "claude -n billing·acme-api·claude-code·test·stamp --remote-control" 'Claude naming'
 assert_eq "$(_glyph_compose 'Fix Login' 'Acme API' claude)" 'fix-login·acme-api·claude-code·test·stamp' 'canonical token format'
-for adapter in gemini cursor-agent crush cortex opencode pi; do
+# Adapters with no session-name flag swallow the label into the title only.
+for adapter in gemini cursor-agent crush cortex opencode; do
   assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch "$adapter" billing)" "$adapter" "$adapter consumes label"
 done
+# pi names its own session with -n, like Claude. It must NOT inherit Claude's
+# --remote-control: that flag belongs to the agent, not to "has a name flag".
+assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch pi billing)" \
+  'pi -n billing·acme-api·pi·test·stamp' 'pi names its session, without remote-control'
+# Auto-approve reaches every adapter that has a flag for it.
+assert_eq "$(GLYPH_YOLO=1 GLYPH_DRYRUN=1 _glyph_launch opencode billing)" \
+  'opencode --dangerously-skip-permissions' 'opencode auto-approve'
+assert_eq "$(GLYPH_YOLO=1 GLYPH_DRYRUN=1 _glyph_launch codex billing)" \
+  'codex --dangerously-bypass-approvals-and-sandbox' 'codex auto-approve'
+assert_eq "$(GLYPH_YOLO=1 GLYPH_DRYRUN=1 _glyph_launch agy billing)" \
+  'agy --dangerously-skip-permissions' 'agy auto-approve'
 out=$(GLYPH_DRYRUN=1 glyph fleet pi opencode)
 [[ $out == *'pane 2  opencode on local'* ]] || { print -ru2 -- 'FAIL: ad-hoc agents without approval flags'; exit 1; }
 export GLYPH_FLEET_CONF="$test_dir/fleet.conf"

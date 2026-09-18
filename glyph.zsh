@@ -31,7 +31,7 @@
 
 # The version belongs to this file, not the environment: an in-place reload
 # after `glyph update` must report the file it just loaded.
-typeset -g GLYPH_VERSION=0.6.0
+typeset -g GLYPH_VERSION=0.7.0
 typeset -g GLYPH_STATE=${GLYPH_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/glyph}
 
 # --- agent adapters ---------------------------------------------------------
@@ -47,7 +47,7 @@ GLYPH_YOLO_FLAG=(
   crush        "--yolo"
   cortex       "--dangerously-allow-all-tool-calls"
   hermes       "--yolo"
-  opencode     ""
+  opencode     "--dangerously-skip-permissions"
   pi           ""
   omni         ""
 )
@@ -71,7 +71,12 @@ _glyph_load_extra_agents() {
   done < "$f"
 }
 _glyph_load_extra_agents
-GLYPH_NAME_FLAG=( claude "-n" )
+GLYPH_NAME_FLAG=( claude "-n"  pi "-n" )
+
+# Remote Control is Claude's, not a property of "has a name flag". Keeping it in
+# its own table stops a second naming agent inheriting a flag it cannot parse.
+typeset -gA GLYPH_RC_FLAG
+GLYPH_RC_FLAG=( claude "--remote-control" )
 GLYPH_LABEL=(
   claude "claude-code"  agy "agy"
   codex "codex"  cursor-agent "cursor"  crush "crush"
@@ -227,8 +232,9 @@ _glyph_launch() {
     for (( i = 1; i <= $#cargs; i++ )); do
       if [[ $cargs[i] == (-n|--name) && -n ${cargs[i+1]:-} ]]; then
         cargs[i+1]=$(_glyph_compose "$cargs[i+1]" "$proj" "$agent")
-        [[ ${GLYPH_RC:-1} == 1 && " $* " != *" --remote-control "* && " $* " != *" --rc "* ]] \
-          && pre+=(--remote-control)
+        [[ -n ${GLYPH_RC_FLAG[$agent]:-} && ${GLYPH_RC:-1} == 1 \
+           && " $* " != *" --remote-control "* && " $* " != *" --rc "* ]] \
+          && pre+=("${GLYPH_RC_FLAG[$agent]}")
         _glyph_title "$cargs[i+1]"; _glyph_log "$agent" "$cargs[i+1]"
         _glyph_run $pre "${cargs[@]}"; return
       fi
@@ -254,7 +260,7 @@ _glyph_launch() {
     [[ -n $nameflag ]] && pre+=("$nameflag" "$mark")
     _glyph_title "$mark"; _glyph_log "$agent" "$mark"
   fi
-  [[ -n $nameflag && ${GLYPH_RC:-1} == 1 ]] && pre+=(--remote-control)
+  [[ -n ${GLYPH_RC_FLAG[$agent]:-} && ${GLYPH_RC:-1} == 1 ]] && pre+=("${GLYPH_RC_FLAG[$agent]}")
 
   _glyph_run $pre "$@"
 }

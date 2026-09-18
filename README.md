@@ -202,10 +202,15 @@ glyph fleet ci  # a preset of agents, each in its own marked pane
 | Cursor | title | `--force` |
 | Crush | title | `--yolo` |
 | Cortex | title | `--dangerously-allow-all-tool-calls` |
-| OpenCode · pi | title | none |
+| OpenCode | title | `--dangerously-skip-permissions` |
+| pi | ✔ real session name | none |
 
 Six agents, five spellings of *"stop asking me to approve every tool call"*.
 `GLYPH_YOLO=1` sends whichever one is right. It is off unless you ask.
+
+Tired of typing it? `export GLYPH_YOLO=1` in your `~/.zshrc` makes it the default
+for every agent. That means every tool call runs without asking you, in every
+project, which is exactly why glyph will not set it for you.
 
 ## Updating
 

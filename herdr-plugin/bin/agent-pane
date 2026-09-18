@@ -1,0 +1,29 @@
+#!/bin/sh
+# Open a new Herdr pane running an agent through glyph, so it arrives already
+# named and already auto-approving. Nothing to remember and nothing to type.
+#
+# Which agent: $1, else the `agent` line in the plugin config, else claude.
+set -u
+
+CONF="${HERDR_PLUGIN_CONFIG_DIR:-.}/agent"
+AGENT="${1:-}"
+[ -z "$AGENT" ] && [ -r "$CONF" ] && AGENT=$(head -1 "$CONF" 2>/dev/null | tr -d ' \t\r\n')
+[ -z "$AGENT" ] && AGENT=claude
+
+case "$AGENT" in
+  *[!A-Za-z0-9_.-]*|"") printf 'refusing odd agent name: %s\n' "$AGENT" >&2; exit 1 ;;
+esac
+
+command -v herdr >/dev/null 2>&1 || { printf 'herdr not on PATH\n' >&2; exit 1; }
+[ -n "${HERDR_PANE_ID:-}" ] || { printf 'no HERDR_PANE_ID: run this from a Herdr pane\n' >&2; exit 1; }
+
+# Split, then type the bare agent name into the new pane. It runs in the user's
+# login shell, which is where the glyph wrapper lives, so naming and the
+# per-agent auto-approve flag are applied there rather than duplicated here.
+NEW=$(herdr pane split "$HERDR_PANE_ID" --direction right --focus 2>/dev/null \
+      | sed -n 's/.*"pane_id":"\([^"]*\)".*/\1/p' | head -1)
+[ -n "$NEW" ] || { printf 'could not split the pane\n' >&2; exit 1; }
+
+herdr pane run "$NEW" "GLYPH_YOLO=1 $AGENT" >/dev/null 2>&1 \
+  && printf 'started %s in a new pane, named and auto-approving\n' "$AGENT" \
+  || { printf 'could not start %s\n' "$AGENT" >&2; exit 1; }
