@@ -31,7 +31,7 @@
 
 # The version belongs to this file, not the environment: an in-place reload
 # after `glyph update` must report the file it just loaded.
-typeset -g GLYPH_VERSION=0.7.0
+typeset -g GLYPH_VERSION=0.7.1
 typeset -g GLYPH_STATE=${GLYPH_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/glyph}
 
 # --- agent adapters ---------------------------------------------------------
@@ -114,12 +114,28 @@ _glyph_project() {
   _glyph_token "$slug"
 }
 
+# The agent segment. An explicit name wins, then GLYPH_AGENT for a launcher that
+# knows what it started, then whatever owns this shell. A shell no agent owns is
+# still an answer, so the segment is never dropped: a mark with a fixed number of
+# fields is one that sorts, and one `glyph ps` can line up in a column. Pass
+# `none` to leave it out. Only the fleet mark wants that, because there each slot
+# prints its own agent in front of the shared mark.
+_glyph_agent_segment() {
+  local agent=${1:-}
+  [[ $agent == none ]] && return 0
+  [[ -n $agent ]] || agent=${GLYPH_AGENT:-}
+  [[ -n $agent ]] || agent=$(_glyph_current_agent) || agent=""
+  [[ -n $agent ]] || agent=${GLYPH_AGENT_FALLBACK:-shell}
+  _glyph_token "${GLYPH_LABEL[$agent]:-$agent}"
+}
+
 _glyph_compose() {
   local g=$1 pj=$2 agent=${3:-} sep=${GLYPH_SEP:-·}
   local -a parts
+  local seg=$(_glyph_agent_segment "$agent")
   [[ -n $g ]] && parts+=("$(_glyph_token "$g")")
   [[ -n $pj && ${(L)pj} != ${(L)g} ]] && parts+=("$(_glyph_token "$pj")")
-  [[ -n $agent ]] && parts+=("$(_glyph_token "${GLYPH_LABEL[$agent]:-$agent}")")
+  [[ -n $seg ]] && parts+=("$seg")
   if [[ -z ${GLYPH_OFF:-} ]]; then
     parts+=("$(_glyph_machine)")
     parts+=("$(command date +${GLYPH_FMT:-%Y-%m-%d${sep}%H%M})")
@@ -1040,7 +1056,8 @@ glyph-fleet() {
 
   command -v tmux >/dev/null 2>&1 || { print -ru2 -- "glyph: fleet needs tmux"; return 1; }
 
-  local mark=$(_glyph_compose "$preset" "$(_glyph_project "$PWD")")
+  # `none`: each slot prints its own agent in front of this shared mark.
+  local mark=$(_glyph_compose "$preset" "$(_glyph_project "$PWD")" none)
   local backend=$(_glyph_fleet_backend) || return 1
   local session="glyph-${preset}-$(command date +%H%M%S)"
   local n=$#slots i agent machine cmd label

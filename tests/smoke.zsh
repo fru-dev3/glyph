@@ -17,7 +17,7 @@ chmod +x "$test_dir/bin/agy" "$test_dir/bin/tmux"
 export PATH="$test_dir/bin:$PATH"
 export GLYPH_LOG=0 GLYPH_TITLE=0 GLYPH_MACHINE=test GLYPH_FMT=stamp
 export GLYPH_STATE="$test_dir/state" GLYPH_TEST_TMUX="$test_dir/tmux.log"
-unset GLYPH_YOLO GLYPH_DRYRUN GLYPH_OFF TMUX
+unset GLYPH_YOLO GLYPH_DRYRUN GLYPH_OFF TMUX CLAUDECODE GLYPH_AGENT GLYPH_AGENT_FALLBACK
 source "$repo/glyph.zsh"
 _glyph_project() { print -r -- 'Acme API' }
 assert_eq() { [[ $1 == $2 ]] || { print -ru2 -- "FAIL: $3: got [$1], expected [$2]"; exit 1; } }
@@ -30,6 +30,23 @@ assert_eq "$(GLYPH_YOLO=1 agy billing)" '<--dangerously-skip-permissions>' 'AGY 
 assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch codex billing)" 'codex' 'Codex consumes label'
 assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch claude billing)" "claude -n billing·acme-api·claude-code·test·stamp --remote-control" 'Claude naming'
 assert_eq "$(_glyph_compose 'Fix Login' 'Acme API' claude)" 'fix-login·acme-api·claude-code·test·stamp' 'canonical token format'
+# The agent segment is never dropped, so every mark has the same field count and
+# `glyph ps` lines up. With no agent to name and none owning the shell, the
+# honest answer is the shell itself.
+assert_eq "$(_glyph_compose 'Fix Login' 'Acme API')" \
+  'fix-login·acme-api·shell·test·stamp' 'agent segment falls back to shell'
+assert_eq "$(CLAUDECODE=1 _glyph_compose 'Fix Login' 'Acme API')" \
+  'fix-login·acme-api·claude-code·test·stamp' 'agent segment read from the environment'
+assert_eq "$(GLYPH_AGENT=codex _glyph_compose 'Fix Login' 'Acme API')" \
+  'fix-login·acme-api·codex·test·stamp' 'GLYPH_AGENT declares the agent'
+assert_eq "$(GLYPH_AGENT_FALLBACK=unknown _glyph_compose 'Fix Login' 'Acme API')" \
+  'fix-login·acme-api·unknown·test·stamp' 'fallback is overridable'
+assert_eq "$(GLYPH_AGENT=codex glyph name 'Fix Login')" \
+  'fix-login·acme-api·codex·test·stamp' 'glyph name carries the agent too'
+# The fleet mark is the one place that opts out: each slot prints its own agent
+# in front of the shared mark, so a segment here would say it twice.
+assert_eq "$(_glyph_compose 'ci' 'Acme API' none)" \
+  'ci·acme-api·test·stamp' 'none leaves the segment out'
 # Adapters with no session-name flag swallow the label into the title only.
 for adapter in gemini cursor-agent crush cortex opencode; do
   assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch "$adapter" billing)" "$adapter" "$adapter consumes label"

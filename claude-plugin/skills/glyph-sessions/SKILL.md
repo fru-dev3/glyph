@@ -37,7 +37,8 @@ transcripts; the result is cached for ten minutes. `--refresh` forces a rescan.
 
 ## Naming
 
-A glyph name is `label·project·agent·machine·date·time`, all lowercase. In
+A glyph name is `label·project·agent·machine·date·time`, all lowercase. The
+agent field is always there; a shell that no agent owns reads `shell`. In
 `glyph ps`, the NAMED column says where a name came from: `glyph` means it has
 that shape, `user` means someone set it by hand, `auto` means the agent derived
 it. RC shows whether Remote Control is on, which is what decides if a session is

@@ -91,7 +91,7 @@ real session name and rides Remote Control to your phone.
 
 ```sh
 claude
-# launches:  claude -n 'Acme API·mbp·2026-09-12·0648' --remote-control
+# launches:  claude -n 'acme-api·claude-code·mbp·2026-09-12·0648' --remote-control
 
 claude billing
 # launches:  claude -n 'billing·acme-api·claude-code·mbp·2026-09-12·0648' --remote-control
@@ -110,7 +110,7 @@ all. It goes on the terminal title, the tmux window and `glyph ls`:
 ```sh
 agy migration
 # launches:  agy
-# titles:    migration·Acme API·mbp·2026-09-12·0648
+# titles:    migration·acme-api·agy·mbp·2026-09-12·0648
 ```
 
 `GLYPH_YOLO=1` is separate from naming. Every agent has a flag meaning "stop
@@ -120,7 +120,7 @@ one switch that sends the right one:
 ```sh
 GLYPH_YOLO=1 agy migration
 # launches:  agy --dangerously-skip-permissions
-# titles:    migration·Acme API·mbp·2026-09-12·0648
+# titles:    migration·acme-api·agy·mbp·2026-09-12·0648
 ```
 
 AGY requires an explicit flag for interactive prompts. Glyph supplies it:
@@ -143,7 +143,7 @@ Same shape, different spelling of the same flag:
 ```sh
 codex audit
 # launches:  codex
-# titles:    audit·Acme API·mbp·2026-09-12·0648
+# titles:    audit·acme-api·codex·mbp·2026-09-12·0648
 
 GLYPH_YOLO=1 codex audit
 # launches:  codex --dangerously-bypass-approvals-and-sandbox
@@ -176,6 +176,12 @@ glyph mark hotfix
 It reports only the surfaces it actually reached. Remote Control cannot be
 switched on from outside the session, but Claude Code can do it from inside with
 `/remote-control`, so Glyph offers that line whenever the bridge is off.
+
+Glyph reads the agent out of the environment, which today means Claude Code.
+From a plain shell, or beside an agent it cannot detect, the agent field reads
+`shell` rather than going missing; name it properly with `glyph mark <label>
+<agent>` or `GLYPH_AGENT`. Either way the mark keeps its shape, which is what
+lets `glyph ps` line them up in a column.
 
 ### Everything else
 
@@ -328,6 +334,8 @@ workspace tool; with none running, Fleet falls back to tmux.
 | `GLYPH_FMT` | `date(1)` format for the stamp (default `%Y-%m-%d·%H%M`) |
 | `GLYPH_SEP` | Separator (default `·`) |
 | `GLYPH_MACHINE` | Machine tag, when the hostname does not map well |
+| `GLYPH_AGENT` | Agent for the mark, when Glyph cannot tell which one owns the shell |
+| `GLYPH_AGENT_FALLBACK` | What to call a shell no agent owns (default `shell`) |
 | `GLYPH_FLEET_BACKEND` | `auto` (Herdr, cmux, Zellij, WezTerm, then tmux), or an explicit backend |
 | `GLYPH_RC=0` | Skip Claude's `--remote-control` |
 | `GLYPH_TITLE=0` | Do not retitle the terminal or tmux window |
