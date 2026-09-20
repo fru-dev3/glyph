@@ -47,6 +47,19 @@ assert_eq "$(GLYPH_AGENT=codex glyph name 'Fix Login')" \
 # in front of the shared mark, so a segment here would say it twice.
 assert_eq "$(_glyph_compose 'ci' 'Acme API' none)" \
   'ci·acme-api·test·stamp' 'none leaves the segment out'
+# agents.tsv may rename an agent, not only add one. The loader used to run
+# before GLYPH_LABEL was assigned, so a label set there was wiped a line later.
+printf 'claude\t--dangerously-skip-permissions\tcc\n' > "$test_dir/agents.tsv"
+GLYPH_AGENTS="$test_dir/agents.tsv" source "$repo/glyph.zsh"
+_glyph_project() { print -r -- 'Acme API' }
+assert_eq "$(_glyph_compose 'Fix Login' 'Acme API' claude)" \
+  'fix-login·acme-api·cc·test·stamp' 'agents.tsv overrides a built-in label'
+assert_eq "$(GLYPH_YOLO=1 GLYPH_DRYRUN=1 _glyph_launch claude billing)" \
+  'claude --dangerously-skip-permissions -n billing·acme-api·cc·test·stamp --remote-control' \
+  'overriding the label keeps the auto-approve flag'
+unset GLYPH_AGENTS
+source "$repo/glyph.zsh"
+_glyph_project() { print -r -- 'Acme API' }
 # Adapters with no session-name flag swallow the label into the title only.
 for adapter in gemini cursor-agent crush cortex opencode; do
   assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch "$adapter" billing)" "$adapter" "$adapter consumes label"

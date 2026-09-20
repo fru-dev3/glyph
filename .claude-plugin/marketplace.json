@@ -3,14 +3,14 @@
   "owner": { "name": "fru.dev", "url": "https://fru.dev" },
   "metadata": {
     "description": "Agent session identity and quota, for Claude Code, Codex and AGY.",
-    "version": "0.7.1"
+    "version": "0.7.2"
   },
   "plugins": [
     {
       "name": "glyph",
       "source": "./claude-plugin",
       "description": "Ask Claude what agent sessions are running and how much quota is left, across Claude Code, Codex and AGY. Wraps the glyph CLI.",
-      "version": "0.7.1",
+      "version": "0.7.2",
       "author": { "name": "fru.dev", "url": "https://fru.dev" },
       "homepage": "https://glyph.fru.dev",
       "license": "MIT",

@@ -31,7 +31,7 @@
 
 # The version belongs to this file, not the environment: an in-place reload
 # after `glyph update` must report the file it just loaded.
-typeset -g GLYPH_VERSION=0.7.1
+typeset -g GLYPH_VERSION=0.7.2
 typeset -g GLYPH_STATE=${GLYPH_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/glyph}
 
 # --- agent adapters ---------------------------------------------------------
@@ -70,7 +70,6 @@ _glyph_load_extra_agents() {
     [[ -n $lbl ]] && GLYPH_LABEL[$cmd]=$lbl
   done < "$f"
 }
-_glyph_load_extra_agents
 GLYPH_NAME_FLAG=( claude "-n"  pi "-n" )
 
 # Remote Control is Claude's, not a property of "has a name flag". Keeping it in
@@ -82,6 +81,10 @@ GLYPH_LABEL=(
   codex "codex"  cursor-agent "cursor"  crush "crush"
   cortex "cortex"  hermes "hermes"  omni "omni"  opencode "opencode"  pi "pi"
 )
+
+# Last, so agents.tsv can override a label as well as add one. Called before
+# this table was assigned, its labels were written and then wiped a line later.
+_glyph_load_extra_agents
 
 # --- pieces of the mark -----------------------------------------------------
 _glyph_token() {
