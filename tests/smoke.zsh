@@ -17,6 +17,11 @@ chmod +x "$test_dir/bin/agy" "$test_dir/bin/tmux"
 export PATH="$test_dir/bin:$PATH"
 export GLYPH_LOG=0 GLYPH_TITLE=0 GLYPH_MACHINE=test GLYPH_FMT=stamp
 export GLYPH_STATE="$test_dir/state" GLYPH_TEST_TMUX="$test_dir/tmux.log"
+# Point every lookup at the sandbox. Without this the suite reads whatever
+# agents.tsv and names.tsv the person running it happens to have, and a
+# personal 'cc' label fails an assertion about the shipped default.
+export GLYPH_AGENTS="$test_dir/agents-none.tsv" GLYPH_MAP="$test_dir/names-none.tsv"
+unset GLYPH_ORDER GLYPH_MACHINE_ORDER 2>/dev/null
 unset GLYPH_YOLO GLYPH_DRYRUN GLYPH_OFF TMUX CLAUDECODE GLYPH_AGENT GLYPH_AGENT_FALLBACK
 source "$repo/glyph.zsh"
 _glyph_project() { print -r -- 'Acme API' }
@@ -47,6 +52,12 @@ assert_eq "$(GLYPH_AGENT=codex glyph name 'Fix Login')" \
 # in front of the shared mark, so a segment here would say it twice.
 assert_eq "$(_glyph_compose 'ci' 'Acme API' none)" \
   'ci·acme-api·test·stamp' 'none leaves the segment out'
+# GLYPH_ORDER names the fields, so a setup can put the machine before the agent
+# without overriding _glyph_compose from outside.
+assert_eq "$(GLYPH_ORDER='label project machine agent stamp' _glyph_compose 'Fix Login' 'Acme API' claude)" \
+  'fix-login·acme-api·test·claude-code·stamp' 'GLYPH_ORDER reorders the fields'
+assert_eq "$(GLYPH_ORDER='label stamp' _glyph_compose 'Fix Login' 'Acme API' claude)" \
+  'fix-login·stamp' 'GLYPH_ORDER can leave fields out'
 # agents.tsv may rename an agent, not only add one. The loader used to run
 # before GLYPH_LABEL was assigned, so a label set there was wiped a line later.
 printf 'claude\t--dangerously-skip-permissions\tcc\n' > "$test_dir/agents.tsv"

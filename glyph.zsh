@@ -31,7 +31,7 @@
 
 # The version belongs to this file, not the environment: an in-place reload
 # after `glyph update` must report the file it just loaded.
-typeset -g GLYPH_VERSION=0.7.2
+typeset -g GLYPH_VERSION=0.7.3
 typeset -g GLYPH_STATE=${GLYPH_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/glyph}
 
 # --- agent adapters ---------------------------------------------------------
@@ -132,17 +132,28 @@ _glyph_agent_segment() {
   _glyph_token "${GLYPH_LABEL[$agent]:-$agent}"
 }
 
+# Field order. The default is the order the mark has always had; naming the
+# fields lets a setup put the one it scans for where it reads best, without
+# overriding this function from outside and hoping the override survives.
+typeset -g GLYPH_ORDER_DEFAULT="label project agent machine stamp"
+
 _glyph_compose() {
   local g=$1 pj=$2 agent=${3:-} sep=${GLYPH_SEP:-·}
-  local -a parts
-  local seg=$(_glyph_agent_segment "$agent")
-  [[ -n $g ]] && parts+=("$(_glyph_token "$g")")
-  [[ -n $pj && ${(L)pj} != ${(L)g} ]] && parts+=("$(_glyph_token "$pj")")
-  [[ -n $seg ]] && parts+=("$seg")
+  local -A field
+  field[label]=""; field[project]=""; field[agent]=""
+  field[machine]=""; field[stamp]=""
+  [[ -n $g ]] && field[label]=$(_glyph_token "$g")
+  [[ -n $pj && ${(L)pj} != ${(L)g} ]] && field[project]=$(_glyph_token "$pj")
+  field[agent]=$(_glyph_agent_segment "$agent")
   if [[ -z ${GLYPH_OFF:-} ]]; then
-    parts+=("$(_glyph_machine)")
-    parts+=("$(command date +${GLYPH_FMT:-%Y-%m-%d${sep}%H%M})")
+    field[machine]=$(_glyph_machine)
+    field[stamp]=$(command date +${GLYPH_FMT:-%Y-%m-%d${sep}%H%M})
   fi
+  local -a parts
+  local name
+  for name in ${=${GLYPH_ORDER:-$GLYPH_ORDER_DEFAULT}}; do
+    [[ -n ${field[$name]:-} ]] && parts+=("${field[$name]}")
+  done
   print -r -- "${(pj:$sep:)parts}"
 }
 

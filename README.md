@@ -333,6 +333,7 @@ workspace tool; with none running, Fleet falls back to tmux.
 | `GLYPH_OFF=1` | Keep the label, drop the machine and time |
 | `GLYPH_FMT` | `date(1)` format for the stamp (default `%Y-%m-%d·%H%M`) |
 | `GLYPH_SEP` | Separator (default `·`) |
+| `GLYPH_ORDER` | Field order (default `label project agent machine stamp`); naming fewer leaves the rest out |
 | `GLYPH_MACHINE` | Machine tag, when the hostname does not map well |
 | `GLYPH_AGENT` | Agent for the mark, when Glyph cannot tell which one owns the shell |
 | `GLYPH_AGENT_FALLBACK` | What to call a shell no agent owns (default `shell`) |
