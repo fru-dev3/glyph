@@ -6,3 +6,7 @@
 
 # local backups the updater leaves behind
 *.bak
+
+# Vercel link state
+.vercel
+.env*

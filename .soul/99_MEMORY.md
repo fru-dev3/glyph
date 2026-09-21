@@ -90,3 +90,19 @@
   output; neither CLI is installed on this machine, so live launches remain
   untested. Refreshed the website around a wider Herdr-inspired product layout
   with a workspace preview while preserving all generator and copy controls.
+
+## 2026-09-21: moved from Netlify to Vercel
+
+glyph.fru.dev is hosted on Vercel now (team fru-dev3, project glyph-fru).
+Netlify is being shut down, so there is no netlify.toml any more.
+
+- The site is the static `docs/` folder. No build, no functions, no secrets.
+  `vercel.json` publishes `docs/`, rewrites `/docs` to `docs.html` (Netlify's
+  pretty URL did this before) and carries the nosniff, Referrer-Policy and
+  PNG cache headers. Deploy with `./scripts/ship.sh`.
+- GitHub Pages is also switched on for this repo (main, /docs, CNAME
+  glyph.fru.dev), but DNS never pointed there: at the time of the move
+  glyph.fru.dev had A records to Netlify in the fru.dev zone (Netlify DNS),
+  and fru-dev3.github.io/glyph only redirected to glyph.fru.dev.
+- DNS cutover is the chief session's job: a CNAME `glyph` to the Vercel value
+  from `vercel domains verify glyph.fru.dev`.
