@@ -3,55 +3,59 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>glyph: give names to your AI agents</title>
-<meta name="description" content="A zsh wrapper that names every AI coding agent session (Claude Code, Codex, AGY, Cursor and more) with label, project, agent, machine and time, before the process starts.">
+<title>Glyph | Agent Rig</title>
+<meta name="description" content="Glyph gives every coding agent session a name you can recognise: label, project, agent, machine and time, set before Claude Code, Codex, AGY or Cursor starts.">
 <link rel="icon" href="favicon.ico" sizes="any">
-<link rel="icon" href="glyph.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="canonical" href="https://glyph.fru.dev/">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="author" content="fru.dev">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#f5f2ec" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#100e0c" media="(prefers-color-scheme: dark)">
-<meta property="og:site_name" content="glyph">
+<meta name="theme-color" content="#F6F7F4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B1210" media="(prefers-color-scheme: dark)">
+<meta property="og:site_name" content="fru.dev">
 <meta property="og:type" content="website">
-<meta property="og:title" content="glyph: give names to your AI agents">
-<meta property="og:description" content="Every agent session, named before it starts. Label, project, agent, machine, time.">
+<meta property="og:title" content="Glyph | Agent Rig">
+<meta property="og:description" content="Gives every coding agent session a name you can recognise. Label, project, agent, machine, time.">
 <meta property="og:url" content="https://glyph.fru.dev/">
-<meta property="og:image" content="https://glyph.fru.dev/og.png">
+<meta property="og:image" content="https://glyph.fru.dev/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="glyph: give names to your AI agents">
+<meta property="og:image:alt" content="Glyph | Agent Rig: the petroglyph mark in office green beside the name">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://glyph.fru.dev/og.png">
+<meta name="twitter:site" content="@fru">
+<meta name="twitter:title" content="Glyph | Agent Rig">
+<meta name="twitter:description" content="Gives every coding agent session a name you can recognise. Label, project, agent, machine, time.">
+<meta name="twitter:image" content="https://glyph.fru.dev/og-image.png">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication",
- "name":"glyph","applicationCategory":"DeveloperApplication",
- "operatingSystem":"macOS, Linux, Windows (WSL)",
- "url":"https://glyph.fru.dev/",
- "downloadUrl":"https://github.com/fru-dev3/glyph",
- "codeRepository":"https://github.com/fru-dev3/glyph",
- "programmingLanguage":"Shell",
- "description":"A zsh wrapper that gives every AI coding agent session a readable name - label, project, agent, machine and time - before the process starts.",
- "license":"https://opensource.org/licenses/MIT",
- "isAccessibleForFree":true,
- "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
- "author":{"@type":"Organization","name":"fru.dev","url":"https://fru.dev"},
- "keywords":"Claude Code, Codex, AGY, session naming, tmux, remote control, AI coding agents, zsh"}
+{"@context":"https://schema.org","@graph":[
+ {"@type":"Organization","@id":"https://fru.dev/#org","name":"fru.dev","url":"https://fru.dev","logo":"https://fru.dev/icon-512.png","sameAs":["https://github.com/fru-dev3"]},
+ {"@type":"WebSite","@id":"https://glyph.fru.dev/#website","name":"Glyph | Agent Rig","url":"https://glyph.fru.dev/","publisher":{"@id":"https://fru.dev/#org"}},
+ {"@type":"SoftwareApplication","@id":"https://glyph.fru.dev/#app","name":"Glyph","alternateName":"Glyph | Agent Rig",
+  "applicationCategory":"DeveloperApplication","operatingSystem":"macOS, Linux, Windows (WSL)",
+  "url":"https://glyph.fru.dev/","downloadUrl":"https://github.com/fru-dev3/glyph",
+  "codeRepository":"https://github.com/fru-dev3/glyph","programmingLanguage":"Shell",
+  "image":"https://glyph.fru.dev/og-image.png",
+  "description":"A zsh wrapper that gives every AI coding agent session a name you can recognise (label, project, agent, machine and time) before the process starts.",
+  "license":"https://opensource.org/licenses/MIT","isAccessibleForFree":true,
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
+  "publisher":{"@id":"https://fru.dev/#org"},"author":{"@id":"https://fru.dev/#org"},
+  "keywords":"Claude Code, Codex, AGY, session naming, tmux, remote control, AI coding agents, zsh"}
+]}
 </script>
 <style>
 :root{
-  --paper:#f6f3ed; --ink:#17130f; --dim:#6d6459; --faint:#9d9284;
-  --line:#e0d8ca; --hair:#eae3d7; --gold:#a07b30; --rock:#a08f74; --well:#f0ebe1;
+  --paper:#F6F7F4; --ink:#0B1210; --dim:#5B6660; --faint:#7F8A84;
+  --line:rgba(0,128,0,.20); --hair:rgba(0,128,0,.11); --accent:#008000; --rock:#AEBDB3; --well:#EBF2E9;
   --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
   --pad:clamp(20px,4.4vw,56px);
 }
 @media (prefers-color-scheme: dark){
   :root{
-    --paper:#100e0c; --ink:#f2ece2; --dim:#948a7d; --faint:#665e54;
-    --line:#272219; --hair:#1e1a15; --gold:#C4A35A; --rock:#5d5142; --well:#171410;
+    --paper:#0B1210; --ink:#E8EDE9; --dim:#8A968F; --faint:#65716A;
+    --line:rgba(63,163,77,.25); --hair:rgba(63,163,77,.13); --accent:#3FA34D; --rock:#27392F; --well:#111E18;
   }
 }
 *{box-sizing:border-box}
@@ -59,6 +63,7 @@ html{scroll-behavior:smooth}
 body{margin:0;background:var(--paper);color:var(--ink);
   font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .wrap{max-width:1560px;margin:0 auto;padding:0 var(--pad);width:100%}
 .mi{font:11px/1 var(--mono);letter-spacing:.19em;text-transform:uppercase}
 
@@ -70,14 +75,16 @@ nav{position:fixed;inset:0 0 auto 0;z-index:30;height:60px;display:flex;align-it
 nav.stuck{border-bottom-color:var(--hair)}
 nav .wrap{display:flex;align-items:center;gap:10px}
 .brand{display:flex;align-items:center;gap:9px;font-size:17px;letter-spacing:-.02em;font-weight:600}
-.brand img{width:23px;height:23px;border-radius:50%}
+.brand img{width:23px;height:23px}
+.brand .role{font-weight:400;color:var(--dim)}
+@media(max-width:560px){.brand .role{display:none}}
 .nl{margin-left:auto;display:flex;align-items:center;gap:clamp(14px,2.2vw,28px)}
 .nl a{color:var(--dim);transition:color .18s}
 .nl a:hover{color:var(--ink)}
 .star{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);
   border-radius:2px;padding:6px 11px;color:var(--dim)}
-.star:hover{border-color:var(--gold);color:var(--ink)}
-.star svg{width:11px;height:11px;fill:var(--gold)}
+.star:hover{border-color:var(--accent);color:var(--ink)}
+.star svg{width:11px;height:11px;fill:var(--accent)}
 .star b{font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:0}
 
 /* ---------- rail ---------- */
@@ -89,15 +96,15 @@ nav .wrap{display:flex;align-items:center;gap:10px}
 .rl svg{width:29px;height:29px;fill:none;stroke:var(--faint);stroke-width:6;
   stroke-linecap:round;stroke-linejoin:round;opacity:.45;
   animation:railglow 4.8s ease-in-out infinite;animation-delay:calc(var(--i) * .6s)}
-.rl::before{content:"";position:absolute;inset:0;background:var(--gold);opacity:0;
+.rl::before{content:"";position:absolute;inset:0;background:var(--accent);opacity:0;
   animation:railwash 4.8s ease-in-out infinite;animation-delay:calc(var(--i) * .6s)}
 .rl u{position:absolute;right:5px;bottom:3px;text-decoration:none;
   font:8px var(--mono);letter-spacing:.08em;color:var(--faint);opacity:.45;
   animation:railnum 4.8s ease-in-out infinite;animation-delay:calc(var(--i) * .6s)}
 @keyframes railglow{0%,55%,100%{opacity:.42;stroke:var(--faint)}
-  68%,80%{opacity:1;stroke:var(--gold)}}
+  68%,80%{opacity:1;stroke:var(--accent)}}
 @keyframes railwash{0%,55%,100%{opacity:0}68%,80%{opacity:.06}}
-@keyframes railnum{0%,55%,100%{opacity:.45;color:var(--faint)}68%,80%{opacity:1;color:var(--gold)}}
+@keyframes railnum{0%,55%,100%{opacity:.45;color:var(--faint)}68%,80%{opacity:1;color:var(--accent)}}
 @media(min-width:1240px){.rail{display:flex}
   .wrap{padding-left:126px}
   .start .wrap,footer{padding-right:126px}}
@@ -109,11 +116,11 @@ nav .wrap{display:flex;align-items:center;gap:10px}
   mask-image:linear-gradient(100deg,transparent 0%,rgba(0,0,0,.35) 26%,rgba(0,0,0,.8) 52%,#000 72%)}
 .hero .wrap{position:relative;z-index:1}
 .col{max-width:min(980px,66vw);min-width:0}
-.eyebrow{color:var(--gold);margin:0 0 26px}
+.eyebrow{color:var(--accent);margin:0 0 26px}
 h1{margin:0;max-width:13ch;font-size:clamp(42px,6.6vw,96px);line-height:.98;letter-spacing:-.045em;
   font-weight:500;text-wrap:balance}
 h1 span{display:block}
-h1 .g{color:var(--gold)}
+h1 .g{color:var(--accent)}
 .lede{margin:28px 0 0;max-width:64ch;font-size:clamp(15.5px,1.25vw,18px);color:var(--dim);text-wrap:balance}
 
 /* tabs + command bar */
@@ -123,11 +130,11 @@ h1 .g{color:var(--gold)}
   font:11px/1 var(--mono);letter-spacing:.19em;text-transform:uppercase;
   border-bottom:1px solid transparent;margin-bottom:-1px;transition:.18s}
 .tabs button:hover{color:var(--dim)}
-.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--gold)}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
 .tabs .os{margin-left:auto;color:var(--faint);padding-bottom:10px}
 .bar{display:flex;align-items:stretch;border:1px solid var(--line);border-top:0;
   background:var(--well);min-width:0}
-.bar .p{display:flex;justify-content:center;width:42px;flex:none;color:var(--gold);
+.bar .p{display:flex;justify-content:center;width:42px;flex:none;color:var(--accent);
   font:clamp(11px,.86vw,13.5px)/1.45 var(--mono);padding-top:16px;border-right:1px solid var(--line)}
 .bar code{flex:1;min-width:0;padding:16px 18px;letter-spacing:-.01em;color:var(--ink);
   font:clamp(11px,.86vw,13.5px)/1.45 var(--mono);
@@ -138,12 +145,12 @@ h1 .g{color:var(--gold)}
 .bar button{flex:none;border:0;border-left:1px solid var(--line);background:none;cursor:pointer;
   padding:0 20px;color:var(--dim);font:11px var(--mono);letter-spacing:.19em;text-transform:uppercase;
   transition:.18s}
-.bar button:hover{color:var(--ink);background:color-mix(in srgb,var(--gold) 10%,transparent)}
+.bar button:hover{color:var(--ink);background:color-mix(in srgb,var(--accent) 10%,transparent)}
 .out{margin:14px 0 0;min-height:1.5em;display:flex;gap:13px;align-items:baseline;color:var(--dim);
   font:13px/1.5 var(--mono);overflow-wrap:anywhere;min-width:0}
-.out i{font-style:normal;flex:none;color:var(--gold);font-size:10px;letter-spacing:.17em;
+.out i{font-style:normal;flex:none;color:var(--accent);font-size:10px;letter-spacing:.17em;
   text-transform:uppercase;border:1px solid var(--line);padding:3px 8px;border-radius:2px}
-.out b{color:var(--gold);font-weight:600}
+.out b{color:var(--accent);font-weight:600}
 .out .t{color:var(--ink)}
 
 .works{margin:52px 0 0}
@@ -154,7 +161,7 @@ h1 .g{color:var(--gold)}
 .logos img:hover{opacity:1;transform:translateY(-2px)}
 .works p.also{margin:26px 0 0;color:var(--faint)}
 .also a{color:var(--dim);border-bottom:1px solid var(--line);transition:.18s}
-.also a:hover{color:var(--gold);border-bottom-color:var(--gold)}
+.also a:hover{color:var(--accent);border-bottom-color:var(--accent)}
 
 .footline{position:absolute;left:0;right:0;bottom:22px;z-index:1}
 .footline .wrap{display:flex;align-items:center;gap:20px;color:var(--faint)}
@@ -173,7 +180,7 @@ h2{margin:0;font-size:clamp(28px,4vw,54px);line-height:1.02;letter-spacing:-.04e
 /* --- the name, built one token at a time --- */
 .build{margin-top:clamp(44px,5.5vw,72px);border-top:1px solid var(--hair);padding-top:26px}
 .btag{margin:0 0 20px;color:var(--faint);transition:color .5s}
-.btag.done{color:var(--gold)}
+.btag.done{color:var(--accent)}
 .anatomy{display:flex;flex-wrap:wrap;align-items:flex-start;row-gap:18px}
 .tok{min-width:0;display:flex;flex-direction:column;gap:10px;padding-right:clamp(12px,1.9vw,26px);
   transition:padding-right .7s cubic-bezier(.22,.68,.24,1),gap .5s ease}
@@ -186,11 +193,11 @@ h2{margin:0;font-size:clamp(28px,4vw,54px);line-height:1.02;letter-spacing:-.04e
              width .55s cubic-bezier(.22,.68,.24,1)}
 .tok.lit em{opacity:1}
 .tok.lit u{opacity:1}
-.tok.now em{color:var(--gold)}
-.tok.now u{color:var(--gold)}
-.tok.key.lit em{color:var(--gold)}
+.tok.now em{color:var(--accent)}
+.tok.now u{color:var(--accent)}
+.tok.key.lit em{color:var(--accent)}
 .tok em::after{content:"";display:inline-block;width:.55em;height:1em;margin-left:1px;
-  background:var(--gold);vertical-align:-.14em;opacity:0}
+  background:var(--accent);vertical-align:-.14em;opacity:0}
 .tok.now em::after{opacity:1;animation:blink .9s steps(1,end) infinite}
 @keyframes blink{50%{opacity:0}}
 .sep{align-self:flex-start;padding-right:clamp(12px,1.9vw,26px);opacity:.2;
@@ -205,7 +212,7 @@ h2{margin:0;font-size:clamp(28px,4vw,54px);line-height:1.02;letter-spacing:-.04e
 .anatomy.tight .tok em::after{display:none}
 
 .gloss{margin:26px 0 0;min-height:1.5em;color:var(--dim);font-size:15px}
-.gloss code{font:.92em var(--mono);color:var(--gold)}
+.gloss code{font:.92em var(--mono);color:var(--accent)}
 .gloss span{display:inline-block;opacity:0;transform:translateY(5px);
   transition:opacity .3s,transform .3s}
 .gloss span.in{opacity:1;transform:none}
@@ -225,17 +232,17 @@ h2{margin:0;font-size:clamp(28px,4vw,54px);line-height:1.02;letter-spacing:-.04e
 .win .tbar b{font:11px var(--mono);font-weight:400;color:var(--dim);letter-spacing:-.01em;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .win .body{padding:16px 14px;font:11.5px/1.9 var(--mono);color:var(--dim);min-width:0}
-.win .body .g{color:var(--gold)}
-.win .body .c{display:inline-block;width:.5em;height:1em;background:var(--gold);
+.win .body .g{color:var(--accent)}
+.win .body .c{display:inline-block;width:.5em;height:1em;background:var(--accent);
   vertical-align:-.14em;animation:blink 1s steps(1,end) infinite}
 .panes{border:1px solid var(--hair);background:var(--well)}
 .pn{display:flex;align-items:center;gap:10px;padding:11px 13px;border-bottom:1px solid var(--hair);min-width:0}
 .pn:last-child{border-bottom:0}
-.pn i{flex:none;width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:.55;font-style:normal}
+.pn i{flex:none;width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.55;font-style:normal}
 .pn.a i{opacity:1}
 .pn b{font:10.5px var(--mono);font-weight:400;color:var(--dim);white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis;min-width:0;letter-spacing:-.01em}
-.pn b em{font-style:normal;color:var(--gold)}
+.pn b em{font-style:normal;color:var(--accent)}
 .pn s{margin-left:auto;flex:none;text-decoration:none;font:9.5px var(--mono);color:var(--faint)}
 .phone{border:1px solid var(--hair);border-radius:18px;background:var(--well);padding:9px 7px;min-width:0}
 .phone .notch{width:34%;height:4px;border-radius:3px;background:var(--line);margin:2px auto 10px}
@@ -243,9 +250,9 @@ h2{margin:0;font-size:clamp(28px,4vw,54px);line-height:1.02;letter-spacing:-.04e
 .ph:first-of-type{border-top:0}
 .ph b{font:10px var(--mono);font-weight:400;color:var(--ink);white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis;min-width:0;letter-spacing:-.02em}
-.ph b em{font-style:normal;color:var(--gold)}
+.ph b em{font-style:normal;color:var(--accent)}
 .ph s{text-decoration:none;font:9px var(--mono);color:var(--faint)}
-.ph.live s{color:var(--gold)}
+.ph.live s{color:var(--accent)}
 
 .compare{margin-top:clamp(46px,6vw,80px);display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--hair)}
@@ -253,32 +260,35 @@ h2{margin:0;font-size:clamp(28px,4vw,54px);line-height:1.02;letter-spacing:-.04e
 .pane:last-child{border-right:0}
 .pane h3{margin:0 0 22px;color:var(--faint);font:11px var(--mono);
   letter-spacing:.19em;text-transform:uppercase;font-weight:400}
-.pane.on h3{color:var(--gold)}
+.pane.on h3{color:var(--accent)}
 .pane ul{margin:0;padding:0}
 .pane li{list-style:none;font:clamp(10.5px,.99vw,13.5px)/2 var(--mono);color:var(--faint);
   overflow-wrap:anywhere;letter-spacing:-.01em}
 .pane.on li{color:var(--dim)}
-.pane.on li b{color:var(--gold);font-weight:600}
+.pane.on li b{color:var(--accent);font-weight:600}
 
 .points{margin-top:clamp(46px,5vw,68px);display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3vw,48px)}
 .pt{min-width:0;border-top:1px solid var(--hair);padding-top:24px}
-.pt svg{width:30px;height:30px;stroke:var(--gold);fill:none;stroke-width:6;
+.pt svg{width:30px;height:30px;stroke:var(--accent);fill:none;stroke-width:6;
   stroke-linecap:round;stroke-linejoin:round;margin-bottom:18px;display:block}
 .pt b{display:block;font-size:16.5px;letter-spacing:-.02em;font-weight:600;margin-bottom:8px}
 .pt p{margin:0;font-size:14.5px;color:var(--dim)}
-.pt code,.lede code,.say code.k{font:.92em var(--mono);color:var(--gold);letter-spacing:-.01em}
+.pt code,.lede code,.say code.k{font:.92em var(--mono);color:var(--accent);letter-spacing:-.01em}
 
 .start{text-align:center;padding:clamp(84px,11vh,124px) 0}
 .start h2{max-width:16ch;margin-inline:auto}
 .start .kit{max-width:min(1040px,92vw);margin:38px auto 0;text-align:left}
 .start .links{margin-top:26px;display:flex;gap:26px;justify-content:center;color:var(--dim)}
-.start .links a:hover{color:var(--gold)}
+.start .links a:hover{color:var(--accent)}
 
 footer{border-top:1px solid var(--hair);padding:26px 0;display:flex;flex-wrap:wrap;
   gap:8px 24px;align-items:center;color:var(--faint)}
 footer a:hover{color:var(--ink)}
 footer .sp{margin-left:auto}
+.family{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px 22px;padding-top:6px;
+  font:14px/1.5 var(--sans);letter-spacing:0;text-transform:none;color:var(--dim)}
+.family a:first-child{color:var(--accent);font-weight:600}
 
 @media(max-width:1000px){
   .col{max-width:none}
@@ -323,7 +333,7 @@ footer .sp{margin-left:auto}
 <body>
 
 <nav id="nav"><div class="wrap">
-  <a class="brand" href="/"><img src="glyph.svg" alt="">glyph</a>
+  <a class="brand" href="/"><img src="favicon.svg" alt="">Glyph<span class="role">| Agent Rig</span></a>
   <div class="nl mi">
     <a href="#about">About</a>
     <a href="#why">Why</a>
@@ -482,7 +492,7 @@ footer .sp{margin-left:auto}
 
 <div class="wrap"><footer class="mi">
   <span>MIT</span><a href="docs.html">Docs</a><a href="https://github.com/fru-dev3/glyph">Source</a>
-  <span class="sp"><a href="https://fru.dev">fru.dev</a></span>
+  <div class="family"><a href="https://fru.dev">A fru.dev project</a><a href="https://prevail.sh">Prevail | Agent Harness</a><a href="https://context.fru.dev">Ibis | Agent Context</a><a href="https://memosa.dev">Memosa | Agent Memory</a></div>
 </footer></div>
 
 <svg id="defs" style="position:fixed;width:0;height:0;overflow:hidden" aria-hidden="true"></svg>

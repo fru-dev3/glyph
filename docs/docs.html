@@ -3,43 +3,52 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>glyph docs</title>
-<meta name="description" content="Glyph reference: install, how a session name is built, launching agents, auto-approve, Fleet, remote agents over SSH and Tailscale, workspace backends, every command and every environment variable.">
+<title>Docs | Glyph | Agent Rig</title>
+<meta name="description" content="Glyph docs: install, naming, launching agents, Fleet, remote agents, every command and every environment variable.">
 <link rel="icon" href="favicon.ico" sizes="any">
-<link rel="icon" href="glyph.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="canonical" href="https://glyph.fru.dev/docs.html">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="author" content="fru.dev">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#f6f3ed" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#100e0c" media="(prefers-color-scheme: dark)">
-<meta property="og:site_name" content="glyph">
+<meta name="theme-color" content="#F6F7F4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B1210" media="(prefers-color-scheme: dark)">
+<meta property="og:site_name" content="fru.dev">
 <meta property="og:type" content="article">
-<meta property="og:title" content="glyph docs">
+<meta property="og:title" content="Docs | Glyph | Agent Rig">
 <meta property="og:description" content="Install, naming, launching agents, Fleet, remote agents, every command and every environment variable.">
 <meta property="og:url" content="https://glyph.fru.dev/docs.html">
-<meta property="og:image" content="https://glyph.fru.dev/og.png">
+<meta property="og:image" content="https://glyph.fru.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Glyph | Agent Rig: the petroglyph mark in office green beside the name">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://glyph.fru.dev/og.png">
+<meta name="twitter:site" content="@fru">
+<meta name="twitter:title" content="Docs | Glyph | Agent Rig">
+<meta name="twitter:description" content="Install, naming, launching agents, Fleet, remote agents, every command and every environment variable.">
+<meta name="twitter:image" content="https://glyph.fru.dev/og-image.png">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"TechArticle",
- "headline":"glyph docs","url":"https://glyph.fru.dev/docs.html",
- "description":"Install, naming, launching agents, Fleet, remote agents, every command and every environment variable.",
- "author":{"@type":"Organization","name":"fru.dev","url":"https://fru.dev"},
- "isPartOf":{"@type":"WebSite","name":"glyph","url":"https://glyph.fru.dev/"}}
+{"@context":"https://schema.org","@graph":[
+ {"@type":"Organization","@id":"https://fru.dev/#org","name":"fru.dev","url":"https://fru.dev","logo":"https://fru.dev/icon-512.png","sameAs":["https://github.com/fru-dev3"]},
+ {"@type":"WebSite","@id":"https://glyph.fru.dev/#website","name":"Glyph | Agent Rig","url":"https://glyph.fru.dev/","publisher":{"@id":"https://fru.dev/#org"}},
+ {"@type":"TechArticle","headline":"Glyph docs","url":"https://glyph.fru.dev/docs.html",
+  "description":"Install, naming, launching agents, Fleet, remote agents, every command and every environment variable.",
+  "about":{"@id":"https://glyph.fru.dev/#app"},"isPartOf":{"@id":"https://glyph.fru.dev/#website"},
+  "publisher":{"@id":"https://fru.dev/#org"},"author":{"@id":"https://fru.dev/#org"}}
+]}
 </script>
 <style>:root{
-  --paper:#f6f3ed; --ink:#17130f; --dim:#6d6459; --faint:#9d9284;
-  --line:#e0d8ca; --hair:#eae3d7; --gold:#a07b30; --well:#f0ebe1;
+  --paper:#F6F7F4; --ink:#0B1210; --dim:#5B6660; --faint:#7F8A84;
+  --line:rgba(0,128,0,.20); --hair:rgba(0,128,0,.11); --accent:#008000; --well:#EBF2E9;
   --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
   --pad:clamp(20px,4.4vw,56px);
 }
 @media (prefers-color-scheme: dark){
   :root{
-    --paper:#100e0c; --ink:#f2ece2; --dim:#948a7d; --faint:#665e54;
-    --line:#272219; --hair:#1e1a15; --gold:#C4A35A; --well:#171410;
+    --paper:#0B1210; --ink:#E8EDE9; --dim:#8A968F; --faint:#65716A;
+    --line:rgba(63,163,77,.25); --hair:rgba(63,163,77,.13); --accent:#3FA34D; --well:#111E18;
   }
 }
 *{box-sizing:border-box}
@@ -47,6 +56,7 @@ html{scroll-behavior:smooth}
 body{margin:0;background:var(--paper);color:var(--ink);
   font:16px/1.65 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .wrap{max-width:1560px;margin:0 auto;padding:0 var(--pad);width:100%}
 .mi{font:11px/1 var(--mono);letter-spacing:.19em;text-transform:uppercase}
 .dim{color:var(--dim)}
@@ -57,13 +67,15 @@ nav.top{position:fixed;inset:0 0 auto 0;z-index:30;height:60px;display:flex;alig
   border-bottom:1px solid var(--hair)}
 nav.top .wrap{display:flex;align-items:center;gap:10px}
 .brand{display:flex;align-items:center;gap:9px;font-size:17px;letter-spacing:-.02em;font-weight:600}
-.brand img{width:23px;height:23px;border-radius:50%}
+.brand img{width:23px;height:23px}
+.brand .role{font-weight:400;color:var(--dim)}
+@media(max-width:420px){.brand .role{display:none}}
 .nl{margin-left:auto;display:flex;align-items:center;gap:clamp(14px,2.2vw,28px)}
 .nl a{color:var(--dim);transition:color .18s}
 .nl a:hover{color:var(--ink)}
 .star{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);
   border-radius:2px;padding:6px 11px;color:var(--dim)}
-.star svg{width:11px;height:11px;fill:var(--gold)}
+.star svg{width:11px;height:11px;fill:var(--accent)}
 .star b{font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:0}
 
 .layout{display:grid;grid-template-columns:212px minmax(0,1fr);gap:clamp(32px,5vw,86px);
@@ -73,7 +85,7 @@ nav.top .wrap{display:flex;align-items:center;gap:10px}
   font:11px var(--mono);letter-spacing:.19em;text-transform:uppercase;font-weight:400}
 .toc a{display:block;color:var(--dim);font-size:13.5px;padding:5px 0 5px 13px;
   border-left:1px solid var(--hair);transition:.18s}
-.toc a:hover,.toc a.on{color:var(--ink);border-left-color:var(--gold)}
+.toc a:hover,.toc a.on{color:var(--ink);border-left-color:var(--accent)}
 main{min-width:0;max-width:920px}
 
 h1{margin:0;font-size:clamp(38px,5.4vw,68px);line-height:1;letter-spacing:-.045em;font-weight:500}
@@ -83,14 +95,14 @@ h2{margin:clamp(60px,6.5vw,92px) 0 6px;font-size:clamp(24px,2.6vw,34px);letter-s
 h3{margin:36px 0 10px;font-size:16.5px;letter-spacing:-.015em;font-weight:600}
 p{margin:12px 0 0;color:var(--dim);max-width:74ch}
 p.note{font-size:13.5px;color:var(--faint);margin-top:10px;max-width:74ch}
-main code{font:.9em var(--mono);color:var(--gold);letter-spacing:-.01em;overflow-wrap:anywhere}
+main code{font:.9em var(--mono);color:var(--accent);letter-spacing:-.01em;overflow-wrap:anywhere}
 ul{margin:14px 0 0;padding-left:19px;color:var(--dim);max-width:74ch}
 li{margin:6px 0}
 li b{color:var(--ink);font-weight:600}
 
 .bar{display:flex;align-items:stretch;border:1px solid var(--line);background:var(--well);
   margin:18px 0 0;min-width:0}
-.bar .p{display:flex;justify-content:center;width:40px;flex:none;color:var(--gold);
+.bar .p{display:flex;justify-content:center;width:40px;flex:none;color:var(--accent);
   font:13px/1.7 var(--mono);padding-top:15px;border-right:1px solid var(--line)}
 .bar code{flex:1;min-width:0;padding:15px 17px;font:13px/1.7 var(--mono);color:var(--ink);
   overflow-x:auto;white-space:nowrap;scrollbar-width:none}
@@ -98,7 +110,7 @@ li b{color:var(--ink);font-weight:600}
 .bar button{flex:none;border:0;border-left:1px solid var(--line);background:none;cursor:pointer;
   padding:0 18px;color:var(--dim);font:11px var(--mono);letter-spacing:.19em;
   text-transform:uppercase;transition:.18s}
-.bar button:hover{color:var(--ink);background:color-mix(in srgb,var(--gold) 10%,transparent)}
+.bar button:hover{color:var(--ink);background:color-mix(in srgb,var(--accent) 10%,transparent)}
 
 .tw{margin:20px 0 0;overflow-x:auto;border:1px solid var(--hair)}
 table{border-collapse:collapse;width:100%;min-width:520px}
@@ -110,9 +122,9 @@ td img{width:19px;height:19px;object-fit:contain;border-radius:4px;vertical-alig
 .noimg{display:inline-block;width:19px}
 td b{font-weight:600}
 
-.mark{margin:22px 0 0;border-left:2px solid var(--gold);background:var(--well);
+.mark{margin:22px 0 0;border-left:2px solid var(--accent);background:var(--well);
   padding:14px 18px;font:15px var(--mono);overflow-wrap:anywhere}
-.mark b{color:var(--gold)}
+.mark b{color:var(--accent)}
 .callout{margin:22px 0 0;border:1px solid var(--hair);background:var(--well);padding:16px 18px;max-width:74ch}
 .callout b{display:block;margin-bottom:5px;font-size:13.5px;color:var(--ink)}
 .callout p{margin:0;font-size:14px}
@@ -121,6 +133,9 @@ footer{border-top:1px solid var(--hair);margin-top:80px;padding:26px 0;display:f
   gap:8px 24px;align-items:center;color:var(--faint)}
 footer a:hover{color:var(--ink)}
 footer .sp{margin-left:auto}
+.family{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px 22px;padding-top:6px;
+  font:14px/1.5 var(--sans);letter-spacing:0;text-transform:none;color:var(--dim)}
+.family a:first-child{color:var(--accent);font-weight:600}
 
 @media(max-width:900px){
   .layout{grid-template-columns:minmax(0,1fr);gap:16px;padding-top:86px}
@@ -149,7 +164,7 @@ footer .sp{margin-left:auto}
 <body>
 
 <nav class="top"><div class="wrap">
-  <a class="brand" href="/"><img src="glyph.svg" alt="">glyph</a>
+  <a class="brand" href="/"><img src="favicon.svg" alt="">Glyph<span class="role">| Agent Rig</span></a>
   <div class="nl mi">
     <a href="/">Home</a>
     <a class="hide" href="https://github.com/fru-dev3/glyph">GitHub&nbsp;&#8599;</a>
@@ -387,7 +402,7 @@ and an older copy still loaded in the shell you are typing in.</p>
 
 <footer class="mi">
   <span>MIT</span><a href="/">Home</a><a href="https://github.com/fru-dev3/glyph">Source</a>
-  <span class="sp"><a href="https://fru.dev">fru.dev</a></span>
+  <div class="family"><a href="https://fru.dev">A fru.dev project</a><a href="https://prevail.sh">Prevail | Agent Harness</a><a href="https://context.fru.dev">Ibis | Agent Context</a><a href="https://memosa.dev">Memosa | Agent Memory</a></div>
 </footer>
 </main>
 </div></div>
