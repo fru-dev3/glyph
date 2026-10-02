@@ -142,6 +142,68 @@ printf 'ci = pi' > "$GLYPH_FLEET_CONF"
 glyph fleet init >/dev/null
 assert_eq "$(_glyph_fleet_slots ci)" ' pi' 'init keeps customized preset without trailing newline'
 assert_eq "$(_glyph_fleet_slots review)" ' claude codex' 'init adds missing preset'
+_glyph_star_ask </dev/null >/dev/null
+[[ ! -e "$GLYPH_STATE/star" ]] || { print -ru2 -- 'FAIL: star question must not run without a terminal'; exit 1; }
+
+# glyph wake: the reset time comes from the quota, the nudge from the pane.
+cat > "$test_dir/bin/herdr" <<'STUB'
+#!/bin/zsh
+print -r -- "${(j: :)@}" >> "$GLYPH_TEST_HERDR"
+[[ "$1 $2" == 'pane read' ]] && print -r -- "${GLYPH_TEST_SCREEN:-}"
+exit 0
+STUB
+chmod +x "$test_dir/bin/herdr"
+export GLYPH_TEST_HERDR="$test_dir/herdr.log" GLYPH_WAKE_GRACE=0 GLYPH_WAKE_AWAKE=0
+_glyph_claude_live() { print -r -- '{"five_hour":{"utilization":100.0,"resets_at":"2026-09-28T22:39:59.75+00:00"},"seven_day":{"utilization":66.0,"resets_at":"2026-10-01T12:00:00+00:00"},"limits":[{"kind":"weekly_scoped","percent":100,"resets_at":"2026-10-02T12:00:00.18+00:00","scope":{"model":{"display_name":"Fable"}}}]}' }
+assert_eq "$(_glyph_wake_until)" 1790942400 'wake waits for the latest limit at 100%, percent included'
+_glyph_claude_live() { print -r -- '{"five_hour":{"utilization":88.0,"resets_at":"2026-09-28T22:39:59+00:00"}}' }
+assert_eq "$(_glyph_wake_until)" 0 'wake reads a limit under 100% as lifted'
+_glyph_claude_live() { return 1 }
+_glyph_wake_until >/dev/null && { print -ru2 -- 'FAIL: wake must fail when the quota cannot be read'; exit 1; }
+_glyph_claude_live() { print -r -- '{"five_hour":{"utilization":3.0,"resets_at":"2026-09-28T22:39:59+00:00"}}' }
+
+wake=$GLYPH_STATE/wake rec=$GLYPH_STATE/wake/w1_p2.pane
+mkdir -p "$test_dir/home/.claude/sessions"
+print -r -- '{"pid":1,"sessionId":"abc-123","status":"idle"}' > "$test_dir/home/.claude/sessions/$$.json"
+: > "$test_dir/t.jsonl"
+hookjson="{\"session_id\":\"abc-123\",\"transcript_path\":\"$test_dir/t.jsonl\",\"hook_event_name\":\"StopFailure\",\"error\":\"rate_limit\"}"
+park() { print -r -- "$hookjson" | HOME=$test_dir/home HERDR_PANE_ID=w1:p2 HERDR_SOCKET_PATH=/tmp/h.sock glyph wake park }
+_glyph_wake_start() { : }                          # the waiter is driven by hand below
+print -r -- "$hookjson" | env -u HERDR_PANE_ID -u TMUX_PANE zsh -fc ". ${(q)repo}/glyph.zsh; GLYPH_STATE=${(q)GLYPH_STATE} glyph wake park"
+[[ ! -e $rec ]] || { print -ru2 -- 'FAIL: wake parked a session with no pane'; exit 1; }
+park
+assert_eq "$(sed -n '1p;3,7p' $rec | tr '\n' ' ')" "parked 1 herdr w1:p2 /tmp/h.sock $$ " 'wake parks the pane, socket and session pid'
+
+# Nothing touched it since: continue is typed, then Enter, apart.
+( HOME=$test_dir/home _glyph_wake_wait )
+assert_eq "$(grep send $GLYPH_TEST_HERDR)" $'pane send-text w1:p2 continue\npane send-keys w1:p2 Enter' 'wake types continue'
+assert_eq "$(head -1 $rec)" nudged 'wake marks the pane nudged'
+# Limited again straight away: a second try, and after three it stops.
+park; assert_eq "$(sed -n 3p $rec)" 2 'a quick second limit counts as another try'
+print -rl -- nudged $EPOCHSECONDS 3 herdr w1:p2 > $rec; park
+assert_eq "$(head -1 $rec)" gave-up 'wake gives up after three quick limits'
+
+# Slept through the reset: Claude Code asks for Enter, and gets only that.
+rm -f $rec $GLYPH_TEST_HERDR; park
+( HOME=$test_dir/home GLYPH_TEST_SCREEN='Usage limit has reset · press enter to continue' _glyph_wake_wait )
+assert_eq "$(grep send $GLYPH_TEST_HERDR)" 'pane send-keys w1:p2 Enter' 'wake presses enter on a stale prompt'
+# Claude Code continued by itself: the transcript moved, so hands off.
+rm -f $rec $GLYPH_TEST_HERDR; park
+touch -t $(strftime '%Y%m%d%H%M.%S' $(( EPOCHSECONDS + 120 ))) "$test_dir/t.jsonl"
+( HOME=$test_dir/home _glyph_wake_wait )
+[[ ! -e $rec && ! -e $GLYPH_TEST_HERDR ]] || { print -ru2 -- 'FAIL: wake nudged a session that had continued'; exit 1; }
+# The session is gone: nothing is typed into whatever holds the pane now.
+: > "$test_dir/t.jsonl"; park
+print -r -- '{"sessionId":"someone-else"}' > "$test_dir/home/.claude/sessions/$$.json"
+( HOME=$test_dir/home _glyph_wake_wait )
+[[ ! -e $rec && ! -e $GLYPH_TEST_HERDR ]] || { print -ru2 -- 'FAIL: wake typed into a closed session'; exit 1; }
+# Its process is gone, even if the session file was left behind.
+print -rl -- parked $EPOCHSECONDS 1 herdr w1:p2 '' 999999 abc-123 "$test_dir/t.jsonl" > $rec
+print -r -- '{"sessionId":"abc-123"}' > "$test_dir/home/.claude/sessions/999999.json"
+( HOME=$test_dir/home _glyph_wake_wait )
+[[ ! -e $rec && ! -e $GLYPH_TEST_HERDR ]] || { print -ru2 -- 'FAIL: wake typed into a dead session'; exit 1; }
+unset GLYPH_WAKE_GRACE GLYPH_WAKE_AWAKE
+print -r -- 'PASS: wake reset time, parking, continue, enter, hands-off and give-up'
 print -r -- 'PASS: one-command fleet init, custom config path, existing definitions, repeat runs and dry run'
 print -r -- 'PASS: AGY labels, prompts, print mode, management commands and opt-in flags'
 print -r -- 'PASS: all nine adapter labels, local/SSH fleet construction and pi/OpenCode ad-hoc fleets'

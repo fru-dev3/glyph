@@ -107,6 +107,22 @@ Netlify is being shut down, so there is no netlify.toml any more.
 - DNS cutover is the chief session's job: a CNAME `glyph` to the Vercel value
   from `vercel domains verify glyph.fru.dev`.
 
+## 2026-09-21: star prompt after install and update (0.7.4)
+
+- `_glyph_star_ask` asks "If glyph has been useful, would you like to star it?
+  [Y/n]" once, modeled on herdr's post-update prompt. It runs at the end of
+  `glyph update` (only when a new file was installed) and at the end of
+  install.sh (a plain sh run borrows `zsh -c` to call it).
+- It stars through `gh api -X PUT /user/starred/fru-dev3/glyph` when gh is
+  signed in, and prints the repo link otherwise. It skips the question when
+  gh says the repo is already starred.
+- The answer is written to `$GLYPH_STATE/star` (yes/no/starred), so it never
+  asks twice. EOF writes nothing and it asks again next time. It never asks
+  without a TTY on stdin and stdout. `GLYPH_STAR=0` opts out.
+- The smoke tests pick up the caller's GLYPH_SEP, GLYPH_ORDER and similar
+  variables and fail on this machine unless you run them under `env -u ...`.
+  This was already true before this change.
+
 ## 2026-10-02: the account field
 
 - A sixth field, `account`, left out of the default order. Naming it in
@@ -124,11 +140,30 @@ Netlify is being shut down, so there is no netlify.toml any more.
   old tag. `aidev remark` (or `/rename`) refreshes it.
 - tests/smoke.zsh now unsets GLYPH_SEP, so it passes under a personal
   environment without `env -u`.
-- Committed by itself on top of 0.7.3, with no version bump: the star prompt
-  and `glyph wake` (0.8.0) changes in the working tree belong to earlier
-  sessions and were left uncommitted. The vault copy
-  (`<vault>/build/.ai/shell/glyph.zsh`) carries all three by hand; it still
-  lacks the repo's `_glyph_timeout`.
+- First pushed by itself on top of 0.7.3 (baac2af), because the star prompt
+  and `glyph wake` work in the tree belonged to earlier sessions. That went
+  wrong within minutes; see the 0.8.0 entry below.
 - Fru's own order (vault `glyph-personal.zsh`) is now
   `label project machine agent account stamp` with `·` and `%y%m%d-%H%M`:
   fapps-glyph·mbp·cc·fd3·261002-0535. The 09-21 mesh form is retired.
+
+## 2026-10-02: 0.8.0 published (star prompt, glyph wake, account field)
+
+- `glyph wake` was written on 2026-09-28 and ran from the vault copy without
+  being committed. A `StopFailure` hook (`glyph wake park`) records the pane of
+  a session stopped by a usage limit; one waiter per machine asks Anthropic
+  when the limit lifts, gives Claude Code `GLYPH_WAKE_GRACE` seconds, then
+  presses Enter or types `continue` into each parked pane (Herdr or tmux).
+  Three early nudges in a row and it gives up on that pane.
+- Same batch: `_glyph_timeout` (macOS has no timeout(1)) so a locked Keychain
+  cannot hang the quota call, with `~/.claude/.credentials.json` as the
+  fallback; and the agent wrappers run the agent unmarked when `_glyph_launch`
+  is missing, which is what Claude Code's command snapshot leaves behind.
+- Lesson: the public file must be a superset of what Fru's Macs load.
+  `~/.config/glyph/glyph.zsh` is a symlink to the vault copy, so `glyph update`
+  writes the public file over it. With only the account field pushed, an
+  update at 06:10 removed wake and the star prompt from both Macs while the
+  wake hook was installed. Restored from `glyph.zsh.bak`, then everything was
+  committed as 0.8.0 and the vault copy made byte-identical to the repo file.
+- Not done: no v0.8.0 tag or GitHub release (the latest release is v0.7.0), and
+  the site does not mention wake or the account field.

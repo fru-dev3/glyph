@@ -189,6 +189,7 @@ lets `glyph ps` line them up in a column.
 glyph ls        # recent sessions: when, agent, mark, machine
 glyph ps        # every agent session alive right now, named or not
 glyph usage     # quota and token counts across agents
+glyph wake      # continue sessions a usage limit stopped, at the reset
 glyph doctor    # check the install and say what is wrong
 glyph mark x    # name a session that is already open
 glyph agents    # what is installed, and each one's auto-approve flag
@@ -227,6 +228,12 @@ glyph version
 
 It loads the new file into the shell you ran it in, so there is nothing to
 reload. Other shells you already have open keep the old one until `exec zsh`.
+
+After an install or an update glyph asks, once, whether you would like to star
+it on GitHub. Yes stars it through `gh` if you have it signed in, and prints
+the link otherwise. Your answer is kept in `~/.local/state/glyph/star`, so the
+question never comes back. It only asks at a terminal, and `GLYPH_STAR=0` turns
+it off.
 
 Refuses to install a file that does not parse, backs up the previous copy to
 `~/.config/glyph/glyph.zsh.bak`, and never touches your config.
@@ -286,8 +293,38 @@ glyph usage --live    # the real percentages, from Anthropic
 Codex writes its own rate limits to disk, so its 5h and weekly windows are
 exact and offline. Claude does not: token counts come from your transcripts,
 and the quota itself needs `--live`, which reads the Keychain token and asks
-Anthropic. That is the only network request glyph makes besides `glyph update`.
+Anthropic. That is the only network request glyph makes besides `glyph update` and
+the star you agree to.
 AGY exposes nothing and is reported as such rather than guessed.
+
+### Wake at the reset
+
+Hit your Claude limit with four sessions open and they sit there until you come
+back. Claude Code now continues a session by itself when the limit resets, with
+two gaps: it will not wait when the reset is more than 24 hours away (the weekly
+limit), and a Mac that slept through the reset wakes up to "press enter to
+continue". `glyph wake` covers both.
+
+```sh
+glyph wake hook   # print the hook to add to ~/.claude/settings.json
+glyph wake        # what is waiting, and the last few things it did
+glyph wake cancel # stop waiting
+```
+
+When a session stops at the limit, a `StopFailure` hook records its pane. One
+waiter per machine asks Anthropic (the same call as `glyph usage --live`) when
+the limit lifts, sleeps until then, gives Claude Code two minutes to continue
+on its own, and then looks at each session it parked:
+
+- still open and untouched since the limit: it types `continue`
+- showing "press enter to continue": it presses Enter
+- already continued, or closed: it leaves it alone
+
+It types into the pane, so the session has to be in Herdr or tmux and still
+open. While it waits it keeps the Mac from idling to sleep (`caffeinate`); a
+closed lid still sleeps, and `GLYPH_WAKE_AWAKE=0` lets it. A session that hits
+the limit again right after three nudges is left for you. Codex has no hook,
+so this is Claude only.
 
 ### Herdr plugin
 
@@ -344,6 +381,8 @@ workspace tool; with none running, Fleet falls back to tmux.
 | `GLYPH_TITLE=0` | Do not retitle the terminal or tmux window |
 | `GLYPH_LOG=0` | Do not record sessions locally |
 | `GLYPH_DRYRUN=1` | Print the argv instead of launching |
+| `GLYPH_WAKE_AWAKE=0` | Let the Mac sleep while `glyph wake` waits |
+| `GLYPH_WAKE_GRACE` | Seconds Claude Code gets to continue by itself first (default 120) |
 
 **Machine tags** come from the system computer name when available. On macOS,
 Glyph reads `scutil --get ComputerName`; Windows/WSL and Linux use the system

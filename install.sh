@@ -66,6 +66,15 @@ _glyph_install() {
     echo
     echo "(next time, 'source ./install.sh' installs and loads in one step)"
   fi
+
+  # The same one-time star question glyph asks after an update. It lives in
+  # glyph.zsh, so a plain sh run borrows zsh to ask it.
+  echo
+  if [ "$_gi_sourced" = 1 ] && [ -n "${ZSH_VERSION:-}" ]; then
+    _glyph_star_ask
+  elif command -v zsh >/dev/null 2>&1; then
+    zsh -c '. "$1" && _glyph_star_ask' zsh "$_gi_dest/glyph.zsh"
+  fi
   return 0
 }
 

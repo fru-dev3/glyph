@@ -21,6 +21,9 @@
 #   GLYPH_TITLE=0     do not retitle the terminal / tmux window
 #   GLYPH_LOG=0       do not record sessions to the local registry
 #   GLYPH_DRYRUN=1    print the argv instead of launching
+#   GLYPH_STAR=0      never ask to star glyph after an install or update
+#   GLYPH_WAKE_AWAKE=0  let the Mac sleep while `glyph wake` waits for a reset
+#   GLYPH_WAKE_GRACE  seconds Claude Code gets to continue by itself (default 120)
 #
 # Already inside a session you started without glyph? `glyph mark [label]`
 # applies everything glyph can still reach: the terminal title, the tmux
@@ -32,8 +35,10 @@
 
 # The version belongs to this file, not the environment: an in-place reload
 # after `glyph update` must report the file it just loaded.
-typeset -g GLYPH_VERSION=0.7.3
+typeset -g GLYPH_VERSION=0.8.0
 typeset -g GLYPH_STATE=${GLYPH_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/glyph}
+# This file, so a detached `glyph wake` waiter loads the same glyph that parked it.
+typeset -g GLYPH_SELF=${${(%):-%x}:A}
 
 # --- agent adapters ---------------------------------------------------------
 # name|yolo flag|name flag|extra flags
@@ -336,11 +341,15 @@ for _g_agent in ${(k)GLYPH_YOLO_FLAG}; do
   # worth checking at the point of use as well as on the way in.
   [[ -n $_g_agent && $_g_agent == ${_g_agent//[^A-Za-z0-9_.-]/} ]] || continue
   if command -v "$_g_agent" >/dev/null 2>&1; then
-    eval "${_g_agent//-/_}() { _glyph_launch ${(q)_g_agent} \"\$@\" }"
-    [[ $_g_agent == *-* ]] && eval "function ${_g_agent}() { _glyph_launch ${(q)_g_agent} \"\$@\" }"
+    # A shell that copied the wrappers but not the _glyph_* helpers (Claude
+    # Code's command snapshot drops underscore functions) runs the agent
+    # unmarked instead of failing with "command not found: _glyph_launch".
+    _g_body="if (( \$+functions[_glyph_launch] )); then _glyph_launch ${(q)_g_agent} \"\$@\"; else command ${(q)_g_agent} \"\$@\"; fi"
+    eval "${_g_agent//-/_}() { $_g_body }"
+    [[ $_g_agent == *-* ]] && eval "function ${_g_agent}() { $_g_body }"
   fi
 done
-unset _g_agent
+unset _g_agent _g_body
 
 # glyph itself: a tiny front door.
 # ---- usage: what is left, and when it comes back -------------------------
@@ -437,9 +446,23 @@ _glyph_claude_scan() {
 
 # The real quota, from the same endpoint Claude Code itself calls. Opt-in:
 # the only part of glyph that touches the network.
+# Run a command, killing it after $1 seconds. macOS ships no timeout(1).
+_glyph_timeout() {
+  local s=$1 p w rc; shift
+  "$@" & p=$!
+  ( command sleep $s; kill $p ) >/dev/null 2>&1 & w=$!
+  wait $p; rc=$?
+  kill $w 2>/dev/null
+  return $rc
+}
+
 _glyph_claude_live() {
   local blob at host out
-  blob=$(command security find-generic-password -s "Claude Code-credentials" -w 2>/dev/null) || return 1
+  # The Keychain, else the file Claude Code keeps where there is none (Linux)
+  # or it is locked (an ssh session). A locked Keychain can hold security
+  # forever, and `glyph wake` must never hang on it, so it gets ten seconds.
+  blob=$(_glyph_timeout 10 command security find-generic-password -s "Claude Code-credentials" -w 2>/dev/null) \
+    || blob=$(command cat "$HOME/.claude/.credentials.json" 2>/dev/null) || return 1
   at=$(print -r -- "$blob" | command sed -n 's/.*"accessToken":"\([^"]*\)".*/\1/p')
   [[ -n $at ]] || return 1
   # The token goes in over stdin, never on the command line: anything in argv
@@ -570,6 +593,236 @@ glyph-usage() {
   print -r -- "  glyph usage claude | codex | agy   detail"
   print -r -- "  glyph usage --live                 real quota from Anthropic"
   print -r -- "  glyph usage --refresh              rescan now instead of using the cache"
+}
+
+# ---- wake: continue what a usage limit stopped ----------------------------
+# Claude Code continues a session by itself when a usage limit resets, with two
+# gaps: it will not wait when the reset is more than 24 hours out (the weekly
+# limit), and a Mac that slept through the reset wakes to "press enter to
+# continue". glyph covers both. A StopFailure hook parks the pane, one waiter
+# per machine sleeps until Anthropic says the limit has lifted, and a parked
+# session nothing has touched since gets Enter, or "continue". A session Claude
+# Code already resumed is left alone. glyph types into the pane, so the session
+# has to be in Herdr or tmux, and still open. Codex has no such hook.
+#
+# A record is one file per pane, one field per line:
+#   state at tries backend pane herdr-socket claude-pid session-id transcript
+
+zmodload -F zsh/datetime b:strftime p:EPOCHSECONDS 2>/dev/null
+zmodload -F zsh/stat b:zstat 2>/dev/null
+zmodload -F zsh/system b:zsystem 2>/dev/null
+
+_glyph_wake_dir() { print -r -- "$GLYPH_STATE/wake" }
+_glyph_wake_log() {
+  print -r -- "$(strftime '%m-%d %H:%M' $EPOCHSECONDS) $*" >> "$(_glyph_wake_dir)/log" 2>/dev/null
+}
+
+# The hook. Claude Code passes the failure as JSON on stdin; the pane comes
+# from the environment the session was started in.
+_glyph_wake_park() {
+  emulate -L zsh
+  local in=$(command cat) dir=$(_glyph_wake_dir) backend pane sid tp pid="" f
+  if [[ -n ${HERDR_PANE_ID:-} ]]; then backend=herdr pane=$HERDR_PANE_ID
+  elif [[ -n ${TMUX_PANE:-} ]]; then backend=tmux pane=$TMUX_PANE
+  else return 0; fi                              # nowhere to type into later
+  sid=$(print -r -- "$in" | command sed -n 's/.*"session_id"[[:space:]]*:[[:space:]]*"\([A-Za-z0-9-]*\)".*/\1/p')
+  tp=$(print -r -- "$in" | command sed -n 's/.*"transcript_path"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')
+  if [[ -n $sid ]]; then
+    for f in $HOME/.claude/sessions/<->.json(N); do
+      command grep -q "\"sessionId\"[[:space:]]*:[[:space:]]*\"$sid\"" "$f" 2>/dev/null \
+        && { pid=${f:t:r}; break }
+    done
+  fi
+  command mkdir -p "$dir" 2>/dev/null || return 0
+  local rec=$dir/${pane//[^A-Za-z0-9]/_}.pane tries=1 r
+  if [[ -r $rec ]]; then
+    r=("${(@f)$(<$rec)}")
+    # Parked again within half an hour of a nudge: that nudge came too early.
+    [[ $r[1] == nudged && $r[2] == <-> && $r[3] == <-> ]] \
+      && (( EPOCHSECONDS - r[2] < 1800 )) && tries=$(( r[3] + 1 ))
+  fi
+  if (( tries > 3 )); then
+    _glyph_wake_log "$pane: limited again straight after 3 nudges, leaving it for you"
+    print -rl -- gave-up $EPOCHSECONDS $tries $backend "$pane" >| "$rec"
+    return 0
+  fi
+  print -rl -- parked $EPOCHSECONDS $tries $backend "$pane" "${HERDR_SOCKET_PATH:-}" \
+    "$pid" "$sid" "$tp" >| "$rec"
+  _glyph_wake_log "$pane: parked at the usage limit"
+  _glyph_wake_start
+}
+
+_glyph_wake_start() {
+  # Detached with every stream closed: Claude Code reads the hook's stdout
+  # until it closes, so a child still holding it would stall the hook. Start
+  # one every time; a second waiter finds the lock taken and exits.
+  nohup zsh -fc ". ${(q)GLYPH_SELF} && _glyph_wake_wait" \
+    </dev/null >>"$(_glyph_wake_dir)/log" 2>&1 &!
+}
+
+_glyph_wake_parked() {                           # records still waiting
+  local rec st
+  for rec in "$(_glyph_wake_dir)"/*.pane(N); do
+    read -r st < "$rec" 2>/dev/null && [[ $st == parked ]] && print -r -- "$rec"
+  done
+}
+
+# Until when the account is limited, as an epoch: the latest reset among the
+# limits at 100%, or 0 when none is. Fails when Anthropic cannot be asked.
+_glyph_wake_until() {
+  emulate -L zsh
+  local j c u r t=0 rb='}'
+  j=$(_glyph_claude_live) || return 1
+  for c in ${(ps:$rb:)j}; do                     # one window per piece
+    # Windows say utilization; the limits[] list says percent, and is the only
+    # place a per-model weekly cap shows up.
+    [[ $c =~ '"(utilization|percent)": *([0-9.]+)' ]] || continue
+    u=$match[2]
+    [[ $c =~ '"resets_at": *"([0-9T:-]+)' ]] || continue
+    (( u >= 100 )) || continue
+    TZ=UTC strftime -r -s r '%Y-%m-%dT%H:%M:%S' "$match[1]" 2>/dev/null || continue
+    (( r > t )) && t=$r
+  done
+  print -r -- $t
+}
+
+_glyph_wake_wait() {
+  emulate -L zsh
+  local dir=$(_glyph_wake_dir) t rec
+  : >> "$dir/.lock"
+  zsystem flock -t 5 "$dir/.lock" 2>/dev/null || return 0
+  # Keep the Mac from idling to sleep while a session waits. A closed lid
+  # still sleeps; GLYPH_WAKE_AWAKE=0 lets it.
+  [[ ${GLYPH_WAKE_AWAKE:-1} == 1 ]] && command -v caffeinate >/dev/null 2>&1 \
+    && { command caffeinate -i -w $$ &! }
+  while [[ -n $(_glyph_wake_parked) ]]; do
+    if ! t=$(_glyph_wake_until); then
+      _glyph_wake_log "cannot read the quota (glyph usage --live), asking again in 10m"
+      command sleep 600; continue
+    fi
+    if (( t > EPOCHSECONDS )); then
+      _glyph_wake_log "limited until $(strftime '%a %d %b %H:%M' $t)"
+      # A loop, not one long sleep: a sleeping Mac stops the clock sleep counts.
+      while (( EPOCHSECONDS < t )); do command sleep 60; done
+      continue                                   # ask again, do not assume
+    fi
+    # Lifted. Claude Code's own continue goes first; this picks up what it left.
+    command sleep ${GLYPH_WAKE_GRACE:-120}
+    for rec in ${(f)"$(_glyph_wake_parked)"}; do _glyph_wake_nudge "$rec"; done
+  done
+}
+
+# read | enter | type <text>, in whichever multiplexer holds the pane.
+_glyph_wake_pane() {
+  case $1:$3 in
+    herdr:read)  command herdr pane read "$2" --source visible --lines 30 ;;
+    herdr:enter) command herdr pane send-keys "$2" Enter ;;
+    herdr:type)  command herdr pane send-text "$2" "$4" ;;
+    tmux:read)   command tmux capture-pane -p -t "$2" ;;
+    tmux:enter)  command tmux send-keys -t "$2" Enter ;;
+    tmux:type)   command tmux send-keys -t "$2" -l "$4" ;;
+    *) return 1 ;;
+  esac
+}
+
+_glyph_wake_nudge() {
+  emulate -L zsh
+  local rec=$1 r why="" did="" screen
+  local -a mt
+  r=("${(@f)$(<$rec)}")
+  local at=$r[2] tries=$r[3] backend=$r[4] pane=$r[5] sock=$r[6] pid=$r[7] sid=$r[8] tp=$r[9]
+  # Only a session that is still open and that nothing has touched since.
+  if [[ -n $pid ]] && ! { kill -0 $pid 2>/dev/null && command grep -q \
+       "\"sessionId\"[[:space:]]*:[[:space:]]*\"$sid\"" "$HOME/.claude/sessions/$pid.json" 2>/dev/null }; then
+    why="session closed"
+  elif [[ -n $tp ]] && zstat -A mt +mtime -- "$tp" 2>/dev/null && (( mt[1] > at + 30 )); then
+    why="already continued"
+  fi
+  if [[ -n $why ]]; then
+    _glyph_wake_log "$pane: $why"; command rm -f -- "$rec"; return 0
+  fi
+  [[ -n $sock ]] && local -x HERDR_SOCKET_PATH=$sock
+  screen=$(_glyph_wake_pane $backend "$pane" read 2>/dev/null)
+  if [[ ${screen:l} == *"press enter to continue"* ]]; then
+    _glyph_wake_pane $backend "$pane" enter >/dev/null 2>&1 && did="pressed enter"
+  else
+    # Text and Enter apart: sent together, Enter can arrive as part of a paste.
+    _glyph_wake_pane $backend "$pane" type continue >/dev/null 2>&1 && command sleep 0.5 \
+      && _glyph_wake_pane $backend "$pane" enter >/dev/null 2>&1 && did="sent continue"
+  fi
+  if [[ -n $did ]]; then
+    _glyph_wake_log "$pane: $did"
+    print -rl -- nudged $EPOCHSECONDS $tries $backend "$pane" >| "$rec"
+  else
+    _glyph_wake_log "$pane: could not reach the pane"; command rm -f -- "$rec"
+  fi
+}
+
+glyph-wake() {
+  emulate -L zsh
+  local dir=$(_glyph_wake_dir) settings=$HOME/.claude/settings.json rec r
+  case ${1:-} in
+    park)   _glyph_wake_park; return 0 ;;
+    cancel) command rm -f -- "$dir"/*.pane(N); print -r -- "nothing is waiting now"; return 0 ;;
+    hook)
+      print -r -- "Add this to $settings, beside any hooks already there:"
+      print -r -- ""
+      print -r -- '  "hooks": {'
+      print -r -- '    "StopFailure": [{'
+      print -r -- '      "matcher": "rate_limit",'
+      print -r -- "      \"hooks\": [{ \"type\": \"command\", \"command\": \"zsh -fc '. ~/.config/glyph/glyph.zsh && glyph wake park'\" }]"
+      print -r -- '    }]'
+      print -r -- '  }'
+      return 0 ;;
+    "") ;;
+    *) print -ru2 -- "glyph wake [hook|cancel]"; return 1 ;;
+  esac
+  print -r -- "glyph wake"
+  print -r -- ""
+  if command grep -qs 'glyph wake park' "$settings"; then
+    print -r -- "  hook     on, in $settings"
+  else
+    print -r -- "  hook     off: glyph wake hook prints what to add"
+  fi
+  if [[ -e $dir/.lock ]] && ! ( zsystem flock -t 0 "$dir/.lock" ) 2>/dev/null; then
+    print -r -- "  waiter   running"
+  else
+    print -r -- "  waiter   not running"
+  fi
+  for rec in "$dir"/*.pane(N); do
+    r=("${(@f)$(<$rec)}")
+    printf '  %-8s %-26s %s  try %s\n' "$r[1]" "$r[5]" "$(strftime '%a %d %b %H:%M' ${r[2]:-0})" "$r[3]"
+  done
+  [[ -r $dir/log ]] && { print -r -- ""; command tail -5 "$dir/log" | command sed 's/^/  /' }
+  return 0
+}
+
+# Asked once, after an install or an update, and only at a terminal. The answer
+# is remembered either way, so it never comes back. Starring goes through gh,
+# which already holds the person's GitHub login; without it glyph prints the
+# link instead. GLYPH_STAR=0 skips the question.
+_glyph_star_ask() {
+  local repo=fru-dev3/glyph mark=$GLYPH_STATE/star ans
+  [[ ${GLYPH_STAR:-1} == 0 || -e $mark || ! -t 0 || ! -t 1 ]] && return 0
+  local gh=0
+  command -v gh >/dev/null 2>&1 && command gh auth status >/dev/null 2>&1 && gh=1
+  command mkdir -p "$GLYPH_STATE" 2>/dev/null
+  # Already starred: nothing to ask.
+  if (( gh )) && command gh api "/user/starred/$repo" --silent >/dev/null 2>&1; then
+    print -r -- starred >| "$mark" 2>/dev/null; return 0
+  fi
+  read -r "ans?If glyph has been useful, would you like to star it? [Y/n] " || return 0
+  case ${ans:l} in
+    ''|y|yes)
+      if (( gh )) && command gh api -X PUT "/user/starred/$repo" --silent >/dev/null 2>&1; then
+        print -r -- "starred $repo. thank you."
+      else
+        print -r -- "star it here: https://github.com/$repo  thank you."
+      fi
+      print -r -- yes >| "$mark" 2>/dev/null ;;
+    *) print -r -- no >| "$mark" 2>/dev/null ;;
+  esac
+  return 0
 }
 
 glyph() {
@@ -785,6 +1038,7 @@ glyph() {
       if source "$dest" 2>/dev/null; then
         print -r -- "loaded in this shell, now ${GLYPH_VERSION}"
         print -r -- "other open shells keep the old one until you run: exec zsh"
+        _glyph_star_ask
       else
         print -ru2 -- "glyph: could not load the new file, reload with: exec zsh"
         return 1
@@ -804,6 +1058,7 @@ glyph() {
       print -r -- "use any of these after a colon, e.g. glyph fleet cloud with codex:mini" ;;
     fleet) shift; glyph-fleet "$@" ;;
     usage) shift; glyph-usage "$@" ;;
+    wake) shift; glyph-wake "$@" ;;
     presets)
       local conf=$(_glyph_fleet_conf)
       [[ -r $conf ]] && command grep -E "^[[:space:]]*[a-zA-Z0-9_-]+[[:space:]]*=" "$conf" \
@@ -817,6 +1072,7 @@ glyph mark [x] --send  and type the /rename into the agent for you
 glyph ps       every agent session running right now, named or not
 glyph doctor   check the install and say what is wrong
 glyph usage    tokens and quota across agents [claude|codex|agy] [--live]
+glyph wake     continue sessions a usage limit stopped, at the reset [hook|cancel]
 glyph fleet init create example fleets without replacing existing presets
 glyph fleet [p] launch a preset of agents, each in its own marked tmux pane
 glyph presets  list the presets in ~/.config/glyph/fleet.conf
