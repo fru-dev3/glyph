@@ -28,6 +28,7 @@
 # you the /rename line to paste.
 #   GLYPH_FLEET_BACKEND=auto|herdr|cmux|zellij|wezterm|tmux   fleet workspace backend
 #   ~/.config/glyph/names.tsv    "<dir-name>\t<Display Name>" overrides
+#   ~/.config/glyph/accounts.tsv "<email>\t<tag>" for the account field (GLYPH_ACCOUNTS)
 
 # The version belongs to this file, not the environment: an in-place reload
 # after `glyph update` must report the file it just loaded.
@@ -132,19 +133,53 @@ _glyph_agent_segment() {
   _glyph_token "${GLYPH_LABEL[$agent]:-$agent}"
 }
 
+# The account segment: which login the agent runs under, short enough to read
+# in a session list (foo.dev3@example.com is too long, fd3 is not). The tag is
+# worked out from the address: the initial of each word before the @, then its
+# trailing digits. footech3 has no dot to split on, so when an address opens
+# with your own first name, as the computer has it (GLYPH_ME says otherwise),
+# that name is the first word: foo + tech, ft3. A line in accounts.tsv
+# overrides an address the rule gets wrong. Only Claude Code is verified: it
+# keeps the login in .claude.json. The name is cut at launch, so a /login
+# inside a running session leaves the old tag until the next launch.
+_glyph_account() {
+  local agent=${1:-${GLYPH_AGENT:-}} email tag="" w
+  [[ -n $agent ]] || agent=$(_glyph_current_agent) || return 0
+  [[ $agent == claude ]] || return 0
+  email=$(_glyph_session_field "${CLAUDE_CONFIG_DIR:-$HOME}/.claude.json" emailAddress)
+  [[ -n $email ]] || return 0
+  email=${(L)email}
+  local map=${GLYPH_ACCOUNTS:-$HOME/.config/glyph/accounts.tsv}
+  [[ -r $map ]] && tag=$(command awk -F'\t' -v e="$email" 'tolower($1) == e { print $2; exit }' "$map" 2>/dev/null)
+  if [[ -z $tag ]]; then
+    local lp=${email%%@*}
+    local num=${lp##*[^0-9]}
+    local stem=$(_glyph_token "${lp%$num}")
+    local me=${GLYPH_ME:-$(command id -F 2>/dev/null)}   # macOS; elsewhere the login
+    me=$(_glyph_token "${${me:-${USER:-}}%% *}")
+    (( ${#me} >= 3 )) && [[ $stem != *-* && $stem == $me?* ]] && stem=$me-${stem#$me}
+    for w in ${(s:-:)stem}; do tag+=${w[1]}; done
+    tag+=$num
+  fi
+  _glyph_token "$tag"
+}
+
 # Field order. The default is the order the mark has always had; naming the
 # fields lets a setup put the one it scans for where it reads best, without
 # overriding this function from outside and hoping the override survives.
+# `account` is a sixth field the default leaves out; name it to get it.
 typeset -g GLYPH_ORDER_DEFAULT="label project agent machine stamp"
 
 _glyph_compose() {
   local g=$1 pj=$2 agent=${3:-} sep=${GLYPH_SEP:-·}
   local -A field
   field[label]=""; field[project]=""; field[agent]=""
-  field[machine]=""; field[stamp]=""
+  field[machine]=""; field[stamp]=""; field[account]=""
   [[ -n $g ]] && field[label]=$(_glyph_token "$g")
   [[ -n $pj && ${(L)pj} != ${(L)g} ]] && field[project]=$(_glyph_token "$pj")
   field[agent]=$(_glyph_agent_segment "$agent")
+  [[ " ${GLYPH_ORDER:-$GLYPH_ORDER_DEFAULT} " == *" account "* ]] \
+    && field[account]=$(_glyph_account "$agent")
   if [[ -z ${GLYPH_OFF:-} ]]; then
     field[machine]=$(_glyph_machine)
     field[stamp]=$(command date +${GLYPH_FMT:-%Y-%m-%d${sep}%H%M})
@@ -550,6 +585,7 @@ glyph() {
           && printf "%-14s %-14s %s\n" "$a" "${GLYPH_LABEL[$a]}" "${GLYPH_YOLO_FLAG[$a]:-(no yolo flag)}"
       done ;;
     name) shift; _glyph_compose "${1:-}" "$(_glyph_project "$PWD")" ;;
+    account) _glyph_account "${2:-claude}" ;;
     doctor)
       local ok=0 bad=0
       # Always returns 0: a bare (( n++ )) is false when n is 0, which would
@@ -775,6 +811,7 @@ glyph() {
     *) print -r -- "glyph ls [n]   recent sessions
 glyph agents   installed agents and their auto-approve flags
 glyph name [x] print the mark this directory would produce
+glyph account  the tag of the login Claude Code is signed into right now
 glyph mark [x] name a session that is already open, as far as glyph can reach
 glyph mark [x] --send  and type the /rename into the agent for you
 glyph ps       every agent session running right now, named or not

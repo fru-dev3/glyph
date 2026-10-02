@@ -333,7 +333,9 @@ workspace tool; with none running, Fleet falls back to tmux.
 | `GLYPH_OFF=1` | Keep the label, drop the machine and time |
 | `GLYPH_FMT` | `date(1)` format for the stamp (default `%Y-%m-%d·%H%M`) |
 | `GLYPH_SEP` | Separator (default `·`) |
-| `GLYPH_ORDER` | Field order (default `label project agent machine stamp`); naming fewer leaves the rest out |
+| `GLYPH_ORDER` | Field order (default `label project agent machine stamp`); naming fewer leaves the rest out, and naming `account` adds the login |
+| `GLYPH_ME` | Your first name, for splitting an address like `footech3` (default: the computer's account name) |
+| `GLYPH_ACCOUNTS` | Account tags that overrule the worked-out one (default `~/.config/glyph/accounts.tsv`) |
 | `GLYPH_MACHINE` | Machine tag, when the hostname does not map well |
 | `GLYPH_AGENT` | Agent for the mark, when Glyph cannot tell which one owns the shell |
 | `GLYPH_AGENT_FALLBACK` | What to call a shell no agent owns (default `shell`) |
@@ -365,6 +367,30 @@ export GLYPH_MACHINE=windows-10   # or ipad, ubuntu-gpu, prod, laptop…
 **Project names** are lowercase git repo directory tokens (`acme-api` stays
 `acme-api`; `Acme API` becomes `acme-api`). Overrides in
 `~/.config/glyph/names.tsv` are normalized the same way.
+
+**Accounts.** With more than one Claude login, add `account` to `GLYPH_ORDER`
+and the mark says which one the session started under. Glyph works the tag out
+from the address: the initial of each word before the `@`, then its trailing
+digits.
+
+| Signed in as | Tag |
+|---|---|
+| `foo.dev3@example.com` | `fd3` |
+| `footech3@example.com` | `ft3` |
+| `foo.bar@example.com` | `fb` |
+
+`footech3` has no dot to split on. When an address opens with your own first
+name, as the computer has it, that name counts as the first word. Set
+`GLYPH_ME` if the computer has it wrong, and `glyph account` prints the tag for
+the current login. For an address the rule still gets wrong, one tab-separated
+line in `~/.config/glyph/accounts.tsv` names the tag:
+
+```
+jsmith@example.com	work
+```
+
+Claude Code only, and the name is cut at launch: after a `/login` inside a
+running session the old tag stays until the next launch.
 
 `-p` / `--print` and subcommands (`claude mcp`, `codex resume`) pass through
 untouched, so scripts and CI behave exactly as before.

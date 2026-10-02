@@ -21,7 +21,7 @@ export GLYPH_STATE="$test_dir/state" GLYPH_TEST_TMUX="$test_dir/tmux.log"
 # agents.tsv and names.tsv the person running it happens to have, and a
 # personal 'cc' label fails an assertion about the shipped default.
 export GLYPH_AGENTS="$test_dir/agents-none.tsv" GLYPH_MAP="$test_dir/names-none.tsv"
-unset GLYPH_ORDER GLYPH_MACHINE_ORDER 2>/dev/null
+unset GLYPH_ORDER GLYPH_MACHINE_ORDER GLYPH_SEP 2>/dev/null
 unset GLYPH_YOLO GLYPH_DRYRUN GLYPH_OFF TMUX CLAUDECODE GLYPH_AGENT GLYPH_AGENT_FALLBACK
 source "$repo/glyph.zsh"
 _glyph_project() { print -r -- 'Acme API' }
@@ -58,6 +58,29 @@ assert_eq "$(GLYPH_ORDER='label project machine agent stamp' _glyph_compose 'Fix
   'fix-login·acme-api·test·claude-code·stamp' 'GLYPH_ORDER reorders the fields'
 assert_eq "$(GLYPH_ORDER='label stamp' _glyph_compose 'Fix Login' 'Acme API' claude)" \
   'fix-login·stamp' 'GLYPH_ORDER can leave fields out'
+# The account field says which login the agent runs under. It is read from
+# Claude Code's own config, only when GLYPH_ORDER names it, and worked out from
+# the address: initials and trailing digits, with accounts.tsv to overrule it.
+mkdir -p "$test_dir/cfg" "$test_dir/cfg2"
+print -r -- '{ "oauthAccount": { "emailAddress": "Foo.Dev3@example.com" } }' > "$test_dir/cfg/.claude.json"
+print -r -- '{ "oauthAccount": { "emailAddress": "footech3@example.com" } }' > "$test_dir/cfg2/.claude.json"
+export CLAUDE_CONFIG_DIR="$test_dir/cfg" GLYPH_ACCOUNTS="$test_dir/accounts-none.tsv" GLYPH_ME='Foo Bar'
+# An address with no dot in it splits after the person's own first name.
+assert_eq "$(CLAUDE_CONFIG_DIR="$test_dir/cfg2" glyph account)" 'ft3' 'an unbroken address splits after your own name'
+assert_eq "$(CLAUDE_CONFIG_DIR="$test_dir/cfg2" GLYPH_ME=Someone glyph account)" 'f3' 'and stays one word when it is not your name'
+assert_eq "$(_glyph_compose 'Fix Login' 'Acme API' claude)" \
+  'fix-login·acme-api·claude-code·test·stamp' 'account stays out of the default order'
+assert_eq "$(GLYPH_ORDER='label account' _glyph_compose 'Fix Login' 'Acme API' claude)" \
+  'fix-login·fd3' 'account falls back to initials and digits'
+assert_eq "$(GLYPH_ORDER='label account' _glyph_compose 'Fix Login' 'Acme API' codex)" \
+  'fix-login' 'only Claude Code has a known account'
+printf '# address\ttag\nfoo.dev3@example.com\tWork\n' > "$test_dir/accounts.tsv"
+assert_eq "$(GLYPH_ACCOUNTS="$test_dir/accounts.tsv" GLYPH_ORDER='account label' _glyph_compose 'Fix Login' 'Acme API' claude)" \
+  'work·fix-login' 'accounts.tsv names the account'
+assert_eq "$(glyph account)" 'fd3' 'glyph account prints the tag by itself'
+assert_eq "$(CLAUDE_CONFIG_DIR="$test_dir/nowhere" GLYPH_ORDER='label account' _glyph_compose 'Fix Login' 'Acme API' claude)" \
+  'fix-login' 'no login, no account segment'
+unset CLAUDE_CONFIG_DIR GLYPH_ACCOUNTS GLYPH_ME
 # agents.tsv may rename an agent, not only add one. The loader used to run
 # before GLYPH_LABEL was assigned, so a label set there was wiped a line later.
 printf 'claude\t--dangerously-skip-permissions\tcc\n' > "$test_dir/agents.tsv"

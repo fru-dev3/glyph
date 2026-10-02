@@ -106,3 +106,29 @@ Netlify is being shut down, so there is no netlify.toml any more.
   and fru-dev3.github.io/glyph only redirected to glyph.fru.dev.
 - DNS cutover is the chief session's job: a CNAME `glyph` to the Vercel value
   from `vercel domains verify glyph.fru.dev`.
+
+## 2026-10-02: the account field
+
+- A sixth field, `account`, left out of the default order. Naming it in
+  GLYPH_ORDER ends (or starts) the mark with a short tag for the login Claude
+  Code is signed into, read from `${CLAUDE_CONFIG_DIR:-$HOME}/.claude.json`
+  (`oauthAccount.emailAddress`). `glyph account` prints the tag by itself.
+- The tag is worked out, never looked up: the initial of each word before the
+  `@`, then the trailing digits (`foo.dev3` reads `fd3`). An address with no
+  separator (`footech3`) splits after the person's own first name, taken from
+  `GLYPH_ME`, else `id -F` (macOS), else `$USER`; names under three letters are
+  ignored. `accounts.tsv` can overrule a tag, and Fru's setup does not use it:
+  no address may be written into code or config.
+- Claude Code only. Codex and the rest get no account segment.
+- The name is cut at launch, so a `/login` inside a running session leaves the
+  old tag. `aidev remark` (or `/rename`) refreshes it.
+- tests/smoke.zsh now unsets GLYPH_SEP, so it passes under a personal
+  environment without `env -u`.
+- Committed by itself on top of 0.7.3, with no version bump: the star prompt
+  and `glyph wake` (0.8.0) changes in the working tree belong to earlier
+  sessions and were left uncommitted. The vault copy
+  (`<vault>/build/.ai/shell/glyph.zsh`) carries all three by hand; it still
+  lacks the repo's `_glyph_timeout`.
+- Fru's own order (vault `glyph-personal.zsh`) is now
+  `label project machine agent account stamp` with `·` and `%y%m%d-%H%M`:
+  fapps-glyph·mbp·cc·fd3·261002-0535. The 09-21 mesh form is retired.
