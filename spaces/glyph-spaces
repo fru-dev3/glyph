@@ -1,0 +1,109 @@
+#!/usr/bin/env python3
+"""glyph spaces: your workspaces and tabs, per machine, built in Herdr.
+
+The layout is data: which folders are open, on which machine, with which
+agent. It lives in ~/.config/glyph/spaces/ (or GLYPH_SPACES), never in this
+repo. `check` and `names` read it and the disk only. `apply`, `start` and
+`remark` go through the backend each machine names in machines.json.
+"""
+import argparse, os, sys
+
+# realpath, not abspath: the command is reached through a symlink in
+# ~/.local/bin, and the package is found from where the script actually lives.
+sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
+
+from glyph_spaces import core
+from glyph_spaces.core import MapMissing
+
+
+def backend_command(name):
+    """Look the command up in this machine's backend at call time.
+
+    Resolved late on purpose: a machine with no backend installed still runs
+    check and names, and says plainly which backend it wanted.
+    """
+    def run(args):
+        mid, m, _ = core.this_machine(args)
+        if not mid:
+            return 2
+        mod, backend = core.backend_for(m)
+        if mod is None:
+            print("%s has no backend named %s (spaces/glyph_spaces/backends/%s.py)"
+                  % (mid, backend, backend))
+            return 2
+        fn = getattr(mod, "cmd_" + name, None)
+        if fn is None:
+            print("backend %s does not implement %s" % (backend, name))
+            return 2
+        return fn(args)
+    return run
+
+
+def main():
+    # A detached run writes to a file, where Python block-buffers by default and
+    # shows nothing until it exits. These runs are long; progress has to be live.
+    try:
+        sys.stdout.reconfigure(line_buffering=True)
+    except AttributeError:
+        pass
+    ap = argparse.ArgumentParser(prog="glyph spaces")
+    sub = ap.add_subparsers(dest="cmd")
+    c = sub.add_parser("check", help="resolve every path for this machine")
+    c.add_argument("--machine", help="check as another machine instead")
+    c.set_defaults(func=core.cmd_check)
+    a = sub.add_parser("apply", help="build the spaces for this machine")
+    a.add_argument("--machine", help="treat this as another machine")
+    a.add_argument("--dry-run", action="store_true", help="print what it would build")
+    a.add_argument("--force", action="store_true",
+                   help="build a second workspace even if that label already exists")
+    a.add_argument("--allow-untrusted", action="store_true",
+                   help="start agents in folders Claude Code has not been trusted with")
+    a.add_argument("--no-agents", action="store_true",
+                   help="build the workspaces and tabs but leave each pane a shell")
+    a.add_argument("--prune", action="store_true",
+                   help="close workspaces for spaces this machine does not take")
+    a.set_defaults(func=backend_command("apply"))
+    n = sub.add_parser("names", help="print the session name each tab's agent answers to")
+    n.add_argument("--machine", help="treat this as another machine")
+    n.set_defaults(func=core.cmd_names)
+    st = sub.add_parser("start", help="start agents in tabs that are still shells")
+    st.add_argument("--machine", help="treat this as another machine")
+    st.add_argument("--dry-run", action="store_true")
+    st.add_argument("--max", type=int, default=0, help="stop after this many")
+    st.add_argument("--space", action="append",
+                    help="only this space; repeat for more")
+    st.add_argument("--continue", dest="resume", action="store_true",
+                    help="resume each folder's last conversation instead of starting fresh")
+    st.add_argument("--floor", type=float, default=2.0,
+                    help="stop when free memory drops below this many GB")
+    st.add_argument("--wait", type=float, default=6.0,
+                    help="seconds to let Claude come up before answering its prompt")
+    st.set_defaults(func=backend_command("start"))
+    rm = sub.add_parser("remark", help="rename running agents to the name glyph gives their tab")
+    rm.add_argument("--machine", help="treat this as another machine")
+    rm.add_argument("--dry-run", action="store_true")
+    rm.add_argument("--busy", action="store_true",
+                    help="also rename agents that are working (types into their prompt)")
+    rm.set_defaults(func=backend_command("remark"))
+    args = ap.parse_args()
+    if not getattr(args, "func", None):
+        ap.print_help()
+        return 0
+    try:
+        return args.func(args)
+    except MapMissing as e:
+        # The map is the person's, not this repo's. Say where it was looked
+        # for rather than failing on a traceback three frames down.
+        print("glyph spaces: %s" % e)
+        print("\nWrite machines.json and spaces/*.json there, or set GLYPH_SPACES.")
+        print("spaces/example/ in the glyph repo shows the shape.")
+        return 2
+    except BrokenPipeError:
+        # `glyph spaces check | head` closes the pipe partway; that is the
+        # reader's choice, not an error worth a traceback.
+        os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
+        return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

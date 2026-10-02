@@ -35,7 +35,7 @@
 
 # The version belongs to this file, not the environment: an in-place reload
 # after `glyph update` must report the file it just loaded.
-typeset -g GLYPH_VERSION=0.8.0
+typeset -g GLYPH_VERSION=0.9.0
 typeset -g GLYPH_STATE=${GLYPH_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/glyph}
 # This file, so a detached `glyph wake` waiter loads the same glyph that parked it.
 typeset -g GLYPH_SELF=${${(%):-%x}:A}
@@ -139,11 +139,11 @@ _glyph_agent_segment() {
 }
 
 # The account segment: which login the agent runs under, short enough to read
-# in a session list (foo.dev3@example.com is too long, fd3 is not). The tag is
+# in a session list (sam.lee4@example.com is too long, sl4 is not). The tag is
 # worked out from the address: the initial of each word before the @, then its
-# trailing digits. footech3 has no dot to split on, so when an address opens
+# trailing digits. samwork4 has no dot to split on, so when an address opens
 # with your own first name, as the computer has it (GLYPH_ME says otherwise),
-# that name is the first word: foo + tech, ft3. A line in accounts.tsv
+# that name is the first word: sam + work, sw4. A line in accounts.tsv
 # overrides an address the rule gets wrong. Only Claude Code is verified: it
 # keeps the login in .claude.json. The name is cut at launch, so a /login
 # inside a running session leaves the old tag until the next launch.
@@ -1059,6 +1059,16 @@ glyph() {
     fleet) shift; glyph-fleet "$@" ;;
     usage) shift; glyph-usage "$@" ;;
     wake) shift; glyph-wake "$@" ;;
+    spaces)
+      # The layout: which workspaces and tabs each machine opens, built in
+      # Herdr. Python, in spaces/ of a clone; install.sh puts it on PATH.
+      shift
+      if command -v glyph-spaces >/dev/null 2>&1; then command glyph-spaces "$@"
+      else
+        print -ru2 -- "glyph spaces runs from a clone of the repo:"
+        print -ru2 -- "  git clone https://github.com/fru-dev3/glyph && cd glyph && source ./install.sh"
+        return 1
+      fi ;;
     presets)
       local conf=$(_glyph_fleet_conf)
       [[ -r $conf ]] && command grep -E "^[[:space:]]*[a-zA-Z0-9_-]+[[:space:]]*=" "$conf" \
@@ -1073,6 +1083,7 @@ glyph ps       every agent session running right now, named or not
 glyph doctor   check the install and say what is wrong
 glyph usage    tokens and quota across agents [claude|codex|agy] [--live]
 glyph wake     continue sessions a usage limit stopped, at the reset [hook|cancel]
+glyph spaces   your workspaces and tabs per machine, built in Herdr [check|names|apply|start|remark]
 glyph fleet init create example fleets without replacing existing presets
 glyph fleet [p] launch a preset of agents, each in its own marked tmux pane
 glyph presets  list the presets in ~/.config/glyph/fleet.conf

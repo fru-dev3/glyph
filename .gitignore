@@ -10,3 +10,8 @@
 # Vercel link state
 .vercel
 .env*
+
+# Private, and never in this public repo: project notes live in the
+# owner's own storage, linked in per machine.
+/.soul
+__pycache__/

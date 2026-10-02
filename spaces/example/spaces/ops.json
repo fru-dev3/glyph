@@ -1,0 +1,8 @@
+{
+  "id": "ops",
+  "space": "ops",
+  "profiles": ["hub"],
+  "tabs": [
+    { "label": "deploys", "mark": "ops-deploys", "path": "{code}/acme-infra", "agent": "claude" }
+  ]
+}

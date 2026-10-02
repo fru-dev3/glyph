@@ -190,6 +190,7 @@ glyph ls        # recent sessions: when, agent, mark, machine
 glyph ps        # every agent session alive right now, named or not
 glyph usage     # quota and token counts across agents
 glyph wake      # continue sessions a usage limit stopped, at the reset
+glyph spaces    # your workspaces and tabs per machine, built in Herdr
 glyph doctor    # check the install and say what is wrong
 glyph mark x    # name a session that is already open
 glyph agents    # what is installed, and each one's auto-approve flag
@@ -361,6 +362,35 @@ Remote slots work on **every** backend (Herdr, tmux, cmux, Zellij, WezTerm)
 because they all build the same SSH command. Glyph is not tied to any one
 workspace tool; with none running, Fleet falls back to tmux.
 
+## Spaces
+
+A fleet is a group you launch now. A space is the layout you come back to:
+which workspaces and tabs a machine opens, which folder each tab sits in, and
+which agent runs there. Written down once, it rebuilds a Herdr session after a
+restart, and opens the same working set on a second machine, each tab resolved
+to wherever that machine keeps the folder.
+
+```sh
+glyph spaces check    # resolve every tab on this machine; writes nothing
+glyph spaces names    # the session name each tab's agent will answer to
+glyph spaces apply    # build the workspaces and tabs in Herdr
+glyph spaces start    # start agents in tabs that are still shells
+glyph spaces remark   # rename running agents to their tab's name
+```
+
+The layout is yours, so it lives with your config and never in this repo:
+
+```
+~/.config/glyph/spaces/machines.json     each machine: its roots, tag, profiles
+~/.config/glyph/spaces/spaces/*.json     each space: one workspace and its tabs
+```
+
+Point `GLYPH_SPACES` somewhere else, a synced folder for instance, and every
+machine reads the same layout. [spaces/example](spaces/example/) shows the
+shape, and [spaces/README.md](spaces/README.md) the details. Spaces is Python
+and runs from a clone: `install.sh` links `glyph-spaces` into `~/.local/bin`.
+Herdr is the only backend today.
+
 <details>
 <summary><b>Configuration</b></summary>
 
@@ -371,7 +401,7 @@ workspace tool; with none running, Fleet falls back to tmux.
 | `GLYPH_FMT` | `date(1)` format for the stamp (default `%Y-%m-%d·%H%M`) |
 | `GLYPH_SEP` | Separator (default `·`) |
 | `GLYPH_ORDER` | Field order (default `label project agent machine stamp`); naming fewer leaves the rest out, and naming `account` adds the login |
-| `GLYPH_ME` | Your first name, for splitting an address like `footech3` (default: the computer's account name) |
+| `GLYPH_ME` | Your first name, for splitting an address like `samwork4` (default: the computer's account name) |
 | `GLYPH_ACCOUNTS` | Account tags that overrule the worked-out one (default `~/.config/glyph/accounts.tsv`) |
 | `GLYPH_MACHINE` | Machine tag, when the hostname does not map well |
 | `GLYPH_AGENT` | Agent for the mark, when Glyph cannot tell which one owns the shell |
@@ -383,6 +413,8 @@ workspace tool; with none running, Fleet falls back to tmux.
 | `GLYPH_DRYRUN=1` | Print the argv instead of launching |
 | `GLYPH_WAKE_AWAKE=0` | Let the Mac sleep while `glyph wake` waits |
 | `GLYPH_WAKE_GRACE` | Seconds Claude Code gets to continue by itself first (default 120) |
+| `GLYPH_SPACES` | Folder holding your spaces layout (default `~/.config/glyph/spaces`) |
+| `GLYPH_SPACES_MACHINE` | Which machine in that layout this is, when the computer name does not match |
 
 **Machine tags** come from the system computer name when available. On macOS,
 Glyph reads `scutil --get ComputerName`; Windows/WSL and Linux use the system
@@ -414,11 +446,11 @@ digits.
 
 | Signed in as | Tag |
 |---|---|
-| `foo.dev3@example.com` | `fd3` |
-| `footech3@example.com` | `ft3` |
-| `foo.bar@example.com` | `fb` |
+| `sam.lee4@example.com` | `sl4` |
+| `samwork4@example.com` | `sw4` |
+| `sam.lee@example.com` | `sl` |
 
-`footech3` has no dot to split on. When an address opens with your own first
+`samwork4` has no dot to split on. When an address opens with your own first
 name, as the computer has it, that name counts as the first word. Set
 `GLYPH_ME` if the computer has it wrong, and `glyph account` prints the tag for
 the current login. For an address the rule still gets wrong, one tab-separated

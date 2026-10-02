@@ -1,0 +1,19 @@
+{
+  "note": "One entry per machine, keyed by its computer name the way glyph spaces reads it: lowercase, hyphens. A tab's path starts from one of the machine's roots, so the same space file opens the right folder on each machine.",
+  "machines": {
+    "laptop": {
+      "role": "dev",
+      "backend": "herdr",
+      "tag": "lt",
+      "profiles": ["work"],
+      "roots": { "home": "~", "code": "~/code" }
+    },
+    "studio": {
+      "role": "hub",
+      "backend": "herdr",
+      "tag": "st",
+      "profiles": ["work", "hub"],
+      "roots": { "home": "~", "code": "~/src" }
+    }
+  }
+}

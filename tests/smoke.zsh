@@ -62,22 +62,22 @@ assert_eq "$(GLYPH_ORDER='label stamp' _glyph_compose 'Fix Login' 'Acme API' cla
 # Claude Code's own config, only when GLYPH_ORDER names it, and worked out from
 # the address: initials and trailing digits, with accounts.tsv to overrule it.
 mkdir -p "$test_dir/cfg" "$test_dir/cfg2"
-print -r -- '{ "oauthAccount": { "emailAddress": "Foo.Dev3@example.com" } }' > "$test_dir/cfg/.claude.json"
-print -r -- '{ "oauthAccount": { "emailAddress": "footech3@example.com" } }' > "$test_dir/cfg2/.claude.json"
-export CLAUDE_CONFIG_DIR="$test_dir/cfg" GLYPH_ACCOUNTS="$test_dir/accounts-none.tsv" GLYPH_ME='Foo Bar'
+print -r -- '{ "oauthAccount": { "emailAddress": "Sam.Lee4@example.com" } }' > "$test_dir/cfg/.claude.json"
+print -r -- '{ "oauthAccount": { "emailAddress": "samwork4@example.com" } }' > "$test_dir/cfg2/.claude.json"
+export CLAUDE_CONFIG_DIR="$test_dir/cfg" GLYPH_ACCOUNTS="$test_dir/accounts-none.tsv" GLYPH_ME='Sam Lee'
 # An address with no dot in it splits after the person's own first name.
-assert_eq "$(CLAUDE_CONFIG_DIR="$test_dir/cfg2" glyph account)" 'ft3' 'an unbroken address splits after your own name'
-assert_eq "$(CLAUDE_CONFIG_DIR="$test_dir/cfg2" GLYPH_ME=Someone glyph account)" 'f3' 'and stays one word when it is not your name'
+assert_eq "$(CLAUDE_CONFIG_DIR="$test_dir/cfg2" glyph account)" 'sw4' 'an unbroken address splits after your own name'
+assert_eq "$(CLAUDE_CONFIG_DIR="$test_dir/cfg2" GLYPH_ME=Someone glyph account)" 's4' 'and stays one word when it is not your name'
 assert_eq "$(_glyph_compose 'Fix Login' 'Acme API' claude)" \
   'fix-login·acme-api·claude-code·test·stamp' 'account stays out of the default order'
 assert_eq "$(GLYPH_ORDER='label account' _glyph_compose 'Fix Login' 'Acme API' claude)" \
-  'fix-login·fd3' 'account falls back to initials and digits'
+  'fix-login·sl4' 'account falls back to initials and digits'
 assert_eq "$(GLYPH_ORDER='label account' _glyph_compose 'Fix Login' 'Acme API' codex)" \
   'fix-login' 'only Claude Code has a known account'
-printf '# address\ttag\nfoo.dev3@example.com\tWork\n' > "$test_dir/accounts.tsv"
+printf '# address\ttag\nsam.lee4@example.com\tWork\n' > "$test_dir/accounts.tsv"
 assert_eq "$(GLYPH_ACCOUNTS="$test_dir/accounts.tsv" GLYPH_ORDER='account label' _glyph_compose 'Fix Login' 'Acme API' claude)" \
   'work·fix-login' 'accounts.tsv names the account'
-assert_eq "$(glyph account)" 'fd3' 'glyph account prints the tag by itself'
+assert_eq "$(glyph account)" 'sl4' 'glyph account prints the tag by itself'
 assert_eq "$(CLAUDE_CONFIG_DIR="$test_dir/nowhere" GLYPH_ORDER='label account' _glyph_compose 'Fix Login' 'Acme API' claude)" \
   'fix-login' 'no login, no account segment'
 unset CLAUDE_CONFIG_DIR GLYPH_ACCOUNTS GLYPH_ME
@@ -204,6 +204,27 @@ print -r -- '{"sessionId":"abc-123"}' > "$test_dir/home/.claude/sessions/999999.
 [[ ! -e $rec && ! -e $GLYPH_TEST_HERDR ]] || { print -ru2 -- 'FAIL: wake typed into a dead session'; exit 1; }
 unset GLYPH_WAKE_GRACE GLYPH_WAKE_AWAKE
 print -r -- 'PASS: wake reset time, parking, continue, enter, hands-off and give-up'
+
+# glyph spaces: the layout engine, against a map that lives in the sandbox.
+if command -v python3 >/dev/null 2>&1; then
+  map=$test_dir/map; mkdir -p $map/spaces $test_dir/code/acme-api $test_dir/notes $test_dir/zdot
+  print -r -- "{\"machines\":{\"laptop\":{\"role\":\"dev\",\"backend\":\"herdr\",\"tag\":\"lt\",\"profiles\":[\"work\"],\"roots\":{\"home\":\"$test_dir\",\"code\":\"$test_dir/code\"}}}}" > $map/machines.json
+  cp "$repo/spaces/example/spaces/work.json" "$repo/spaces/example/spaces/ops.json" $map/spaces/
+  # ZDOTDIR with no .zshrc: no glyph to ask, so names fall back to tag-mark.
+  sp() { GLYPH_SPACES=$map GLYPH_SPACES_MACHINE=laptop ZDOTDIR=$test_dir/zdot python3 "$repo/spaces/glyph-spaces" "$@" }
+  rc=0; out=$(sp check) || rc=$?
+  assert_eq "$rc" 1 'spaces check fails on a missing folder'
+  [[ $out == *'site               MISSING'* && $out == *'2 ok, 1 missing, 1 tabs in other profiles'* ]] \
+    || { print -ru2 -- "FAIL: spaces check: $out"; exit 1; }
+  out=$(sp names)
+  [[ $out == *'lt-work-api'* && $out == *'(no agent)'* && $out != *DUPLICATE* ]] \
+    || { print -ru2 -- "FAIL: spaces names: $out"; exit 1; }
+  rc=0; out=$(GLYPH_SPACES=$test_dir/none python3 "$repo/spaces/glyph-spaces" check) || rc=$?
+  assert_eq "$rc" 2 'spaces says where the map is missing'
+  out=$(PATH="$repo/spaces:$PATH" GLYPH_SPACES=$map GLYPH_SPACES_MACHINE=laptop ZDOTDIR=$test_dir/zdot glyph spaces names)
+  [[ $out == *'lt-work-api'* ]] || { print -ru2 -- 'FAIL: glyph spaces dispatch'; exit 1; }
+  print -r -- 'PASS: spaces check, names, a missing map, and the glyph spaces front door'
+fi
 print -r -- 'PASS: one-command fleet init, custom config path, existing definitions, repeat runs and dry run'
 print -r -- 'PASS: AGY labels, prompts, print mode, management commands and opt-in flags'
 print -r -- 'PASS: all nine adapter labels, local/SSH fleet construction and pi/OpenCode ad-hoc fleets'

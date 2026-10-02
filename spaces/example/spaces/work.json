@@ -1,0 +1,11 @@
+{
+  "id": "work",
+  "space": "work",
+  "profiles": ["work"],
+  "previous": ["Work"],
+  "tabs": [
+    { "label": "api",   "mark": "work-api",   "path": "{code}/acme-api",  "agent": "claude" },
+    { "label": "site",  "mark": "work-site",  "path": "{code}/acme-site", "agent": "codex" },
+    { "label": "notes", "mark": "work-notes", "path": "{home}/notes" }
+  ]
+}
