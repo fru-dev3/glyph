@@ -15,3 +15,6 @@
 # owner's own storage, linked in per machine.
 /.soul
 __pycache__/
+
+# accounts left out of the stargazer faces (local, never committed)
+.stargazers-exclude

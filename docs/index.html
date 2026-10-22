@@ -254,7 +254,7 @@ footer .built .heart-i{display:inline-block;vertical-align:-2px;margin:0 1px}
   </div>
   <div class="right">
     <!-- stargazers -->
-    <div class="proof"><div class="faces"><a href="https://github.com/Nessjk" target="_blank" rel="noreferrer" title="Nessjk"><img src="stargazers/Nessjk.png" width="40" height="40" alt="Nessjk" loading="lazy"></a><a href="https://github.com/TLCSglobal" target="_blank" rel="noreferrer" title="TLCSglobal"><img src="stargazers/TLCSglobal.png" width="40" height="40" alt="TLCSglobal" loading="lazy"></a><a href="https://github.com/Albricengwa" target="_blank" rel="noreferrer" title="Albricengwa"><img src="stargazers/Albricengwa.png" width="40" height="40" alt="Albricengwa" loading="lazy"></a><a href="https://github.com/kovtunos" target="_blank" rel="noreferrer" title="kovtunos"><img src="stargazers/kovtunos.png" width="40" height="40" alt="kovtunos" loading="lazy"></a><a href="https://github.com/f-tech3" target="_blank" rel="noreferrer" title="f-tech3"><img src="stargazers/f-tech3.png" width="40" height="40" alt="f-tech3" loading="lazy"></a><a href="https://github.com/fru-dev3" target="_blank" rel="noreferrer" title="fru-dev3"><img src="stargazers/fru-dev3.png" width="40" height="40" alt="fru-dev3" loading="lazy"></a></div><p><a href="https://github.com/fru-dev3/glyph" target="_blank" rel="noreferrer">Starred by <b id="sgn">6</b> developers</a></p></div>
+    <div class="proof"><div class="faces"><a href="https://github.com/Nessjk" target="_blank" rel="noreferrer" title="Nessjk"><img src="stargazers/Nessjk.png" width="40" height="40" alt="Nessjk" loading="lazy"></a><a href="https://github.com/TLCSglobal" target="_blank" rel="noreferrer" title="TLCSglobal"><img src="stargazers/TLCSglobal.png" width="40" height="40" alt="TLCSglobal" loading="lazy"></a><a href="https://github.com/Albricengwa" target="_blank" rel="noreferrer" title="Albricengwa"><img src="stargazers/Albricengwa.png" width="40" height="40" alt="Albricengwa" loading="lazy"></a><a href="https://github.com/kovtunos" target="_blank" rel="noreferrer" title="kovtunos"><img src="stargazers/kovtunos.png" width="40" height="40" alt="kovtunos" loading="lazy"></a></div><p><a href="https://github.com/fru-dev3/glyph" target="_blank" rel="noreferrer">Starred by <b id="sgn">4</b> developers</a></p></div>
     <!-- /stargazers -->
 
     
@@ -361,7 +361,7 @@ feat.addEventListener("close",()=>{document.activeElement?.blur();if(location.ha
 if(location.hash==="#features")openFeat();
 addEventListener("hashchange",()=>{if(location.hash==="#features")openFeat()});
 // Star count: shields.io first (cached, no per-visitor GitHub limit), GitHub's API as fallback.
-function showStars(n){if(n>0){const s=document.getElementById("stars");s.textContent=n.toLocaleString();s.hidden=false;const g=document.getElementById("sgn");if(g)g.textContent=n.toLocaleString()}}
+function showStars(n){if(n>0){const s=document.getElementById("stars");s.textContent=n.toLocaleString();s.hidden=false}}
 fetch("https://img.shields.io/github/stars/fru-dev3/glyph.json").then(r=>r.ok?r.json():Promise.reject())
   .then(d=>{const n=parseInt(d.value,10);if(!(n>=0))throw 0;showStars(n)})
   .catch(()=>fetch("https://api.github.com/repos/fru-dev3/glyph").then(r=>r.ok?r.json():null).then(d=>d&&showStars(d.stargazers_count)).catch(()=>{}));
