@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Glyph | Agent Rig</title>
-<meta name="description" content="Glyph gives every coding agent session a name you can recognise: label, project, agent, machine and time, set before Claude Code, Codex, AGY or Cursor starts.">
+<title>Glyph | The Rig for Your AI Agents</title>
+<meta name="description" content="Glyph is the rig for your AI agents: it names every Claude Code, Codex, AGY and Cursor session with label, project, agent, machine and time, so you know where each one runs and can run them as one. Free and open source.">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -18,28 +18,28 @@
 <meta name="theme-color" content="#F7FBF5">
 <meta property="og:site_name" content="fru.dev">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Glyph | Agent Rig">
-<meta property="og:description" content="Gives every coding agent session a name you can recognise. Label, project, agent, machine, time.">
+<meta property="og:title" content="Glyph | The Rig for Your AI Agents">
+<meta property="og:description" content="Names every AI agent session with where it runs, so you can rig Claude Code, Codex, AGY and Cursor as one. Free and open source.">
 <meta property="og:url" content="https://glyph.fru.dev/">
 <meta property="og:image" content="https://glyph.fru.dev/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Glyph | Agent Rig: the petroglyph mark in office green beside the name">
+<meta property="og:image:alt" content="Glyph | The Rig for Your AI Agents: the petroglyph mark in office green beside the name">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@fru">
-<meta name="twitter:title" content="Glyph | Agent Rig">
-<meta name="twitter:description" content="Gives every coding agent session a name you can recognise. Label, project, agent, machine, time.">
+<meta name="twitter:title" content="Glyph | The Rig for Your AI Agents">
+<meta name="twitter:description" content="Names every AI agent session with where it runs, so you can rig Claude Code, Codex, AGY and Cursor as one. Free and open source.">
 <meta name="twitter:image" content="https://glyph.fru.dev/og-image.png">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
  {"@type":"Organization","@id":"https://fru.dev/#org","name":"fru.dev","url":"https://fru.dev","logo":"https://fru.dev/icon-512.png","sameAs":["https://github.com/fru-dev3"]},
- {"@type":"WebSite","@id":"https://glyph.fru.dev/#website","name":"Glyph | Agent Rig","url":"https://glyph.fru.dev/","publisher":{"@id":"https://fru.dev/#org"}},
- {"@type":"SoftwareApplication","@id":"https://glyph.fru.dev/#app","name":"Glyph","alternateName":"Glyph | Agent Rig",
+ {"@type":"WebSite","@id":"https://glyph.fru.dev/#website","name":"Glyph | The Rig for Your AI Agents","url":"https://glyph.fru.dev/","publisher":{"@id":"https://fru.dev/#org"}},
+ {"@type":"SoftwareApplication","@id":"https://glyph.fru.dev/#app","name":"Glyph","alternateName":"Glyph | The Rig for Your AI Agents",
   "applicationCategory":"DeveloperApplication","operatingSystem":"macOS, Linux, Windows (WSL)",
   "url":"https://glyph.fru.dev/","downloadUrl":"https://github.com/fru-dev3/glyph",
   "codeRepository":"https://github.com/fru-dev3/glyph","programmingLanguage":"Shell",
   "image":"https://glyph.fru.dev/og-image.png",
-  "description":"A zsh wrapper that gives every AI coding agent session a name you can recognise (label, project, agent, machine and time) before the process starts.",
+  "description":"The rig for your AI agents: a zsh tool that names every coding agent session (label, project, agent, machine and time) before it starts, so the harnesses running across your machines can be found, launched and run together.",
   "license":"https://opensource.org/licenses/MIT","isAccessibleForFree":true,
   "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
   "publisher":{"@id":"https://fru.dev/#org"},"author":{"@id":"https://fru.dev/#org"},
@@ -145,7 +145,7 @@ h1 em{font-style:normal;color:var(--green);white-space:nowrap;display:block}
   .brand b{font-size:clamp(30px,5vh,48px)}.brand span{font-size:clamp(15px,2.1vh,19px)}
   h1{font-size:clamp(64px,min(14vh,7.6vw),170px)}
   .right{display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
-  .right .pill{order:2;margin-top:-26px;z-index:2}
+  .right .pill{order:2;margin-top:18px;z-index:2}
   .agents{display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.4vh,14px);margin-bottom:clamp(16px,3vh,32px)}
   .agents p{margin:0;font:800 clamp(17px,2.4vh,22px) "Bricolage Grotesque",sans-serif;color:var(--soft);letter-spacing:-.01em}
   .agents .row{display:flex;gap:clamp(8px,1vw,14px)}
@@ -190,6 +190,8 @@ footer a:focus:not(:focus-visible){outline:none}
 footer .built{display:inline-flex;align-items:center;gap:6px;color:var(--soft);text-decoration:none;font-weight:600;white-space:nowrap}
 footer .built:hover{color:var(--green)}
 footer .built svg{color:var(--green)}
+@media (max-width:380px){footer .built .bw{display:none}}
+footer .built .heart-i{display:inline-block;vertical-align:-2px;margin:0 1px}
 @media (max-width:520px){footer .opt{display:none}}
 @media (max-width:380px){footer nav a{padding:6px 5px}footer .bar{gap:6px}}
 @media (prefers-reduced-motion: reduce){*{animation:none!important}}
@@ -208,13 +210,13 @@ footer .built svg{color:var(--green)}
 <main>
   <div class="left">
   <div class="top">
-    <div class="brand"><img class="icon" src="icon-512.png" width="72" height="72" alt=""><div><b>Glyph</b><span>Names for your AI agents</span></div></div>
-    <h1>Five agents. <em><span id="said">Know which.</span><i class="caret" aria-hidden="true"></i></em></h1>
+    <div class="brand"><img class="icon" src="icon-512.png" width="72" height="72" alt=""><div><b>Glyph</b><span>The rig for your AI agents</span></div></div>
+    <h1>Every agent, named. <em><span id="said">Know where it runs.</span><i class="caret" aria-hidden="true"></i></em></h1>
   </div>
-  <div class="alt" aria-label="Instead of nameless sessions like zsh, node and agent-5e, every session is named at launch">
+  <div class="alt" aria-label="Instead of nameless sessions like zsh, node and agent-5e, every session is named so the rig can find it">
     <div class="without"><s>zsh</s><s>node</s><s class="x3">agent-5e</s></div>
     <span class="or">or</span>
-    <div class="with"><img src="icon-192.png" width="48" height="48" alt=""><b>billing·acme</b><small>named at launch</small></div>
+    <div class="with"><img src="icon-192.png" width="48" height="48" alt=""><b>billing·acme</b><small>ready to rig</small></div>
   </div>
   <div class="cta">
     <button class="btn go" id="install" type="button" data-cmd="git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; source ./install.sh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg><span id="install-l">Copy install command</span></button>
@@ -227,7 +229,7 @@ footer .built svg{color:var(--green)}
   <p class="note">Agent names and logos belong to their owners. Glyph is not affiliated with them.</p>
   </div>
   <div class="right">
-    <div class="agents"><p>Names every agent you run</p><div class="row"><span class="ag" style="--i:0"><img src="agents/claude.png" width="52" height="52" alt="Claude Code" title="Claude Code"></span><span class="ag" style="--i:1"><img src="agents/codex.png" width="52" height="52" alt="Codex" title="Codex"></span><span class="ag" style="--i:2"><img src="agents/agi.png" width="52" height="52" alt="AGY" title="AGY"></span><span class="ag" style="--i:3"><img src="agents/cursor.png" width="52" height="52" alt="Cursor" title="Cursor"></span><span class="ag" style="--i:4"><img src="agents/crush.png" width="52" height="52" alt="Crush" title="Crush"></span><span class="ag svg" style="--i:5"><img src="agents/cortex.svg" width="52" height="52" alt="Cortex" title="Cortex"></span><span class="ag svg" style="--i:6"><img src="agents/opencode.svg" width="52" height="52" alt="OpenCode" title="OpenCode"></span><span class="ag svg" style="--i:7"><img src="agents/pi.svg" width="52" height="52" alt="pi" title="pi"></span></div></div>
+    <div class="agents"><p>Names every harness you run</p><div class="row"><span class="ag" style="--i:0"><img src="agents/claude.png" width="52" height="52" alt="Claude Code" title="Claude Code"></span><span class="ag" style="--i:1"><img src="agents/codex.png" width="52" height="52" alt="Codex" title="Codex"></span><span class="ag" style="--i:2"><img src="agents/agi.png" width="52" height="52" alt="AGY" title="AGY"></span><span class="ag" style="--i:3"><img src="agents/cursor.png" width="52" height="52" alt="Cursor" title="Cursor"></span><span class="ag" style="--i:4"><img src="agents/crush.png" width="52" height="52" alt="Crush" title="Crush"></span><span class="ag svg" style="--i:5"><img src="agents/cortex.svg" width="52" height="52" alt="Cortex" title="Cortex"></span><span class="ag svg" style="--i:6"><img src="agents/opencode.svg" width="52" height="52" alt="OpenCode" title="OpenCode"></span><span class="ag svg" style="--i:7"><img src="agents/pi.svg" width="52" height="52" alt="pi" title="pi"></span></div></div>
     <div class="pill" aria-label="A session name, built token by token"><span class="dot"></span><span class="nm" id="nm">billing·acme-api·claude-code·laptop</span></div>
     <div class="shot term" role="img" aria-label="glyph fleet review: three named panes, Claude Code fixing a retry, Codex reviewing it, AGY writing the docs"><div class="tb"><span></span><span></span><span></span><em>herdr · glyph fleet review</em><b>3 panes</b></div><div class="cmd"><i>$</i> glyph fleet review <span>→ three named panes</span></div><div class="panes"><div class="pane"><div class="ph" style="--c:#E07A4F">Claude Code</div><div class="pn">fix·acme-api·claude-code</div><div class="pl"><i>●</i> Read src/checkout/retry.ts</div><div class="pl"><i>●</i> Edit retry.ts <g>+12</g> <r>−4</r></div><div class="pl"><i>●</i> Bash npm test</div><div class="pl"><g>✓ 48 passed</g></div><div class="pl"><i>●</i> Bash git diff --stat</div><div class="pl">1 file, <g>+12</g> <r>−4</r></div><div class="pl"><i>›</i> Ready for review</div></div><div class="pane"><div class="ph" style="--c:#7EA6F0">Codex</div><div class="pn">review·acme-api·codex</div><div class="pl"><i>›</i> review the retry diff</div><div class="pl"><i>•</i> backoff caps at 30 s</div><div class="pl"><i>•</i> no test for a 429</div><div class="pl"><i>•</i> add jitter to the delay</div><div class="pl"><i>•</i> log the final failure</div><div class="pl"><i>•</i> rest looks right</div><div class="pl"><g>✓ 4 notes left</g></div></div><div class="pane"><div class="ph" style="--c:#9A8CFF">AGY</div><div class="pn">docs·website·agy</div><div class="pl"><i>›</i> document the retry policy</div><div class="pl"><i>•</i> wrote docs/retry.md</div><div class="pl"><i>•</i> added an example</div><div class="pl"><i>•</i> linked it from the guide</div><div class="pl"><i>•</i> checked every link</div><div class="pl"><i>•</i> spelling clean</div><div class="pl"><g>✓ done in 1m 12s</g></div></div></div></div>
   </div>
@@ -237,6 +239,8 @@ footer .built svg{color:var(--green)}
   <div class="fhead"><img src="icon-192.png" width="40" height="40" alt=""><h2 id="feat-h">Everything Glyph does</h2><button type="button" class="fclose" aria-label="Close">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="flist">
+    <div class="fq"><h3>Harness and rig</h3><p>A harness, like Claude Code, Codex or AGY, runs AI models. A rig runs the harnesses: it finds every session across your machines and launches and steers them together.</p></div>
+    <div class="fq"><h3>Why names</h3><p>A rig can only run what it can tell apart. Glyph names every session with its label, project, agent and machine, so the rig knows which is which and where it runs.</p></div>
     <div class="fq"><h3>Named at launch</h3><p>Keep typing claude, codex or agy. One bare word is your label; Glyph builds the session name and hands it to the agent before the first token. Anything with a space is still your prompt.</p></div>
     <div class="fq"><h3>Six tokens</h3><p>Label, project, agent, machine, date and time, lowercase and joined by a dot: billing·acme-api·claude-code·laptop·0556.</p></div>
     <div class="fq"><h3>Every agent</h3><p>Claude Code, Codex, AGY, Cursor, Crush, Cortex, OpenCode and pi, and any other CLI you add in one line.</p></div>
@@ -259,7 +263,7 @@ footer .built svg{color:var(--green)}
       <a href="/docs">Docs</a>
       <a class="opt" href="https://github.com/fru-dev3/glyph/issues" title="Contact: open an issue">Contact</a>
     </nav>
-    <a class="built" href="https://github.com/fru-dev3/glyph"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg><span>Built with AI<span class="opt">, easy to make your own on GitHub</span></span></a>
+    <a class="built" href="https://github.com/fru-dev3/glyph"><span><span class="bw">Built with </span><svg class="heart-i" width="14" height="14" viewBox="0 0 24 24" fill="#E0465B" aria-label="love"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg> + AI<span class="opt"> · easy to make your own on GitHub</span></span></a>
   </div>
 </footer>
 
@@ -268,7 +272,7 @@ const still=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const wait=ms=>new Promise(r=>setTimeout(r,still?0:ms));
 // The headline types itself; the pill builds a session name token by token.
 const said=document.getElementById("said"), nm=document.getElementById("nm");
-const lines=["Know which.","All named.","It's free."];
+const lines=["Know where it runs.","Rig them as one.","It's free."];
 const names=[["billing","acme-api","claude-code","laptop"],["audit","payments","codex","studio"],["migration","acme-api","agy","mini"]];
 async function loop(){
   for(let n=0;;n=(n+1)%lines.length){
@@ -278,7 +282,7 @@ async function loop(){
       said.textContent=line.slice(0,k);
       const shown=Math.min(toks.length,Math.ceil(k/line.length*toks.length));
       nm.innerHTML=toks.slice(0,shown).map((t,i)=>i?'<i>·</i>'+t:'<b>'+t+'</b>').join("");
-      await wait(95);
+      await wait(line[k-1]===" "?40:70);
     }
     await wait(2200);
     for(let k=line.length;k>=0;k--){said.textContent=line.slice(0,k);await wait(28)}
@@ -299,7 +303,7 @@ function fitH1(){
   // The face changes shape with size (optical size), so shrinking isn't linear: refine a few times.
   for(let k=0,o=over();k<6&&o>0;k++,o=over()){
     const size=parseFloat(getComputedStyle(h1).fontSize), room=col.getBoundingClientRect().right-h1.getBoundingClientRect().left;
-    h1.style.fontSize=(size*room/(room+o)*.995).toFixed(2)+"px";
+    h1.style.fontSize=(size*room/(room+o)*.985).toFixed(2)+"px";
   }
   said.textContent=keep;
 }
