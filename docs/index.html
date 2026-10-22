@@ -82,7 +82,10 @@ h1 em{font-style:normal;color:var(--green);white-space:nowrap;display:block}
 .with{display:grid;grid-template-columns:auto auto;column-gap:10px;align-items:center;text-align:left}
 .with img{grid-row:1/3;width:clamp(38px,5.4vh,48px);border-radius:24%}
 .with b{font:700 14px ui-monospace,Menlo,monospace;color:var(--green);white-space:nowrap}
-.with small{font-size:13px;font-weight:600;color:var(--soft)}
+.with small{font-size:13px;font-weight:600;color:var(--soft);white-space:nowrap}
+.alt .without{flex-wrap:nowrap}
+@media (max-width:440px){.alt .x3{display:none}.alt{gap:8px;padding:10px 12px}}
+@media (max-width:380px){.with small{display:none}}
 
 .cta{display:flex;gap:10px;flex-wrap:nowrap;align-items:stretch;position:relative}
 .btn{display:inline-flex;align-items:center;gap:9px;height:clamp(46px,6vh,54px);padding:0 22px;border-radius:14px;font-family:inherit;font-weight:700;font-size:17px;text-decoration:none;border:0;cursor:pointer}
@@ -106,7 +109,20 @@ h1 em{font-style:normal;color:var(--green);white-space:nowrap;display:block}
 
 .right{display:none;position:relative}
 .agents{display:none}
-.shot{width:100%;height:auto;border-radius:18px;filter:drop-shadow(0 30px 60px rgba(11,26,16,.25))}
+.shot{width:100%;border-radius:18px;box-shadow:0 30px 60px rgba(11,26,16,.25)}
+.term{aspect-ratio:1200/620;container-type:inline-size;background:#121614;color:#D7E0DA;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;overflow:hidden;display:flex;flex-direction:column;text-align:left}
+.term .tb{display:flex;align-items:center;gap:.7cqw;padding:1.6cqw 2cqw;border-bottom:1px solid rgba(255,255,255,.08);font-size:1.5cqw;color:#8A968F}
+.term .tb span{width:1.1cqw;height:1.1cqw;border-radius:50%;background:#E0634D}.term .tb span+span{background:#E0B04D}.term .tb span+span+span{background:#57B85F}
+.term .tb em{font-style:normal;margin-left:1cqw}.term .tb b{margin-left:auto;font-weight:500;color:#B8F27C}
+.term .cmd{margin:1.8cqw 2cqw 0;padding:1.2cqw 1.6cqw;border-radius:1cqw;background:rgba(255,255,255,.05);font-size:1.9cqw}
+.term .cmd i{font-style:normal;color:#E07A4F;margin-right:.8cqw}.term .cmd span{color:#7E8C83;margin-left:1.4cqw}
+.term .panes{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:1.6cqw;padding:1.8cqw 2cqw 2.4cqw}
+.term .pane{border-radius:1.2cqw;background:#1A201C;padding:1.4cqw 1.5cqw;display:flex;flex-direction:column;gap:.8cqw;font-size:1.55cqw;line-height:1.35;overflow:hidden}
+.term .ph{font:700 1.6cqw -apple-system,sans-serif;color:#fff;display:flex;align-items:center;gap:.7cqw}
+.term .ph::before{content:"";width:.9cqw;height:.9cqw;border-radius:50%;background:var(--c)}
+.term .pn{color:#E0A57A;padding-bottom:.6cqw;border-bottom:1px solid rgba(255,255,255,.07);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.term .pl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.term .pl i{font-style:normal;color:#7E8C83}.term g{color:#7FD08A}.term r{color:#E8857A}
 
 /* phones: one column, the pill under the headline */
 @media not ((min-width:960px) and (min-height:560px)){
@@ -129,7 +145,6 @@ h1 em{font-style:normal;color:var(--green);white-space:nowrap;display:block}
   .brand b{font-size:clamp(30px,5vh,48px)}.brand span{font-size:clamp(15px,2.1vh,19px)}
   h1{font-size:clamp(64px,min(14vh,7.6vw),170px)}
   .right{display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
-  .right .shot{max-height:calc(100svh - 44px - 2 * clamp(24px,5vh,56px) - 60px - clamp(80px,12vh,130px));width:100%;object-fit:contain}
   .right .pill{order:2;margin-top:-26px;z-index:2}
   .agents{display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.4vh,14px);margin-bottom:clamp(16px,3vh,32px)}
   .agents p{margin:0;font:800 clamp(17px,2.4vh,22px) "Bricolage Grotesque",sans-serif;color:var(--soft);letter-spacing:-.01em}
@@ -197,7 +212,7 @@ footer .built svg{color:var(--green)}
     <h1>Five agents. <em><span id="said">Know which.</span><i class="caret" aria-hidden="true"></i></em></h1>
   </div>
   <div class="alt" aria-label="Instead of nameless sessions like zsh, node and agent-5e, every session is named at launch">
-    <div class="without"><s>zsh</s><s>node</s><s>agent-5e</s></div>
+    <div class="without"><s>zsh</s><s>node</s><s class="x3">agent-5e</s></div>
     <span class="or">or</span>
     <div class="with"><img src="icon-192.png" width="48" height="48" alt=""><b>billing·acme</b><small>named at launch</small></div>
   </div>
@@ -214,7 +229,7 @@ footer .built svg{color:var(--green)}
   <div class="right">
     <div class="agents"><p>Names every agent you run</p><div class="row"><span class="ag" style="--i:0"><img src="agents/claude.png" width="52" height="52" alt="Claude Code" title="Claude Code"></span><span class="ag" style="--i:1"><img src="agents/codex.png" width="52" height="52" alt="Codex" title="Codex"></span><span class="ag" style="--i:2"><img src="agents/agi.png" width="52" height="52" alt="AGY" title="AGY"></span><span class="ag" style="--i:3"><img src="agents/cursor.png" width="52" height="52" alt="Cursor" title="Cursor"></span><span class="ag" style="--i:4"><img src="agents/crush.png" width="52" height="52" alt="Crush" title="Crush"></span><span class="ag svg" style="--i:5"><img src="agents/cortex.svg" width="52" height="52" alt="Cortex" title="Cortex"></span><span class="ag svg" style="--i:6"><img src="agents/opencode.svg" width="52" height="52" alt="OpenCode" title="OpenCode"></span><span class="ag svg" style="--i:7"><img src="agents/pi.svg" width="52" height="52" alt="pi" title="pi"></span></div></div>
     <div class="pill" aria-label="A session name, built token by token"><span class="dot"></span><span class="nm" id="nm">billing·acme-api·claude-code·laptop</span></div>
-    <img class="shot" src="fleet-terminal.png" width="1200" height="560" alt="A terminal with three named panes, one each for Claude Code, Codex and AGY, opened by glyph fleet" fetchpriority="high">
+    <div class="shot term" role="img" aria-label="glyph fleet review: three named panes, Claude Code fixing a retry, Codex reviewing it, AGY writing the docs"><div class="tb"><span></span><span></span><span></span><em>herdr · glyph fleet review</em><b>3 panes</b></div><div class="cmd"><i>$</i> glyph fleet review <span>→ three named panes</span></div><div class="panes"><div class="pane"><div class="ph" style="--c:#E07A4F">Claude Code</div><div class="pn">fix·acme-api·claude-code</div><div class="pl"><i>●</i> Read src/checkout/retry.ts</div><div class="pl"><i>●</i> Edit retry.ts <g>+12</g> <r>−4</r></div><div class="pl"><i>●</i> Bash npm test</div><div class="pl"><g>✓ 48 passed</g></div><div class="pl"><i>●</i> Bash git diff --stat</div><div class="pl">1 file, <g>+12</g> <r>−4</r></div><div class="pl"><i>›</i> Ready for review</div></div><div class="pane"><div class="ph" style="--c:#7EA6F0">Codex</div><div class="pn">review·acme-api·codex</div><div class="pl"><i>›</i> review the retry diff</div><div class="pl"><i>•</i> backoff caps at 30 s</div><div class="pl"><i>•</i> no test for a 429</div><div class="pl"><i>•</i> add jitter to the delay</div><div class="pl"><i>•</i> log the final failure</div><div class="pl"><i>•</i> rest looks right</div><div class="pl"><g>✓ 4 notes left</g></div></div><div class="pane"><div class="ph" style="--c:#9A8CFF">AGY</div><div class="pn">docs·website·agy</div><div class="pl"><i>›</i> document the retry policy</div><div class="pl"><i>•</i> wrote docs/retry.md</div><div class="pl"><i>•</i> added an example</div><div class="pl"><i>•</i> linked it from the guide</div><div class="pl"><i>•</i> checked every link</div><div class="pl"><i>•</i> spelling clean</div><div class="pl"><g>✓ done in 1m 12s</g></div></div></div></div>
   </div>
 </main>
 
@@ -293,14 +308,15 @@ function fitH1(){
 const left=document.querySelector(".left"), right=document.querySelector(".right"), shot=document.querySelector(".right .shot");
 function fitRight(){
   if(getComputedStyle(shot).display==="none")return;
-  shot.style.maxHeight="none";
+  shot.style.width="";
   const other=right.getBoundingClientRect().height-shot.getBoundingClientRect().height;
-  shot.style.maxHeight=Math.max(120,left.getBoundingClientRect().height-other)+"px";
+  const h=Math.max(120,left.getBoundingClientRect().height-other), w=right.getBoundingClientRect().width;
+  shot.style.width=Math.min(w,h*1200/620)+"px";
 }
 function fitAll(){fitH1();fitRight()}
 fitAll(); addEventListener("resize",fitAll); addEventListener("load",fitAll);
 document.fonts.ready.then(fitAll); document.fonts.addEventListener("loadingdone",fitAll);
-shot.complete||shot.addEventListener("load",fitRight);
+
 if(!still)loop();
 // Copy the install command.
 const ib=document.getElementById("install"), il=document.getElementById("install-l");
