@@ -8,12 +8,14 @@
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Caveat:wght@700&display=swap" rel="stylesheet">
 <link rel="canonical" href="https://glyph.fru.dev/">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="author" content="fru.dev">
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#F6F7F4" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0B1210" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F7FBF5">
 <meta property="og:site_name" content="fru.dev">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Glyph | Agent Rig">
@@ -45,280 +47,136 @@
 ]}
 </script>
 <style>
-:root{
-  --paper:#F6F7F4; --ink:#0B1210; --dim:#5B6660; --faint:#7F8A84;
-  --line:rgba(0,128,0,.20); --hair:rgba(0,128,0,.11); --accent:#008000; --rock:#AEBDB3; --well:#EBF2E9;
-  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
-  --pad:clamp(20px,4.4vw,56px);
-}
-@media (prefers-color-scheme: dark){
-  :root{
-    --paper:#0B1210; --ink:#E8EDE9; --dim:#8A968F; --faint:#65716A;
-    --line:rgba(63,163,77,.25); --hair:rgba(63,163,77,.13); --accent:#3FA34D; --rock:#27392F; --well:#111E18;
-  }
-}
+:root{--ink:#0B1A10;--soft:#3E5446;--dim:#5E7366;--green:#008000;--line:rgba(11,26,16,.10)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--paper);color:var(--ink);
-  font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-a{color:inherit;text-decoration:none}
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.wrap{max-width:1560px;margin:0 auto;padding:0 var(--pad);width:100%}
-.mi{font:11px/1 var(--mono);letter-spacing:.19em;text-transform:uppercase}
-
-/* ---------- nav ---------- */
-nav{position:fixed;inset:0 0 auto 0;z-index:30;height:60px;display:flex;align-items:center;
-  background:color-mix(in srgb,var(--paper) 76%,transparent);
-  backdrop-filter:saturate(160%) blur(16px);-webkit-backdrop-filter:saturate(160%) blur(16px);
-  border-bottom:1px solid transparent;transition:border-color .3s}
-nav.stuck{border-bottom-color:var(--hair)}
-nav .wrap{display:flex;align-items:center;gap:10px}
-.brand{display:flex;align-items:center;gap:9px;font-size:17px;letter-spacing:-.02em;font-weight:600}
-.brand img{width:23px;height:23px}
-.brand .role{font-weight:400;color:var(--dim)}
-@media(max-width:560px){.brand .role{display:none}}
-.nl{margin-left:auto;display:flex;align-items:center;gap:clamp(14px,2.2vw,28px)}
-.nl a{color:var(--dim);transition:color .18s}
-.nl a:hover{color:var(--ink)}
-.star{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);
-  border-radius:2px;padding:6px 11px;color:var(--dim)}
-.star:hover{border-color:var(--accent);color:var(--ink)}
-.star svg{width:11px;height:11px;fill:var(--accent)}
-.star b{font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:0}
-
-/* ---------- rail ---------- */
-.rail{position:absolute;left:22px;top:50%;transform:translateY(-50%);z-index:1;
-  display:none;flex-direction:column;border:1px solid var(--hair);pointer-events:none}
-.rl{position:relative;width:66px;height:66px;display:grid;place-items:center;
-  border-bottom:1px solid var(--hair)}
-.rl:last-child{border-bottom:0}
-.rl svg{width:29px;height:29px;fill:none;stroke:var(--faint);stroke-width:6;
-  stroke-linecap:round;stroke-linejoin:round;opacity:.45;
-  animation:railglow 4.8s ease-in-out infinite;animation-delay:calc(var(--i) * .6s)}
-.rl::before{content:"";position:absolute;inset:0;background:var(--accent);opacity:0;
-  animation:railwash 4.8s ease-in-out infinite;animation-delay:calc(var(--i) * .6s)}
-.rl u{position:absolute;right:5px;bottom:3px;text-decoration:none;
-  font:8px var(--mono);letter-spacing:.08em;color:var(--faint);opacity:.45;
-  animation:railnum 4.8s ease-in-out infinite;animation-delay:calc(var(--i) * .6s)}
-@keyframes railglow{0%,55%,100%{opacity:.42;stroke:var(--faint)}
-  68%,80%{opacity:1;stroke:var(--accent)}}
-@keyframes railwash{0%,55%,100%{opacity:0}68%,80%{opacity:.06}}
-@keyframes railnum{0%,55%,100%{opacity:.45;color:var(--faint)}68%,80%{opacity:1;color:var(--accent)}}
-@media(min-width:1240px){.rail{display:flex}
-  .wrap{padding-left:126px}
-  .start .wrap,footer{padding-right:126px}}
-
-/* ---------- hero ---------- */
-.hero{position:relative;min-height:100svh;display:grid;align-content:center;padding:96px 0 74px;overflow:hidden}
-#rock{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;
-  -webkit-mask-image:linear-gradient(100deg,transparent 0%,rgba(0,0,0,.35) 26%,rgba(0,0,0,.8) 52%,#000 72%);
-  mask-image:linear-gradient(100deg,transparent 0%,rgba(0,0,0,.35) 26%,rgba(0,0,0,.8) 52%,#000 72%)}
-.hero .wrap{position:relative;z-index:1}
-.col{max-width:min(980px,66vw);min-width:0}
-.eyebrow{color:var(--accent);margin:0 0 26px}
-h1{margin:0;max-width:13ch;font-size:clamp(42px,6.6vw,96px);line-height:.98;letter-spacing:-.045em;
-  font-weight:500;text-wrap:balance}
-h1 span{display:block}
-h1 .g{color:var(--accent)}
-.lede{margin:28px 0 0;max-width:64ch;font-size:clamp(15.5px,1.25vw,18px);color:var(--dim);text-wrap:balance}
-
-/* tabs + command bar */
-.tabs{margin:46px 0 0;display:flex;align-items:center;gap:22px;flex-wrap:wrap;
-  border-bottom:1px solid var(--hair);padding-bottom:0}
-.tabs button{border:0;background:none;padding:0 0 10px;cursor:pointer;color:var(--faint);
-  font:11px/1 var(--mono);letter-spacing:.19em;text-transform:uppercase;
-  border-bottom:1px solid transparent;margin-bottom:-1px;transition:.18s}
-.tabs button:hover{color:var(--dim)}
-.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
-.tabs .os{margin-left:auto;color:var(--faint);padding-bottom:10px}
-.bar{display:flex;align-items:stretch;border:1px solid var(--line);border-top:0;
-  background:var(--well);min-width:0}
-.bar .p{display:flex;justify-content:center;width:42px;flex:none;color:var(--accent);
-  font:clamp(11px,.86vw,13.5px)/1.45 var(--mono);padding-top:16px;border-right:1px solid var(--line)}
-.bar code{flex:1;min-width:0;padding:16px 18px;letter-spacing:-.01em;color:var(--ink);
-  font:clamp(11px,.86vw,13.5px)/1.45 var(--mono);
-  white-space:nowrap;overflow-x:auto;scrollbar-width:none}
-.bar code::-webkit-scrollbar{display:none}
-.bar code.over{-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent 100%);
-  mask-image:linear-gradient(90deg,#000 88%,transparent 100%)}
-.bar button{flex:none;border:0;border-left:1px solid var(--line);background:none;cursor:pointer;
-  padding:0 20px;color:var(--dim);font:11px var(--mono);letter-spacing:.19em;text-transform:uppercase;
-  transition:.18s}
-.bar button:hover{color:var(--ink);background:color-mix(in srgb,var(--accent) 10%,transparent)}
-.out{margin:14px 0 0;min-height:1.5em;display:flex;gap:13px;align-items:baseline;color:var(--dim);
-  font:13px/1.5 var(--mono);overflow-wrap:anywhere;min-width:0}
-.out i{font-style:normal;flex:none;color:var(--accent);font-size:10px;letter-spacing:.17em;
-  text-transform:uppercase;border:1px solid var(--line);padding:3px 8px;border-radius:2px}
-.out b{color:var(--accent);font-weight:600}
-.out .t{color:var(--ink)}
-
-.works{margin:52px 0 0}
-.works p{margin:0 0 18px;color:var(--faint)}
-.logos{display:flex;align-items:center;gap:clamp(20px,2.6vw,38px);flex-wrap:wrap;row-gap:16px}
-.logos img{width:27px;height:27px;object-fit:contain;border-radius:5px;
-  opacity:.8;transition:opacity .2s,transform .2s}
-.logos img:hover{opacity:1;transform:translateY(-2px)}
-.works p.also{margin:26px 0 0;color:var(--faint)}
-.also a{color:var(--dim);border-bottom:1px solid var(--line);transition:.18s}
-.also a:hover{color:var(--accent);border-bottom-color:var(--accent)}
-
-.footline{position:absolute;left:0;right:0;bottom:22px;z-index:1}
-.footline .wrap{display:flex;align-items:center;gap:20px;color:var(--faint)}
-.footline a:hover{color:var(--ink)}
-.footline .sp{margin-left:auto}
-
-/* ---------- sections ---------- */
-section{padding:clamp(84px,12vh,140px) 0;border-top:1px solid var(--hair)}
-.eyeb{color:var(--faint);margin:0 0 24px}
-h2{margin:0;font-size:clamp(28px,4vw,54px);line-height:1.02;letter-spacing:-.04em;
-  font-weight:500;text-wrap:balance}
-.say{margin:22px 0 0;max-width:56ch;font-size:clamp(15.5px,1.15vw,17.5px);color:var(--dim)}
-.say code{font:.9em var(--mono);color:var(--ink);background:var(--well);
-  border:1px solid var(--hair);padding:2px 7px}
-
-/* --- the name, built one token at a time --- */
-.build{margin-top:clamp(44px,5.5vw,72px);border-top:1px solid var(--hair);padding-top:26px}
-.btag{margin:0 0 20px;color:var(--faint);transition:color .5s}
-.btag.done{color:var(--accent)}
-.anatomy{display:flex;flex-wrap:wrap;align-items:flex-start;row-gap:18px}
-.tok{min-width:0;display:flex;flex-direction:column;gap:10px;padding-right:clamp(12px,1.9vw,26px);
-  transition:padding-right .7s cubic-bezier(.22,.68,.24,1),gap .5s ease}
-.tok em{font-style:normal;font:clamp(13px,1.55vw,23px)/1.15 var(--mono);letter-spacing:-.025em;
-  color:var(--ink);overflow-wrap:anywhere;min-height:1.15em;
-  opacity:.18;transition:opacity .35s,color .35s}
-.tok u{text-decoration:none;font:9.5px/1.1 var(--mono);letter-spacing:.17em;height:1.1em;overflow:hidden;
-  text-transform:uppercase;color:var(--faint);opacity:.25;white-space:nowrap;
-  transition:opacity .35s,color .35s,height .55s cubic-bezier(.22,.68,.24,1),
-             width .55s cubic-bezier(.22,.68,.24,1)}
-.tok.lit em{opacity:1}
-.tok.lit u{opacity:1}
-.tok.now em{color:var(--accent)}
-.tok.now u{color:var(--accent)}
-.tok.key.lit em{color:var(--accent)}
-.tok em::after{content:"";display:inline-block;width:.55em;height:1em;margin-left:1px;
-  background:var(--accent);vertical-align:-.14em;opacity:0}
-.tok.now em::after{opacity:1;animation:blink .9s steps(1,end) infinite}
+html,body{height:100%}
+body{margin:0;color:var(--ink);font:17px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  background:radial-gradient(45% 40% at 12% 18%,#C9F7B5 0,transparent 70%),radial-gradient(40% 45% at 90% 12%,#CFE6FF 0,transparent 70%),
+  radial-gradient(45% 45% at 85% 92%,#E4DCFF 0,transparent 70%),radial-gradient(40% 40% at 8% 95%,#FFE7C7 0,transparent 70%),#F7FBF5}
+a{color:var(--green)}
+:focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:6px}
+main{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2.6vh,26px);
+  padding:clamp(16px,3vh,40px) 16px calc(56px + env(safe-area-inset-bottom));text-align:center}
+.left{display:flex;flex-direction:column;align-items:stretch;gap:clamp(14px,2.6vh,28px);width:min(100%,440px)}
+.top{display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.6vh,14px)}
+.brand{display:flex;align-items:center;gap:14px;text-align:left}
+.icon{width:clamp(52px,8vh,72px);height:auto;border-radius:22%;box-shadow:0 10px 24px rgba(0,60,0,.28)}
+.brand b{display:block;font:800 clamp(28px,4.4vh,40px)/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.02em}
+.brand span{display:block;color:var(--soft);font-weight:600;font-size:clamp(14px,1.9vh,17px);margin-top:4px}
+h1{font:800 clamp(34px,min(8.5vh,12.5vw),80px)/1 "Bricolage Grotesque",-apple-system,sans-serif;letter-spacing:-.035em;margin:0}
+h1 em{font-style:normal;color:var(--green);white-space:nowrap;display:block}
+.caret{display:inline-block;width:.07em;height:.8em;margin-left:.04em;background:var(--green);vertical-align:-.02em;animation:blink 1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
-.sep{align-self:flex-start;padding-right:clamp(12px,1.9vw,26px);opacity:.2;
-  transition:opacity .35s,padding-right .7s cubic-bezier(.22,.68,.24,1),color .5s;
-  font:clamp(13px,1.55vw,23px)/1.15 var(--mono);color:var(--line)}
-.sep.lit{opacity:1}
-/* the six columns close up into one unbroken string */
-.anatomy.tight .tok,.anatomy.tight .sep{padding-right:0}
-.anatomy.tight .tok{gap:0}
-.anatomy.tight .tok u{height:0;width:0;opacity:0}
-.anatomy.tight .sep{color:var(--dim)}
-.anatomy.tight .tok em::after{display:none}
 
-.gloss{margin:26px 0 0;min-height:1.5em;color:var(--dim);font-size:15px}
-.gloss code{font:.92em var(--mono);color:var(--accent)}
-.gloss span{display:inline-block;opacity:0;transform:translateY(5px);
-  transition:opacity .3s,transform .3s}
-.gloss span.in{opacity:1;transform:none}
+/* the pill: a session name, token by token */
+.pill{display:inline-flex;align-items:center;gap:10px;height:54px;padding:0 22px;border-radius:999px;background:#0B0F0C;color:#fff;
+  font:500 clamp(13px,1.9vh,17px) ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap;box-shadow:0 14px 30px rgba(0,0,0,.25)}
+.pill .dot{width:9px;height:9px;border-radius:50%;background:#3FA34D;flex:none}
+.pill .nm b{color:#B8F27C;font-weight:700}.pill .nm i{font-style:normal;color:#7E8C83}
 
-/* --- where the name shows up --- */
-.surfaces{margin-top:clamp(44px,5.5vw,74px);display:grid;
-  grid-template-columns:minmax(0,1.15fr) minmax(0,1.15fr) minmax(0,.85fr);
-  gap:clamp(16px,2vw,26px);opacity:0;transform:translateY(14px);
-  transition:opacity .6s .1s,transform .6s .1s}
-.surfaces.in{opacity:1;transform:none}
-.srf{margin:0;min-width:0}
-.srf>figcaption{margin:0 0 12px;color:var(--faint);font:10px var(--mono);
-  letter-spacing:.17em;text-transform:uppercase}
-.win{border:1px solid var(--hair);background:var(--well);min-width:0;overflow:hidden}
-.win .tbar{display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 12px;
-  border-bottom:1px solid var(--hair);min-width:0}
-.win .tbar b{font:11px var(--mono);font-weight:400;color:var(--dim);letter-spacing:-.01em;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.win .body{padding:16px 14px;font:11.5px/1.9 var(--mono);color:var(--dim);min-width:0}
-.win .body .g{color:var(--accent)}
-.win .body .c{display:inline-block;width:.5em;height:1em;background:var(--accent);
-  vertical-align:-.14em;animation:blink 1s steps(1,end) infinite}
-.panes{border:1px solid var(--hair);background:var(--well)}
-.pn{display:flex;align-items:center;gap:10px;padding:11px 13px;border-bottom:1px solid var(--hair);min-width:0}
-.pn:last-child{border-bottom:0}
-.pn i{flex:none;width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.55;font-style:normal}
-.pn.a i{opacity:1}
-.pn b{font:10.5px var(--mono);font-weight:400;color:var(--dim);white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis;min-width:0;letter-spacing:-.01em}
-.pn b em{font-style:normal;color:var(--accent)}
-.pn s{margin-left:auto;flex:none;text-decoration:none;font:9.5px var(--mono);color:var(--faint)}
-.phone{border:1px solid var(--hair);border-radius:18px;background:var(--well);padding:9px 7px;min-width:0}
-.phone .notch{width:34%;height:4px;border-radius:3px;background:var(--line);margin:2px auto 10px}
-.ph{display:flex;flex-direction:column;gap:3px;padding:9px 10px;border-top:1px solid var(--hair);min-width:0}
-.ph:first-of-type{border-top:0}
-.ph b{font:10px var(--mono);font-weight:400;color:var(--ink);white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis;min-width:0;letter-spacing:-.02em}
-.ph b em{font-style:normal;color:var(--accent)}
-.ph s{text-decoration:none;font:9px var(--mono);color:var(--faint)}
-.ph.live s{color:var(--accent)}
+/* without and with */
+.alt{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:22px;padding:12px 16px}
+.alt .without{display:flex;flex-wrap:wrap;gap:6px}
+.alt s{font:600 13px ui-monospace,Menlo,monospace;color:#A6402B;background:#fff;border:1px solid var(--line);border-radius:8px;padding:4px 8px;text-decoration-color:rgba(166,64,43,.75);text-decoration-thickness:1.5px}
+.or{font:800 clamp(16px,2.2vh,20px) "Bricolage Grotesque",sans-serif;color:var(--dim)}
+.with{display:grid;grid-template-columns:auto auto;column-gap:10px;align-items:center;text-align:left}
+.with img{grid-row:1/3;width:clamp(38px,5.4vh,48px);border-radius:24%}
+.with b{font:700 14px ui-monospace,Menlo,monospace;color:var(--green);white-space:nowrap}
+.with small{font-size:13px;font-weight:600;color:var(--soft)}
 
-.compare{margin-top:clamp(46px,6vw,80px);display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--hair)}
-.pane{min-width:0;padding:clamp(20px,2.4vw,32px);border-right:1px solid var(--hair)}
-.pane:last-child{border-right:0}
-.pane h3{margin:0 0 22px;color:var(--faint);font:11px var(--mono);
-  letter-spacing:.19em;text-transform:uppercase;font-weight:400}
-.pane.on h3{color:var(--accent)}
-.pane ul{margin:0;padding:0}
-.pane li{list-style:none;font:clamp(10.5px,.99vw,13.5px)/2 var(--mono);color:var(--faint);
-  overflow-wrap:anywhere;letter-spacing:-.01em}
-.pane.on li{color:var(--dim)}
-.pane.on li b{color:var(--accent);font-weight:600}
+.cta{display:flex;gap:10px;flex-wrap:nowrap;align-items:stretch;position:relative}
+.btn{display:inline-flex;align-items:center;gap:9px;height:clamp(46px,6vh,54px);padding:0 22px;border-radius:14px;font-family:inherit;font-weight:700;font-size:17px;text-decoration:none;border:0;cursor:pointer}
+.btn svg{width:20px;height:20px}
+.btn.go{flex:1;justify-content:center;white-space:nowrap;background:var(--green);color:#fff;box-shadow:0 10px 22px rgba(0,128,0,.28)}
+.btn.go:hover{background:#006E00}
+.btn.star{position:relative;padding:0 18px;font-size:15px;gap:7px;background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.star:hover{border-color:var(--green);color:var(--green)}
+.btn.star>svg{width:17px;height:17px;color:var(--green)}
+.btn.star .count{padding-left:8px;border-left:1px solid var(--line);color:var(--green);font-weight:800}
+.love{position:absolute;top:calc(100% + 4px);right:50%;margin-right:-9px;display:flex;flex-direction:column;align-items:flex-end;color:var(--green);pointer-events:none}
+.btn.star .love svg.arrow{width:clamp(56px,7.5vh,76px);height:auto;color:var(--green)}
+.love .say{font:700 clamp(22px,3.2vh,30px)/1 "Caveat",cursive;white-space:nowrap;display:flex;align-items:center;gap:6px;margin-top:-2px;margin-right:clamp(20px,3vh,30px);transform:rotate(-4deg)}
+.btn.star .love svg.heart{width:.8em;height:.8em;color:#E0465B;animation:beat 1.6s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.25)}30%{transform:scale(1)}45%{transform:scale(1.15)}}
+.badges{display:flex;gap:8px 20px;flex-wrap:wrap;justify-content:flex-start;margin:0;padding:0;list-style:none;color:var(--soft);font-size:15px;font-weight:600}
+.badges li{display:flex;align-items:center;gap:7px}
+.badges svg{width:19px;height:19px;color:var(--green)}
+.note{margin:0;font-size:12px;line-height:1.45;color:var(--dim);text-align:left}
 
-.points{margin-top:clamp(46px,5vw,68px);display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3vw,48px)}
-.pt{min-width:0;border-top:1px solid var(--hair);padding-top:24px}
-.pt svg{width:30px;height:30px;stroke:var(--accent);fill:none;stroke-width:6;
-  stroke-linecap:round;stroke-linejoin:round;margin-bottom:18px;display:block}
-.pt b{display:block;font-size:16.5px;letter-spacing:-.02em;font-weight:600;margin-bottom:8px}
-.pt p{margin:0;font-size:14.5px;color:var(--dim)}
-.pt code,.lede code,.say code.k{font:.92em var(--mono);color:var(--accent);letter-spacing:-.01em}
+.right{display:none;position:relative}
+.agents{display:none}
+.shot{width:100%;height:auto;border-radius:18px;filter:drop-shadow(0 30px 60px rgba(11,26,16,.25))}
 
-.start{text-align:center;padding:clamp(84px,11vh,124px) 0}
-.start h2{max-width:16ch;margin-inline:auto}
-.start .kit{max-width:min(1040px,92vw);margin:38px auto 0;text-align:left}
-.start .links{margin-top:26px;display:flex;gap:26px;justify-content:center;color:var(--dim)}
-.start .links a:hover{color:var(--accent)}
-
-footer{border-top:1px solid var(--hair);padding:26px 0;display:flex;flex-wrap:wrap;
-  gap:8px 24px;align-items:center;color:var(--faint)}
-footer a:hover{color:var(--ink)}
-footer .sp{margin-left:auto}
-.family{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px 22px;padding-top:6px;
-  font:14px/1.5 var(--sans);letter-spacing:0;text-transform:none;color:var(--dim)}
-.family a:first-child{color:var(--accent);font-weight:600}
-
-@media(max-width:1000px){
-  .col{max-width:none}
-  .surfaces{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-  .srf.ph-wrap{grid-column:1/-1}
-  #rock{-webkit-mask-image:linear-gradient(170deg,transparent 0%,rgba(0,0,0,.35) 46%,#000 82%);
-        mask-image:linear-gradient(170deg,transparent 0%,rgba(0,0,0,.35) 46%,#000 82%)}
+/* phones: one column, the pill under the headline */
+@media not ((min-width:960px) and (min-height:560px)){
+  .left{display:contents}
+  .right{display:block;order:2}
+  .right .shot{display:none}
+  .top{order:1}.alt{order:3}.cta{order:4;margin-bottom:clamp(60px,9vh,76px)}.badges{order:5}.note{order:6}
+  .alt,.cta,.badges,.note{width:min(100%,440px)}
+  .pill{height:46px;padding:0 18px}
+  .love .say{font-size:22px}.btn.star .love svg.arrow{width:54px}
 }
-@media(max-width:760px){
-  .hero{min-height:auto;padding:104px 0 56px}
-  #rock{opacity:.5}
-  .logos{gap:14px}
-  .logos img{width:25px;height:25px}
-  .nl a.hide{display:none}
-  .bar{flex-wrap:wrap}
-  .bar .p{display:none}
-  .bar code{flex-basis:100%;padding:15px 16px;font-size:12.5px;white-space:normal;overflow-wrap:anywhere}
-  .bar button{flex-basis:100%;border-left:0;border-top:1px solid var(--line);padding:13px}
-  .tabs{gap:16px}
-  .tabs .os{display:none}
-  .footline{position:static;margin-top:44px}
-  .surfaces{grid-template-columns:minmax(0,1fr)}
-  .gloss{font-size:14px}
-  .compare{grid-template-columns:minmax(0,1fr)}
-  .pane{border-right:0;border-bottom:1px solid var(--hair)}
-  .pane:last-child{border-bottom:0}
-  .points{grid-template-columns:minmax(0,1fr);gap:30px}
-  .start .links{flex-wrap:wrap;gap:18px}
+@media (max-width:400px){.star .lbl{display:none}.btn.star{padding:0 14px}.btn.go{padding:0 16px}.pill{font-size:12px;padding:0 14px;gap:8px}}
+
+/* wide screens: two halves, both ending on the same line */
+@media (min-width:960px) and (min-height:560px){
+  main{display:grid;grid-template-columns:auto minmax(0,1fr);height:100svh;min-height:0;align-content:center;align-items:end;
+    gap:clamp(32px,5vw,96px);max-width:1680px;margin:0 auto;padding:clamp(24px,5vh,56px) clamp(32px,5vw,96px) calc(44px + clamp(24px,5vh,56px));text-align:left}
+  .left{width:clamp(400px,34vw,560px);gap:clamp(14px,3.4vh,36px)}
+  .top{align-items:flex-start}
+  .brand b{font-size:clamp(30px,5vh,48px)}.brand span{font-size:clamp(15px,2.1vh,19px)}
+  h1{font-size:clamp(64px,min(14vh,7.6vw),170px)}
+  .right{display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+  .right .shot{max-height:calc(100svh - 44px - 2 * clamp(24px,5vh,56px) - 60px - clamp(80px,12vh,130px));width:100%;object-fit:contain}
+  .right .pill{order:2;margin-top:-26px;z-index:2}
+  .agents{display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.4vh,14px);margin-bottom:clamp(16px,3vh,32px)}
+  .agents p{margin:0;font:800 clamp(17px,2.4vh,22px) "Bricolage Grotesque",sans-serif;color:var(--soft);letter-spacing:-.01em}
+  .agents .row{display:flex;gap:clamp(8px,1vw,14px)}
+  .ag{display:block;flex:none;width:clamp(30px,min(5vh,3.4vw),56px);height:clamp(30px,min(5vh,3.4vw),56px);animation:bob 4.2s ease-in-out infinite;animation-delay:calc(var(--i) * -.35s);filter:drop-shadow(0 6px 10px rgba(11,26,16,.16))}
+  .ag img{display:block;width:100%;height:100%;object-fit:contain}
+  .ag.svg{display:grid;place-items:center;background:#fff;border-radius:24%}
+  .ag.svg img{width:62%;height:62%}
+  .btn{height:clamp(54px,7vh,68px);font-size:clamp(17px,2.2vh,21px)}
+  .btn.star{font-size:15px}
+  .badges{font-size:clamp(15px,1.9vh,18px)}
+  .cta{margin-bottom:clamp(36px,6vh,60px)}
 }
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+@media (min-width:960px) and (max-width:1180px) and (min-height:560px){.cta{margin-bottom:clamp(70px,11vh,96px)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+
+/* features: one column of text in a sheet */
+dialog#features{outline:none;border:0;padding:0;border-radius:28px;width:min(720px,calc(100% - 24px));max-height:calc(100svh - 32px);overflow:auto;background:#fff;color:var(--ink);box-shadow:0 30px 80px rgba(11,26,16,.35)}
+dialog#features::backdrop{background:rgba(11,26,16,.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+dialog#features[open]{animation:pop .22s cubic-bezier(.16,1,.3,1)}
+@keyframes pop{from{opacity:0;transform:translateY(12px) scale(.98)}}
+.fhead{position:sticky;top:0;z-index:1;display:flex;align-items:center;gap:12px;padding:18px 22px;background:linear-gradient(90deg,#E9F8E4,#EEF3FF);border-bottom:1px solid var(--line)}
+.fhead img{border-radius:10px}
+.fhead h2{flex:1;margin:0;font:800 clamp(22px,3vw,30px)/1.1 "Bricolage Grotesque",sans-serif;letter-spacing:-.02em}
+.fclose{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:#fff;display:grid;place-items:center;cursor:pointer;color:var(--ink)}
+.fclose svg{width:18px;height:18px}
+.flist{padding:6px 28px 24px}
+.fq{padding:16px 0;border-bottom:1px solid var(--line)}
+.fq:last-child{border-bottom:0}
+.fq h3{margin:0;font:700 18px/1.3 -apple-system,BlinkMacSystemFont,sans-serif}
+.fq p{margin:5px 0 0;color:var(--soft);font-size:16px;line-height:1.55;overflow-wrap:anywhere}
+@media (max-width:520px){.fhead{padding:12px 16px}.fhead img{width:32px;height:32px}.flist{padding:2px 18px 18px}.fq h3{font-size:17px}.fq p{font-size:15px}}
+
+footer{position:fixed;left:0;right:0;bottom:0;z-index:30;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+footer .bar{max-width:1680px;margin:0 auto;height:44px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;color:var(--dim)}
+@media (min-width:960px) and (min-height:560px){footer .bar{padding:0 clamp(32px,5vw,96px)}}
+footer nav{display:flex;align-items:center;gap:4px}
+footer nav a{color:var(--soft);text-decoration:none;padding:6px 8px;border-radius:8px;display:inline-flex;align-items:center;gap:6px}
+footer nav a:hover{background:rgba(11,26,16,.06);color:var(--ink)}
+footer nav a.home{color:var(--ink);font-weight:600}
+footer a.feat{color:var(--green);font-weight:700}
+footer a:focus:not(:focus-visible){outline:none}
+footer .built{display:inline-flex;align-items:center;gap:6px;color:var(--soft);text-decoration:none;font-weight:600;white-space:nowrap}
+footer .built:hover{color:var(--green)}
+footer .built svg{color:var(--green)}
+@media (max-width:520px){footer .opt{display:none}}
+@media (max-width:380px){footer nav a{padding:6px 5px}footer .bar{gap:6px}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}
 </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-1TQYNT93J1"></script>
@@ -331,405 +189,103 @@ footer .sp{margin-left:auto}
 </script>
 </head>
 <body>
-
-<nav id="nav"><div class="wrap">
-  <a class="brand" href="/"><img src="favicon.svg" alt="">Glyph<span class="role">| Agent Rig</span></a>
-  <div class="nl mi">
-    <a href="#about">About</a>
-    <a href="#why">Why</a>
-    <a href="docs.html">Docs</a>
-    <a class="hide" href="https://github.com/fru-dev3/glyph">GitHub&nbsp;&#8599;</a>
-    <a class="star" href="https://github.com/fru-dev3/glyph/stargazers" aria-label="GitHub stars">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
-      <b id="stars">&middot;&middot;</b></a>
+<main>
+  <div class="left">
+  <div class="top">
+    <div class="brand"><img class="icon" src="icon-512.png" width="72" height="72" alt=""><div><b>Glyph</b><span>Names for your AI agents</span></div></div>
+    <h1>Five agents. <em><span id="said">Know which.</span><i class="caret" aria-hidden="true"></i></em></h1>
   </div>
-</div></nav>
-
-<header class="hero">
-  <canvas id="rock" aria-hidden="true"></canvas>
-  <div class="rail" aria-hidden="true">
-        <div class="rl" style="--i:0" title="Figure"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M42 27a8 8 0 1 0 16 0a8 8 0 1 0 -16 0M50 35v38M50 44 32 27M50 44l18-17M50 73 40 95M50 73l10 22M50 19v-9"/></svg><u>01</u></div>
-        <div class="rl" style="--i:1" title="Spiral"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50.0 50.0L50.3 50.1L50.6 50.2L50.9 50.4L51.1 50.8L51.2 51.2L51.2 51.6L51.0 52.0L50.8 52.5L50.5 52.9L50.0 53.3L49.4 53.6L48.8 53.7L48.1 53.8L47.3 53.7L46.5 53.5L45.8 53.1L45.0 52.5L44.4 51.8L43.9 51.0L43.5 50.0L43.2 48.9L43.2 47.8L43.3 46.6L43.7 45.4L44.2 44.2L45.0 43.1L46.0 42.1L47.2 41.3L48.5 40.6L50.0 40.2L51.6 40.0L53.2 40.1L54.9 40.4L56.5 41.0L58.1 41.9L59.5 43.1L60.8 44.5L61.8 46.2L62.6 48.0L63.1 50.0L63.2 52.1L63.1 54.2L62.5 56.4L61.6 58.5L60.4 60.4L58.8 62.2L57.0 63.7L54.8 64.9L52.5 65.8L50.0 66.3L47.4 66.5L44.7 66.2L42.1 65.4L39.6 64.3L37.3 62.7L35.2 60.8L33.4 58.5L32.0 55.9L30.9 53.0L30.4 50.0L30.3 46.9L30.7 43.7L31.6 40.6L33.1 37.7L35.0 35.0L37.3 32.5L40.1 30.5L43.1 28.9L46.5 27.7L50.0 27.1L53.6 27.1L57.3 27.6L60.8 28.7L64.2 30.4L67.3 32.7L70.1 35.4L72.4 38.6L74.3 42.1L75.5 46.0L76.2 50.0L76.2 54.1L75.5 58.3L74.2 62.3L72.2 66.1L69.6 69.6L66.5 72.7L62.9 75.3L58.9 77.4L54.6 78.7L50.0 79.4L45.3 79.4L40.7 78.6L36.2 77.1L31.9 74.9L28.0 72.0L24.6 68.4L21.7 64.4L19.5 59.9L18.0 55.1L17.3 50.0L17.4 44.8L18.3 39.7L20.0 34.7L22.5 30.0"/></svg><u>02</u></div>
-        <div class="rl" style="--i:2" title="Sheep"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M28 48h38M34 48v24M43 48v24M55 48v24M63 48v24M66 48 76 36 88 34M78 34c10-10-2-18-12-10M28 48 21 39"/></svg><u>03</u></div>
-        <div class="rl" style="--i:3" title="Sun"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M41 50a9 9 0 1 0 18 0a9 9 0 1 0 -18 0M31 50a19 19 0 1 0 38 0a19 19 0 1 0 -38 0M73.0 50.0L83.0 50.0M66.3 66.3L73.3 73.3M50.0 73.0L50.0 83.0M33.7 66.3L26.7 73.3M27.0 50.0L17.0 50.0M33.7 33.7L26.7 26.7M50.0 27.0L50.0 17.0M66.3 33.7L73.3 26.7"/></svg><u>04</u></div>
-        <div class="rl" style="--i:4" title="Snake"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M10 60c10-22 22-22 32 0s22 22 32 0c5-11 11-13 16-8M86.8 52a3.2 3.2 0 1 0 6.4 0a3.2 3.2 0 1 0 -6.4 0"/></svg><u>05</u></div>
-        <div class="rl" style="--i:5" title="Tally"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M30 30v40M42 28v40M54 30v40M66 28v40M24 40 72 62"/></svg><u>06</u></div>
-        <div class="rl" style="--i:6" title="Bird"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 36v38M50 43 16 30M50 43 84 30M16 30l-3 9M84 30l3 9M45 28a5 5 0 1 0 10 0a5 5 0 1 0 -10 0M50 74 41 88M50 74l9 14"/></svg><u>07</u></div>
-        <div class="rl" style="--i:7" title="Ladder"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M36 16v70M64 16v70M36 28h28M36 42h28M36 56h28M36 70h28"/></svg><u>08</u></div>
+  <div class="alt" aria-label="Instead of nameless sessions like zsh, node and agent-5e, every session is named at launch">
+    <div class="without"><s>zsh</s><s>node</s><s>agent-5e</s></div>
+    <span class="or">or</span>
+    <div class="with"><img src="icon-192.png" width="48" height="48" alt=""><b>billing·acme</b><small>named at launch</small></div>
   </div>
-  <div class="wrap"><div class="col">
-    <p class="eyebrow mi">Terminal session names</p>
-    <h1><span>Give names to</span><span class="g">your AI agents.</span></h1>
-    <p class="lede">Your terminal session names itself at launch, in tmux, in Herdr, or in a bare
-      shell. Like <code>/rename</code>, but you never run it.</p>
-
-    <div class="tabs" role="tablist">
-      <button role="tab" data-k="install" aria-selected="true">Install</button>
-      <button role="tab" data-k="claude" aria-selected="false">Claude</button>
-      <button role="tab" data-k="codex" aria-selected="false">Codex</button>
-      <button role="tab" data-k="agy" aria-selected="false">AGY</button>
-      <button role="tab" data-k="fleet" aria-selected="false">Fleet</button>
-      <span class="os mi">zsh &middot; tmux &middot; herdr &middot; zellij &middot; wezterm</span>
-    </div>
-    <div class="bar">
-      <span class="p" aria-hidden="true">$</span>
-      <code id="cmd">git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; source ./install.sh</code>
-      <button id="copy" type="button">Copy</button>
-    </div>
-    <p class="out" id="out"></p>
-
-    <div class="works">
-      <p class="mi">Works with</p>
-      <div class="logos">
-      <img src="agents/claude.png" alt="Claude Code" title="Claude Code">
-      <img src="agents/codex.png" alt="Codex" title="Codex">
-      <img src="agents/agi.png" alt="AGY" title="AGY">
-      <img src="agents/cursor.png" alt="Cursor" title="Cursor">
-      <img src="agents/crush.png" alt="Crush" title="Crush">
-      <img src="agents/cortex.svg" alt="Cortex" title="Cortex">
-      <img src="agents/opencode.svg" alt="OpenCode" title="OpenCode">
-      <img src="agents/pi.svg" alt="pi" title="pi">
-      </div>
-      <p class="also mi">Also a <a href="https://herdr.dev/plugins/">Herdr plugin</a> &#8599;</p>
-    </div>
-  </div></div>
-  <div class="footline mi"><div class="wrap">
-    <span>MIT</span><a href="https://github.com/fru-dev3/glyph">Source</a>
-    <span class="sp"><a href="#about">Scroll &darr;</a></span>
-  </div></div>
-</header>
-
-<section id="about"><div class="wrap">
-  <p class="eyeb mi">About</p>
-  <h2>Six tokens. One session name.</h2>
-  <p class="say">Keep typing <code>claude</code>, <code>codex</code>, <code>agy</code>. Glyph reads
-    where you are and what you asked for, builds the name, and hands it to the agent at launch.
-    That is the <code class="k">/rename</code> you meant to run, already done.</p>
-  <div class="build" id="build">
-    <p class="btag mi" id="btag">Six tokens</p>
-    <div class="anatomy" id="anatomy">
-      <div class="tok key" data-v="billing" data-g="what you are working on"><em></em><u>Label</u></div><div class="sep">&middot;</div>
-      <div class="tok" data-v="acme-api" data-g="the repo you launched from"><em></em><u>Project</u></div><div class="sep">&middot;</div>
-      <div class="tok" data-v="claude-code" data-g="which agent answered"><em></em><u>Agent</u></div><div class="sep">&middot;</div>
-      <div class="tok" data-v="mbp" data-g="which machine it runs on"><em></em><u>Machine</u></div><div class="sep">&middot;</div>
-      <div class="tok" data-v="2026-09-12" data-g="the day it started"><em></em><u>Date</u></div><div class="sep">&middot;</div>
-      <div class="tok" data-v="0556" data-g="and the minute"><em></em><u>Time</u></div>
-    </div>
-    <p class="gloss"><span id="gloss"></span></p>
-
-    <div class="surfaces" id="surfaces">
-      <figure class="srf">
-        <figcaption>Terminal</figcaption>
-        <div class="win">
-          <div class="tbar"><b>billing&middot;acme-api&middot;claude-code&middot;mbp&middot;0556</b></div>
-          <div class="body"><span class="g">$</span> claude billing<br><span class="c"></span></div>
-        </div>
-      </figure>
-      <figure class="srf">
-        <figcaption>tmux &middot; herdr panes</figcaption>
-        <div class="panes">
-          <div class="pn a"><i></i><b><em>billing</em>&middot;acme-api&middot;claude-code&middot;mbp</b><s>0556</s></div>
-          <div class="pn"><i></i><b><em>migration</em>&middot;acme-api&middot;agy&middot;mbp</b><s>0602</s></div>
-          <div class="pn"><i></i><b><em>audit</em>&middot;acme-api&middot;codex&middot;studio</b><s>0611</s></div>
-          <div class="pn"><i></i><b><em>scrape</em>&middot;atlas&middot;codex&middot;hetzner</b><s>0640</s></div>
-        </div>
-      </figure>
-      <figure class="srf ph-wrap">
-        <figcaption>Phone</figcaption>
-        <div class="phone">
-          <div class="notch"></div>
-          <div class="ph live"><b><em>billing</em>&middot;acme-api&middot;mbp</b><s>needs you &middot; 0556</s></div>
-          <div class="ph"><b><em>migration</em>&middot;acme-api&middot;mbp</b><s>running &middot; 0602</s></div>
-          <div class="ph"><b><em>audit</em>&middot;payments&middot;studio</b><s>done &middot; 0611</s></div>
-        </div>
-      </figure>
-    </div>
+  <div class="cta">
+    <button class="btn go" id="install" type="button" data-cmd="git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; source ./install.sh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg><span id="install-l">Copy install command</span></button>
+    <a class="btn star" href="https://github.com/fru-dev3/glyph"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg><span class="lbl">Star</span><span class="count" id="stars" hidden></span><span class="love" aria-hidden="true"><svg class="arrow" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M52 6C51 28 32 44 8 54"/><path d="M44 14l8-10 7 10"/></svg><span class="say">show some love<svg class="heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></span></span></a>
   </div>
-</div></section>
-
-<section id="why"><div class="wrap">
-  <p class="eyeb mi">Why</p>
-  <h2>Five agents running. Which one is yours?</h2>
-  <div class="compare">
-    <div class="pane"><h3>Without</h3><ul>
-      <li>macbook-pro-4-local-transient</li><li>agent-5e</li><li>doc-9b</li><li>zsh</li><li>node</li>
-    </ul></div>
-    <div class="pane on"><h3>With glyph</h3><ul>
-      <li><b>billing</b>&middot;acme-api&middot;claude-code&middot;laptop&middot;0556</li>
-      <li><b>migration</b>&middot;acme-api&middot;agy&middot;studio&middot;0602</li>
-      <li><b>docs</b>&middot;website&middot;codex&middot;mini&middot;0611</li>
-      <li><b>audit</b>&middot;payments&middot;claude-code&middot;windows&middot;2247</li>
-      <li><b>scrape</b>&middot;atlas&middot;codex&middot;hetzner&middot;0640</li>
-    </ul></div>
+  <ul class="badges">
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>Free</li>
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>Open source</li>
+  </ul>
+  <p class="note">Agent names and logos belong to their owners. Glyph is not affiliated with them.</p>
   </div>
-  <div class="points">
-    <div class="pt">
-      <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 26v52M50 38 32 22M50 38l18-16M50 78 38 96M50 78l12 18"/><circle cx="50" cy="18" r="8"/></svg>
-      <b>Every agent</b><p>Claude Code, Codex, AGY, Cursor, Crush, Cortex, OpenCode, pi, and any other CLI you add in one line.</p>
-    </div>
-    <div class="pt">
-      <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M20 24h60M20 50h60M20 76h60M34 24v52M66 24v52"/></svg>
-      <b>Every machine</b><p>The machine is part of the name, so a pane on your laptop never reads the same as one running over SSH.</p>
-    </div>
-    <div class="pt">
-      <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M22 78 78 22M78 22H52M78 22v26M22 34v44h44"/></svg>
-      <b>Before the first token</b><p>The name is set from argv, so the session is never briefly nameless and there is no <code>/rename</code> to remember.</p>
-    </div>
+  <div class="right">
+    <div class="agents"><p>Names every agent you run</p><div class="row"><span class="ag" style="--i:0"><img src="agents/claude.png" width="52" height="52" alt="Claude Code" title="Claude Code"></span><span class="ag" style="--i:1"><img src="agents/codex.png" width="52" height="52" alt="Codex" title="Codex"></span><span class="ag" style="--i:2"><img src="agents/agi.png" width="52" height="52" alt="AGY" title="AGY"></span><span class="ag" style="--i:3"><img src="agents/cursor.png" width="52" height="52" alt="Cursor" title="Cursor"></span><span class="ag" style="--i:4"><img src="agents/crush.png" width="52" height="52" alt="Crush" title="Crush"></span><span class="ag svg" style="--i:5"><img src="agents/cortex.svg" width="52" height="52" alt="Cortex" title="Cortex"></span><span class="ag svg" style="--i:6"><img src="agents/opencode.svg" width="52" height="52" alt="OpenCode" title="OpenCode"></span><span class="ag svg" style="--i:7"><img src="agents/pi.svg" width="52" height="52" alt="pi" title="pi"></span></div></div>
+    <div class="pill" aria-label="A session name, built token by token"><span class="dot"></span><span class="nm" id="nm">billing·acme-api·claude-code·laptop</span></div>
+    <img class="shot" src="fleet-terminal.png" width="1200" height="560" alt="A terminal with three named panes, one each for Claude Code, Codex and AGY, opened by glyph fleet" fetchpriority="high">
   </div>
-</div></section>
+</main>
 
-<section class="start"><div class="wrap">
-  <h2>Name the next one.</h2>
-  <div class="kit">
-    <div class="bar" style="border-top:1px solid var(--line)">
-      <span class="p" aria-hidden="true">$</span>
-      <code id="cmd2">git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; source ./install.sh</code>
-      <button id="copy2" type="button">Copy</button>
-    </div>
+<dialog id="features" aria-labelledby="feat-h">
+  <div class="fhead"><img src="icon-192.png" width="40" height="40" alt=""><h2 id="feat-h">Everything Glyph does</h2><button type="button" class="fclose" aria-label="Close">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="flist">
+    <div class="fq"><h3>Named at launch</h3><p>Keep typing claude, codex or agy. One bare word is your label; Glyph builds the session name and hands it to the agent before the first token. Anything with a space is still your prompt.</p></div>
+    <div class="fq"><h3>Six tokens</h3><p>Label, project, agent, machine, date and time, lowercase and joined by a dot: billing·acme-api·claude-code·laptop·0556.</p></div>
+    <div class="fq"><h3>Every agent</h3><p>Claude Code, Codex, AGY, Cursor, Crush, Cortex, OpenCode and pi, and any other CLI you add in one line.</p></div>
+    <div class="fq"><h3>Every machine</h3><p>The machine is part of the name, so a pane on your laptop never reads the same as one running over SSH.</p></div>
+    <div class="fq"><h3>On your phone</h3><p>Claude sessions carry the name through Remote Control, so the list on claude.ai/code and the app reads the same as your terminal.</p></div>
+    <div class="fq"><h3>Fleets</h3><p>One preset opens several agents at once, each in its own named pane: glyph fleet review puts two vendors on the same diff. Slots can run on another machine over SSH.</p></div>
+    <div class="fq"><h3>Usage and wake</h3><p>glyph usage shows quota and token counts across agents. glyph wake continues Claude sessions a usage limit stopped, when the limit resets.</p></div>
+    <div class="fq"><h3>Spaces</h3><p>Write down once which workspaces and tabs a machine opens and which agent runs in each; glyph spaces rebuilds them in Herdr after a restart.</p></div>
+    <div class="fq"><h3>Works where you work</h3><p>zsh, with tmux, Herdr, Zellij, WezTerm or a bare shell. There is a Herdr plugin too.</p></div>
+    <div class="fq"><h3>Install and update</h3><p>git clone https://github.com/fru-dev3/glyph.git && cd glyph && source ./install.sh. One file into ~/.config/glyph, one line into ~/.zshrc. glyph update fetches the latest.</p></div>
+    <div class="fq"><h3>Nothing phoned home</h3><p>Glyph makes no network requests except glyph update, glyph usage --live and the GitHub star you agree to. MIT licensed.</p></div>
   </div>
-  <div class="links mi"><a href="docs.html">Docs</a><a href="https://github.com/fru-dev3/glyph">GitHub &#8599;</a><a href="https://github.com/fru-dev3/glyph/stargazers">Star</a></div>
-</div></section>
+</dialog>
 
-<div class="wrap"><footer class="mi">
-  <span>MIT</span><a href="docs.html">Docs</a><a href="https://github.com/fru-dev3/glyph">Source</a>
-  <div class="family"><a href="https://fru.dev">A fru.dev project</a><a href="https://prevail.sh">Prevail | Agent Harness</a><a href="https://context.fru.dev">Ibis | Agent Context</a><a href="https://memosa.dev">Memosa | Context Capture</a></div>
-</footer></div>
-
-<svg id="defs" style="position:fixed;width:0;height:0;overflow:hidden" aria-hidden="true"></svg>
+<footer>
+  <div class="bar">
+    <nav aria-label="Footer">
+      <a class="home" href="https://fru.dev">fru.dev</a>
+      <a class="feat" href="#features">Features</a>
+      <a href="/docs">Docs</a>
+      <a class="opt" href="https://github.com/fru-dev3/glyph/issues" title="Contact: open an issue">Contact</a>
+    </nav>
+    <a class="built" href="https://github.com/fru-dev3/glyph"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg><span>Built with AI<span class="opt">, easy to make your own on GitHub</span></span></a>
+  </div>
+</footer>
 
 <script>
-var nav=document.getElementById('nav');
-addEventListener('scroll',function(){nav.classList.toggle('stuck',scrollY>10)},{passive:true});
-
-/* ---- tabs ---- */
-var TAB={
-  install:['git clone https://github.com/fru-dev3/glyph.git && cd glyph && source ./install.sh',null,''],
-  claude :['claude billing','billing','·acme-api·claude-code·mbp·2026-09-12·0556'],
-  codex  :['codex audit','audit','·acme-api·codex·mbp·2026-09-12·0602'],
-  agy    :['agy migration','migration','·acme-api·agy·mbp·2026-09-12·0611'],
-  fleet  :['glyph fleet ci',null,'three agents, three panes, three names, one command']
-};
-var cmdEl=document.getElementById('cmd'),outEl=document.getElementById('out');
-document.querySelectorAll('.tabs button').forEach(function(b){
-  b.addEventListener('click',function(){
-    document.querySelectorAll('.tabs button').forEach(function(x){x.setAttribute('aria-selected','false')});
-    b.setAttribute('aria-selected','true');
-    var t=TAB[b.dataset.k];
-    cmdEl.textContent=t[0];fits();
-    outEl.innerHTML=!t[2] ? '' : (t[1]
-      ? '<i>session name</i><span class="t"><b>'+t[1]+'</b>'+t[2]+'</span>'
-      : '<i>opens</i><span class="t">'+t[2]+'</span>');
-  })});
-
-/* ---- copy ---- */
-[['copy','cmd'],['copy2','cmd2']].forEach(function(p){
-  var b=document.getElementById(p[0]);
-  b.addEventListener('click',function(){
-    navigator.clipboard.writeText(document.getElementById(p[1]).textContent).then(function(){
-      b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1500)})})});
-
-/* ---- the name, typed token by token ---- */
-(function(){
-  var root=document.getElementById('build');if(!root)return;
-  var toks=[].slice.call(root.querySelectorAll('.tok')),
-      seps=[].slice.call(root.querySelectorAll('.sep')),
-      anat=document.getElementById('anatomy'),
-      btag=document.getElementById('btag'),
-      gloss=document.getElementById('gloss'),
-      srf=document.getElementById('surfaces'),
-      DONE='That whole string is the session name, set at launch. No <code>/rename</code> to run.',
-      reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,
-      timers=[],running=false;
-
-  function clearAll(){timers.forEach(clearTimeout);timers=[];}
-  function at(ms,fn){timers.push(setTimeout(fn,ms))}
-
-  function reset(){
-    clearAll();running=false;
-    toks.forEach(function(t){t.classList.remove('lit','now');t.querySelector('em').textContent=''});
-    seps.forEach(function(x){x.classList.remove('lit')});
-    anat.classList.remove('tight');btag.classList.remove('done');btag.textContent='Six tokens';
-    gloss.textContent='';gloss.classList.remove('in');srf.classList.remove('in');
-  }
-  function finish(){
-    toks.forEach(function(t){t.classList.add('lit');t.classList.remove('now');
-      t.querySelector('em').textContent=t.dataset.v});
-    seps.forEach(function(x){x.classList.add('lit')});
-    anat.classList.add('tight');btag.classList.add('done');btag.textContent='Session name';
-    gloss.innerHTML=DONE;gloss.classList.add('in');srf.classList.add('in');
-  }
-
-  function play(){
-    if(running)return;running=true;
-    if(reduce){finish();return}
-    reset();running=true;
-    var t=260;
-    toks.forEach(function(tok,i){
-      var v=tok.dataset.v,em=tok.querySelector('em');
-      at(t,function(){
-        tok.classList.add('lit','now');
-        if(i)seps[i-1].classList.add('lit');
-        gloss.classList.remove('in');
-        setTimeout(function(){gloss.textContent=tok.dataset.g;gloss.classList.add('in')},130);
-      });
-      for(var c=1;c<=v.length;c++)(function(c){at(t+c*26,function(){em.textContent=v.slice(0,c)})})(v.length?c:0);
-      t+=v.length*26+430;
-      at(t-120,function(){tok.classList.remove('now')});
-    });
-    at(t+140,function(){
-      gloss.classList.remove('in');
-      anat.classList.add('tight');
-      btag.classList.add('done');btag.textContent='Session name';
-    });
-    at(t+700,function(){
-      gloss.innerHTML=DONE;gloss.classList.add('in');srf.classList.add('in');
-    });
-  }
-
-  if(!('IntersectionObserver' in window)){finish();return}
-  new IntersectionObserver(function(es){
-    es.forEach(function(e){ if(e.isIntersecting){play()} else {reset()} })
-  },{threshold:.35}).observe(root);
-})();
-
-/* ---- flag a command that runs past its box ---- */
-function fits(){document.querySelectorAll('.bar code').forEach(function(c){
-  c.classList.remove('over');
-  if(c.scrollWidth>c.clientWidth+1)c.classList.add('over')})}
-addEventListener('resize',fits);addEventListener('load',fits);fits();
-
-/* ---- stars ---- */
-fetch('https://api.github.com/repos/fru-dev3/glyph').then(function(r){return r.json()})
-  .then(function(d){if(typeof d.stargazers_count==='number')
-    document.getElementById('stars').textContent=d.stargazers_count}).catch(function(){});
-
-/* ---- pecked petroglyphs ---- */
-(function(){
-  var cv=document.getElementById('rock'),ctx=cv.getContext('2d'),defs=document.getElementById('defs');
-  var NS='http://www.w3.org/2000/svg';
-  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  function circ(cx,cy,r){return 'M'+(cx-r)+' '+cy+'a'+r+' '+r+' 0 1 0 '+(2*r)+' 0a'+r+' '+r+' 0 1 0 '+(-2*r)+' 0'}
-  function spiral(cx,cy,turns,rmax){var d='',n=turns*46;
-    for(var i=0;i<=n;i++){var t=i/n,a=t*turns*Math.PI*2,r=t*rmax;
-      d+=(i?'L':'M')+(cx+Math.cos(a)*r).toFixed(1)+' '+(cy+Math.sin(a)*r).toFixed(1)}return d}
-  function rays(cx,cy,r0,r1,n){var a=[];for(var i=0;i<n;i++){var t=i/n*Math.PI*2;
-    a.push('M'+(cx+Math.cos(t)*r0).toFixed(1)+' '+(cy+Math.sin(t)*r0).toFixed(1)+
-           'L'+(cx+Math.cos(t)*r1).toFixed(1)+' '+(cy+Math.sin(t)*r1).toFixed(1))}return a}
-
-  var FIGS=[
-    [circ(50,27,8),'M50 35v38','M50 44 32 27','M50 44l18-17','M50 73 40 95','M50 73l10 22',
-     'M40 95 33 99','M60 95l7 4','M50 19v-9','M44 14 38 5','M56 14l6-9'],
-    [spiral(50,50,3.1,36)],
-    ['M28 48h38','M34 48v24','M43 48v24','M55 48v24','M63 48v24','M66 48 76 36 88 34',
-     'M78 34c10-10-2-18-12-10','M28 48 21 39'],
-    [circ(50,50,9),circ(50,50,19)].concat(rays(50,50,23,33,8)),
-    ['M10 60c10-22 22-22 32 0s22 22 32 0c5-11 11-13 16-8',circ(90,52,3.2)],
-    ['M30 30v40','M42 28v40','M54 30v40','M66 28v40','M24 40 72 62'],
-    ['M50 36v38','M50 43 16 30','M50 43 84 30','M16 30l-3 9','M84 30l3 9',
-     circ(50,28,5),'M50 74 41 88','M50 74l9 14','M50 74v16'],
-    ['M36 16v70','M64 16v70','M36 28h28','M36 42h28','M36 56h28','M36 70h28'],
-    ['M38 62c0 16 24 16 24 0V48','M40 50V31','M47 50V25','M54 50V26','M61 50V33','M39 57 26 46'],
-    ['M36 26a28 28 0 1 0 0 48',circ(70,50,5)]
-  ];
-
-  var SAMPLED=FIGS.map(function(paths){
-    var pts=[];
-    paths.forEach(function(d){
-      var p=document.createElementNS(NS,'path');p.setAttribute('d',d);defs.appendChild(p);
-      var L=p.getTotalLength(),n=Math.max(2,Math.round(L/2.6));
-      for(var i=0;i<=n;i++){var q=p.getPointAtLength(L*i/n);pts.push([q.x-50,q.y-50])}
-      defs.removeChild(p)});
-    return pts});
-
-  var W=0,H=0,DPR=1,inst=[],rockColor='#a08f74',safe=null,col=document.querySelector('.col');
-  function readColor(){rockColor=getComputedStyle(document.body).getPropertyValue('--rock').trim()||rockColor}
-  function rnd(a,b){return a+Math.random()*(b-a)}
-
-  /* how far a point sits outside the box the copy occupies */
-  function clearance(x,y){
-    if(!safe)return 1e6;
-    var dx=Math.max(safe.x0-x,x-safe.x1),dy=Math.max(safe.y0-y,y-safe.y1);
-    return Math.max(dx,dy);
-  }
-
-  function spawn(i,now,seedPhase){
-    var big=W>1000;
-    var cols=big?4:2,rows=big?3:4;
-    var cell=i%(cols*rows),cx=cell%cols,cy=(cell/cols)|0;
-    var size=rnd(big?140:92,big?230:145),m=size*0.6+10;
-
-    /* never repeat a figure already on the wall */
-    var used={};for(var q=0;q<inst.length;q++)if(q!==i&&inst[q])used[inst[q].f]=1;
-    var pick=(Math.random()*SAMPLED.length)|0,guard=0;
-    while(used[pick]&&guard++<20)pick=(Math.random()*SAMPLED.length)|0;
-
-    /* place it clear of the copy, so a figure is never half erased */
-    var want=size*0.30,bx=0,by=0,best=-1e9;
-    for(var k=0;k<20;k++){
-      var jx=(cell+k)%(cols*rows),ax=jx%cols,ay=(jx/cols)|0;
-      var px=Math.min(W-m,Math.max(m,(ax+rnd(.12,.88))*(W/cols))),
-          py=Math.min(H-m,Math.max(m,(ay+rnd(.12,.88))*(H/rows))),
-          c=clearance(px,py);
-      /* and keep its distance from the figures already up */
-      for(var q=0;q<inst.length;q++){
-        if(q===i||!inst[q])continue;
-        var d=Math.hypot(px-inst[q].x,py-inst[q].y)-(size+inst[q].s*100)*0.42;
-        if(d<c)c=d;
-      }
-      if(c>best){best=c;bx=px;by=py}
-      if(c>=want)break;
+const still=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const wait=ms=>new Promise(r=>setTimeout(r,still?0:ms));
+// The headline types itself; the pill builds a session name token by token.
+const said=document.getElementById("said"), nm=document.getElementById("nm");
+const lines=["Know which.","All named.","It's free."];
+const names=[["billing","acme-api","claude-code","laptop"],["audit","payments","codex","studio"],["migration","acme-api","agy","mini"]];
+async function loop(){
+  for(let n=0;;n=(n+1)%lines.length){
+    const line=lines[n], toks=names[n];
+    said.textContent=""; nm.innerHTML="";
+    for(let k=1;k<=line.length;k++){
+      said.textContent=line.slice(0,k);
+      const shown=Math.min(toks.length,Math.ceil(k/line.length*toks.length));
+      nm.innerHTML=toks.slice(0,shown).map((t,i)=>i?'<i>·</i>'+t:'<b>'+t+'</b>').join("");
+      await wait(95);
     }
-
-    var peck=rnd(2800,4600),hold=rnd(9000,17000),fade=rnd(2400,4200);
-    return {f:pick,x:bx,y:by,s:size/100,r:rnd(-.16,.16),
-      /* on first paint, scatter them through the cycle so some are already finished */
-      t0:reduce?now:(seedPhase?now-Math.random()*(peck+hold):now+rnd(120,2600)),
-      peck:peck,hold:hold,fade:fade,
-      a:rnd(.62,1),seed:Math.random()*1000}}
-
-  function resize(){
-    DPR=Math.min(2,devicePixelRatio||1);
-    var r=cv.getBoundingClientRect();W=r.width;H=r.height;
-    if(!W||!H)return;
-    /* the box the copy lives in: dots that land here are held back */
-    if(col){var c=col.getBoundingClientRect();
-      safe={x0:c.left-r.left-14,x1:c.right-r.left+14,y0:c.top-r.top-14,y1:c.bottom-r.top+14}}
-    cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);
-    readColor();
-    var n=W>1200?8:W>800?6:4,now=performance.now();
-    inst=[];for(var i=0;i<n;i++)inst.push(spawn(i,now,true));
+    await wait(2200);
+    for(let k=line.length;k>=0;k--){said.textContent=line.slice(0,k);await wait(28)}
+    await wait(250);
   }
-
-  function draw(now){
-    ctx.clearRect(0,0,W,H);ctx.fillStyle=rockColor;
-    for(var k=0;k<inst.length;k++){
-      var o=inst[k],age=now-o.t0;
-      if(age<0)continue;
-      var life=o.peck+o.hold+o.fade;
-      if(age>life){inst[k]=spawn(k,now);continue}
-      var prog=reduce?1:Math.min(1,age/o.peck);
-      var alpha=o.a*(age>o.peck+o.hold?1-(age-o.peck-o.hold)/o.fade:1);
-      var pts=SAMPLED[o.f],upto=Math.round(pts.length*prog);
-      var cos=Math.cos(o.r),sin=Math.sin(o.r),s=o.s;
-      for(var i=0;i<upto;i++){
-        var p=pts[i];
-        var j1=Math.sin((i+o.seed)*12.9898)*43758.5453,j2=Math.sin((i+o.seed)*78.233)*12345.6789;
-        j1-=Math.floor(j1);j2-=Math.floor(j2);
-        var px=p[0]+(j1-.5)*1.1,py=p[1]+(j2-.5)*1.1;
-        var X=o.x+(px*cos-py*sin)*s,Y=o.y+(px*sin+py*cos)*s;
-        var fresh=upto-i<5?1.35:1,shy=1;
-        if(safe&&X>safe.x0&&X<safe.x1&&Y>safe.y0&&Y<safe.y1)shy=.22;
-        ctx.globalAlpha=alpha*(.62+j1*.38)*shy;
-        ctx.beginPath();ctx.arc(X,Y,(1+j2*.65)*Math.min(1.7,s)*fresh,0,6.2832);ctx.fill();
-      }}
-    ctx.globalAlpha=1;requestAnimationFrame(draw);
-  }
-
-  addEventListener('resize',function(){clearTimeout(window.__rz);window.__rz=setTimeout(resize,180)});
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',readColor);
-  resize();requestAnimationFrame(draw);
-})();
+}
+if(!still)loop();
+// Copy the install command.
+const ib=document.getElementById("install"), il=document.getElementById("install-l");
+ib.addEventListener("click",()=>{navigator.clipboard.writeText(ib.dataset.cmd).then(()=>{il.textContent="Copied. Paste it in a terminal";setTimeout(()=>il.textContent="Copy install command",2200)});try{gtag("event","copy_install")}catch{}});
+// Features: the footer link (or #features) opens the sheet.
+const feat=document.getElementById("features");
+const openFeat=()=>{if(!feat.open){feat.showModal();try{gtag("event","features_open")}catch{}}};
+document.querySelectorAll('a[href="#features"]').forEach(a=>a.addEventListener("click",e=>{e.preventDefault();openFeat();history.replaceState(null,"","#features")}));
+feat.addEventListener("click",e=>{if(e.target===feat||e.target.closest(".fclose"))feat.close()});
+feat.addEventListener("close",()=>{document.activeElement?.blur();if(location.hash==="#features")history.replaceState(null,"",location.pathname)});
+if(location.hash==="#features")openFeat();
+addEventListener("hashchange",()=>{if(location.hash==="#features")openFeat()});
+// Star count: shields.io first (cached, no per-visitor GitHub limit), GitHub's API as fallback.
+function showStars(n){if(n>0){const s=document.getElementById("stars");s.textContent=n.toLocaleString();s.hidden=false}}
+fetch("https://img.shields.io/github/stars/fru-dev3/glyph.json").then(r=>r.ok?r.json():Promise.reject())
+  .then(d=>{const n=parseInt(d.value,10);if(!(n>=0))throw 0;showStars(n)})
+  .catch(()=>fetch("https://api.github.com/repos/fru-dev3/glyph").then(r=>r.ok?r.json():null).then(d=>d&&showStars(d.stargazers_count)).catch(()=>{}));
 </script>
 </body>
 </html>
