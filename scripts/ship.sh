@@ -8,6 +8,9 @@ cd "$(dirname "$0")/.."
 
 [ -f .vercel/project.json ] || vercel link --yes --project glyph-fru
 
+# The real stargazers, baked into the page (commit the result).
+node scripts/fetch-stargazers.mjs || true
+
 echo "building"
 vercel build --prod --yes
 
