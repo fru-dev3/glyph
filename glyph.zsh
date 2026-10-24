@@ -78,6 +78,26 @@ _glyph_load_extra_agents() {
 }
 GLYPH_NAME_FLAG=( claude "-n"  pi "-n" )
 
+# Each agent's own subcommands, read from its --help. A first word on this list
+# is passed through as typed, never taken for a session label. Agents not
+# listed (and agents.tsv extras) fall back to GLYPH_SUBCMDS_DEFAULT.
+typeset -g GLYPH_SUBCMDS_DEFAULT="mcp auth login logout plugin plugins install update upgrade doctor agents setup-token daemon import export config resume fork queue archive unarchive delete session sessions ls migrate-rollouts migrate-installer"
+typeset -gA GLYPH_SUBCMDS GLYPH_YOLO_SUB GLYPH_YOLO_SUB_ONLY
+GLYPH_SUBCMDS=(
+  claude       "agents attach auth auto-mode doctor gateway import install logs mcp plugin purge respawn rm setup-token stop ultrareview update"
+  agy          "agent agents changelog help install mcp mic-serve models plugin plugins remote-control update"
+  codex        "agents exec e review login logout mcp plugin app-server remote-control app completion update doctor sandbox debug apply a resume queue archive delete migrate-rollouts unarchive fork cloud exec-server features help"
+  cursor-agent "install-shell-integration uninstall-shell-integration login logout mcp plugin worker status models about update create-chat generate-rule agent ls resume help"
+  crush        "completion dirs help login logs models projects run stats update-providers"
+  cortex       "mcp profile skill ctx resume update versions worktree connections search analyst agents attach airflow completion"
+  opencode     "completion acp mcp attach run debug providers auth agent upgrade uninstall serve web models stats export import github pr session plugin plug db"
+  pi           "install remove uninstall update list config"
+)
+# A one-shot subcommand that takes the auto-approve flag after it.
+GLYPH_YOLO_SUB=( opencode run  codex exec )
+# Agents whose interactive start rejects the flag: only GLYPH_YOLO_SUB gets it.
+GLYPH_YOLO_SUB_ONLY=( opencode 1 )
+
 # Remote Control is Claude's, not a property of "has a name flag". Keeping it in
 # its own table stops a second naming agent inheriting a flag it cannot parse.
 typeset -gA GLYPH_RC_FLAG
@@ -273,18 +293,20 @@ _glyph_launch() {
     command "$agent" "$@"
   }
 
-  # Subcommands manage the install or address existing sessions: never decorate.
-  case ${1:-} in
-    mcp|auth|login|logout|plugin|plugins|install|update|upgrade|doctor|agents|setup-token|daemon|import|export|config|resume|fork|queue|archive|unarchive|delete|session|sessions|ls|migrate-rollouts|migrate-installer)
-      _glyph_run "$@"; return ;;
-  esac
-  # AGY has its own management commands; none is a session label.
-  if [[ $agent == agy ]]; then
-    case ${1:-} in
-      agent|changelog|help|mic-serve|models|remote-control)
-        _glyph_run "$@"; return ;;
-    esac
+  # Subcommands manage the agent or run it once: never decorate, never a label.
+  # A one-shot subcommand (opencode run, codex exec) still gets auto-approve.
+  local subs="$GLYPH_SUBCMDS_DEFAULT ${GLYPH_SUBCMDS[$agent]:-}"
+  if [[ -n ${1:-} && " $subs " == *" $1 "* ]]; then
+    if [[ $1 == ${GLYPH_YOLO_SUB[$agent]:-} && -n ${GLYPH_YOLO:-} && -n $yolo && " $* " != *" $yolo "* ]]; then
+      local sub=$1; shift
+      _glyph_run "$sub" "$yolo" "$@"
+    else
+      _glyph_run "$@"
+    fi
+    return
   fi
+  # OpenCode's TUI rejects its auto-approve flag and prints help instead.
+  [[ -n ${GLYPH_YOLO_SUB_ONLY[$agent]:-} ]] && yolo=""
   # Non-interactive runs pass straight through.
   if [[ " $* " == *" -p "* || " $* " == *" --print "* || " $* " == *" --headless "* ]]; then
     _glyph_run "$@"; return

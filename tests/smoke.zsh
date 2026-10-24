@@ -103,8 +103,26 @@ done
 assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch pi billing)" \
   'pi -n billing·acme-api·pi·test·stamp' 'pi names its session, without remote-control'
 # Auto-approve reaches every adapter that has a flag for it.
+# OpenCode takes the flag only on `opencode run`; the TUI rejects it.
 assert_eq "$(GLYPH_YOLO=1 GLYPH_DRYRUN=1 _glyph_launch opencode billing)" \
-  'opencode --dangerously-skip-permissions' 'opencode auto-approve'
+  'opencode' 'opencode TUI gets no auto-approve flag'
+assert_eq "$(GLYPH_YOLO=1 GLYPH_DRYRUN=1 _glyph_launch opencode run 'fix the bug')" \
+  "opencode run --dangerously-skip-permissions 'fix the bug'" 'opencode run auto-approve'
+assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch opencode run hi)" \
+  'opencode run hi' 'opencode run is not a label'
+assert_eq "$(GLYPH_YOLO=1 GLYPH_DRYRUN=1 _glyph_launch opencode models)" \
+  'opencode models' 'opencode subcommands pass through'
+# Every agent's own subcommands survive: none is eaten as a session label.
+assert_eq "$(GLYPH_YOLO=1 GLYPH_DRYRUN=1 _glyph_launch codex exec 'fix the bug')" \
+  "codex exec --dangerously-bypass-approvals-and-sandbox 'fix the bug'" 'codex exec auto-approve'
+assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch codex review)" 'codex review' 'codex review is not a label'
+assert_eq "$(GLYPH_YOLO=1 GLYPH_DRYRUN=1 _glyph_launch crush run hi)" \
+  'crush run hi' 'crush run passes through (its --yolo is root-only)'
+assert_eq "$(GLYPH_YOLO=1 GLYPH_DRYRUN=1 _glyph_launch cortex profile)" 'cortex profile' 'cortex profile passes through'
+assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch cursor-agent status)" 'cursor-agent status' 'cursor-agent status passes through'
+assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch claude logs)" 'claude logs' 'claude logs passes through'
+assert_eq "$(GLYPH_DRYRUN=1 _glyph_launch pi list)" 'pi list' 'pi list passes through'
+assert_eq "$(GLYPH_YOLO=1 GLYPH_DRYRUN=1 _glyph_launch crush billing)" 'crush --yolo' 'crush TUI keeps auto-approve'
 assert_eq "$(GLYPH_YOLO=1 GLYPH_DRYRUN=1 _glyph_launch codex billing)" \
   'codex --dangerously-bypass-approvals-and-sandbox' 'codex auto-approve'
 assert_eq "$(GLYPH_YOLO=1 GLYPH_DRYRUN=1 _glyph_launch agy billing)" \

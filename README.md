@@ -210,7 +210,7 @@ glyph fleet ci  # a preset of agents, each in its own marked pane
 | Cursor | title | `--force` |
 | Crush | title | `--yolo` |
 | Cortex | title | `--dangerously-allow-all-tool-calls` |
-| OpenCode | title | `--dangerously-skip-permissions` |
+| OpenCode | title | `--dangerously-skip-permissions`, on `opencode run` only (the TUI has no such flag) |
 | pi | ✔ real session name | none |
 
 Six agents, five spellings of *"stop asking me to approve every tool call"*.
