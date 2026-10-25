@@ -4,34 +4,39 @@
     "path": "studio",
     "name": "Glyph Studio",
     "short": "Studio",
-    "formerly": "Prevail"
+    "formerly": "Prevail",
+    "status": "download"
   },
   {
     "icon": "dictate",
     "path": "dictate",
     "name": "Glyph Dictate",
     "short": "Dictate",
-    "formerly": "Jot for Mac"
+    "formerly": "Jot for Mac",
+    "status": "download"
   },
   {
     "icon": "mobile",
     "path": "jot",
     "name": "Glyph Jot",
     "short": "Jot",
-    "formerly": ""
+    "formerly": "",
+    "status": "testing"
   },
   {
     "icon": "record",
     "path": "record",
     "name": "Glyph Record",
     "short": "Record",
-    "formerly": "Memosa"
+    "formerly": "Memosa",
+    "status": "download"
   },
   {
     "icon": "code",
     "path": "code",
     "name": "Glyph Code",
     "short": "Code",
-    "formerly": "Agent Rig"
+    "formerly": "Agent Rig",
+    "status": "cli"
   }
 ]

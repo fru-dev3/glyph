@@ -57,7 +57,6 @@
 .app:hover{transform:translateY(-4px);border-color:var(--tint-line);box-shadow:0 18px 40px var(--shadow)}
 .app img{width:clamp(56px,10vh,104px);height:auto;border-radius:22%;box-shadow:0 10px 24px rgba(0,100,0,.25)}
 .app b{font:800 clamp(20px,3vh,28px)/1.05 "Bricolage Grotesque",sans-serif;letter-spacing:-.02em}
-.app b small{display:block;font:600 13px -apple-system,sans-serif;letter-spacing:0;color:var(--dim);margin-bottom:3px}
 .app p{margin:0;color:var(--soft);font-size:clamp(14px,1.8vh,16px);line-height:1.4;flex:1}
 .st{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:13px;font-weight:700;white-space:nowrap;background:var(--tint);color:var(--green);box-shadow:inset 0 0 0 1px var(--tint-line)}
 .st svg{width:15px;height:15px;flex:none}
@@ -72,7 +71,7 @@
   .app{flex-direction:row;text-align:left;gap:14px;padding:10px 14px;border-radius:18px}
   .app img{width:48px}
   .app .tx{flex:1;min-width:0}
-  .app b{font-size:19px}.app b small{display:none}
+  .app b{font-size:19px}
   .app p{font-size:14px;margin-top:2px}
   .st{padding:4px 8px}
 }
@@ -108,13 +107,13 @@
     <h1 data-lines='["Work on it.","On your Mac.","With any AI."]' data-fit=".apps">Say it. Keep it. <em><span id="said">Work on it.</span><i class="caret" aria-hidden="true"></i></em></h1>
     <p class="lede">Catch what you say and think, keep it as plain files on your own computer, and let any AI work on it.</p>
     <ul class="apps">
-      <li><a class="app" href="/studio"><img src="/family/studio-tile.svg" width="96" height="96" alt=""><span class="tx"><b><small>Glyph</small>Studio</b><p>A private AI harness for your life, on any model.</p></span><span class="st" title="Download for Mac or Windows"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac, Windows</span></span></a></li>
-      <li><a class="app" href="/dictate"><img src="/family/dictate-tile.svg" width="96" height="96" alt=""><span class="tx"><b><small>Glyph</small>Dictate</b><p>Talk, and it types in any app, on Mac or iPhone.</p></span><span class="st" title="Download for Mac; the iPhone keyboard is in testing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac</span></span></a></li>
-      <li><a class="app" href="/jot"><img src="/family/mobile-tile.svg" width="96" height="96" alt=""><span class="tx"><b><small>Glyph</small>Jot</b><p>Catch a thought as a note, on iPhone or Mac.</p></span><span class="st wait" title="In testing, not on the App Store yet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6L4.5 18.5A1.7 1.7 0 006 21h12a1.7 1.7 0 001.5-2.5L14 9V3"/><path d="M7 15h10"/></svg><span>In testing</span></span></a></li>
-      <li><a class="app" href="/record"><img src="/family/record-tile.svg" width="96" height="96" alt=""><span class="tx"><b><small>Glyph</small>Record</b><p>Meetings and calls, filed by who was there.</p></span><span class="st wait" title="Being rebuilt, coming soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Coming soon</span></span></a></li>
-      <li><a class="app" href="/code"><img src="/family/code-tile.svg" width="96" height="96" alt=""><span class="tx"><b><small>Glyph</small>Code</b><p>One identity for every coding agent you run.</p></span><span class="st" title="A command-line tool for zsh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l6-6-6-6M12 19h8"/></svg><span>CLI</span></span></a></li>
+      <li><a class="app" href="/studio"><img src="/family/studio-tile.svg" width="96" height="96" alt=""><span class="tx"><b>Studio</b><p>A private AI harness for your life, on any model.</p></span><span class="st" title="Download for Mac or Windows"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac, Windows</span></span></a></li>
+      <li><a class="app" href="/dictate"><img src="/family/dictate-tile.svg" width="96" height="96" alt=""><span class="tx"><b>Dictate</b><p>Talk, and it types in any app, on Mac or iPhone.</p></span><span class="st" title="Download for Mac; the iPhone keyboard is in testing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac</span></span></a></li>
+      <li><a class="app" href="/jot"><img src="/family/mobile-tile.svg" width="96" height="96" alt=""><span class="tx"><b>Jot</b><p>Catch a thought as a note, on iPhone or Mac.</p></span><span class="st wait" title="In testing, not on the App Store yet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6L4.5 18.5A1.7 1.7 0 006 21h12a1.7 1.7 0 001.5-2.5L14 9V3"/><path d="M7 15h10"/></svg><span>In testing</span></span></a></li>
+      <li><a class="app" href="/record"><img src="/family/record-tile.svg" width="96" height="96" alt=""><span class="tx"><b>Record</b><p>Meetings and calls, filed by who was there.</p></span><span class="st" title="Download for Mac"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac</span></span></a></li>
+      <li><a class="app" href="/code"><img src="/family/code-tile.svg" width="96" height="96" alt=""><span class="tx"><b>Code</b><p>One identity for every coding agent you run.</p></span><span class="st" title="A command-line tool for zsh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l6-6-6-6M12 19h8"/></svg><span>CLI</span></span></a></li>
     </ul>
-    <a class="stars" href="https://github.com/fru-dev3" data-track="star_on_github" data-stars="fru-dev3/glyph-studio,fru-dev3/glyph-dictate,fru-dev3/glyph" data-floor="44" title="Stars across the Glyph repositories on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg><span><b class="n">44</b> stars on GitHub</span></a>
+    <a class="stars" href="https://github.com/fru-dev3" data-track="star_on_github" data-stars="fru-dev3/glyph-studio,fru-dev3/glyph-dictate,fru-dev3/glyph-record,fru-dev3/glyph" data-floor="44" title="Stars across the Glyph repositories on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg><span><b class="n">44</b> stars on GitHub</span></a>
   </div>
 </main>
 
@@ -133,7 +132,7 @@
     <div class="side"><a class="node" href="/code"><img src="/family/code-tile.svg" alt=""><span><b>Code</b><small>for coding agents</small></span></a><span>Beside them: Glyph Code names every coding agent you run, so you can find each one and run them together.</span></div>
   </div>
   <div class="flist">
-    <div class="fq"><h3>Catch it</h3><p>Glyph Dictate types what you say into whatever app you are in: hold Fn on the Mac, or use the Glyph keyboard on iPhone. Glyph Jot keeps a thought as a note: in the Glyph app on iPhone, or Fn + Shift on the Mac. Glyph Record will keep your meetings and long conversations, filed by who was there: Mac first, iPhone later.</p></div>
+    <div class="fq"><h3>Catch it</h3><p>Glyph Dictate types what you say into whatever app you are in: hold Fn on the Mac, or use the Glyph keyboard on iPhone. Glyph Jot keeps a thought as a note: in the Glyph app on iPhone, or Fn + Shift on the Mac. Glyph Record keeps your meetings and long conversations, filed by who was there: Mac first, iPhone later.</p></div>
     <div class="fq"><h3>The iPhone app</h3><p>On iPhone it is one app, called Glyph: it holds Jot, brings the Glyph keyboard for Dictate, and later Record. It is in TestFlight testing.</p></div>
     <div class="fq"><h3>Keep it</h3><p>Everything lands as plain files you can open, back up and move: Markdown, text and audio. No account, and the speech runs on your own devices.</p></div>
     <div class="fq"><h3>Work on it</h3><p>Glyph Studio reads that vault, area by area: health, money, work, home. Ask one model, or a council of several, and pick a different model for each area.</p></div>
