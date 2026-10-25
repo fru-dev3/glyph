@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Glyph Studio">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a8f0a"/><stop offset="1" stop-color="#007000"/></linearGradient>
+    <filter id="s" x="-10%" y="-10%" width="120%" height="125%"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000" flood-opacity=".22"/></filter></defs>
+  <rect x="100" y="100" width="824" height="824" rx="185" filter="url(#s)"/>
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#g)"/>
+  <g transform="translate(182.4 182.4) scale(6.592)"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"><circle cx="26" cy="15.5" r="9.5" fill="#fff" stroke="none"/><path d="M6.5 22v3.5a19.5 19.5 0 0 0 39 0V22" stroke-width="11"/><path d="M18 40h16v24l9 22.5a5 5 0 0 1-9.2 3.8L26 72l-7.8 18.3A5 5 0 0 1 9 86.5L18 64z" fill="#fff" stroke="none"/><circle cx="72" cy="53" r="17" stroke-width="6.5" stroke-opacity=".78"/><circle cx="72" cy="53" r="8.5" fill="#b9f0b0" stroke="none"/></g></g>
+</svg>

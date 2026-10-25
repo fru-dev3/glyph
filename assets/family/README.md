@@ -3,11 +3,15 @@
 One tile, one palette (office green `#008000`, white, light-green accent `#b9f0b0`),
 one petroglyph figure on the left of every icon. Only the element to its right changes.
 
+The figure is the clean figure (concept A in `concepts/`): a round solid head, one even
+stroke for the body, four joints (shoulders, hip, two feet) and arms raised in the orant
+pose of rock art. It holds its shape down to 16 px.
+
 | Icon | Variation |
 |---|---|
 | Glyph (`glyph*`) | The plain mark: the figure and its spiral, the spiral in soft white. For the family and the site. |
 | Glyph Studio (`studio*`) | The full mark, the spiral in solid white growing out of a light-green core: the hub everything comes back to. |
-| Glyph Dictate (`dictate*`) | Three sound arcs leaving the figure's mouth, fading as they go: you talk, it types. |
+| Glyph Dictate (`dictate*`) | Three sound arcs leaving the figure's head, fading as they go: you talk, it types. |
 | Glyph Mobile (`mobile*`) | A phone beside the figure with a voice waveform on its screen: memos and the keyboard on iPhone. |
 | Glyph Record (`record*`) | A record button, a ring around a solid light-green dot: meetings, calls, long talks. |
 | Glyph Code (`code*`) | A `>_` prompt with a light-green cursor: the command-line tool for coding agents. |
