@@ -103,7 +103,7 @@ def main():
         write(f"{app}-macos.svg", macos(app))
         rsvg(f"{HERE}/{app}-macos.svg", f"{HERE}/{app}-1024.png", 1024)
         rsvg(f"{HERE}/{app}-tile.svg", f"{HERE}/{app}-512.png", 512)
-        if app not in ("code", "cast"):  # Cast is not built yet; Code is a command-line tool: no app bundle, no iOS icon
+        if app not in ("code", "cast"):  # Mac-only or no app: Cast is a Mac app, Code a command-line tool; no iOS icon
             src = f"{tmp}/{app}-ios.svg"
             open(src, "w").write(ios(app))
             rsvg(src, f"{tmp}/{app}-ios.png", 1024)
@@ -112,7 +112,7 @@ def main():
                             "-s", "formatOptions", "100", "--out", f"{tmp}/{app}.jpg"], check=True, capture_output=True)
             subprocess.run(["sips", "-s", "format", "png", f"{tmp}/{app}.jpg",
                             "--out", f"{HERE}/{app}-ios-1024.png"], check=True, capture_output=True)
-        if app in ("studio", "dictate", "record"):
+        if app in ("studio", "dictate", "record", "cast"):
             iconset = f"{tmp}/{app}.iconset"
             os.makedirs(iconset)
             for s in (16, 32, 128, 256, 512):
