@@ -51,7 +51,7 @@ async function typeLoop() {
 // only when the widest one doesn't fit. The face changes shape with size, so refine a few times.
 function fitH1() {
   if (!h1) return;
-  const col = $(h1.dataset.fit || ".cta");
+  const col = (h1.dataset.fit || ".cta").split(",").map((q) => $(q.trim())).find((el) => el && el.getBoundingClientRect().width);
   if (!col) return;
   h1.style.fontSize = "";
   const keep = said.textContent, rng = document.createRange();
@@ -88,7 +88,7 @@ function fitRight() {
 function fitAll() { fitH1(); fitRight(); }
 fitAll(); addEventListener("resize", fitAll); addEventListener("load", fitAll);
 document.fonts?.ready.then(fitAll);
-if (h1 && !still) typeLoop();
+if (h1 && !still && lines.length > 1) typeLoop();
 
 // Copy a command (the install line).
 $$("button[data-copy]").forEach((b) => b.addEventListener("click", () => {

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Glyph | Apps by fru.dev</title>
-<meta name="description" content="Glyph is a family of five apps by fru.dev. Glyph Dictate, Glyph Jot and Glyph Record catch what you say and think; Glyph Studio keeps it as plain files on your computer and lets any AI work on it; Glyph Code gives every coding agent one identity.">
+<meta name="description" content="Glyph captures what you say, jot and record, keeps it as plain files you own, and gives every AI agent you run the context to act on it.">
 <link rel="icon" href="/family/glyph-tile.svg" type="image/svg+xml">
 <link rel="icon" href="/family/glyph-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/family/glyph-180.png">
@@ -17,16 +17,16 @@
 <meta property="og:site_name" content="Glyph by fru.dev">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Glyph | Apps by fru.dev">
-<meta property="og:description" content="Five apps: say it, keep it on your computer, work on it with any AI.">
+<meta property="og:description" content="Glyph captures what you say, jot and record, keeps it as plain files you own, and gives every AI agent you run the context to act on it.">
 <meta property="og:url" content="https://glyph.fru.dev/">
 <meta property="og:image" content="https://glyph.fru.dev/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="The Glyph family of app icons in office green, with the line Say it. Keep it. Work on it.">
+<meta property="og:image:alt" content="The Glyph family of app icons in office green">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@fru">
 <meta name="twitter:title" content="Glyph | Apps by fru.dev">
-<meta name="twitter:description" content="Five apps: say it, keep it on your computer, work on it with any AI.">
+<meta name="twitter:description" content="Glyph captures what you say, jot and record, keeps it as plain files you own, and gives every AI agent you run the context to act on it.">
 <meta name="twitter:image" content="https://glyph.fru.dev/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,40 +45,42 @@
 ]}
 </script>
 <style>
-.fam{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(16px,3.2vh,40px);width:min(100%,1320px)}
-.fam .brand b{font-size:clamp(30px,5vh,48px)}
-.fam .icon{width:clamp(56px,8.5vh,88px)}
-.fam h1{text-align:center;font-size:clamp(40px,min(10vh,8vw),120px)}
-.fam h1 em{display:block}
-.lede{margin:-.4em 0 0;max-width:46ch;color:var(--soft);font-size:clamp(16px,2.2vh,21px);line-height:1.45}
-.apps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(10px,1.2vw,20px);width:100%}
-.app{height:100%;display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.4vh,14px);padding:clamp(16px,2.8vh,30px) clamp(12px,1.2vw,20px) clamp(14px,2.4vh,24px);
-  border-radius:24px;background:var(--card);border:1px solid var(--line);text-decoration:none;color:var(--ink);text-align:center;transition:transform .2s,box-shadow .2s,border-color .2s}
-.app:hover{transform:translateY(-4px);border-color:var(--tint-line);box-shadow:0 18px 40px var(--shadow)}
-.app img{width:clamp(56px,10vh,104px);height:auto;border-radius:22%;box-shadow:0 10px 24px rgba(0,100,0,.25)}
-.app b{font:800 clamp(20px,3vh,28px)/1.05 "Bricolage Grotesque",sans-serif;letter-spacing:-.02em}
-.app p{margin:0;color:var(--soft);font-size:clamp(14px,1.8vh,16px);line-height:1.4;flex:1}
-.st{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:13px;font-weight:700;white-space:nowrap;background:var(--tint);color:var(--green);box-shadow:inset 0 0 0 1px var(--tint-line)}
-.st svg{width:15px;height:15px;flex:none}
-.st.wait{background:transparent;color:var(--dim);box-shadow:inset 0 0 0 1px var(--line)}
-.stars{display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 12px;border-radius:999px;background:var(--pill);border:1px solid var(--line);color:var(--soft);font-size:15px;font-weight:600;text-decoration:none}
+/* the home: the promise on the left, the five apps at work on the right */
+.lede{margin:0;color:var(--soft);font-size:clamp(16px,2.2vh,21px);line-height:1.45;max-width:36ch}
+.stars{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 12px;border-radius:999px;background:var(--pill);border:1px solid var(--line);color:var(--soft);font-size:15px;font-weight:600;text-decoration:none}
 .stars:hover{border-color:var(--green);color:var(--green)}
-.stars svg{width:17px;height:17px;color:var(--green)}
-.stars b{color:var(--ink)}
-/* phones and narrow windows: the apps as a list */
-@media (max-width:900px){
-  .apps{grid-template-columns:1fr;gap:8px;max-width:560px}
-  .app{flex-direction:row;text-align:left;gap:14px;padding:10px 14px;border-radius:18px}
-  .app img{width:48px}
-  .app .tx{flex:1;min-width:0}
-  .app b{font-size:19px}
-  .app p{font-size:14px;margin-top:2px}
-  .st{padding:4px 8px}
+.stars svg{width:17px;height:17px;color:var(--green)}.stars b{color:var(--ink)}
+h1 .l2{display:block;color:var(--green)}
+.stage{position:relative;width:100%;aspect-ratio:16/10;border-radius:20px;overflow:hidden;background:var(--card);border:1px solid var(--line);box-shadow:0 30px 60px var(--shadow)}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:4%;padding:4%;opacity:0;visibility:hidden;transition:opacity .5s,visibility 0s .5s}
+.slide.on{opacity:1;visibility:visible;transition:opacity .5s}
+.slide img,.slide video{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px}
+.slide.full{padding:0}.slide.full video,.slide.full img{width:100%;height:100%;object-fit:cover;border-radius:0}
+.slide .ph{height:100%;width:auto;border-radius:clamp(14px,2.4vh,26px);border:clamp(3px,.5vh,6px) solid #0B0F0C;background:#0B0F0C}
+.slide .panel{position:absolute;right:4%;bottom:5%;width:34%;box-shadow:0 14px 30px var(--shadow);border-radius:12px}
+.slide .pill{position:absolute;left:50%;bottom:5%;transform:translateX(-50%);display:flex;align-items:center;gap:3px;height:clamp(34px,5vh,50px);padding:0 clamp(16px,2vh,24px);border-radius:999px;background:#0B0F0C;color:#fff;font:600 clamp(13px,1.8vh,17px) -apple-system,sans-serif;white-space:nowrap;box-shadow:0 12px 30px rgba(0,0,0,.3)}
+.slide .pill i{display:block;width:4px;height:6px;border-radius:2px;background:#fff;animation:wv 1s ease-in-out infinite;animation-delay:calc(var(--k) * -.12s)}
+.slide .pill b{margin-left:10px}
+@keyframes wv{0%,100%{height:5px}50%{height:clamp(14px,2.4vh,22px)}}
+.cap{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;font-size:clamp(15px,1.9vh,17px);color:var(--soft)}
+.cap a{font-weight:700;text-decoration:none;white-space:nowrap}.cap a:hover{text-decoration:underline}
+.tabs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(6px,.7vw,12px);width:100%}
+.tab{position:relative;overflow:hidden;width:100%;display:flex;flex-direction:column;align-items:center;gap:6px;padding:clamp(8px,1.4vh,14px) 6px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+.tab img{width:clamp(34px,5.4vh,52px);height:auto;border-radius:22%}
+.tab b{font:800 clamp(15px,2vh,19px)/1 "Bricolage Grotesque",sans-serif}
+.tab .st{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:var(--green)}
+.tab .st.wait{color:var(--dim)}.tab .st svg{width:13px;height:13px}
+.tab[aria-selected=true]{border-color:var(--tint-line);background:var(--tint)}
+.tab[aria-selected=true]::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--green);transform-origin:left;animation:fill var(--dur,7s) linear forwards}
+.tabs.hold .tab::after{animation-play-state:paused}
+@keyframes fill{from{transform:scaleX(0)}}
+@media not ((min-width:960px) and (min-height:560px)){
+  .lede{display:none}.stars{align-self:center}
+  .right{display:flex;flex-direction:column;gap:12px;order:2;width:min(100%,560px)}
+  .left .top{order:1}.left .stars{order:3}
 }
-@media (max-width:600px) and (max-height:960px){.lede{display:none}}
-@media (max-width:440px){.st span{display:none}.st{padding:6px}}
-@media (min-width:901px){.app .tx{display:contents}}
-@media (min-width:960px) and (min-height:560px){main.homemain{display:flex;padding:5vh clamp(32px,5vw,96px) calc(44px + 5vh);height:100svh;min-height:0}}
+@media (max-width:520px){.tab{padding:8px 2px;border-radius:12px}.tab .st span{display:none}.tab b{font-size:14px}}
+@media (min-width:960px) and (min-height:560px){.left{justify-content:center;gap:clamp(18px,3.4vh,36px)}.right{gap:clamp(10px,1.8vh,18px)}.stage{width:min(100%,calc((100svh - 44px - 10vh - 190px) * 1.6))}}
 /* how they fit */
 .flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:10px;padding:22px 28px 6px}
 .srcs{display:flex;flex-direction:column;gap:8px}
@@ -101,19 +103,31 @@
 </style>
 </head>
 <body data-page="home">
-<main class="homemain">
-  <div class="fam home-wrap">
-    <a class="brand" href="/"><img class="icon" src="/family/glyph-tile.svg" width="80" height="80" alt=""><div><b>Glyph</b><span>Five apps by fru.dev</span></div></a>
-    <h1 data-lines='["Work on it.","On your Mac.","With any AI."]' data-fit=".apps">Say it. Keep it. <em><span id="said">Work on it.</span><i class="caret" aria-hidden="true"></i></em></h1>
-    <p class="lede">Catch what you say and think, keep it as plain files on your own computer, and let any AI work on it.</p>
-    <ul class="apps">
-      <li><a class="app" href="/studio"><img src="/family/studio-tile.svg" width="96" height="96" alt=""><span class="tx"><b>Studio</b><p>A private AI harness for your life, on any model.</p></span><span class="st" title="Download for Mac or Windows"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac, Windows</span></span></a></li>
-      <li><a class="app" href="/dictate"><img src="/family/dictate-tile.svg" width="96" height="96" alt=""><span class="tx"><b>Dictate</b><p>Talk, and it types in any app, on Mac or iPhone.</p></span><span class="st" title="Download for Mac; the iPhone keyboard is in testing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac</span></span></a></li>
-      <li><a class="app" href="/jot"><img src="/family/mobile-tile.svg" width="96" height="96" alt=""><span class="tx"><b>Jot</b><p>Catch a thought as a note, on iPhone or Mac.</p></span><span class="st wait" title="In testing, not on the App Store yet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6L4.5 18.5A1.7 1.7 0 006 21h12a1.7 1.7 0 001.5-2.5L14 9V3"/><path d="M7 15h10"/></svg><span>In testing</span></span></a></li>
-      <li><a class="app" href="/record"><img src="/family/record-tile.svg" width="96" height="96" alt=""><span class="tx"><b>Record</b><p>Meetings and calls, filed by who was there.</p></span><span class="st" title="Download for Mac"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac</span></span></a></li>
-      <li><a class="app" href="/code"><img src="/family/code-tile.svg" width="96" height="96" alt=""><span class="tx"><b>Code</b><p>One identity for every coding agent you run.</p></span><span class="st" title="A command-line tool for zsh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l6-6-6-6M12 19h8"/></svg><span>CLI</span></span></a></li>
-    </ul>
+<main>
+  <div class="left">
+    <div class="top">
+      <a class="brand" href="/"><img class="icon" src="/family/glyph-tile.svg" width="80" height="80" alt=""><div><b>Glyph</b><span id="copy-label">by fru.dev</span></div></a>
+      <h1 data-lines='["Harness your life."]' data-fit=".left, .tabs"><span id="copy-h1">Build your context.</span> <em><span id="said">Harness your life.</span></em><span class="l2" id="copy-h1b">Rig your agents.</span></h1>
+    </div>
+    <p class="lede" id="copy-sub">Glyph captures what you say, jot and record, keeps it as plain files you own, and gives every AI agent you run the context to act on it.</p>
     <a class="stars" href="https://github.com/fru-dev3" data-track="star_on_github" data-stars="fru-dev3/glyph-studio,fru-dev3/glyph-dictate,fru-dev3/glyph-record,fru-dev3/glyph" data-floor="44" title="Stars across the Glyph repositories on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg><span><b class="n">44</b> stars on GitHub</span></a>
+  </div>
+  <div class="right">
+    <div class="stage" aria-live="polite">
+      <div class="slide full on" data-k="studio"><video muted playsinline preload="metadata" poster="/studio/demos/council-light-start.webp" aria-label="Glyph Studio: a council of models answers a money question"></video></div>
+      <div class="slide" data-k="dictate"><img src="/dictate/app-ask.webp" width="1600" height="1189" alt="Glyph Dictate: today's dictations into Slack, Terminal, Mail and Notes" loading="lazy"><div class="pill" aria-hidden="true"><i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i><i style="--k:4"></i><i style="--k:5"></i><i style="--k:6"></i><b>0:04</b></div></div>
+      <div class="slide" data-k="jot"><img class="ph" src="/jot/iphone-rec.webp" width="506" height="1100" alt="Glyph Jot on iPhone, the words appearing as you talk" loading="lazy"><img class="ph" src="/jot/iphone-home.webp" width="506" height="1100" alt="Glyph Jot's notes with their tags" loading="lazy"></div>
+      <div class="slide" data-k="record"><picture><source srcset="/record/app-dark.webp" media="(prefers-color-scheme: dark)"><img src="/record/app-light.webp" width="1600" height="1000" alt="Glyph Record: a call filed by person, company and tags, with its summary" loading="lazy"></picture><picture><source srcset="/record/panel-dark.webp" media="(prefers-color-scheme: dark)"><img class="panel" src="/record/panel-light.webp" width="720" height="272" alt="The recorder panel" loading="lazy"></picture></div>
+      <div class="slide" data-k="code"><img src="/code/terminal.webp" width="1158" height="906" alt="Glyph Code: two named agent sessions side by side" loading="lazy"></div>
+    </div>
+    <div class="cap"><span id="capline">A private AI harness for your life, on any model.</span><a id="capgo" href="/studio">Open Glyph Studio</a></div>
+    <div class="tabs" role="tablist" aria-label="The Glyph apps">
+      <button class="tab" role="tab" aria-selected="true" data-k="studio" data-href="/studio" data-name="Glyph Studio" data-line="A private AI harness for your life, on any model."><img src="/family/studio-tile.svg" alt=""><b>Studio</b><span class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac, Win</span></span></button>
+      <button class="tab" role="tab" aria-selected="false" data-k="dictate" data-href="/dictate" data-name="Glyph Dictate" data-line="Talk, and it types in any app, on Mac or iPhone."><img src="/family/dictate-tile.svg" alt=""><b>Dictate</b><span class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac</span></span></button>
+      <button class="tab" role="tab" aria-selected="false" data-k="jot" data-href="/jot" data-name="Glyph Jot" data-line="Catch a thought as a note, on iPhone or Mac."><img src="/family/mobile-tile.svg" alt=""><b>Jot</b><span class="st wait"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6L4.5 18.5A1.7 1.7 0 006 21h12a1.7 1.7 0 001.5-2.5L14 9V3"/><path d="M7 15h10"/></svg><span>In testing</span></span></button>
+      <button class="tab" role="tab" aria-selected="false" data-k="record" data-href="/record" data-name="Glyph Record" data-line="Meetings and calls, filed by who was there."><img src="/family/record-tile.svg" alt=""><b>Record</b><span class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac</span></span></button>
+      <button class="tab" role="tab" aria-selected="false" data-k="code" data-href="/code" data-name="Glyph Code" data-line="One identity for every coding agent you run."><img src="/family/code-tile.svg" alt=""><b>Code</b><span class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l6-6-6-6M12 19h8"/></svg><span>CLI</span></span></button>
+    </div>
   </div>
 </main>
 
@@ -152,5 +166,25 @@
   </div>
 </footer>
 <script src="/site.js"></script>
+<script>
+// The stage: each app at work for seven seconds (Studio plays its clip through), a tap picks one, hovering holds it.
+const tabs=document.querySelector(".tabs"),bs=[...tabs.querySelectorAll(".tab")],sl=[...document.querySelectorAll(".slide")];
+const v=document.querySelector(".slide video"),dark=matchMedia("(prefers-color-scheme: dark)"),capline=document.getElementById("capline"),capgo=document.getElementById("capgo");
+let i=0,timer,held=false;
+function show(n){i=n;const b=bs[n];bs.forEach(x=>x.setAttribute("aria-selected",x===b));sl.forEach(s=>s.classList.toggle("on",s.dataset.k===b.dataset.k));
+  capline.textContent=b.dataset.line;capgo.textContent="Open "+b.dataset.name;capgo.href=b.dataset.href;
+  bs.forEach(x=>x.style.removeProperty("--dur"));
+  if(b.dataset.k==="studio"){const sfx=dark.matches?"":"-light";v.poster=`/studio/demos/council${sfx}-start.webp`;if(!v.src.includes("council"+sfx+".mp4"))v.src=`/studio/demos/council${sfx}.mp4`;v.currentTime=dark.matches?.3:.8;if(!still)v.play().catch(()=>{})}else v.pause();
+  clearTimeout(timer);if(still||held)return;
+  const dur=b.dataset.k==="studio"&&v.duration?Math.max(7,v.duration-1):7;b.style.setProperty("--dur",dur+"s");
+  b.style.animation="none";b.offsetWidth;b.style.animation="";timer=setTimeout(()=>show((i+1)%bs.length),dur*1000)}
+bs.forEach((b,n)=>b.addEventListener("click",()=>{show(n);try{gtag("event","home_stage",{app:b.dataset.k})}catch{}}));
+const st=document.querySelector(".right");
+st.addEventListener("mouseenter",()=>{held=true;clearTimeout(timer);tabs.classList.add("hold")});
+st.addEventListener("mouseleave",()=>{held=false;tabs.classList.remove("hold");show(i)});
+v.addEventListener("loadedmetadata",()=>{if(bs[i].dataset.k==="studio"&&!held)show(i)},{once:true});
+dark.addEventListener("change",()=>show(i));
+show(0);
+</script>
 </body>
 </html>
