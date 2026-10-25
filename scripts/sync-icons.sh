@@ -7,7 +7,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 src=assets/family; out=docs/family
 rm -rf "$out"; mkdir -p "$out"
-for a in glyph studio dictate mobile record code; do
+for a in glyph studio dictate record code; do
   cp "$src/$a-tile.svg" "$src/$a-512.png" "$out/"
   sips -Z 192 "$src/$a-512.png" --out "$out/$a-192.png" >/dev/null
   # iOS rounds the home-screen icon itself: start from the full-bleed one where there is one

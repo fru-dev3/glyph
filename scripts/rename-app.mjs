@@ -2,7 +2,7 @@
 // note. docs/apps.json is the list of record; this rewrites every page, the sitemap and the
 // ship check to match, moves the page folder and redirects the old path.
 //   node scripts/rename-app.mjs <icon> [--name "Glyph Jot"] [--short Jot] [--path jot] [--formerly Jot]
-// <icon> is the app's icon id in assets/family/ (studio, dictate, mobile, record, code); it never changes.
+// <icon> is the app's icon id in assets/family/ (studio, dictate, record, code; Glyph Jot wears the dictate icon); it never changes.
 import { readFileSync, writeFileSync, readdirSync, statSync, renameSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";

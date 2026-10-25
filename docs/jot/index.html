@@ -3,21 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Glyph Jot | Catch a thought as a note, on iPhone and Mac</title>
-<meta name="description" content="Glyph Jot catches a thought as a note: tap and talk in the Glyph app on iPhone (in TestFlight testing), or hold Fn + Shift in Glyph Dictate on the Mac. Transcribed on the device, kept as plain files.">
-<link rel="icon" href="/family/mobile-tile.svg" type="image/svg+xml">
-<link rel="icon" href="/family/mobile-192.png" type="image/png" sizes="192x192">
-<link rel="apple-touch-icon" href="/family/mobile-180.png">
+<title>Glyph Jot | Talk, and it types or keeps a note</title>
+<meta name="description" content="Talk, and Glyph Jot types your words into any app, or keeps them as a note. On Mac, hold Fn to type and Fn + Shift for a note: free, open source, on-device. On iPhone, the Glyph app and the Glyph keyboard, in TestFlight testing.">
+<link rel="icon" href="/family/dictate-tile.svg" type="image/svg+xml">
+<link rel="icon" href="/family/dictate-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/family/dictate-180.png">
 <link rel="canonical" href="https://glyph.fru.dev/jot">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="author" content="fru.dev">
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#F7FBF5" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0B110D" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F7FBF5">
 <meta property="og:site_name" content="Glyph by fru.dev">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Glyph Jot | Catch a thought as a note, on iPhone and Mac">
-<meta property="og:description" content="Say it, and it is a note with its transcript. iPhone in testing, Mac in Glyph Dictate.">
+<meta property="og:title" content="Glyph Jot | Talk, and it types or keeps a note">
+<meta property="og:description" content="Hold Fn and talk: the words are typed in any app. Fn + Shift keeps a note. Mac and iPhone, free and private.">
 <meta property="og:url" content="https://glyph.fru.dev/jot">
 <meta property="og:image" content="https://glyph.fru.dev/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -30,56 +29,102 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Caveat:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/site.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+ {"@type":"Organization","@id":"https://fru.dev/#org","name":"fru.dev","url":"https://fru.dev","logo":"https://fru.dev/icon-512.png","sameAs":["https://github.com/fru-dev3"]},
+ {"@type":"SoftwareApplication","@id":"https://glyph.fru.dev/jot#app","name":"Glyph Jot","alternateName":["Jot","Glyph Dictate"],
+  "applicationCategory":"ProductivityApplication","operatingSystem":"macOS 26 or later (Apple silicon); iOS in TestFlight testing",
+  "url":"https://glyph.fru.dev/jot","downloadUrl":"https://github.com/fru-dev3/glyph-dictate/releases/latest/download/Jot.dmg",
+  "codeRepository":"https://github.com/fru-dev3/glyph-dictate","isAccessibleForFree":true,
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@id":"https://fru.dev/#org"},
+  "description":"Voice dictation and voice notes that run on-device: hold a key and talk, and clean text is typed wherever your cursor is, or kept as a note."}
+]}
+</script>
 <style>
-.phones{display:flex;justify-content:center;align-items:center;gap:4%}
-.phones img{height:100%;width:auto;min-width:0;border-radius:clamp(22px,4vh,40px);border:clamp(5px,.8vh,8px) solid #0B0F0C;background:#0B0F0C;box-shadow:0 30px 60px var(--shadow)}
-.phones img:nth-child(2){height:92%}
+/* three views take turns: the Mac with its live pill, the Glyph app on iPhone, the Glyph keyboard */
+.views{position:relative}
+.view{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:5%;opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .6s,transform .6s,visibility 0s .6s}
+.view.on{opacity:1;visibility:visible;transform:none;transition:opacity .6s,transform .6s}
+.view .shot{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;background:none;box-shadow:none;border-radius:0;filter:drop-shadow(0 26px 50px var(--shadow))}
+.frame{position:relative;height:100%;aspect-ratio:1600/1189;max-width:100%}
+.frame .shot{width:100%;height:100%}
+.frame .pill{position:absolute;left:50%;bottom:9.8%;transform:translate(-50%,50%)}
+.phone{height:100%;width:auto;border-radius:clamp(22px,4vh,40px);border:clamp(5px,.8vh,8px) solid #0B0F0C;background:#0B0F0C;box-shadow:0 30px 60px var(--shadow)}
+.view .phone:nth-child(2){height:93%}
+.view figcaption{max-width:15ch;font-size:clamp(15px,2vh,18px);color:var(--soft);line-height:1.4}
+.view figcaption b{display:block;font:800 clamp(24px,3.6vh,38px)/1.05 "Bricolage Grotesque",sans-serif;color:var(--ink);letter-spacing:-.02em;margin-bottom:10px}
+.pill{display:inline-flex;align-items:center;gap:4px;height:clamp(56px,7.4vh,78px);padding:0 clamp(24px,3vh,34px);z-index:2;
+  border-radius:999px;background:#0B0F0C;color:#fff;font:600 clamp(18px,2.3vh,24px) -apple-system,sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap;box-shadow:0 18px 40px rgba(0,0,0,.3)}
+.pill i{display:block;width:5px;height:7px;border-radius:3px;background:#fff}
+.pill b{margin-left:16px}.pill span{opacity:.55;margin-left:12px;font-weight:500}
+.seg{display:inline-flex;gap:4px;padding:5px;border-radius:999px;background:var(--card);border:1px solid var(--line)}
+.seg button{position:relative;overflow:hidden;border:0;background:transparent;border-radius:999px;padding:8px 18px;font:600 15px -apple-system,BlinkMacSystemFont,sans-serif;color:var(--soft);cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.seg button svg{width:17px;height:17px}
+.seg button small{font-size:12px;font-weight:700;color:var(--dim)}
+.seg button[aria-selected=true]{background:var(--tint);color:var(--green)}
+.seg button[aria-selected=true]::after{content:"";position:absolute;left:14px;right:14px;bottom:3px;height:2px;border-radius:2px;background:var(--green);transform-origin:left;animation:fill 6s linear forwards}
+.seg.hold button::after{animation-play-state:paused}
+@keyframes fill{from{transform:scaleX(0)}}
 </style>
 </head>
 <body data-page="jot">
 <main>
   <div class="left">
     <div class="top">
-      <a class="brand" href="/jot"><img class="icon" src="/family/mobile-tile.svg" width="72" height="72" alt=""><div><b>Glyph Jot</b><span>Catch a thought as a note</span></div></a>
-      <h1 data-lines='["It&#39;s a note.","It&#39;s tagged.","It stays yours."]'>Think it. <em><span id="said">It's a note.</span><i class="caret" aria-hidden="true"></i></em></h1>
+      <a class="brand" href="/jot"><img class="icon" src="/family/dictate-tile.svg" width="72" height="72" alt=""><div><b>Glyph Jot</b><span>Talk to type, or to note</span></div></a>
+      <h1 data-lines='["It types.","It&#39;s a note.","It&#39;s free.","It&#39;s private."]'>Talk. <em><span id="said">It types.</span><i class="caret" aria-hidden="true"></i></em></h1>
     </div>
-    <div class="alt" aria-label="On iPhone in the Glyph app, on Mac with Fn and Shift in Glyph Dictate: one place for your notes">
+    <div class="alt" aria-label="Instead of Wispr Flow at 15 dollars a month, Superwhisper at 8.49, Willow at 15 or Aqua Voice at 10, Glyph Jot is free on GitHub">
       <div class="paid">
-        <figure><span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="#0B1A10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg></span><figcaption>iPhone</figcaption></figure>
-        <figure><span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="#0B1A10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M1 20h22"/></svg></span><figcaption>Mac</figcaption></figure>
+        <figure><img src="/logos/wispr.webp" width="48" height="48" alt="Wispr Flow" title="Wispr Flow"><s>$15</s></figure>
+        <figure><img src="/logos/superwhisper.webp" width="48" height="48" alt="Superwhisper" title="Superwhisper"><s>$8.49</s></figure>
+        <figure><img src="/logos/willow.webp" width="48" height="48" alt="Willow Voice" title="Willow Voice"><s>$15</s></figure>
+        <figure class="hide-xs"><img src="/logos/aqua.webp" width="48" height="48" alt="Aqua Voice" title="Aqua Voice"><s>$10</s></figure>
       </div>
-      <svg class="or" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6l6 6-6 6"/></svg>
-      <span class="ours"><img src="/family/mobile-tile.svg" width="48" height="48" alt=""><b>One note</b><small>with its transcript</small></span>
+      <span class="or">or</span>
+      <a class="ours" href="https://github.com/fru-dev3/glyph-dictate"><img src="/family/dictate-tile.svg" width="48" height="48" alt=""><b>Free</b><small>on GitHub</small></a>
     </div>
-    <div class="cta">
-      <div class="btn state" role="status"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6L4.5 18.5A1.7 1.7 0 006 21h12a1.7 1.7 0 001.5-2.5L14 9V3"/><path d="M7 15h10"/></svg><span>In testing on TestFlight</span></div>
+    <div class="cta loved">
+      <a class="btn go" href="https://github.com/fru-dev3/glyph-dictate/releases/latest/download/Jot.dmg" data-track="file_download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Download<span class="formac"> for Mac</span></span><span class="dlc" data-downloads="fru-dev3/glyph-dictate" data-match="\.dmg$" data-floor="6" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v12m0 0l-5-5m5 5l5-5"/></svg><b class="n"></b></span></a>
+      <a class="btn star" href="https://github.com/fru-dev3/glyph-dictate" data-track="star_on_github" aria-label="Star Glyph Jot on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg><span class="lbl">Star</span><span class="count" data-stars="fru-dev3/glyph-dictate" data-floor="1" hidden></span><span class="love" aria-hidden="true"><svg class="arrow" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M52 6C51 28 32 44 8 54"/><path d="M44 14l8-10 7 10"/></svg><span class="say">show some love<svg class="heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></span></span></a>
     </div>
     <ul class="badges">
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>iPhone: the Glyph app</li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M1 20h22"/></svg>Mac: Fn + Shift</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M1 20h22"/></svg>Mac: Fn types, Fn + Shift notes</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>iPhone: in testing</li>
     </ul>
-    <p class="note">On iPhone, Glyph Jot is in the Glyph app, in TestFlight testing and not on the App Store yet. On Mac, hold Fn + Shift in <a href="/dictate">Glyph Dictate</a> and the thought is saved as a note.</p>
+    <p class="note">Logos and names belong to their owners. Monthly prices from their sites, October 2026. Glyph Jot is not affiliated with them.</p>
   </div>
   <div class="right">
-    <div class="works"><p>Copy a note into any app you write in</p><div class="row"><img src="/apps/messages.webp" width="52" height="52" alt="Messages" title="Messages" style="--i:0"><img src="/apps/mail.webp" width="52" height="52" alt="Mail" title="Mail" style="--i:1"><img src="/apps/notes.webp" width="52" height="52" alt="Notes" title="Notes" style="--i:2"><img src="/apps/slack.webp" width="52" height="52" alt="Slack" title="Slack" style="--i:3"><img src="/apps/safari.webp" width="52" height="52" alt="Safari" title="Safari" style="--i:4"><img src="/apps/notion.webp" width="52" height="52" alt="Notion" title="Notion" style="--i:5"><img src="/apps/chatgpt.webp" width="52" height="52" alt="ChatGPT" title="ChatGPT" style="--i:6"><img src="/apps/claude.webp" width="52" height="52" alt="Claude" title="Claude" style="--i:7"></div></div>
-    <div class="phones fill" data-ar="0.98">
-      <img src="/jot/iphone-rec.webp" width="506" height="1100" alt="Recording a memo, the words appearing as you talk">
-      <img src="/jot/iphone-home.webp" width="506" height="1100" alt="The memo list with its tags">
+    <!-- stargazers -->
+    <div class="proof"><div class="faces"><a href="https://github.com/Wishtrader" target="_blank" rel="noreferrer" title="Wishtrader"><img src="/stargazers/Wishtrader.png" width="40" height="40" alt="Wishtrader" loading="lazy"></a><a href="https://github.com/hamedelbhrawy" target="_blank" rel="noreferrer" title="hamedelbhrawy"><img src="/stargazers/hamedelbhrawy.png" width="40" height="40" alt="hamedelbhrawy" loading="lazy"></a><a href="https://github.com/Nessjk" target="_blank" rel="noreferrer" title="Nessjk"><img src="/stargazers/Nessjk.png" width="40" height="40" alt="Nessjk" loading="lazy"></a><a href="https://github.com/tranngochung0885-pixel" target="_blank" rel="noreferrer" title="tranngochung0885-pixel"><img src="/stargazers/tranngochung0885-pixel.png" width="40" height="40" alt="tranngochung0885-pixel" loading="lazy"></a><a href="https://github.com/MDsniper" target="_blank" rel="noreferrer" title="MDsniper"><img src="/stargazers/MDsniper.png" width="40" height="40" alt="MDsniper" loading="lazy"></a><a href="https://github.com/DFA5" target="_blank" rel="noreferrer" title="DFA5"><img src="/stargazers/DFA5.png" width="40" height="40" alt="DFA5" loading="lazy"></a><a href="https://github.com/TLCSglobal" target="_blank" rel="noreferrer" title="TLCSglobal"><img src="/stargazers/TLCSglobal.png" width="40" height="40" alt="TLCSglobal" loading="lazy"></a><a href="https://github.com/sina-chobak" target="_blank" rel="noreferrer" title="sina-chobak"><img src="/stargazers/sina-chobak.png" width="40" height="40" alt="sina-chobak" loading="lazy"></a><a href="https://github.com/RajaRuling" target="_blank" rel="noreferrer" title="RajaRuling"><img src="/stargazers/RajaRuling.png" width="40" height="40" alt="RajaRuling" loading="lazy"></a><a href="https://github.com/usblsb" target="_blank" rel="noreferrer" title="usblsb"><img src="/stargazers/usblsb.png" width="40" height="40" alt="usblsb" loading="lazy"></a><a href="https://github.com/asthort" target="_blank" rel="noreferrer" title="asthort"><img src="/stargazers/asthort.png" width="40" height="40" alt="asthort" loading="lazy"></a><a href="https://github.com/Albricengwa" target="_blank" rel="noreferrer" title="Albricengwa"><img src="/stargazers/Albricengwa.png" width="40" height="40" alt="Albricengwa" loading="lazy"></a><span class="more">+33</span></div><p><a href="https://github.com/fru-dev3" target="_blank" rel="noreferrer"><b>45</b><span class="dv"> developers</span> starred Glyph<svg class="heart" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></a></p></div>
+    <!-- /stargazers -->
+    <div class="works"><p>Types into every app and agent you use</p><div class="row"><img src="/apps/mail.webp" width="52" height="52" alt="Mail" title="Mail" style="--i:0"><img src="/apps/messages.webp" width="52" height="52" alt="Messages" title="Messages" style="--i:1"><img src="/apps/notes.webp" width="52" height="52" alt="Notes" title="Notes" style="--i:2"><img src="/apps/slack.webp" width="52" height="52" alt="Slack" title="Slack" style="--i:3"><img src="/apps/chrome.webp" width="52" height="52" alt="Chrome" title="Chrome" style="--i:4"><img src="/apps/safari.webp" width="52" height="52" alt="Safari" title="Safari" style="--i:5"><img src="/apps/notion.webp" width="52" height="52" alt="Notion" title="Notion" style="--i:6"><img src="/apps/chatgpt.webp" width="52" height="52" alt="ChatGPT" title="ChatGPT" style="--i:7"><img src="/apps/claude.webp" width="52" height="52" alt="Claude" title="Claude" style="--i:8"><img src="/apps/cursor.webp" width="52" height="52" alt="Cursor" title="Cursor" style="--i:9"><img src="/apps/vscode.webp" width="52" height="52" alt="VS Code" title="VS Code" style="--i:10"><img src="/apps/terminal.webp" width="52" height="52" alt="Terminal" title="Terminal" style="--i:11"></div></div>
+    <div class="views fill" data-ar="1.3457" aria-live="polite">
+      <figure class="view mac on" data-k="mac" style="margin:0"><div class="frame"><img class="shot" src="/jot/app-ask.webp" width="1600" height="1189" alt="The Glyph Jot window on the Mac: today's dictations into Slack, Terminal, Mail and Notes, and an answer to a question about them" fetchpriority="high"><div class="pill" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b id="t">0:00</b><span id="w">0 words</span></div></div></figure>
+      <figure class="view" data-k="iphone" style="margin:0"><img class="phone" src="/jot/iphone-rec.webp" width="506" height="1100" alt="The Glyph app on iPhone, the words appearing as you talk" loading="lazy"><img class="phone" src="/jot/iphone-home.webp" width="506" height="1100" alt="Your notes in the Glyph app, with their tags" loading="lazy"></figure>
+      <figure class="view" data-k="keyboard" style="margin:0"><img class="phone" src="/jot/iphone-kb.webp" width="506" height="1100" alt="The Glyph keyboard in Messages, typing what you say" loading="lazy"><figcaption><b>Talk in any app</b>The Glyph keyboard types what you say, and keeps every word as a note.</figcaption></figure>
     </div>
+    <div class="seg" role="tablist" aria-label="Glyph Jot on each device"><button type="button" role="tab" aria-selected="true" data-k="mac"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M1 20h22"/></svg>Mac</button><button type="button" role="tab" aria-selected="false" data-k="iphone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>iPhone <small>testing</small></button><button type="button" role="tab" aria-selected="false" data-k="keyboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>Keyboard <small>testing</small></button></div>
   </div>
 </main>
 
 <dialog class="sheet" id="features" aria-labelledby="feat-h">
-  <div class="fhead"><img src="/family/mobile-tile.svg" width="40" height="40" alt=""><h2 id="feat-h">Everything Glyph Jot does</h2><button type="button" class="fclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="fhead"><img src="/family/dictate-tile.svg" width="40" height="40" alt=""><h2 id="feat-h">Everything Glyph Jot does</h2><button type="button" class="fclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="flist">
-    <div class="fq"><h3>On iPhone: tap to talk</h3><p>Open the Glyph app, tap and talk. The words appear while you speak, with Apple's on-device speech model, and the thought is saved as a note.</p></div>
-    <div class="fq"><h3>On Mac: Fn + Shift</h3><p>In Glyph Dictate, hold Fn + Shift instead of Fn. Nothing is typed; the thought is saved as a Markdown note in the folder you choose, an Obsidian vault too.</p></div>
-    <div class="fq"><h3>Plain files</h3><p>Each note is a text file, with the audio or a photo beside it, in the Files app and in Finder over the cable.</p></div>
-    <div class="fq"><h3>Tags, not folders</h3><p>A note can carry several tags. A note that starts with "Task", "Idea" or "Prompt" is tagged for you.</p></div>
-    <div class="fq"><h3>Cleaned up</h3><p>Ums and ahs are taken out, and "no wait" corrections and spoken lists are handled on the device.</p></div>
-    <div class="fq"><h3>Photos and typed notes</h3><p>Take a photo or pick a screenshot, or type a quick note. Share anything to it from the Share sheet.</p></div>
-    <div class="fq"><h3>Copy what's new</h3><p>Home shows the notes you haven't copied yet. Copy them all at once, with dates and photos, into Google Docs, Notes or Mail.</p></div>
-    <div class="fq"><h3>Status</h3><p>The Glyph app for iPhone is in TestFlight testing. It comes to the App Store when testing is done; this page will say so.</p></div>
+    <div class="fq"><h3>One job</h3><p>Talk, and your words land where you want them: typed into the app you are in, or kept as a note. On the Mac and on iPhone.</p></div>
+    <div class="fq"><h3>Mac: hold Fn to type</h3><p>Hold Fn, say what you want, and let go. The words are typed wherever your cursor is: email, chat, documents, forms, the terminal, any app.</p></div>
+    <div class="fq"><h3>Mac: Fn + Shift for a note</h3><p>Hold Fn + Shift instead and nothing is typed: the thought is saved as a Markdown note in the folder you choose, an Obsidian vault too.</p></div>
+    <div class="fq"><h3>iPhone: the Glyph app</h3><p>Open the Glyph app, tap and talk. The words appear while you speak, with Apple's on-device speech model, and the thought is kept as a note with its tags. In TestFlight testing.</p></div>
+    <div class="fq"><h3>iPhone: the Glyph keyboard</h3><p>Switch to the Glyph keyboard in any app, tap the mic and talk, and the words are typed at the cursor. Every word is kept as a note too.</p></div>
+    <div class="fq"><h3>Hands-free</h3><p>Double-press the key and keep talking for as long as you like. Press it once more to stop. Fn by default, or Right Option, Right Command or Right Control.</p></div>
+    <div class="fq"><h3>Cleans up as you talk</h3><p>Ums, ahs and false starts are taken out, and "Tuesday, no wait, Thursday" types only Thursday. Long rambles are tidied while you are still talking.</p></div>
+    <div class="fq"><h3>A style for each app</h3><p>Formal in Mail, relaxed in Slack and Messages, exact in the terminal: say "dash dash", "slash" or "dot" and get the symbols, end with "send it" and it presses Return.</p></div>
+    <div class="fq"><h3>Learns your words</h3><p>Fix a name or a term it got wrong, and it spells it right from then on. Add your own words in the Dictionary.</p></div>
+    <div class="fq"><h3>Fill a form, rewrite a paragraph</h3><p>Say "Fill the form, name Sam Lee, city Austin" and every field is filled; password fields are left alone. Select text and say "make it shorter" to rewrite it.</p></div>
+    <div class="fq"><h3>Notes as plain files</h3><p>Each note is a text file, with the audio or a photo beside it. A note can carry several tags; one that starts with "Task", "Idea" or "Prompt" is tagged for you.</p></div>
+    <div class="fq"><h3>Ask what you said</h3><p>"When is the launch now?" It answers from your own dictations and notes, on your Mac.</p></div>
+    <div class="fq"><h3>Private by design</h3><p>Speech and clean-up run on your own devices with Apple's models. No account, no audio sent anywhere, and it never types into a password field.</p></div>
+    <div class="fq"><h3>Needs</h3><p>On Mac, an Apple silicon Mac on macOS 26 or later; free and open source. On iPhone, the Glyph app, in TestFlight testing and not on the App Store yet.</p></div>
   </div>
 </dialog>
 
@@ -88,12 +133,31 @@
     <nav aria-label="Footer">
       <a class="home" href="/"><img src="/family/glyph-tile.svg" width="16" height="16" alt="">Glyph</a>
       <a class="feat" href="#features"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Features</a>
-      <a class="opt" href="/dictate">Glyph Dictate for Mac</a>
+      <a class="opt" href="https://github.com/fru-dev3/glyph-dictate/issues" title="Contact: open an issue">Contact</a>
       <a class="opt" href="https://fru.dev"><img src="/fru-dev.png" width="16" height="16" alt="">fru.dev</a>
     </nav>
-    <a class="built" href="https://github.com/fru-dev3/glyph"><span><span class="bw">Built with </span><svg class="heart-i" width="14" height="14" viewBox="0 0 24 24" fill="#E0465B" aria-label="love"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg> + AI<span class="opt"> · easy to make your own on GitHub</span></span></a>
+    <a class="built" href="https://github.com/fru-dev3/glyph-dictate"><span><span class="bw">Built with </span><svg class="heart-i" width="14" height="14" viewBox="0 0 24 24" fill="#E0465B" aria-label="love"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg> + AI<span class="opt"> · easy to make your own on GitHub</span></span></a>
   </div>
 </footer>
 <script src="/site.js"></script>
+<script>
+// The pill hears the headline: voice bars while it types, a timer and a word count.
+const bars=document.querySelectorAll(".pill i"),tEl=document.getElementById("t"),wEl=document.getElementById("w");
+let talking=false,t0=0;
+addEventListener("typing",e=>{const d=e.detail;if(d.k===1)t0=Date.now();talking=d.talking;
+  tEl.textContent="0:0"+Math.min(9,Math.floor((Date.now()-t0)/1000));const n=d.line.slice(0,d.k).trim().split(/\s+/).length;wEl.textContent=n+(n===1?" word":" words")});
+(function wave(){bars.forEach((b,i)=>b.style.height=(talking?7+Math.abs(Math.sin(Date.now()/140+i*1.3))*24:7).toFixed(1)+"px");requestAnimationFrame(wave)})();
+if(still){tEl.textContent="0:02";wEl.textContent="2 words"}
+// The views take turns every six seconds; a tap picks one, hovering holds it.
+const seg=document.querySelector(".seg"),sb=[...seg.querySelectorAll("button")],vw=[...document.querySelectorAll(".view")];
+let vi=0,vt,vh=false;
+function view(n){vi=n;sb.forEach((b,k)=>{b.setAttribute("aria-selected",k===n);b.style.animation="none";b.offsetWidth;b.style.animation=""});vw.forEach((v,k)=>v.classList.toggle("on",k===n));
+  clearTimeout(vt);if(!still&&!vh)vt=setTimeout(()=>view((vi+1)%vw.length),6000)}
+sb.forEach((b,n)=>b.addEventListener("click",()=>{view(n);track("jot_view",{view:b.dataset.k})}));
+const rt=document.querySelector(".right");
+rt.addEventListener("mouseenter",()=>{vh=true;clearTimeout(vt);seg.classList.add("hold")});
+rt.addEventListener("mouseleave",()=>{vh=false;seg.classList.remove("hold");view(vi)});
+view(0);
+</script>
 </body>
 </html>

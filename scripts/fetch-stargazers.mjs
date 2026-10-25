@@ -1,49 +1,88 @@
-// Build-time social proof: the real stargazers of fru-dev3/glyph. Saves up to ten avatars into
-// docs/stargazers/ (so the page loads nothing from GitHub), their logins to docs/stargazers.json,
-// and bakes the faces and the count into docs/code/index.html (the Glyph Code page) between the stargazers markers.
-// On any failure the committed files stay as they are.
-import { mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
+// Build-time social proof: the real people who starred the Glyph repos. For every page it bakes
+// a face stack (up to twelve avatars, newest first) and the count between the stargazers markers;
+// the home page gets the whole family, de-duplicated, each app page its own repo. An app whose
+// repo has fewer than three stars from other people shows the family instead, and says so.
+// Avatars are saved into docs/stargazers/ so the page loads nothing from GitHub, the logins into
+// docs/stargazers.json. On any failure the committed files stay as they are.
+import { mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync, rmSync } from "node:fs";
 import { execSync } from "node:child_process";
 
-const REPO = "fru-dev3/glyph";
+const OWNER = "fru-dev3";
+const FAMILY = ["glyph-studio", "glyph-engine", "glyph-dictate", "glyph-record", "glyph"];
+const PAGES = [
+  { file: "index.html", repos: FAMILY, label: "Glyph" },
+  { file: "studio/index.html", repos: ["glyph-studio"], label: "Glyph Studio" },
+  { file: "jot/index.html", repos: ["glyph-dictate"], label: "Glyph Jot" },
+  { file: "record/index.html", repos: ["glyph-record"], label: "Glyph Record" },
+  { file: "code/index.html", repos: ["glyph"], label: "Glyph Code" },
+];
+const SHOW = 12, MIN = 3;
 const DOCS = new URL("../docs/", import.meta.url);
 const DIR = new URL("stargazers/", DOCS);
-const headers = { Accept: "application/vnd.github+json" };
+const headers = { Accept: "application/vnd.github.star+json" };
 let token = process.env.GITHUB_TOKEN;
 if (!token) try { token = execSync("gh auth token", { stdio: ["ignore", "pipe", "ignore"] }).toString().trim(); } catch {}
 if (token) headers.Authorization = `Bearer ${token}`;
 
-try {
-  const repo = await (await fetch(`https://api.github.com/repos/${REPO}`, { headers })).json();
-  const r = await fetch(`https://api.github.com/repos/${REPO}/stargazers?per_page=100`, { headers });
-  if (!r.ok) throw new Error(`HTTP ${r.status}`);
-  // Only other people count as social proof: never the repo's owner, and never the accounts
-  // listed one per line in .stargazers-exclude (git-ignored, so no account name goes public).
-  const skip = new Set([REPO.split("/")[0].toLowerCase()]);
-  const ex = new URL("../.stargazers-exclude", import.meta.url);
-  if (existsSync(ex)) for (const l of readFileSync(ex, "utf8").split("\n")) if (l.trim()) skip.add(l.trim().toLowerCase());
-  const all = (await r.json()).filter((u) => u.type === "User");
-  const others = all.filter((u) => !skip.has(u.login.toLowerCase()));
-  const users = others.slice(-10).reverse(); // the newest ten
-  if (!users.length) throw new Error("none");
-  rmSync(DIR, { recursive: true, force: true });
-  mkdirSync(DIR, { recursive: true });
-  const list = [];
-  for (const u of users) {
-    const img = await fetch(`${u.avatar_url}${u.avatar_url.includes("?") ? "&" : "?"}s=96`);
-    if (!img.ok) continue;
-    writeFileSync(new URL(`${u.login}.png`, DIR), Buffer.from(await img.arrayBuffer()));
-    list.push(u.login);
+// Only other people count: never the owner, never the accounts in .stargazers-exclude (git-ignored).
+const skip = new Set([OWNER.toLowerCase()]);
+const ex = new URL("../.stargazers-exclude", import.meta.url);
+if (existsSync(ex)) for (const l of readFileSync(ex, "utf8").split("\n")) if (l.trim()) skip.add(l.trim().toLowerCase());
+
+async function stargazers(repo) {
+  const out = [];
+  for (let page = 1; ; page++) {
+    const r = await fetch(`https://api.github.com/repos/${OWNER}/${repo}/stargazers?per_page=100&page=${page}`, { headers });
+    if (!r.ok) throw new Error(`${repo}: HTTP ${r.status}`);
+    const batch = await r.json();
+    out.push(...batch.filter((s) => s.user?.type === "User" && !skip.has(s.user.login.toLowerCase()))
+      .map((s) => ({ login: s.user.login, avatar: s.user.avatar_url, at: s.starred_at })));
+    if (batch.length < 100) return out;
   }
-  writeFileSync(new URL("stargazers.json", DOCS), JSON.stringify(list, null, 2) + "\n");
-  const n = Math.max(others.length, list.length);
-  const faces = list.map((l) => `<a href="https://github.com/${l}" target="_blank" rel="noreferrer" title="${l}"><img src="/stargazers/${l}.png" width="40" height="40" alt="${l}" loading="lazy"></a>`).join("");
-  const block = `<!-- stargazers -->\n    <div class="proof"><div class="faces">${faces}</div><p><a href="https://github.com/${REPO}" target="_blank" rel="noreferrer">Starred by <b id="sgn">${n}</b> developers</a></p></div>\n    <!-- /stargazers -->`;
-  const page = new URL("code/index.html", DOCS);
-  const html = readFileSync(page, "utf8");
-  const next = html.replace(/<!-- stargazers -->[\s\S]*?<!-- \/stargazers -->/, block);
-  if (next !== html) writeFileSync(page, next);
-  console.log(`stargazers: ${list.length} faces, ${n} stars`);
+}
+// newest star first, one entry per person
+const merge = (lists) => {
+  const by = new Map();
+  for (const s of lists.flat()) if (!by.has(s.login) || by.get(s.login).at < s.at) by.set(s.login, s);
+  return [...by.values()].sort((a, b) => (a.at < b.at ? 1 : -1));
+};
+const esc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+
+try {
+  const per = {};
+  for (const repo of FAMILY) per[repo] = await stargazers(repo);
+  const family = merge(FAMILY.map((r) => per[r]));
+  const plan = PAGES.map((p) => {
+    const own = merge(p.repos.map((r) => per[r]));
+    const mine = own.length >= MIN;
+    return { ...p, people: mine ? own : family, link: mine && p.repos.length === 1 ? `https://github.com/${OWNER}/${p.repos[0]}` : `https://github.com/${OWNER}`,
+      what: mine ? p.label : "Glyph" };
+  });
+  const need = new Map();
+  for (const p of plan) for (const s of p.people.slice(0, SHOW)) need.set(s.login, s.avatar);
+  mkdirSync(DIR, { recursive: true });
+  const fresh = new Set();
+  for (const [login, avatar] of need) {
+    const img = await fetch(`${avatar}${avatar.includes("?") ? "&" : "?"}s=96`);
+    if (!img.ok) continue;
+    writeFileSync(new URL(`${login}.png`, DIR), Buffer.from(await img.arrayBuffer()));
+    fresh.add(login);
+  }
+  for (const f of readdirSync(DIR)) if (!fresh.has(f.replace(/\.png$/, ""))) rmSync(new URL(f, DIR));
+  writeFileSync(new URL("stargazers.json", DOCS), JSON.stringify([...fresh], null, 2) + "\n");
+  for (const p of plan) {
+    const shown = p.people.slice(0, SHOW).filter((s) => fresh.has(s.login));
+    const n = p.people.length;
+    const faces = shown.map((s) => `<a href="https://github.com/${s.login}" target="_blank" rel="noreferrer" title="${esc(s.login)}"><img src="/stargazers/${s.login}.png" width="40" height="40" alt="${esc(s.login)}" loading="lazy"></a>`).join("");
+    const more = n > shown.length ? `<span class="more">+${n - shown.length}</span>` : "";
+    const block = `<!-- stargazers -->\n    <div class="proof"><div class="faces">${faces}${more}</div><p><a href="${p.link}" target="_blank" rel="noreferrer"><b>${n}</b><span class="dv"> developers</span> starred ${p.what}<svg class="heart" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></a></p></div>\n    <!-- /stargazers -->`;
+    const page = new URL(p.file, DOCS);
+    const html = readFileSync(page, "utf8");
+    if (!html.includes("<!-- stargazers -->")) { console.warn(`stargazers: no markers in ${p.file}`); continue; }
+    const next = html.replace(/<!-- stargazers -->[\s\S]*?<!-- \/stargazers -->/, block);
+    if (next !== html) writeFileSync(page, next);
+    console.log(`stargazers: ${p.file} ${shown.length} faces, ${n} people (${p.what})`);
+  }
 } catch (e) {
-  console.warn(`stargazers: fetch failed (${e.message}); keeping the committed list`);
+  console.warn(`stargazers: fetch failed (${e.message}); keeping the committed faces`);
 }

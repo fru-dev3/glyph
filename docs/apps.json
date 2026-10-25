@@ -9,19 +9,11 @@
   },
   {
     "icon": "dictate",
-    "path": "dictate",
-    "name": "Glyph Dictate",
-    "short": "Dictate",
-    "formerly": "Jot for Mac",
-    "status": "download"
-  },
-  {
-    "icon": "mobile",
     "path": "jot",
     "name": "Glyph Jot",
     "short": "Jot",
-    "formerly": "",
-    "status": "testing"
+    "formerly": "Glyph Dictate",
+    "status": "download"
   },
   {
     "icon": "record",

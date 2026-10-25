@@ -1,4 +1,4 @@
-// The share image (docs/og-image.png, 1200x630): the family mark, the promise and the five
+// The share image (docs/og-image.png, 1200x630): the family mark, the promise and the four
 // app icons with their short names from docs/apps.json, drawn from assets/family/. Re-run whenever the icons change.
 // Needs playwright-core and Google Chrome; point PLAYWRIGHT_CORE at a playwright-core folder
 // if node can't resolve it. Run: node scripts/og.mjs
@@ -19,12 +19,12 @@ body{margin:0;width:1200px;height:630px;display:flex;flex-direction:column;align
 background:radial-gradient(45% 40% at 12% 18%,#C9F7B5 0,transparent 70%),radial-gradient(40% 45% at 90% 12%,#CFE6FF 0,transparent 70%),radial-gradient(45% 45% at 85% 92%,#E4DCFF 0,transparent 70%),radial-gradient(40% 40% at 8% 95%,#FFE7C7 0,transparent 70%),#F7FBF5}
 .b{display:flex;align-items:center;gap:22px}.b img{width:96px;border-radius:22%;box-shadow:0 10px 24px rgba(0,100,0,.28)}
 .b b{font:800 76px/1 "Bricolage Grotesque";letter-spacing:-.03em}
-h1,h2{margin:0;font:800 60px/1 "Bricolage Grotesque";letter-spacing:-.035em}h2{color:#008000;font-size:48px;margin-top:-18px}
+h1{margin:0;font:800 84px/1 "Bricolage Grotesque";letter-spacing:-.035em}h2{margin:-14px 0 0;font:600 34px/1.2 -apple-system,sans-serif;color:#3E5446}
 .r{display:flex;gap:38px}.r div{display:flex;flex-direction:column;align-items:center;gap:10px;font-weight:700;font-size:24px;color:#3E5446}
 .r img{width:104px;border-radius:22%;box-shadow:0 10px 24px rgba(0,100,0,.25)}
 </style></head><body>
 <div class="b"><img src="${icon("glyph")}"><b>Glyph</b></div>
-<h1>${copy.headline}</h1><h2>${copy.green1} ${copy.green2}</h2>
+<h1>${copy.headline} <span style="color:#008000">${copy.green}</span></h1><h2>${copy.sub}</h2>
 <div class="r">${apps.map((a) => `<div><img src="${icon(a.icon)}">${a.short}</div>`).join("")}</div>
 </body></html>`;
 const browser = await chromium.launch({ channel: "chrome" });

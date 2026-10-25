@@ -1,14 +1,9 @@
 /* glyph.fru.dev: one bright screen per page. Shared by the family home and every app page. */
-:root{color-scheme:light dark;
+:root{color-scheme:light;
   --bg:#F7FBF5;--ink:#0B1A10;--soft:#3E5446;--dim:#5E7366;--green:#008000;--green-h:#006E00;--on-green:#fff;
   --line:rgba(11,26,16,.10);--card:rgba(255,255,255,.72);--pill:#fff;--sheet:#fff;--foot:rgba(255,255,255,.82);
   --shadow:rgba(11,26,16,.22);--strike:#A6402B;--tint:rgba(0,128,0,.10);--tint-line:rgba(0,128,0,.2);
   --b1:#C9F7B5;--b2:#CFE6FF;--b3:#E4DCFF;--b4:#FFE7C7;--head:linear-gradient(90deg,#E9F8E4,#EEF3FF)}
-@media (prefers-color-scheme:dark){:root{
-  --bg:#0B110D;--ink:#E9F3EC;--soft:#B3C6B9;--dim:#8FA496;--green:#3FA34D;--green-h:#4DB55B;--on-green:#03160A;
-  --line:rgba(255,255,255,.12);--card:rgba(255,255,255,.05);--pill:rgba(255,255,255,.07);--sheet:#121A15;--foot:rgba(11,17,13,.82);
-  --shadow:rgba(0,0,0,.55);--strike:#F2907A;--tint:rgba(63,163,77,.16);--tint-line:rgba(63,163,77,.32);
-  --b1:rgba(63,163,77,.20);--b2:rgba(70,120,210,.16);--b3:rgba(130,100,220,.14);--b4:rgba(220,150,70,.08);--head:linear-gradient(90deg,#16261A,#161D2A)}}
 *{box-sizing:border-box}
 html,body{height:100%}
 body{margin:0;color:var(--ink);font:17px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
@@ -82,17 +77,21 @@ a.ours:hover small{color:var(--green)}
 
 /* the right half: hidden on phones */
 .right{display:none;position:relative}
-.works,.proof{display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.4vh,14px)}
+.works{display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.4vh,14px)}
+/* the real people who starred it, above the pictures */
+.proof{display:flex;align-items:center;gap:12px;padding:6px 18px 6px 8px;border-radius:999px;background:var(--card);border:1px solid var(--line);box-shadow:0 8px 24px rgba(11,26,16,.07);max-width:100%}
 .works p{margin:0;font:800 clamp(17px,2.4vh,22px) "Bricolage Grotesque",sans-serif;color:var(--soft);letter-spacing:-.01em}
 .works .row{display:flex;gap:clamp(6px,.8vw,12px);flex-wrap:nowrap}
 .works .row>*{width:clamp(28px,min(4.8vh,3vw),52px);height:auto;aspect-ratio:1;flex:none;filter:drop-shadow(0 6px 10px rgba(11,26,16,.16));animation:bob 4.2s ease-in-out infinite;animation-delay:calc(var(--i) * -.35s)}
 .works .row .tile{width:clamp(28px,min(4.8vh,3vw),52px)}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-.faces{display:flex;padding-left:10px}
+.faces{display:flex;align-items:center;padding-left:10px;flex:none}
 .faces a{margin-left:-10px;display:block;border-radius:50%;box-shadow:0 0 0 3px var(--bg),0 4px 10px rgba(0,0,0,.12);transition:transform .2s}
 .faces a:hover{transform:translateY(-3px);z-index:1}
-.faces img{display:block;width:clamp(32px,4.4vh,42px);height:clamp(32px,4.4vh,42px);border-radius:50%;object-fit:cover;background:#eee}
-.proof p{margin:0;font-size:clamp(14px,1.9vh,16px);color:var(--soft);font-weight:600}
+.faces img{display:block;width:clamp(30px,4vh,40px);height:clamp(30px,4vh,40px);border-radius:50%;object-fit:cover;background:#eee}
+.faces .more{margin-left:-10px;display:grid;place-items:center;min-width:clamp(30px,4vh,40px);height:clamp(30px,4vh,40px);padding:0 6px;border-radius:999px;background:var(--tint);color:var(--green);font-size:12.5px;font-weight:800;box-shadow:0 0 0 3px var(--bg)}
+.proof p{margin:0;font-size:clamp(14px,1.9vh,16px);color:var(--soft);font-weight:600;white-space:nowrap}
+.proof .heart{width:.95em;height:.95em;margin-left:6px;vertical-align:-.12em;color:#E0465B;animation:beat 1.6s ease-in-out infinite}
 .proof p a{text-decoration:none;color:inherit}.proof p a:hover{color:var(--green)}
 .proof b{color:var(--ink);font-weight:800}
 .shot{display:block;max-width:100%;border-radius:16px;box-shadow:0 30px 60px var(--shadow)}
@@ -110,8 +109,14 @@ img.shot,video.shot{background:#0B0F0C}
   .left{display:contents}
   .top{order:1}.alt{order:3}.cta{order:4}.badges{order:5}.note{order:6}
   .alt,.cta,.badges,.note{width:min(100%,440px)}
+  body:not([data-page=home]) .right{display:contents}
+  body:not([data-page=home]) .right>:not(.proof){display:none}
+  body:not([data-page=home]) .proof{order:7}
 }
-@media (max-width:440px){.alt figcaption{display:none}.alt{gap:6px;padding:10px 10px}.paid{gap:5px}.alt figure img,.tile,.ours img{width:36px}.ours{column-gap:7px}.ours b{font-size:18px}.ours small{font-size:11.5px}.alt s{font-size:12px}.alt figcaption{font-size:11px}}
+@media (max-width:1280px){.faces a:nth-child(n+9),.faces .more{display:none}}
+@media (max-width:1180px){.proof .dv{display:none}}
+@media (max-width:520px){.faces a:nth-child(n+7),.faces .more{display:none}.proof .dv{display:none}.proof{gap:10px;padding:5px 16px 5px 6px}}
+@media (max-width:440px){.alt figcaption{display:none}.alt{gap:6px;padding:10px 10px}.paid{gap:5px}.alt figure img,.tile,.ours img{width:36px}.ours{column-gap:7px}.ours b{font-size:18px}.ours small{font-size:12px}.alt s{font-size:12px}.alt figcaption{font-size:12px}}
 @media (max-width:480px){.formac{display:none}}
 @media (max-width:400px){.star .lbl{display:none}.btn.star{padding:0 14px}.btn.go{padding:0 16px}.hide-xs{display:none}}
 @media (max-width:370px){.alt figure img,.tile,.ours img{width:32px}.paid{gap:4px}.alt{padding:9px 8px}}

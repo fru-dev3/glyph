@@ -12,7 +12,7 @@ cd "$(dirname "$0")/.."
 # The app icons, copied from assets/family/ (git-ignored copies).
 ./scripts/sync-icons.sh
 
-# The real stargazers, baked into the Glyph Code page (commit the result).
+# The real stargazers, baked into every page (commit the result).
 node scripts/fetch-stargazers.mjs || true
 
 echo "building"
@@ -33,10 +33,17 @@ vdeploy() {
 echo "deploying"
 vdeploy --prebuilt --prod
 
-for p in / /studio /dictate /jot /record /code /docs /docs.html; do
+for p in / /studio /jot /record /code /docs /docs.html; do
   CODE=$(curl -sL -o /dev/null -w '%{http_code}' "https://glyph.fru.dev$p")
   if [ "$CODE" != "200" ]; then
     echo "glyph.fru.dev$p answered $CODE, expected 200"
+    exit 1
+  fi
+done
+for p in /dictate /mobile; do
+  TO=$(curl -s -o /dev/null -w '%{redirect_url}' "https://glyph.fru.dev$p")
+  if [ "$TO" != "https://glyph.fru.dev/jot" ]; then
+    echo "glyph.fru.dev$p redirects to '$TO', expected /jot"
     exit 1
   fi
 done

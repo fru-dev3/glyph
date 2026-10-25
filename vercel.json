@@ -36,6 +36,16 @@
   ],
   "redirects": [
     {
+      "source": "/dictate",
+      "destination": "/jot",
+      "permanent": true
+    },
+    {
+      "source": "/dictate/:path*",
+      "destination": "/jot/:path*",
+      "permanent": true
+    },
+    {
       "source": "/mobile",
       "destination": "/jot",
       "permanent": true
