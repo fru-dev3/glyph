@@ -1,15 +1,15 @@
 <div align="center">
 
-<img src="assets/glyph-512.png" width="150" alt="glyph">
+<img src="assets/glyph-512.png" width="150" alt="Glyph Code">
 
-# glyph
+# Glyph Code
 
 **Every agent session, named before it starts.**
 
 `billing·acme-api·claude-code·mbp·2026-09-12·0556`
 
-[![stars](https://img.shields.io/github/stars/fru-dev3/glyph?style=flat&label=stars&color=C4A35A&labelColor=1c1712)](https://github.com/fru-dev3/glyph/stargazers)
-[![license](https://img.shields.io/badge/license-MIT-C4A35A?style=flat&labelColor=1c1712)](LICENSE)
+[![stars](https://img.shields.io/github/stars/fru-dev3/glyph?style=flat&label=stars&color=008000&labelColor=0b1a10)](https://github.com/fru-dev3/glyph/stargazers)
+[![license](https://img.shields.io/badge/license-MIT-008000?style=flat&labelColor=0b1a10)](LICENSE)
 
 [Install](#install) · [Usage](#usage) · [Fleets](#fleets) · [glyph.fru.dev](https://glyph.fru.dev)
 
@@ -202,7 +202,7 @@ glyph fleet ci  # a preset of agents, each in its own marked pane
 
 | Agent | Carries the mark as | `GLYPH_YOLO=1` sends |
 |---|:-:|---|
-| Claude Code | ✔ real session name | `--dangerously-skip-permissions` |
+| Claude Code | real session name | `--dangerously-skip-permissions` |
 | Antigravity (`agy`) | title | `--dangerously-skip-permissions` |
 | Hermes | title | `--yolo` |
 | omni | title | none |
@@ -211,7 +211,7 @@ glyph fleet ci  # a preset of agents, each in its own marked pane
 | Crush | title | `--yolo` |
 | Cortex | title | `--dangerously-allow-all-tool-calls` |
 | OpenCode | title | `--dangerously-skip-permissions`, on `opencode run` only (the TUI has no such flag) |
-| pi | ✔ real session name | none |
+| pi | real session name | none |
 
 Six agents, five spellings of *"stop asking me to approve every tool call"*.
 `GLYPH_YOLO=1` sends whichever one is right. It is off unless you ask.
