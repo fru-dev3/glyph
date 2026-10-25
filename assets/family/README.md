@@ -17,7 +17,7 @@ pose of rock art. It holds its shape down to 16 px.
 | Glyph Cast (`cast*`) | A play triangle inside a screen frame on a short stand: screen videos. Coming, not released. |
 | Glyph Code (`code*`) | A `>_` prompt with a light-green cursor: the command-line tool's old icon, kept for old links. |
 | Glyph Rig (`rig*`) | A grid of four machines, one lit in light green: the Rig that names, connects and manages every harness across your Macs (was Glyph Code). |
-| Glyph Arena (`arena*`) | A podium, the winning step in light green: Studio's lab, the best model and recipe for each task. |
+| Glyph Arena (`arena*`) | A podium with a light-green dot over the top step, the winner: Studio's lab, the best model and recipe for each task. |
 | Glyph Knowledge (`knowledge*`) | A globe with a light-green equator: what the world knows, live data from 50+ context sources (was Ibis). |
 
 ## Files

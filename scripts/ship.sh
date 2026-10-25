@@ -34,7 +34,12 @@ echo "deploying"
 vdeploy --prebuilt --prod
 
 for p in / /studio /jot /rig /knowledge /docs /docs.html; do
-  CODE=$(curl -sL -o /dev/null -w '%{http_code}' "https://glyph.fru.dev$p")
+  # a fresh deploy can answer 404 for a new path for a few seconds
+  for _ in 1 2 3 4 5 6; do
+    CODE=$(curl -sL -o /dev/null -w '%{http_code}' "https://glyph.fru.dev$p")
+    [ "$CODE" = "200" ] && break
+    sleep 5
+  done
   if [ "$CODE" != "200" ]; then
     echo "glyph.fru.dev$p answered $CODE, expected 200"
     exit 1

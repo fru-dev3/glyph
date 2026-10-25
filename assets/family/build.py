@@ -46,10 +46,9 @@ RIGHT = {
            f'<rect x="76" y="34" width="16" height="16" rx="4" stroke-width="5"/>'
            f'<rect x="52" y="58" width="16" height="16" rx="4" stroke-width="5" stroke-opacity="{SOFT}"/>'
            f'<rect x="76" y="58" width="16" height="16" rx="4" stroke-width="5" stroke-opacity="{SOFT}"/>',
-    # Arena: a podium, the winning recipe on the tall middle step in light green
-    "arena": f'<rect x="51" y="58" width="13" height="23" rx="2.5" stroke-width="5.5" stroke-opacity="{SOFT}"/>'
-             '<rect x="67" y="42" width="13" height="39" rx="2.5" fill="#b9f0b0" stroke="#b9f0b0" stroke-width="5.5"/>'
-             f'<rect x="83" y="66" width="11" height="15" rx="2.5" stroke-width="5.5" stroke-opacity="{SOFT}"/>',
+    # the lab: a podium beside the figure, the winner's step lit in light green (the Arena app's own design)
+    "arena": f'<path d="M52 87V67h13V52h16v22h13v13Z" stroke-width="6" stroke-opacity="{SOFT}"/>'
+             f'<circle cx="73" cy="38" r="6.5" fill="{ACCENT}" stroke="none"/>',
     # Knowledge: a globe, what the world knows, its equator in light green
     "knowledge": '<circle cx="72" cy="54" r="19" stroke-width="6"/>'
                  f'<path d="M72 35c-8.5 5-8.5 33 0 38M72 35c8.5 5 8.5 33 0 38" stroke-width="4.5" stroke-opacity="{SOFT}"/>'
@@ -126,7 +125,7 @@ def main():
                             "-s", "formatOptions", "100", "--out", f"{tmp}/{app}.jpg"], check=True, capture_output=True)
             subprocess.run(["sips", "-s", "format", "png", f"{tmp}/{app}.jpg",
                             "--out", f"{HERE}/{app}-ios-1024.png"], check=True, capture_output=True)
-        if app in ("studio", "dictate", "record", "cast"):
+        if app in ("studio", "dictate", "record", "cast", "arena"):
             iconset = f"{tmp}/{app}.iconset"
             os.makedirs(iconset)
             for s in (16, 32, 128, 256, 512):
