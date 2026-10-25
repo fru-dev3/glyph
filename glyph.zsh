@@ -1,4 +1,5 @@
-# glyph - one identity for every coding agent you run.
+# glyph - Glyph Rig: where your agents run. One Rig that names, connects and
+# manages every harness across your Macs. https://glyph.fru.dev/rig
 #
 #   claude billing   ->  billing·acme-api·claude-code·mbp·2026-09-12·0556
 #   agy billing      ->  same name, on the terminal and tmux window
@@ -35,7 +36,7 @@
 
 # The version belongs to this file, not the environment: an in-place reload
 # after `glyph update` must report the file it just loaded.
-typeset -g GLYPH_VERSION=0.9.0
+typeset -g GLYPH_VERSION=0.9.1
 typeset -g GLYPH_STATE=${GLYPH_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/glyph}
 # This file, so a detached `glyph wake` waiter loads the same glyph that parked it.
 typeset -g GLYPH_SELF=${${(%):-%x}:A}
@@ -833,7 +834,7 @@ _glyph_star_ask() {
   if (( gh )) && command gh api "/user/starred/$repo" --silent >/dev/null 2>&1; then
     print -r -- starred >| "$mark" 2>/dev/null; return 0
   fi
-  read -r "ans?If glyph has been useful, would you like to star it? [Y/n] " || return 0
+  read -r "ans?If Glyph Rig has been useful, would you like to star it? [Y/n] " || return 0
   case ${ans:l} in
     ''|y|yes)
       if (( gh )) && command gh api -X PUT "/user/starred/$repo" --silent >/dev/null 2>&1; then
@@ -1095,7 +1096,9 @@ glyph() {
       local conf=$(_glyph_fleet_conf)
       [[ -r $conf ]] && command grep -E "^[[:space:]]*[a-zA-Z0-9_-]+[[:space:]]*=" "$conf" \
         || print -r -- "no presets yet: write them to $conf" ;;
-    *) print -r -- "glyph ls [n]   recent sessions
+    *) print -r -- "Glyph Rig ${GLYPH_VERSION}: where your agents run. https://glyph.fru.dev/rig
+
+glyph ls [n]   recent sessions
 glyph agents   installed agents and their auto-approve flags
 glyph name [x] print the mark this directory would produce
 glyph account  the tag of the login Claude Code is signed into right now

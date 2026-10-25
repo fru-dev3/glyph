@@ -55,7 +55,7 @@ _glyph_install() {
   echo
   if [ "$_gi_sourced" = 1 ] && [ -n "${ZSH_VERSION:-}" ]; then
     . "$_gi_dest/glyph.zsh" || return 1
-    echo "glyph is loaded in this shell. try:"
+    echo "Glyph Rig is loaded in this shell (the command is glyph). try:"
     echo "  glyph version"
     echo "  GLYPH_DRYRUN=1 claude billing"
   elif [ "$_gi_sourced" = 1 ]; then

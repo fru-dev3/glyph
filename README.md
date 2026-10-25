@@ -1,17 +1,19 @@
 <div align="center">
 
-<img src="assets/glyph-512.png" width="150" alt="Glyph Code">
+<img src="assets/glyph-512.png" width="150" alt="Glyph Rig">
 
-# Glyph Code
+# Glyph Rig
 
-**Every agent session, named before it starts.**
+**Where your agents run: one Rig that names, connects and manages every harness across your Macs.**
+
+Formerly Glyph Code. Same `glyph` command, same repo: `glyph update` keeps working.
 
 `billing·acme-api·claude-code·mbp·2026-09-12·0556`
 
 [![stars](https://img.shields.io/github/stars/fru-dev3/glyph?style=flat&label=stars&color=008000&labelColor=0b1a10)](https://github.com/fru-dev3/glyph/stargazers)
 [![license](https://img.shields.io/badge/license-MIT-008000?style=flat&labelColor=0b1a10)](LICENSE)
 
-[Install](#install) · [Usage](#usage) · [Fleets](#fleets) · [glyph.fru.dev](https://glyph.fru.dev)
+[Install](#install) · [Usage](#usage) · [Fleets](#fleets) · [glyph.fru.dev/rig](https://glyph.fru.dev/rig)
 
 </div>
 
@@ -491,6 +493,20 @@ Fleet outside Herdr, or keep using separate Herdr tabs until a native Herdr Flee
 backend is added.
 
 </details>
+
+## Part of Glyph
+
+[Glyph](https://glyph.fru.dev): everything your AI agents need to work. Context compounds.
+
+| Layer | | |
+|---|---|---|
+| 1 | [Glyph Studio](https://glyph.fru.dev/studio) | The environment your agents work in: one harness that builds and runs them. |
+| 2 | [Glyph Jot](https://glyph.fru.dev/jot) | What you know: capture notes, ideas, decisions and meetings as your personal context. |
+| 3 | [Glyph Knowledge](https://glyph.fru.dev/knowledge) | What the world knows: live data and outside knowledge for your agents, from 50+ context sources. |
+| 4 | **Glyph Rig** (this repo) | Where your agents run: one Rig that names, connects and manages every harness across your Macs. |
+
+Studio builds and runs a harness; the Rig connects and manages the harnesses across machines.
+Plus two tools: Glyph Arena (Studio's lab) and Glyph Cast (screen videos, cleaned up).
 
 ## License
 
