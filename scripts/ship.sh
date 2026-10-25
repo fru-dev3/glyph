@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
-# Deploy the glyph.fru.dev site (the static files in docs/) to Vercel,
+# Deploy the glyph.fru.dev site (the static files in docs/: the Glyph family home and one page
+# per app) to Vercel,
 # team fru-dev3, project glyph-fru. No build step, no functions, no secrets.
 #
 set -euo pipefail
@@ -8,7 +9,10 @@ cd "$(dirname "$0")/.."
 
 [ -f .vercel/project.json ] || vercel link --yes --project glyph-fru
 
-# The real stargazers, baked into the page (commit the result).
+# The app icons, copied from assets/family/ (git-ignored copies).
+./scripts/sync-icons.sh
+
+# The real stargazers, baked into the Glyph Code page (commit the result).
 node scripts/fetch-stargazers.mjs || true
 
 echo "building"
@@ -29,9 +33,11 @@ vdeploy() {
 echo "deploying"
 vdeploy --prebuilt --prod
 
-CODE=$(curl -s -o /dev/null -w '%{http_code}' https://glyph.fru.dev/docs)
-if [ "$CODE" != "200" ]; then
-  echo "glyph.fru.dev/docs answered $CODE, expected 200"
-  exit 1
-fi
+for p in / /studio /dictate /mobile /record /code /docs /docs.html; do
+  CODE=$(curl -sL -o /dev/null -w '%{http_code}' "https://glyph.fru.dev$p")
+  if [ "$CODE" != "200" ]; then
+    echo "glyph.fru.dev$p answered $CODE, expected 200"
+    exit 1
+  fi
+done
 echo "live at https://glyph.fru.dev"

@@ -1,0 +1,7 @@
+[
+  {"icon": "studio",  "path": "studio",  "name": "Glyph Studio",  "short": "Studio",  "formerly": "Prevail"},
+  {"icon": "dictate", "path": "dictate", "name": "Glyph Dictate", "short": "Dictate", "formerly": "Jot"},
+  {"icon": "mobile",  "path": "mobile",  "name": "Glyph Mobile",  "short": "Mobile",  "formerly": "Jot"},
+  {"icon": "record",  "path": "record",  "name": "Glyph Record",  "short": "Record",  "formerly": "Memosa"},
+  {"icon": "code",    "path": "code",    "name": "Glyph Code",    "short": "Code",    "formerly": "Agent Rig"}
+]

@@ -3,368 +3,154 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Glyph | Agent Rig</title>
-<meta name="description" content="Glyph is a free Agent Rig: it runs and orchestrates your AI harnesses, Claude Code, Codex, Gemini and Cursor, across your Macs. Every session is named so the Rig knows where each one runs.">
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<title>Glyph | Apps by fru.dev</title>
+<meta name="description" content="Glyph is a family of five apps by fru.dev. Glyph Dictate, Glyph Mobile and Glyph Record catch what you say and think; Glyph Studio keeps it as plain files on your computer and lets any AI work on it; Glyph Code gives every coding agent one identity.">
+<link rel="icon" href="/family/glyph-tile.svg" type="image/svg+xml">
+<link rel="icon" href="/family/glyph-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/family/glyph-180.png">
 <link rel="canonical" href="https://glyph.fru.dev/">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="author" content="fru.dev">
-<meta name="color-scheme" content="light">
-<meta name="theme-color" content="#F7FBF5">
-<meta property="og:site_name" content="fru.dev">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F7FBF5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B110D" media="(prefers-color-scheme: dark)">
+<meta property="og:site_name" content="Glyph by fru.dev">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Glyph | Agent Rig">
-<meta property="og:description" content="A free Agent Rig that runs and orchestrates your AI harnesses, Claude Code, Codex, Gemini and Cursor, across your Macs.">
+<meta property="og:title" content="Glyph | Apps by fru.dev">
+<meta property="og:description" content="Five apps: say it, keep it on your computer, work on it with any AI.">
 <meta property="og:url" content="https://glyph.fru.dev/">
 <meta property="og:image" content="https://glyph.fru.dev/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Glyph | Agent Rig: the petroglyph mark in office green beside the name">
+<meta property="og:image:alt" content="The Glyph family of app icons in office green, with the line Say it. Keep it. Work on it.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@fru">
-<meta name="twitter:title" content="Glyph | Agent Rig">
-<meta name="twitter:description" content="A free Agent Rig that runs and orchestrates your AI harnesses, Claude Code, Codex, Gemini and Cursor, across your Macs.">
+<meta name="twitter:title" content="Glyph | Apps by fru.dev">
+<meta name="twitter:description" content="Five apps: say it, keep it on your computer, work on it with any AI.">
 <meta name="twitter:image" content="https://glyph.fru.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
  {"@type":"Organization","@id":"https://fru.dev/#org","name":"fru.dev","url":"https://fru.dev","logo":"https://fru.dev/icon-512.png","sameAs":["https://github.com/fru-dev3"]},
- {"@type":"WebSite","@id":"https://glyph.fru.dev/#website","name":"Glyph | Agent Rig","url":"https://glyph.fru.dev/","publisher":{"@id":"https://fru.dev/#org"}},
- {"@type":"SoftwareApplication","@id":"https://glyph.fru.dev/#app","name":"Glyph","alternateName":"Glyph | Agent Rig",
-  "applicationCategory":"DeveloperApplication","operatingSystem":"macOS, Linux, Windows (WSL)",
-  "url":"https://glyph.fru.dev/","downloadUrl":"https://github.com/fru-dev3/glyph",
-  "codeRepository":"https://github.com/fru-dev3/glyph","programmingLanguage":"Shell",
-  "image":"https://glyph.fru.dev/og-image.png",
-  "description":"An Agent Rig that runs and orchestrates your AI harnesses (Claude Code, Codex, Gemini, Cursor) across your Macs. Every session is named, with label, project, agent and machine, so the Rig knows where each one runs.",
-  "license":"https://opensource.org/licenses/MIT","isAccessibleForFree":true,
-  "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
-  "publisher":{"@id":"https://fru.dev/#org"},"author":{"@id":"https://fru.dev/#org"},
-  "keywords":"Claude Code, Codex, AGY, session naming, tmux, remote control, AI coding agents, zsh"}
+ {"@type":"WebSite","@id":"https://glyph.fru.dev/#website","name":"Glyph","url":"https://glyph.fru.dev/","publisher":{"@id":"https://fru.dev/#org"}},
+ {"@type":"ItemList","name":"The Glyph apps","itemListElement":[
+  {"@type":"ListItem","position":1,"url":"https://glyph.fru.dev/studio","name":"Glyph Studio"},
+  {"@type":"ListItem","position":2,"url":"https://glyph.fru.dev/dictate","name":"Glyph Dictate"},
+  {"@type":"ListItem","position":3,"url":"https://glyph.fru.dev/mobile","name":"Glyph Mobile"},
+  {"@type":"ListItem","position":4,"url":"https://glyph.fru.dev/record","name":"Glyph Record"},
+  {"@type":"ListItem","position":5,"url":"https://glyph.fru.dev/code","name":"Glyph Code"}]}
 ]}
 </script>
 <style>
-:root{--ink:#0B1A10;--soft:#3E5446;--dim:#5E7366;--green:#008000;--line:rgba(11,26,16,.10)}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{margin:0;color:var(--ink);font:17px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
-  background:radial-gradient(45% 40% at 12% 18%,#C9F7B5 0,transparent 70%),radial-gradient(40% 45% at 90% 12%,#CFE6FF 0,transparent 70%),
-  radial-gradient(45% 45% at 85% 92%,#E4DCFF 0,transparent 70%),radial-gradient(40% 40% at 8% 95%,#FFE7C7 0,transparent 70%),#F7FBF5}
-a{color:var(--green)}
-:focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:6px}
-main{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2.6vh,26px);
-  padding:clamp(16px,3vh,40px) 16px calc(56px + env(safe-area-inset-bottom));text-align:center}
-.left{display:flex;flex-direction:column;align-items:stretch;gap:clamp(14px,2.6vh,28px);width:min(100%,440px)}
-.top{display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.6vh,14px)}
-.brand{display:flex;align-items:center;gap:14px;text-align:left}
-.icon{width:clamp(52px,8vh,72px);height:auto;border-radius:22%;box-shadow:0 10px 24px rgba(0,60,0,.28)}
-.brand b{display:block;font:800 clamp(28px,4.4vh,40px)/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.02em}
-.brand span{display:block;color:var(--soft);font-weight:600;font-size:clamp(14px,1.9vh,17px);margin-top:4px}
-h1{font:800 clamp(34px,min(8.5vh,12.5vw),80px)/1 "Bricolage Grotesque",-apple-system,sans-serif;letter-spacing:-.035em;margin:0}
-h1 em{font-style:normal;color:var(--green);white-space:nowrap;display:block}
-.caret{display:inline-block;width:.07em;height:.8em;margin-left:.04em;background:var(--green);vertical-align:-.02em;animation:blink 1s steps(1) infinite}
-@keyframes blink{50%{opacity:0}}
-
-/* the pill: a session name, token by token */
-.pill{display:inline-flex;align-items:center;gap:10px;height:54px;padding:0 22px;border-radius:999px;background:#0B0F0C;color:#fff;
-  font:500 clamp(13px,1.9vh,17px) ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap;box-shadow:0 14px 30px rgba(0,0,0,.25)}
-.pill .dot{width:9px;height:9px;border-radius:50%;background:#3FA34D;flex:none}
-.pill .nm b{color:#B8F27C;font-weight:700}.pill .nm i{font-style:normal;color:#7E8C83}
-
-/* without and with */
-
-.cta{display:flex;gap:10px;flex-wrap:nowrap;align-items:stretch;position:relative}
-.btn{display:inline-flex;align-items:center;gap:9px;height:clamp(46px,6vh,54px);padding:0 22px;border-radius:14px;font-family:inherit;font-weight:700;font-size:17px;text-decoration:none;border:0;cursor:pointer}
-.btn svg{width:20px;height:20px}
-.btn.go{flex:1;justify-content:center;white-space:nowrap;background:var(--green);color:#fff;box-shadow:0 10px 22px rgba(0,128,0,.28)}
-.btn.go:hover{background:#006E00}
-.btn.star{position:relative;padding:0 18px;font-size:15px;gap:7px;background:#fff;color:var(--ink);border:1px solid var(--line)}
-.btn.star:hover{border-color:var(--green);color:var(--green)}
-.btn.star>svg{width:17px;height:17px;color:var(--green)}
-.btn.star .count{display:inline-flex;align-items:center;margin-left:2px;padding:4px 9px;border-radius:999px;background:rgba(0,128,0,.1);box-shadow:inset 0 0 0 1px rgba(0,128,0,.18);color:var(--green);font-size:.86em;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
-.btn.star .count[hidden]{display:none}
-.love{position:absolute;top:calc(100% + 4px);right:50%;margin-right:-9px;display:flex;flex-direction:column;align-items:flex-end;color:var(--green);pointer-events:none}
-.btn.star .love svg.arrow{width:clamp(56px,7.5vh,76px);height:auto;color:var(--green)}
-.love .say{font:700 clamp(22px,3.2vh,30px)/1 "Caveat",cursive;white-space:nowrap;display:flex;align-items:center;gap:6px;margin-top:-2px;margin-right:clamp(20px,3vh,30px);transform:rotate(-4deg)}
-.btn.star .love svg.heart{width:.8em;height:.8em;color:#E0465B;animation:beat 1.6s ease-in-out infinite}
-@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.25)}30%{transform:scale(1)}45%{transform:scale(1.15)}}
-.badges{display:flex;gap:8px 20px;flex-wrap:wrap;justify-content:flex-start;margin:0;padding:0;list-style:none;color:var(--soft);font-size:15px;font-weight:600}
-.badges li{display:flex;align-items:center;gap:7px}
-.badges svg{width:19px;height:19px;color:var(--green)}
-.note{margin:0;font-size:12px;line-height:1.45;color:var(--dim);text-align:left}
-
-.right{display:none;position:relative}
-.agents{display:none}
-.shot{width:100%;border-radius:18px;box-shadow:0 30px 60px rgba(11,26,16,.25)}
-.term{aspect-ratio:1200/620;min-height:0;container-type:inline-size;background:#121614;color:#D7E0DA;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;overflow:hidden;display:flex;flex-direction:column;text-align:left}
-.term .tb{display:flex;align-items:center;gap:.7cqw;padding:1.6cqw 2cqw;border-bottom:1px solid rgba(255,255,255,.08);font-size:1.5cqw;color:#8A968F}
-.term .tb span{width:1.1cqw;height:1.1cqw;border-radius:50%;background:#E0634D}.term .tb span+span{background:#E0B04D}.term .tb span+span+span{background:#57B85F}
-.term .tb em{font-style:normal;margin-left:1cqw}.term .tb b{margin-left:auto;font-weight:500;color:#B8F27C}
-.term .cmd{margin:1.8cqw 2cqw 0;padding:1.2cqw 1.6cqw;border-radius:1cqw;background:rgba(255,255,255,.05);font-size:1.9cqw}
-.term .cmd i{font-style:normal;color:#E07A4F;margin-right:.8cqw}.term .cmd span{color:#7E8C83;margin-left:1.4cqw}
-.term .panes{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:1.6cqw;padding:1.8cqw 2cqw 2.4cqw}
-.term .pane{border-radius:1.2cqw;background:#1A201C;padding:1.4cqw 1.5cqw;display:flex;flex-direction:column;gap:1cqw;font-size:1.7cqw;line-height:1.4;overflow:hidden}
-.term .ph{font:700 1.6cqw -apple-system,sans-serif;color:#fff;display:flex;align-items:center;gap:.7cqw}
-.term .ph::before{content:"";width:.9cqw;height:.9cqw;border-radius:50%;background:var(--c)}
-.term .pn{color:#E0A57A;padding-bottom:.6cqw;border-bottom:1px solid rgba(255,255,255,.07);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.term .pl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.term .pl i{font-style:normal;color:#7E8C83}.term g{color:#7FD08A}.term r{color:#E8857A}
-
-/* phones: one column, the pill under the headline */
-@media not ((min-width:960px) and (min-height:560px)){
-  .left{display:contents}
-  .right{display:block;order:2}
-  .right .shot{display:none}
-  .top{order:1}.alt{order:3}.cta{order:4;margin-bottom:clamp(60px,9vh,76px)}.badges{order:5}.note{order:6}
-  .alt,.cta,.badges,.note{width:min(100%,440px)}
-  .pill{height:46px;padding:0 18px}
-  .love .say{font-size:22px}.btn.star .love svg.arrow{width:54px}
+.fam{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(16px,3.2vh,40px);width:min(100%,1320px)}
+.fam .brand b{font-size:clamp(30px,5vh,48px)}
+.fam .icon{width:clamp(56px,8.5vh,88px)}
+.fam h1{text-align:center;font-size:clamp(40px,min(10vh,8vw),120px)}
+.fam h1 em{display:block}
+.lede{margin:-.4em 0 0;max-width:46ch;color:var(--soft);font-size:clamp(16px,2.2vh,21px);line-height:1.45}
+.apps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(10px,1.2vw,20px);width:100%}
+.app{height:100%;display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.4vh,14px);padding:clamp(16px,2.8vh,30px) clamp(12px,1.2vw,20px) clamp(14px,2.4vh,24px);
+  border-radius:24px;background:var(--card);border:1px solid var(--line);text-decoration:none;color:var(--ink);text-align:center;transition:transform .2s,box-shadow .2s,border-color .2s}
+.app:hover{transform:translateY(-4px);border-color:var(--tint-line);box-shadow:0 18px 40px var(--shadow)}
+.app img{width:clamp(56px,10vh,104px);height:auto;border-radius:22%;box-shadow:0 10px 24px rgba(0,100,0,.25)}
+.app b{font:800 clamp(20px,3vh,28px)/1.05 "Bricolage Grotesque",sans-serif;letter-spacing:-.02em}
+.app b small{display:block;font:600 13px -apple-system,sans-serif;letter-spacing:0;color:var(--dim);margin-bottom:3px}
+.app p{margin:0;color:var(--soft);font-size:clamp(14px,1.8vh,16px);line-height:1.4;flex:1}
+.st{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:13px;font-weight:700;white-space:nowrap;background:var(--tint);color:var(--green);box-shadow:inset 0 0 0 1px var(--tint-line)}
+.st svg{width:15px;height:15px;flex:none}
+.st.wait{background:transparent;color:var(--dim);box-shadow:inset 0 0 0 1px var(--line)}
+.stars{display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 12px;border-radius:999px;background:var(--pill);border:1px solid var(--line);color:var(--soft);font-size:15px;font-weight:600;text-decoration:none}
+.stars:hover{border-color:var(--green);color:var(--green)}
+.stars svg{width:17px;height:17px;color:var(--green)}
+.stars b{color:var(--ink)}
+/* phones and narrow windows: the apps as a list */
+@media (max-width:900px){
+  .apps{grid-template-columns:1fr;gap:8px;max-width:560px}
+  .app{flex-direction:row;text-align:left;gap:14px;padding:10px 14px;border-radius:18px}
+  .app img{width:48px}
+  .app .tx{flex:1;min-width:0}
+  .app b{font-size:19px}.app b small{display:none}
+  .app p{font-size:14px;margin-top:2px}
+  .st{padding:4px 8px}
 }
-@media (max-width:400px){.star .lbl{display:none}.btn.star{padding:0 14px}.btn.go{padding:0 16px}.pill{font-size:12px;padding:0 14px;gap:8px}}
-
-/* wide screens: two halves, both ending on the same line */
-@media (min-width:960px) and (min-height:560px){
-  main{display:grid;grid-template-columns:auto minmax(0,1fr);height:100svh;min-height:0;align-content:center;align-items:center;
-    gap:clamp(32px,5vw,96px);max-width:1680px;margin:0 auto;padding:clamp(24px,5vh,56px) clamp(32px,5vw,96px) calc(44px + clamp(24px,5vh,56px));text-align:left}
-  .left{width:clamp(400px,36vw,640px);gap:clamp(14px,3.4vh,36px)}
-  .top{align-items:flex-start}
-  .brand b{font-size:clamp(30px,5vh,48px)}.brand span{font-size:clamp(15px,2.1vh,19px)}
-  h1{font-size:clamp(64px,min(14vh,7.6vw),170px)}
-  .right{display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
-  .right .pill{order:2;margin-top:18px;z-index:2}
-  .agents{display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.4vh,14px);margin-bottom:clamp(16px,3vh,32px)}
-  .agents p{margin:0;font:800 clamp(17px,2.4vh,22px) "Bricolage Grotesque",sans-serif;color:var(--soft);letter-spacing:-.01em}
-  .agents .row{display:flex;gap:clamp(8px,1vw,14px)}
-  .ag{display:block;flex:none;width:clamp(30px,min(5vh,3.4vw),56px);height:clamp(30px,min(5vh,3.4vw),56px);animation:bob 4.2s ease-in-out infinite;animation-delay:calc(var(--i) * -.35s);filter:drop-shadow(0 6px 10px rgba(11,26,16,.16))}
-  .ag img{display:block;width:100%;height:100%;object-fit:contain}
-  .ag.svg{display:grid;place-items:center;background:#fff;border-radius:24%}
-  .ag.svg img{width:62%;height:62%}
-  .btn{height:clamp(54px,7vh,68px);font-size:clamp(17px,2.2vh,21px)}
-  .btn.star{font-size:15px}
-  .badges{font-size:clamp(15px,1.9vh,18px)}
-  .cta{margin-bottom:clamp(36px,6vh,60px)}
+@media (max-width:600px) and (max-height:960px){.lede{display:none}}
+@media (max-width:440px){.st span{display:none}.st{padding:6px}}
+@media (min-width:901px){.app .tx{display:contents}}
+@media (min-width:960px) and (min-height:560px){main.homemain{display:flex;padding:5vh clamp(32px,5vw,96px) calc(44px + 5vh);height:100svh;min-height:0}}
+/* how they fit */
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:10px;padding:22px 28px 6px}
+.srcs{display:flex;flex-direction:column;gap:8px}
+.node{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:14px;background:var(--card);border:1px solid var(--line);text-decoration:none;color:var(--ink)}
+.node img{width:34px;height:34px;border-radius:22%;flex:none}
+.node b{display:block;font-size:15px;line-height:1.2}
+.node small{display:block;font-size:12.5px;color:var(--dim);line-height:1.3}
+.node.big{flex-direction:column;text-align:center;padding:16px 12px;background:var(--tint);border-color:var(--tint-line)}
+.node.big svg{width:38px;height:38px;color:var(--green)}
+.node.hub img{width:44px;height:44px}
+.flow .arr{width:26px;height:26px;color:var(--dim)}
+.flow .side{grid-column:1/-1;display:flex;align-items:center;gap:12px;margin-top:8px;padding-top:14px;border-top:1px dashed var(--line);color:var(--soft);font-size:14.5px}
+.flow .side .node{flex:none}
+@media (max-width:620px){
+  .flow{grid-template-columns:1fr;padding:16px 18px 4px}
+  .flow .arr{transform:rotate(90deg);justify-self:center}
+  .node.big{flex-direction:row;text-align:left}
+  .flow .side{flex-direction:column;align-items:stretch}
 }
-@media (min-width:960px) and (max-width:1180px) and (min-height:560px){.cta{margin-bottom:clamp(70px,11vh,96px)}}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-
-/* features: one column of text in a sheet */
-dialog#features{outline:none;border:0;padding:0;border-radius:28px;width:min(720px,calc(100% - 24px));max-height:calc(100svh - 32px);overflow:auto;background:#fff;color:var(--ink);box-shadow:0 30px 80px rgba(11,26,16,.35)}
-dialog#features::backdrop{background:rgba(11,26,16,.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
-dialog#features[open]{animation:pop .22s cubic-bezier(.16,1,.3,1)}
-@keyframes pop{from{opacity:0;transform:translateY(12px) scale(.98)}}
-.fhead{position:sticky;top:0;z-index:1;display:flex;align-items:center;gap:12px;padding:18px 22px;background:linear-gradient(90deg,#E9F8E4,#EEF3FF);border-bottom:1px solid var(--line)}
-.fhead img{border-radius:10px}
-.fhead h2{flex:1;margin:0;font:800 clamp(22px,3vw,30px)/1.1 "Bricolage Grotesque",sans-serif;letter-spacing:-.02em}
-.fclose{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:#fff;display:grid;place-items:center;cursor:pointer;color:var(--ink)}
-.fclose svg{width:18px;height:18px}
-.flist{padding:6px 28px 24px}
-.fq{padding:16px 0;border-bottom:1px solid var(--line)}
-.fq:last-child{border-bottom:0}
-.fq h3{margin:0;font:700 18px/1.3 -apple-system,BlinkMacSystemFont,sans-serif}
-.fq p{margin:5px 0 0;color:var(--soft);font-size:16px;line-height:1.55;overflow-wrap:anywhere}
-@media (max-width:520px){.fhead{padding:12px 16px}.fhead img{width:32px;height:32px}.flist{padding:2px 18px 18px}.fq h3{font-size:17px}.fq p{font-size:15px}}
-
-footer{position:fixed;left:0;right:0;bottom:0;z-index:30;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
-footer .bar{max-width:1680px;margin:0 auto;height:44px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;color:var(--dim)}
-@media (min-width:960px) and (min-height:560px){footer .bar{padding:0 clamp(32px,5vw,96px)}}
-footer nav{display:flex;align-items:center;gap:4px}
-footer nav a{color:var(--soft);text-decoration:none;padding:6px 8px;border-radius:8px;display:inline-flex;align-items:center;gap:6px}
-footer nav a:hover{background:rgba(11,26,16,.06);color:var(--ink)}
-footer nav a.home{color:var(--ink);font-weight:600}
-footer a.feat{color:var(--green);font-weight:700}
-footer a:focus:not(:focus-visible){outline:none}
-footer .built{display:inline-flex;align-items:center;gap:6px;color:var(--soft);text-decoration:none;font-weight:600;white-space:nowrap}
-footer .built:hover{color:var(--green)}
-footer .built svg{color:var(--green)}
-@media (max-width:380px){footer .built .bw{display:none}}
-footer .built .heart-i{display:inline-block;vertical-align:-2px;margin:0 1px}
-@media (max-width:520px){footer .opt{display:none}}
-@media (max-width:380px){footer nav a{padding:6px 5px}footer .bar{gap:6px}}
-@media (prefers-reduced-motion: reduce){*{animation:none!important}}
-/* the strip: the harnesses, then the Rig */
-.alt{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:22px;padding:12px 16px}
-.hs{display:flex;gap:clamp(6px,.8vw,10px)}
-.h{margin:0;display:flex;flex-direction:column;align-items:center;gap:5px}
-.tile{display:grid;place-items:center;width:clamp(40px,5.6vh,50px);aspect-ratio:1;border-radius:24%;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.10),inset 0 0 0 1px rgba(11,26,16,.06)}
-.tile img{width:66%;height:66%;object-fit:contain}
-.h figcaption{font-size:12.5px;font-weight:600;color:var(--soft);white-space:nowrap}
-.to{width:20px;height:20px;color:var(--dim);flex:none}
-.with{display:grid;grid-template-columns:auto auto;column-gap:10px;align-items:center;text-align:left}
-.with img{grid-row:1/3;width:clamp(40px,5.6vh,50px);height:auto;border-radius:24%;box-shadow:0 6px 14px rgba(0,128,0,.3)}
-.with b{font:800 clamp(18px,2.6vh,22px)/1.1 "Bricolage Grotesque",sans-serif;color:var(--green);white-space:nowrap}
-.with small{font-size:13px;font-weight:600;color:var(--soft);white-space:nowrap}
-@media (max-width:440px){.h4{display:none}.alt{gap:6px;padding:10px 10px}.hs{gap:5px}.tile,.with img{width:36px}.with{column-gap:7px}.with b{font-size:17px}.with small{font-size:11.5px}.to{width:16px}}
-@media (max-width:400px){.h figcaption{display:none}}
-@media (max-width:380px){.tile,.with img{width:32px}.hs{gap:4px}.with b{font-size:16px}.with small{font-size:11px}.alt{padding:9px 8px}}
-/* wide screens fill the height: the left column runs from just under the top to just above
-   the footer (bands of 5vh), its pieces spread evenly; the right group centres against it */
-@media (min-width:960px) and (min-height:560px){
-  main{grid-template-rows:minmax(0,1fr);align-items:stretch;padding-top:5vh;padding-bottom:calc(44px + 5vh)}
-  .left{justify-content:space-between;gap:clamp(10px,2vh,24px)}
-  .right{align-self:center}
-  .cta{margin-bottom:clamp(56px,8vh,90px)}
-}
-@media (min-width:960px) and (min-height:560px){.term{aspect-ratio:auto}}
-/* social proof: the real stargazers, baked by scripts/fetch-stargazers.mjs */
-.proof{display:none}
-@media (min-width:960px) and (min-height:560px){.proof{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:clamp(14px,2.6vh,28px)}}
-.faces{display:flex;padding-left:10px}
-.faces a{margin-left:-10px;display:block;border-radius:50%;box-shadow:0 0 0 3px #fff,0 4px 10px rgba(0,0,0,.12);transition:transform .2s}
-.faces a:hover{transform:translateY(-3px);z-index:1}
-.faces img{display:block;width:clamp(32px,4.4vh,42px);height:clamp(32px,4.4vh,42px);border-radius:50%;object-fit:cover;background:#eee}
-.proof p{margin:0;font-size:clamp(14px,1.9vh,16px);color:var(--soft);font-weight:600}
-.proof p a{text-decoration:none;color:inherit}
-.proof p a:hover{color:var(--green)}
-.proof b{color:var(--ink);font-weight:800}
 </style>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-1TQYNT93J1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-1TQYNT93J1');
-</script>
 </head>
-<body>
-<main>
-  <div class="left">
-  <div class="top">
-    <div class="brand"><img class="icon" src="icon-512.png" width="72" height="72" alt=""><div><b>Glyph</b><span>Free Agent Rig for your AI harnesses</span></div></div>
-    <h1>Agent Rig. <em><span id="said">Find any one.</span><i class="caret" aria-hidden="true"></i></em></h1>
-  </div>
-  <div class="alt" aria-label="Claude, Codex, Gemini and Cursor, all in one Rig: Glyph">
-    <div class="hs"><figure class="h"><span class="tile"><img src="agents/claude.png" width="40" height="40" alt=""></span><figcaption>Claude</figcaption></figure><figure class="h"><span class="tile"><img src="agents/codex.png" width="40" height="40" alt=""></span><figcaption>Codex</figcaption></figure><figure class="h"><span class="tile"><img src="agents/gemini.svg" width="40" height="40" alt=""></span><figcaption>Gemini</figcaption></figure><figure class="h h4"><span class="tile"><img src="agents/cursor.png" width="40" height="40" alt=""></span><figcaption>Cursor</figcaption></figure></div>
-    <svg class="to" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6l6 6-6 6"/></svg>
-    <div class="with"><img src="icon-192.png" width="48" height="48" alt=""><b>One Rig</b><small>every harness, one place</small></div>
-  </div>
-  <div class="cta">
-    <button class="btn go" id="install" type="button" data-cmd="git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; source ./install.sh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg><span id="install-l">Copy install command</span></button>
-    <a class="btn star" href="https://github.com/fru-dev3/glyph" title="Star Glyph on GitHub" aria-label="Star Glyph on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg><span class="lbl">Star</span><span class="count" id="stars" hidden></span><span class="love" aria-hidden="true"><svg class="arrow" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M52 6C51 28 32 44 8 54"/><path d="M44 14l8-10 7 10"/></svg><span class="say">show some love<svg class="heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></span></span></a>
-  </div>
-  <ul class="badges">
-    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>Free</li>
-    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>Open source</li>
-  </ul>
-  <p class="note">Agent names and logos belong to their owners. Glyph is not affiliated with them.</p>
-  </div>
-  <div class="right">
-    <!-- stargazers -->
-    <div class="proof"><div class="faces"><a href="https://github.com/Nessjk" target="_blank" rel="noreferrer" title="Nessjk"><img src="stargazers/Nessjk.png" width="40" height="40" alt="Nessjk" loading="lazy"></a><a href="https://github.com/TLCSglobal" target="_blank" rel="noreferrer" title="TLCSglobal"><img src="stargazers/TLCSglobal.png" width="40" height="40" alt="TLCSglobal" loading="lazy"></a><a href="https://github.com/Albricengwa" target="_blank" rel="noreferrer" title="Albricengwa"><img src="stargazers/Albricengwa.png" width="40" height="40" alt="Albricengwa" loading="lazy"></a><a href="https://github.com/kovtunos" target="_blank" rel="noreferrer" title="kovtunos"><img src="stargazers/kovtunos.png" width="40" height="40" alt="kovtunos" loading="lazy"></a></div><p><a href="https://github.com/fru-dev3/glyph" target="_blank" rel="noreferrer">Starred by <b id="sgn">4</b> developers</a></p></div>
-    <!-- /stargazers -->
-
-    
-    <div class="pill" aria-label="A session name, built token by token"><span class="dot"></span><span class="nm" id="nm">billing·acme-api·claude-code·laptop</span></div>
-    <div class="shot term" role="img" aria-label="glyph fleet review: three named panes, Claude Code fixing a retry, Codex reviewing it, AGY writing the docs"><div class="tb"><span></span><span></span><span></span><em>herdr · glyph fleet review</em><b>3 panes</b></div><div class="cmd"><i>$</i> glyph fleet review <span>→ three named panes</span></div><div class="panes"><div class="pane"><div class="ph" style="--c:#E07A4F">Claude Code</div><div class="pn">fix·acme-api·claude-code</div><div class="pl"><i>●</i> Read checkout/retry.ts</div><div class="pl"><i>●</i> Edit retry.ts <g>+12</g> <r>−4</r></div><div class="pl"><i>●</i> Bash npm test</div><div class="pl"><g>✓ 48 passed</g></div><div class="pl"><i>●</i> Bash git diff --stat</div><div class="pl">1 file, <g>+12</g> <r>−4</r></div><div class="pl"><i>›</i> Ready for review</div><div class="pl"><i>●</i> Bash git commit</div><div class="pl"><g>✓ committed 3f2a9c1</g></div><div class="pl"><i>●</i> Bash gh pr create</div><div class="pl"><g>✓ PR #214 opened</g></div><div class="pl"><i>›</i> waiting on review</div></div><div class="pane"><div class="ph" style="--c:#7EA6F0">Codex</div><div class="pn">review·acme-api·codex</div><div class="pl"><i>›</i> review the retry diff</div><div class="pl"><i>•</i> backoff caps at 30 s</div><div class="pl"><i>•</i> no test for a 429</div><div class="pl"><i>•</i> add jitter to the delay</div><div class="pl"><i>•</i> log the final failure</div><div class="pl"><i>•</i> rest looks right</div><div class="pl"><g>✓ 4 notes left</g></div><div class="pl"><i>›</i> re-review PR #214</div><div class="pl"><i>•</i> jitter added, good</div><div class="pl"><i>•</i> 429 test passes</div><div class="pl"><g>✓ approved</g></div><div class="pl"><i>›</i> idle</div></div><div class="pane"><div class="ph" style="--c:#9A8CFF">AGY</div><div class="pn">docs·website·agy</div><div class="pl"><i>›</i> document the retry policy</div><div class="pl"><i>•</i> wrote docs/retry.md</div><div class="pl"><i>•</i> added an example</div><div class="pl"><i>•</i> linked it from the guide</div><div class="pl"><i>•</i> checked every link</div><div class="pl"><i>•</i> spelling clean</div><div class="pl"><g>✓ done in 1m 12s</g></div><div class="pl"><i>›</i> add a changelog line</div><div class="pl"><i>•</i> CHANGELOG.md updated</div><div class="pl"><i>•</i> version noted</div><div class="pl"><g>✓ done in 24s</g></div><div class="pl"><i>›</i> idle</div></div></div></div>
+<body data-page="home">
+<main class="homemain">
+  <div class="fam home-wrap">
+    <a class="brand" href="/"><img class="icon" src="/family/glyph-tile.svg" width="80" height="80" alt=""><div><b>Glyph</b><span>Five apps by fru.dev</span></div></a>
+    <h1 data-lines='["Work on it.","On your Mac.","With any AI."]' data-fit=".apps">Say it. Keep it. <em><span id="said">Work on it.</span><i class="caret" aria-hidden="true"></i></em></h1>
+    <p class="lede">Catch what you say and think, keep it as plain files on your own computer, and let any AI work on it.</p>
+    <ul class="apps">
+      <li><a class="app" href="/studio"><img src="/family/studio-tile.svg" width="96" height="96" alt=""><span class="tx"><b><small>Glyph</small>Studio</b><p>A private AI harness for your life, on any model.</p></span><span class="st" title="Download for Mac or Windows"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac, Windows</span></span></a></li>
+      <li><a class="app" href="/dictate"><img src="/family/dictate-tile.svg" width="96" height="96" alt=""><span class="tx"><b><small>Glyph</small>Dictate</b><p>Hold Fn and talk. It types in any app on your Mac.</p></span><span class="st" title="Download for Mac"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac</span></span></a></li>
+      <li><a class="app" href="/mobile"><img src="/family/mobile-tile.svg" width="96" height="96" alt=""><span class="tx"><b><small>Glyph</small>Mobile</b><p>Voice memos and a keyboard that types what you say, on iPhone.</p></span><span class="st wait" title="In testing, not on the App Store yet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6L4.5 18.5A1.7 1.7 0 006 21h12a1.7 1.7 0 001.5-2.5L14 9V3"/><path d="M7 15h10"/></svg><span>In testing</span></span></a></li>
+      <li><a class="app" href="/record"><img src="/family/record-tile.svg" width="96" height="96" alt=""><span class="tx"><b><small>Glyph</small>Record</b><p>Meetings and calls, filed by who was there.</p></span><span class="st wait" title="Being rebuilt, coming soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Coming soon</span></span></a></li>
+      <li><a class="app" href="/code"><img src="/family/code-tile.svg" width="96" height="96" alt=""><span class="tx"><b><small>Glyph</small>Code</b><p>One identity for every coding agent you run.</p></span><span class="st" title="A command-line tool for zsh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l6-6-6-6M12 19h8"/></svg><span>CLI</span></span></a></li>
+    </ul>
+    <a class="stars" href="https://github.com/fru-dev3" data-track="star_on_github" data-stars="fru-dev3/glyph-studio,fru-dev3/glyph-dictate,fru-dev3/glyph" data-floor="44" title="Stars across the Glyph repositories on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg><span><b class="n">44</b> stars on GitHub</span></a>
   </div>
 </main>
 
-<dialog id="features" aria-labelledby="feat-h">
-  <div class="fhead"><img src="icon-192.png" width="40" height="40" alt=""><h2 id="feat-h">Everything Glyph does</h2><button type="button" class="fclose" aria-label="Close">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<dialog class="sheet" id="features" aria-labelledby="feat-h">
+  <div class="fhead"><img src="/family/glyph-tile.svg" width="40" height="40" alt=""><h2 id="feat-h">How they fit</h2><button type="button" class="fclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="flow" role="img" aria-label="Glyph Dictate, Glyph Mobile and Glyph Record feed one vault of plain files; Glyph Studio works on it with any AI. Glyph Code works beside them, for coding agents.">
+    <div class="srcs">
+      <a class="node" href="/dictate"><img src="/family/dictate-tile.svg" alt=""><span><b>Dictate</b><small>what you say on the Mac</small></span></a>
+      <a class="node" href="/mobile"><img src="/family/mobile-tile.svg" alt=""><span><b>Mobile</b><small>memos on your iPhone</small></span></a>
+      <a class="node" href="/record"><img src="/family/record-tile.svg" alt=""><span><b>Record</b><small>meetings and calls</small></span></a>
+    </div>
+    <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6l6 6-6 6"/></svg>
+    <div class="node big"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><span><b>One vault</b><small>plain files on your computer</small></span></div>
+    <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6l6 6-6 6"/></svg>
+    <a class="node hub" href="/studio"><img src="/family/studio-tile.svg" alt=""><span><b>Studio</b><small>any AI works on it</small></span></a>
+    <div class="side"><a class="node" href="/code"><img src="/family/code-tile.svg" alt=""><span><b>Code</b><small>for coding agents</small></span></a><span>Beside them: Glyph Code names every coding agent you run, so you can find each one and run them together.</span></div>
+  </div>
   <div class="flist">
-    <div class="fq"><h3>Agent Rig</h3><p>A harness, like Claude Code, Codex, Gemini or Cursor, runs AI models. A Rig runs your harnesses: it finds every session across your Macs, launches them and runs them together.</p></div>
-    <div class="fq"><h3>Fleets</h3><p>One preset opens several harnesses at once, each in its own pane: glyph fleet review puts two vendors on the same diff. Slots can run on another machine over SSH.</p></div>
-    <div class="fq"><h3>Every session named</h3><p>So the Rig knows which is which and where it runs. Keep typing claude, codex or agy. One bare word is your label; Glyph builds the session name and hands it to the agent before the first token. Anything with a space is still your prompt.</p></div>
-    <div class="fq"><h3>Six tokens</h3><p>Label, project, agent, machine, date and time, lowercase and joined by a dot: billing·acme-api·claude-code·laptop·0556.</p></div>
-    <div class="fq"><h3>Every agent</h3><p>Claude Code, Codex, AGY, Cursor, Crush, Cortex, OpenCode and pi, and any other CLI you add in one line.</p></div>
-    <div class="fq"><h3>Every machine</h3><p>The machine is part of the name, so a pane on your laptop never reads the same as one running over SSH.</p></div>
-    <div class="fq"><h3>On your phone</h3><p>Claude sessions carry the name through Remote Control, so the list on claude.ai/code and the app reads the same as your terminal.</p></div>
-    <div class="fq"><h3>Usage and wake</h3><p>glyph usage shows quota and token counts across agents. glyph wake continues Claude sessions a usage limit stopped, when the limit resets.</p></div>
-    <div class="fq"><h3>Spaces</h3><p>Write down once which workspaces and tabs a machine opens and which agent runs in each; glyph spaces rebuilds them in Herdr after a restart.</p></div>
-    <div class="fq"><h3>Works where you work</h3><p>zsh, with tmux, Herdr, Zellij, WezTerm or a bare shell. There is a Herdr plugin too.</p></div>
-    <div class="fq"><h3>Install and update</h3><p>git clone https://github.com/fru-dev3/glyph.git && cd glyph && source ./install.sh. One file into ~/.config/glyph, one line into ~/.zshrc. glyph update fetches the latest.</p></div>
-    <div class="fq"><h3>Nothing phoned home</h3><p>Glyph makes no network requests except glyph update, glyph usage --live and the GitHub star you agree to. MIT licensed.</p></div>
+    <div class="fq"><h3>Catch it</h3><p>Glyph Dictate types what you say on the Mac and can keep a thought as a note. Glyph Mobile keeps voice memos with their transcripts on your iPhone. Glyph Record will keep your meetings and calls, filed by who was there.</p></div>
+    <div class="fq"><h3>Keep it</h3><p>Everything lands as plain files you can open, back up and move: Markdown, text and audio. No account, and the speech runs on your own devices.</p></div>
+    <div class="fq"><h3>Work on it</h3><p>Glyph Studio reads that vault, area by area: health, money, work, home. Ask one model, or a council of several, and pick a different model for each area.</p></div>
+    <div class="fq"><h3>Glyph Code</h3><p>Glyph Code is for people who run coding agents: Claude Code, Codex, Gemini and Cursor sessions each get one name, so you always know which is which.</p></div>
+    <div class="fq"><h3>Why Glyph</h3><p>Glyph is short for petroglyph. Every icon in the family carries the same figure, with one sign beside it for what that app does.</p></div>
   </div>
 </dialog>
 
 <footer>
   <div class="bar">
     <nav aria-label="Footer">
-      <a class="home" href="https://fru.dev"><img src="fru-dev.png" width="16" height="16" alt="" style="border-radius:4px;display:block">fru.dev</a>
-      <a class="feat" href="#features">Features</a>
-      <a href="/docs">Docs</a>
-      <a class="opt" href="https://github.com/fru-dev3/glyph/issues" title="Contact: open an issue">Contact</a>
+      <a class="home" href="https://fru.dev"><img src="/fru-dev.png" width="16" height="16" alt="">fru.dev</a>
+      <a class="feat" href="#features"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 6h3l4 6h3M7 18h3l4-6"/></svg>How they fit</a>
+      <a class="opt" href="https://github.com/fru-dev3" title="fru.dev on GitHub">GitHub</a>
     </nav>
     <a class="built" href="https://github.com/fru-dev3/glyph"><span><span class="bw">Built with </span><svg class="heart-i" width="14" height="14" viewBox="0 0 24 24" fill="#E0465B" aria-label="love"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg> + AI<span class="opt"> · easy to make your own on GitHub</span></span></a>
   </div>
 </footer>
-
-<script>
-const still=matchMedia("(prefers-reduced-motion: reduce)").matches;
-const wait=ms=>new Promise(r=>setTimeout(r,still?0:ms));
-// The headline types itself; the pill builds a session name token by token.
-const said=document.getElementById("said"), nm=document.getElementById("nm");
-const lines=["Find any one.","Run as one.","It's free."];
-const names=[["billing","acme-api","claude-code","laptop"],["audit","payments","codex","studio"],["migration","acme-api","agy","mini"]];
-async function loop(){
-  for(let n=0;;n=(n+1)%lines.length){
-    const line=lines[n], toks=names[n%names.length];
-    said.textContent=""; nm.innerHTML="";
-    for(let k=1;k<=line.length;k++){
-      said.textContent=line.slice(0,k);
-      const shown=Math.min(toks.length,Math.ceil(k/line.length*toks.length));
-      nm.innerHTML=toks.slice(0,shown).map((t,i)=>i?'<i>·</i>'+t:'<b>'+t+'</b>').join("");
-      await wait(line[k-1]===" "?40:70);
-    }
-    await wait(2200);
-    for(let k=line.length;k>=0;k--){said.textContent=line.slice(0,k);await wait(28)}
-    await wait(250);
-  }
-}
-// The headline never runs past the column: measure its widest line (every typed one too)
-// at the CSS size and scale down only when it doesn't fit.
-const h1=document.querySelector("h1"), col=document.querySelector(".cta");
-function fitH1(){
-  h1.style.fontSize="";
-  const keep=said.textContent, rng=document.createRange();
-  const over=()=>{ // how far the widest line (every typed one, caret and all) runs past the column
-    let widest=0;
-    for(const t of lines){said.textContent=t;rng.selectNodeContents(h1);for(const r of rng.getClientRects())widest=Math.max(widest,r.right)}
-    return widest-col.getBoundingClientRect().right;
-  };
-  // The face changes shape with size (optical size), so shrinking isn't linear: refine a few times.
-  for(let k=0,o=over();k<6&&o>0;k++,o=over()){
-    const size=parseFloat(getComputedStyle(h1).fontSize), room=col.getBoundingClientRect().right-h1.getBoundingClientRect().left;
-    h1.style.fontSize=(size*room/(room+o)*.985).toFixed(2)+"px";
-  }
-  said.textContent=keep;
-}
-// The right group (label, logos, screenshot, pill) is as tall as the left column allows and
-// centred against it: the screenshot takes whatever height the rest leaves.
-const left=document.querySelector(".left"), right=document.querySelector(".right"), shot=document.querySelector(".right .shot");
-function fitRight(){
-  if(getComputedStyle(shot).display==="none")return;
-  shot.style.width="";shot.style.height="";
-  const other=right.getBoundingClientRect().height-shot.getBoundingClientRect().height;
-  const h=Math.max(120,left.getBoundingClientRect().height-other), w=right.getBoundingClientRect().width;
-  shot.style.width=w+"px"; shot.style.height=Math.min(h,w*.78)+"px";
-}
-function fitAll(){fitH1();fitRight()}
-fitAll(); addEventListener("resize",fitAll); addEventListener("load",fitAll);
-document.fonts.ready.then(fitAll); document.fonts.addEventListener("loadingdone",fitAll);
-
-if(!still)loop();
-// Copy the install command.
-const ib=document.getElementById("install"), il=document.getElementById("install-l");
-ib.addEventListener("click",()=>{navigator.clipboard.writeText(ib.dataset.cmd).then(()=>{il.textContent="Copied. Paste it in a terminal";setTimeout(()=>il.textContent="Copy install command",2200)});try{gtag("event","copy_install")}catch{}});
-// Features: the footer link (or #features) opens the sheet.
-const feat=document.getElementById("features");
-const openFeat=()=>{if(!feat.open){feat.showModal();try{gtag("event","features_open")}catch{}}};
-document.querySelectorAll('a[href="#features"]').forEach(a=>a.addEventListener("click",e=>{e.preventDefault();openFeat();history.replaceState(null,"","#features")}));
-feat.addEventListener("click",e=>{if(e.target===feat||e.target.closest(".fclose"))feat.close()});
-feat.addEventListener("close",()=>{document.activeElement?.blur();if(location.hash==="#features")history.replaceState(null,"",location.pathname)});
-if(location.hash==="#features")openFeat();
-addEventListener("hashchange",()=>{if(location.hash==="#features")openFeat()});
-// Star count: shields.io first (cached, no per-visitor GitHub limit), GitHub's API as fallback.
-function showStars(n){if(n>0){const s=document.getElementById("stars");s.textContent=n.toLocaleString();s.hidden=false}}
-fetch("https://img.shields.io/github/stars/fru-dev3/glyph.json").then(r=>r.ok?r.json():Promise.reject())
-  .then(d=>{const n=parseInt(d.value,10);if(!(n>=0))throw 0;showStars(n)})
-  .catch(()=>fetch("https://api.github.com/repos/fru-dev3/glyph").then(r=>r.ok?r.json():null).then(d=>d&&showStars(d.stargazers_count)).catch(()=>{}));
-</script>
+<script src="/site.js"></script>
 </body>
 </html>

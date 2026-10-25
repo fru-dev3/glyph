@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Glyph Record | Meeting memory for Mac, coming soon</title>
+<meta name="description" content="Glyph Record records meetings, calls and conversations in the room on your Mac, and files them by people, companies and tags with a summary and action items. Apple's speech and on-device models; nothing leaves the Mac. Being rebuilt now, coming soon. Formerly Memosa.">
+<link rel="icon" href="/family/record-tile.svg" type="image/svg+xml">
+<link rel="icon" href="/family/record-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/family/record-180.png">
+<link rel="canonical" href="https://glyph.fru.dev/record">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="author" content="fru.dev">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F7FBF5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B110D" media="(prefers-color-scheme: dark)">
+<meta property="og:site_name" content="Glyph by fru.dev">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Glyph Record | Meeting memory for Mac, coming soon">
+<meta property="og:description" content="Records calls and conversations on your Mac, files them by people, companies and tags. Nothing leaves the Mac. Coming soon.">
+<meta property="og:url" content="https://glyph.fru.dev/record">
+<meta property="og:image" content="https://glyph.fru.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Glyph family of app icons in office green, with the line Say it. Keep it. Work on it.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@fru">
+<meta name="twitter:image" content="https://glyph.fru.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<style>
+/* a drawing of a filed conversation (not a screenshot: the app is being rebuilt) */
+.memo{container-type:inline-size;width:min(100%,76vh);display:flex;flex-direction:column;gap:2.2cqw;padding:3.6cqw 4.2cqw;border-radius:18px;background:var(--sheet);border:1px solid var(--line);box-shadow:0 30px 60px var(--shadow);text-align:left;overflow:hidden}
+.memo .rec{display:flex;align-items:center;gap:1.6cqw;font:600 max(12px,2.6cqw) -apple-system,sans-serif;color:var(--dim)}
+.memo .rec i{width:2cqw;height:2cqw;border-radius:50%;background:#E0465B;box-shadow:0 0 0 .8cqw rgba(224,70,91,.18);animation:rec 1.6s ease-in-out infinite}
+@keyframes rec{50%{opacity:.35}}
+.memo .rec .wave{display:flex;align-items:center;gap:.6cqw;margin-left:auto}
+.memo .rec .wave b{display:block;width:.7cqw;border-radius:1cqw;background:var(--green);animation:wv 1.1s ease-in-out infinite;animation-delay:calc(var(--k) * -.13s)}
+@keyframes wv{0%,100%{height:1cqw}50%{height:3.6cqw}}
+.memo h2{margin:0;font:800 max(12px,5.4cqw)/1.1 "Bricolage Grotesque",sans-serif;letter-spacing:-.02em}
+.memo .meta{font:500 max(12px,2.5cqw) -apple-system,sans-serif;color:var(--dim);margin-top:-1.4cqw}
+.memo .chips{display:flex;flex-wrap:wrap;gap:1.4cqw}
+.memo .chip{display:inline-flex;align-items:center;gap:1.2cqw;padding:.9cqw 2cqw .9cqw 1cqw;border-radius:99px;background:var(--tint);color:var(--ink);font:600 max(12px,2.6cqw) -apple-system,sans-serif}
+.memo .chip u{text-decoration:none;display:grid;place-items:center;width:max(20px,3.8cqw);height:max(20px,3.8cqw);border-radius:50%;background:var(--green);color:var(--on-green);font-size:max(11.5px,1.8cqw);font-weight:800}
+.memo .chip.co u{border-radius:1cqw;background:#5B6CF0;color:#fff}
+.memo .chip.tag{padding-left:2cqw;color:var(--green)}
+.memo h3{margin:0;font:700 max(12px,2.4cqw) -apple-system,sans-serif;color:var(--dim)}
+.memo p{margin:-1cqw 0 0;font:400 max(12px,2.9cqw)/1.5 -apple-system,sans-serif;color:var(--soft)}
+.memo ul{margin:-1cqw 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:1.4cqw}
+.memo li{display:flex;align-items:center;gap:1.8cqw;font:500 max(12px,2.8cqw) -apple-system,sans-serif;color:var(--ink)}
+.memo li s{text-decoration:none;flex:none;width:3.2cqw;height:3.2cqw;border-radius:.9cqw;box-shadow:inset 0 0 0 .35cqw var(--green)}
+.memo .local{margin-top:auto;display:flex;align-items:center;gap:1.4cqw;padding-top:2.4cqw;border-top:1px solid var(--line);font:600 max(12px,2.5cqw) -apple-system,sans-serif;color:var(--green)}
+.memo .local svg{width:3cqw;height:3cqw}
+.works .row .mic{display:grid;place-items:center;border-radius:22%;background:#fff}
+.works .row .mic svg{width:58%;height:58%;color:#E0465B}
+</style>
+</head>
+<body data-page="record">
+<main>
+  <div class="left">
+    <div class="top">
+      <a class="brand" href="/record"><img class="icon" src="/family/record-tile.svg" width="72" height="72" alt=""><div><b>Glyph Record</b><span>Meeting memory for Mac <i>formerly Memosa</i></span></div></a>
+      <h1 data-lines='["It remembers.","It files it.","It stays here."]'>Hit record. <em><span id="said">It remembers.</span><i class="caret" aria-hidden="true"></i></em></h1>
+    </div>
+    <div class="alt" aria-label="Instead of Otter at 16.99 dollars a month, Fireflies at 18, Granola at 14 or Fathom at 20, Glyph Record, coming soon">
+      <div class="paid">
+        <figure><img src="/logos/otter.webp" width="48" height="48" alt="Otter" title="Otter"><s>$16.99</s></figure>
+        <figure><img src="/logos/fireflies.webp" width="48" height="48" alt="Fireflies" title="Fireflies"><s>$18</s></figure>
+        <figure><img src="/logos/granola.webp" width="48" height="48" alt="Granola" title="Granola"><s>$14</s></figure>
+        <figure class="hide-xs"><img src="/logos/fathom.webp" width="48" height="48" alt="Fathom" title="Fathom"><s>$20</s></figure>
+      </div>
+      <span class="or">or</span>
+      <span class="ours"><img src="/family/record-tile.svg" width="48" height="48" alt=""><b>Free</b><small>coming soon</small></span>
+    </div>
+    <div class="cta">
+      <div class="btn state" role="status"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Coming soon</span></div>
+    </div>
+    <ul class="badges">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>Nothing leaves the Mac</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 013 3v6a3 3 0 01-6 0V5a3 3 0 013-3z"/><path d="M19 11a7 7 0 01-14 0M12 18v4"/></svg>No meeting bot</li>
+    </ul>
+    <p class="note">Glyph Record is being rebuilt and is not available yet. Logos and names belong to their owners; monthly prices from their sites, October 2026. Not affiliated with them.</p>
+  </div>
+  <div class="right">
+    <div class="works"><p>Every call, and the room you're in</p><div class="row"><img src="/apps/zoom.svg" width="52" height="52" alt="Zoom" title="Zoom" style="--i:0"><img src="/apps/meet.svg" width="52" height="52" alt="Google Meet" title="Google Meet" style="--i:1"><img src="/apps/facetime.webp" width="52" height="52" alt="FaceTime" title="FaceTime" style="--i:2"><img src="/apps/slack.webp" width="52" height="52" alt="Slack" title="Slack" style="--i:3"><img src="/apps/discord.svg" width="52" height="52" alt="Discord" title="Discord" style="--i:4"><span class="mic" title="In person, through the mic" style="--i:5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-label="In person"><path d="M12 2a3 3 0 013 3v6a3 3 0 01-6 0V5a3 3 0 013-3z"/><path d="M19 11a7 7 0 01-14 0M12 18v4"/></svg></span></div></div>
+    <div class="memo" role="img" aria-label="A drawing of a filed conversation: a pricing call with two people from one company, two tags, a summary and two action items">
+      <div class="rec"><i></i>Recording · 24:13<span class="wave"><b style="--k:0"></b><b style="--k:1"></b><b style="--k:2"></b><b style="--k:3"></b><b style="--k:4"></b><b style="--k:5"></b><b style="--k:6"></b></span></div>
+      <h2>Pricing call with Northwind</h2>
+      <div class="meta">Today, 10:30 · Zoom · 24 min</div>
+      <div class="chips"><span class="chip"><u>SL</u>Sam Lee</span><span class="chip"><u>PS</u>Priya Shah</span><span class="chip co"><u>N</u>Northwind</span><span class="chip tag">#pricing</span><span class="chip tag">#q4</span></div>
+      <h3>Summary</h3>
+      <p>Northwind will sign for the team plan if the onboarding fee is waived. Sam needs the revised quote before their Thursday budget review.</p>
+      <h3>Action items</h3>
+      <ul><li><s></s>Send Sam the revised quote by Thursday</li><li><s></s>Share the onboarding plan with Priya</li></ul>
+      <div class="local"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>Transcribed and summarized on this Mac</div>
+    </div>
+  </div>
+</main>
+
+<dialog class="sheet" id="features" aria-labelledby="feat-h">
+  <div class="fhead"><img src="/family/record-tile.svg" width="40" height="40" alt=""><h2 id="feat-h">What Glyph Record will do</h2><button type="button" class="fclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="flist">
+    <div class="fq"><h3>Any call, no bot</h3><p>Zoom, Google Meet, FaceTime, Slack or Discord, or a conversation in the room through the mic. Nothing joins your call.</p></div>
+    <div class="fq"><h3>Filed for you</h3><p>Each conversation is filed by the people in it, their companies and your #tags, so you find it by who, not by date.</p></div>
+    <div class="fq"><h3>Summary and action items</h3><p>A short summary and the action items, written when the call ends.</p></div>
+    <div class="fq"><h3>On the Mac, start to finish</h3><p>Apple's speech recognition writes the transcript and Apple's on-device model writes the summary. Nothing leaves the Mac.</p></div>
+    <div class="fq"><h3>Plain files</h3><p>Audio, transcript and notes stay as files in a folder you choose, ready for Glyph Studio or any AI you use.</p></div>
+    <div class="fq"><h3>Status</h3><p>Being rebuilt now. There is no download yet; this page will have one when it ships.</p></div>
+  </div>
+</dialog>
+
+<footer>
+  <div class="bar">
+    <nav aria-label="Footer">
+      <a class="home" href="/"><img src="/family/glyph-tile.svg" width="16" height="16" alt="">Glyph</a>
+      <a class="feat" href="#features"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Features</a>
+      <a class="opt" href="https://fru.dev"><img src="/fru-dev.png" width="16" height="16" alt="">fru.dev</a>
+    </nav>
+    <a class="built" href="https://github.com/fru-dev3/glyph"><span><span class="bw">Built with </span><svg class="heart-i" width="14" height="14" viewBox="0 0 24 24" fill="#E0465B" aria-label="love"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg> + AI<span class="opt"> · easy to make your own on GitHub</span></span></a>
+  </div>
+</footer>
+<script src="/site.js"></script>
+</body>
+</html>

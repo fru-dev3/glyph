@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Glyph Code | One identity for every coding agent</title>
+<meta name="description" content="Glyph Code is a free command-line tool that gives every coding agent you run one identity: Claude Code, Codex, Gemini and Cursor sessions are named by label, project, agent and machine, so you can find, launch and run them together across your Macs.">
+<link rel="icon" href="/family/code-tile.svg" type="image/svg+xml">
+<link rel="icon" href="/family/code-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/family/code-180.png">
+<link rel="canonical" href="https://glyph.fru.dev/code">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="author" content="fru.dev">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F7FBF5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B110D" media="(prefers-color-scheme: dark)">
+<meta property="og:site_name" content="Glyph by fru.dev">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Glyph Code | One identity for every coding agent">
+<meta property="og:description" content="A free CLI that names every Claude Code, Codex, Gemini and Cursor session, so you can find and run them together across your Macs.">
+<meta property="og:url" content="https://glyph.fru.dev/code">
+<meta property="og:image" content="https://glyph.fru.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Glyph family of app icons in office green, with the line Say it. Keep it. Work on it.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@fru">
+<meta name="twitter:image" content="https://glyph.fru.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+ {"@type":"Organization","@id":"https://fru.dev/#org","name":"fru.dev","url":"https://fru.dev","logo":"https://fru.dev/icon-512.png","sameAs":["https://github.com/fru-dev3"]},
+ {"@type":"SoftwareApplication","@id":"https://glyph.fru.dev/code#app","name":"Glyph Code","alternateName":"Glyph Agent Rig",
+  "applicationCategory":"DeveloperApplication","operatingSystem":"macOS, Linux, Windows (WSL)",
+  "url":"https://glyph.fru.dev/code","downloadUrl":"https://github.com/fru-dev3/glyph",
+  "codeRepository":"https://github.com/fru-dev3/glyph","programmingLanguage":"Shell","license":"https://opensource.org/licenses/MIT","isAccessibleForFree":true,
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@id":"https://fru.dev/#org"},
+  "description":"A CLI that gives every coding agent you run one identity: each session is named with label, project, agent and machine."}
+]}
+</script>
+<style>
+/* the pill: a session name, token by token */
+.pill{display:inline-flex;align-items:center;gap:10px;height:54px;padding:0 22px;border-radius:999px;background:#0B0F0C;color:#fff;
+  font:500 clamp(13px,1.9vh,17px) ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap;box-shadow:0 14px 30px rgba(0,0,0,.25)}
+.pill .dot{width:9px;height:9px;border-radius:50%;background:#3FA34D;flex:none}
+.pill .nm b{color:#B8F27C;font-weight:700}.pill .nm i{font-style:normal;color:#7E8C83}
+
+.term{aspect-ratio:1200/620;min-height:0;container-type:inline-size;background:#121614;color:#D7E0DA;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;overflow:hidden;display:flex;flex-direction:column;text-align:left}
+.term .tb{display:flex;align-items:center;gap:.7cqw;padding:1.6cqw 2cqw;border-bottom:1px solid rgba(255,255,255,.08);font-size:1.5cqw;color:#8A968F}
+.term .tb span{width:1.1cqw;height:1.1cqw;border-radius:50%;background:#E0634D}.term .tb span+span{background:#E0B04D}.term .tb span+span+span{background:#57B85F}
+.term .tb em{font-style:normal;margin-left:1cqw}.term .tb b{margin-left:auto;font-weight:500;color:#B8F27C}
+.term .cmd{margin:1.8cqw 2cqw 0;padding:1.2cqw 1.6cqw;border-radius:1cqw;background:rgba(255,255,255,.05);font-size:1.9cqw}
+.term .cmd i{font-style:normal;color:#E07A4F;margin-right:.8cqw}.term .cmd span{color:#7E8C83;margin-left:1.4cqw}
+.term .panes{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:1.6cqw;padding:1.8cqw 2cqw 2.4cqw}
+.term .pane{border-radius:1.2cqw;background:#1A201C;padding:1.4cqw 1.5cqw;display:flex;flex-direction:column;gap:1cqw;font-size:1.7cqw;line-height:1.4;overflow:hidden}
+.term .ph{font:700 1.6cqw -apple-system,sans-serif;color:#fff;display:flex;align-items:center;gap:.7cqw}
+.term .ph::before{content:"";width:.9cqw;height:.9cqw;border-radius:50%;background:var(--c)}
+.term .pn{color:#E0A57A;padding-bottom:.6cqw;border-bottom:1px solid rgba(255,255,255,.07);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.term .pl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.term .pl i{font-style:normal;color:#7E8C83}.term g{color:#7FD08A}.term r{color:#E8857A}
+
+.right .pill{margin-top:0}
+@media not ((min-width:960px) and (min-height:560px)){.pill{height:46px;padding:0 18px}}
+@media (max-width:400px){.pill{font-size:12px;padding:0 14px;gap:8px}}
+</style>
+</head>
+<body data-page="code">
+<main>
+  <div class="left">
+    <div class="top">
+      <a class="brand" href="/code"><img class="icon" src="/family/code-tile.svg" width="72" height="72" alt=""><div><b>Glyph Code</b><span>For coding agents <i>formerly Agent Rig</i></span></div></a>
+      <h1 data-lines='["Named.","Found.","It&#39;s free."]'>Every agent. <em><span id="said">Named.</span><i class="caret" aria-hidden="true"></i></em></h1>
+    </div>
+    <div class="alt" aria-label="Claude, Codex, Gemini and Cursor, each session with one identity: Glyph Code">
+      <div class="paid">
+        <figure><span class="tile"><img src="/agents/claude.png" width="40" height="40" alt=""></span><figcaption>Claude</figcaption></figure>
+        <figure><span class="tile"><img src="/agents/codex.png" width="40" height="40" alt=""></span><figcaption>Codex</figcaption></figure>
+        <figure><span class="tile"><img src="/agents/gemini.svg" width="40" height="40" alt=""></span><figcaption>Gemini</figcaption></figure>
+        <figure class="hide-xs"><span class="tile"><img src="/agents/cursor.png" width="40" height="40" alt=""></span><figcaption>Cursor</figcaption></figure>
+      </div>
+      <svg class="or" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6l6 6-6 6"/></svg>
+      <a class="ours" href="https://github.com/fru-dev3/glyph"><img src="/family/code-tile.svg" width="48" height="48" alt=""><b>One identity</b><small>every agent, named</small></a>
+    </div>
+    <div class="cta loved">
+      <button class="btn go" type="button" data-copy="git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; source ./install.sh" data-done="Copied. Paste it in a terminal" title="git clone https://github.com/fru-dev3/glyph.git &amp;&amp; cd glyph &amp;&amp; source ./install.sh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg><span class="lbl">Copy install command</span></button>
+      <a class="btn star" href="https://github.com/fru-dev3/glyph" data-track="star_on_github" aria-label="Star Glyph Code on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg><span class="lbl">Star</span><span class="count" data-stars="fru-dev3/glyph" data-floor="6" hidden></span><span class="love" aria-hidden="true"><svg class="arrow" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M52 6C51 28 32 44 8 54"/><path d="M44 14l8-10 7 10"/></svg><span class="say">show some love<svg class="heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></span></span></a>
+    </div>
+    <ul class="badges">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l6-6-6-6M12 19h8"/></svg>zsh, macOS and Linux</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>Open source</li>
+    </ul>
+    <p class="note">Agent names and logos belong to their owners. Glyph Code is not affiliated with them.</p>
+  </div>
+  <div class="right">
+    <!-- stargazers -->
+    <div class="proof"><div class="faces"><a href="https://github.com/Nessjk" target="_blank" rel="noreferrer" title="Nessjk"><img src="/stargazers/Nessjk.png" width="40" height="40" alt="Nessjk" loading="lazy"></a><a href="https://github.com/TLCSglobal" target="_blank" rel="noreferrer" title="TLCSglobal"><img src="/stargazers/TLCSglobal.png" width="40" height="40" alt="TLCSglobal" loading="lazy"></a><a href="https://github.com/Albricengwa" target="_blank" rel="noreferrer" title="Albricengwa"><img src="/stargazers/Albricengwa.png" width="40" height="40" alt="Albricengwa" loading="lazy"></a><a href="https://github.com/kovtunos" target="_blank" rel="noreferrer" title="kovtunos"><img src="/stargazers/kovtunos.png" width="40" height="40" alt="kovtunos" loading="lazy"></a></div><p><a href="https://github.com/fru-dev3/glyph" target="_blank" rel="noreferrer">Starred by <b id="sgn">4</b> developers</a></p></div>
+    <!-- /stargazers -->
+    <div class="pill" aria-label="A session name, built token by token"><span class="dot"></span><span class="nm" id="nm">billing·acme-api·claude-code·laptop</span></div>
+    <div class="shot term fill" role="img" aria-label="glyph fleet review: three named panes, Claude Code fixing a retry, Codex reviewing it, AGY writing the docs"><div class="tb"><span></span><span></span><span></span><em>herdr · glyph fleet review</em><b>3 panes</b></div><div class="cmd"><i>$</i> glyph fleet review <span>→ three named panes</span></div><div class="panes"><div class="pane"><div class="ph" style="--c:#E07A4F">Claude Code</div><div class="pn">fix·acme-api·claude-code</div><div class="pl"><i>●</i> Read checkout/retry.ts</div><div class="pl"><i>●</i> Edit retry.ts <g>+12</g> <r>−4</r></div><div class="pl"><i>●</i> Bash npm test</div><div class="pl"><g>✓ 48 passed</g></div><div class="pl"><i>●</i> Bash git diff --stat</div><div class="pl">1 file, <g>+12</g> <r>−4</r></div><div class="pl"><i>›</i> Ready for review</div><div class="pl"><i>●</i> Bash git commit</div><div class="pl"><g>✓ committed 3f2a9c1</g></div><div class="pl"><i>●</i> Bash gh pr create</div><div class="pl"><g>✓ PR #214 opened</g></div><div class="pl"><i>›</i> waiting on review</div></div><div class="pane"><div class="ph" style="--c:#7EA6F0">Codex</div><div class="pn">review·acme-api·codex</div><div class="pl"><i>›</i> review the retry diff</div><div class="pl"><i>•</i> backoff caps at 30 s</div><div class="pl"><i>•</i> no test for a 429</div><div class="pl"><i>•</i> add jitter to the delay</div><div class="pl"><i>•</i> log the final failure</div><div class="pl"><i>•</i> rest looks right</div><div class="pl"><g>✓ 4 notes left</g></div><div class="pl"><i>›</i> re-review PR #214</div><div class="pl"><i>•</i> jitter added, good</div><div class="pl"><i>•</i> 429 test passes</div><div class="pl"><g>✓ approved</g></div><div class="pl"><i>›</i> idle</div></div><div class="pane"><div class="ph" style="--c:#9A8CFF">AGY</div><div class="pn">docs·website·agy</div><div class="pl"><i>›</i> document the retry policy</div><div class="pl"><i>•</i> wrote docs/retry.md</div><div class="pl"><i>•</i> added an example</div><div class="pl"><i>•</i> linked it from the guide</div><div class="pl"><i>•</i> checked every link</div><div class="pl"><i>•</i> spelling clean</div><div class="pl"><g>✓ done in 1m 12s</g></div><div class="pl"><i>›</i> add a changelog line</div><div class="pl"><i>•</i> CHANGELOG.md updated</div><div class="pl"><i>•</i> version noted</div><div class="pl"><g>✓ done in 24s</g></div><div class="pl"><i>›</i> idle</div></div></div></div>
+  </div>
+</main>
+
+<dialog class="sheet" id="features" aria-labelledby="feat-h">
+  <div class="fhead"><img src="/family/code-tile.svg" width="40" height="40" alt=""><h2 id="feat-h">Everything Glyph Code does</h2><button type="button" class="fclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="flist">
+    <div class="fq"><h3>One identity for every agent</h3><p>A harness, like Claude Code, Codex, Gemini or Cursor, runs AI models. Glyph Code runs your harnesses: it finds every session across your Macs, launches them and runs them together.</p></div>
+    <div class="fq"><h3>Fleets</h3><p>One preset opens several harnesses at once, each in its own pane: glyph fleet review puts two vendors on the same diff. Slots can run on another machine over SSH.</p></div>
+    <div class="fq"><h3>Every session named</h3><p>So the Rig knows which is which and where it runs. Keep typing claude, codex or agy. One bare word is your label; Glyph Code builds the session name and hands it to the agent before the first token. Anything with a space is still your prompt.</p></div>
+    <div class="fq"><h3>Six tokens</h3><p>Label, project, agent, machine, date and time, lowercase and joined by a dot: billing·acme-api·claude-code·laptop·0556.</p></div>
+    <div class="fq"><h3>Every agent</h3><p>Claude Code, Codex, AGY, Cursor, Crush, Cortex, OpenCode and pi, and any other CLI you add in one line.</p></div>
+    <div class="fq"><h3>Every machine</h3><p>The machine is part of the name, so a pane on your laptop never reads the same as one running over SSH.</p></div>
+    <div class="fq"><h3>On your phone</h3><p>Claude sessions carry the name through Remote Control, so the list on claude.ai/code and the app reads the same as your terminal.</p></div>
+    <div class="fq"><h3>Usage and wake</h3><p>glyph usage shows quota and token counts across agents. glyph wake continues Claude sessions a usage limit stopped, when the limit resets.</p></div>
+    <div class="fq"><h3>Spaces</h3><p>Write down once which workspaces and tabs a machine opens and which agent runs in each; glyph spaces rebuilds them in Herdr after a restart.</p></div>
+    <div class="fq"><h3>Works where you work</h3><p>zsh, with tmux, Herdr, Zellij, WezTerm or a bare shell. There is a Herdr plugin too.</p></div>
+    <div class="fq"><h3>Install and update</h3><p>git clone https://github.com/fru-dev3/glyph.git && cd glyph && source ./install.sh. One file into ~/.config/glyph, one line into ~/.zshrc. glyph update fetches the latest.</p></div>
+    <div class="fq"><h3>Nothing phoned home</h3><p>Glyph Code makes no network requests except glyph update, glyph usage --live and the GitHub star you agree to. MIT licensed.</p></div>
+  </div>
+</dialog>
+
+<footer>
+  <div class="bar">
+    <nav aria-label="Footer">
+      <a class="home" href="/"><img src="/family/glyph-tile.svg" width="16" height="16" alt="">Glyph</a>
+      <a class="feat" href="#features"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Features</a>
+      <a href="/docs">Docs</a>
+      <a class="opt" href="https://github.com/fru-dev3/glyph/issues" title="Contact: open an issue">Contact</a>
+      <a class="opt" href="https://fru.dev"><img src="/fru-dev.png" width="16" height="16" alt="">fru.dev</a>
+    </nav>
+    <a class="built" href="https://github.com/fru-dev3/glyph"><span><span class="bw">Built with </span><svg class="heart-i" width="14" height="14" viewBox="0 0 24 24" fill="#E0465B" aria-label="love"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg> + AI<span class="opt"> · easy to make your own on GitHub</span></span></a>
+  </div>
+</footer>
+<script src="/site.js"></script>
+<script>
+// The pill builds a session name token by token, in step with the headline.
+const nm=document.getElementById("nm");
+const names=[["billing","acme-api","claude-code","laptop"],["audit","payments","codex","studio"],["migration","acme-api","agy","mini"]];
+addEventListener("typing",e=>{const d=e.detail,toks=names[d.n%names.length],shown=Math.min(toks.length,Math.ceil(d.k/d.line.length*toks.length));
+  nm.innerHTML=toks.slice(0,shown).map((t,i)=>i?"<i>·</i>"+t:"<b>"+t+"</b>").join("")});
+</script>
+</body>
+</html>

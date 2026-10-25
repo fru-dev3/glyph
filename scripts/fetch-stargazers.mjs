@@ -1,6 +1,6 @@
 // Build-time social proof: the real stargazers of fru-dev3/glyph. Saves up to ten avatars into
 // docs/stargazers/ (so the page loads nothing from GitHub), their logins to docs/stargazers.json,
-// and bakes the faces and the count into docs/index.html between the stargazers markers.
+// and bakes the faces and the count into docs/code/index.html (the Glyph Code page) between the stargazers markers.
 // On any failure the committed files stay as they are.
 import { mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
 import { execSync } from "node:child_process";
@@ -37,9 +37,9 @@ try {
   }
   writeFileSync(new URL("stargazers.json", DOCS), JSON.stringify(list, null, 2) + "\n");
   const n = Math.max(others.length, list.length);
-  const faces = list.map((l) => `<a href="https://github.com/${l}" target="_blank" rel="noreferrer" title="${l}"><img src="stargazers/${l}.png" width="40" height="40" alt="${l}" loading="lazy"></a>`).join("");
+  const faces = list.map((l) => `<a href="https://github.com/${l}" target="_blank" rel="noreferrer" title="${l}"><img src="/stargazers/${l}.png" width="40" height="40" alt="${l}" loading="lazy"></a>`).join("");
   const block = `<!-- stargazers -->\n    <div class="proof"><div class="faces">${faces}</div><p><a href="https://github.com/${REPO}" target="_blank" rel="noreferrer">Starred by <b id="sgn">${n}</b> developers</a></p></div>\n    <!-- /stargazers -->`;
-  const page = new URL("index.html", DOCS);
+  const page = new URL("code/index.html", DOCS);
   const html = readFileSync(page, "utf8");
   const next = html.replace(/<!-- stargazers -->[\s\S]*?<!-- \/stargazers -->/, block);
   if (next !== html) writeFileSync(page, next);

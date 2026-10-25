@@ -18,3 +18,11 @@ __pycache__/
 
 # accounts left out of the stargazer faces (local, never committed)
 .stargazers-exclude
+
+# site icons, copied from assets/family/ by scripts/sync-icons.sh (never edit or commit them)
+/docs/family/
+/docs/favicon.svg
+/docs/favicon.ico
+/docs/icon-192.png
+/docs/icon-512.png
+/docs/apple-touch-icon.png
