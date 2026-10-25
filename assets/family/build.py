@@ -11,10 +11,10 @@ GREEN = "#008000"
 ACCENT = "#b9f0b0"  # the family's light-green accent
 SOFT = ".78"        # opacity of the secondary white element, as in glyph-tile.svg
 
-# The petroglyph figure: the family signature, unchanged from glyph.svg (100x100 space).
-FIGURE = ('<path d="M26 18V10.5M20.3 20.7 14.5 15.9M31.7 20.7 37.5 15.9M26 33v33M26 42 14 36 9 26.5'
-          'M26 46l13 7.5M26 66 17 85.5 11.5 89M26 66l9 19.5 5.5 3.5" stroke-width="7"/>'
-          '<circle cx="26" cy="25.5" r="7.5" fill="#fff" stroke="none"/>')
+# The petroglyph figure, the family signature (100x100 space): a round head, one even 7 stroke,
+# four joints, arms raised in the orant pose of rock art. Concept A, chosen 2026-10-25.
+FIGURE = ('<circle cx="26" cy="17" r="8" fill="#fff" stroke="none"/>'
+          '<path d="M9 22v4a17 17 0 0 0 34 0v-4M26 43v21M26 64 15 89M26 64l11 25" stroke-width="7"/>')
 SPIRAL = "M66 53a6.25 6.25 0 0 1 12.5 0 12.5 12.5 0 0 1-25 0 18.75 18.75 0 0 1 37.5 0"
 
 # One variation per app: the element to the right of the figure.
@@ -24,10 +24,10 @@ RIGHT = {
     # the hub: the same spiral, full white, growing out of a light-green core
     "studio": f'<path d="{SPIRAL}" stroke-width="6.5"/>'
               f'<circle cx="66" cy="53" r="5.5" fill="{ACCENT}" stroke="none"/>',
-    # speech: three arcs coming from the figure's mouth, fading as they travel
-    "dictate": '<path d="M48.7 18.3a22 22 0 0 1 0 23.4" stroke-width="6.5"/>'
-               f'<path d="M59.7 11.5a35 35 0 0 1 0 37" stroke-width="6.5" stroke-opacity="{SOFT}"/>'
-               '<path d="M70.7 4.6a48 48 0 0 1 0 50.8" stroke-width="6.5" stroke-opacity=".55"/>',
+    # speech: three arcs leaving the figure's head, fading as they travel
+    "dictate": '<path d="M50 13.4a20 20 0 0 1 0 21.2" stroke-width="6.5"/>'
+               f'<path d="M60.1 7a32 32 0 0 1 0 33.9" stroke-width="6.5" stroke-opacity="{SOFT}"/>'
+               '<path d="M70.3 .7a44 44 0 0 1 0 46.6" stroke-width="6.5" stroke-opacity=".55"/>',
     # iPhone memos: a phone, with a short voice waveform on its screen
     "mobile": '<rect x="57" y="22" width="30" height="62" rx="8" stroke-width="6"/>'
               f'<path d="M64.5 49v8M72 43v20M79.5 49v8" stroke="{ACCENT}" stroke-width="5"/>',
