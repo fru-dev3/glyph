@@ -33,7 +33,7 @@ vdeploy() {
 echo "deploying"
 vdeploy --prebuilt --prod
 
-for p in / /studio /dictate /mobile /record /code /docs /docs.html; do
+for p in / /studio /dictate /jot /record /code /docs /docs.html; do
   CODE=$(curl -sL -o /dev/null -w '%{http_code}' "https://glyph.fru.dev$p")
   if [ "$CODE" != "200" ]; then
     echo "glyph.fru.dev$p answered $CODE, expected 200"
