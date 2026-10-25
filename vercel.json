@@ -38,32 +38,47 @@
     {
       "source": "/dictate",
       "destination": "/jot",
-      "permanent": true
+      "statusCode": 301
     },
     {
-      "source": "/dictate/:path*",
-      "destination": "/jot/:path*",
-      "permanent": true
+      "source": "/dictate/",
+      "destination": "/jot",
+      "statusCode": 301
+    },
+    {
+      "source": "/dictate/:path+",
+      "destination": "/jot/:path+",
+      "statusCode": 301
     },
     {
       "source": "/mobile",
       "destination": "/jot",
-      "permanent": true
+      "statusCode": 301
     },
     {
-      "source": "/mobile/:path*",
-      "destination": "/jot/:path*",
-      "permanent": true
+      "source": "/mobile/",
+      "destination": "/jot",
+      "statusCode": 301
+    },
+    {
+      "source": "/mobile/:path+",
+      "destination": "/jot/:path+",
+      "statusCode": 301
     },
     {
       "source": "/record",
       "destination": "/jot",
-      "permanent": true
+      "statusCode": 301
     },
     {
-      "source": "/record/:path*",
-      "destination": "/jot/:path*",
-      "permanent": true
+      "source": "/record/",
+      "destination": "/jot",
+      "statusCode": 301
+    },
+    {
+      "source": "/record/:path+",
+      "destination": "/jot/:path+",
+      "statusCode": 301
     }
   ]
 }

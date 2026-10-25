@@ -40,7 +40,7 @@ for p in / /studio /jot /code /docs /docs.html; do
     exit 1
   fi
 done
-for p in /dictate /mobile /record; do
+for p in /dictate /mobile /record /record/ /dictate/; do
   # a fresh deploy's redirects can take a few seconds to answer
   for _ in 1 2 3 4 5 6; do
     TO=$(curl -s -o /dev/null -w '%{redirect_url}' "https://glyph.fru.dev$p")
