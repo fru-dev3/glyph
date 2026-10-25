@@ -41,7 +41,12 @@ for p in / /studio /jot /record /code /docs /docs.html; do
   fi
 done
 for p in /dictate /mobile; do
-  TO=$(curl -s -o /dev/null -w '%{redirect_url}' "https://glyph.fru.dev$p")
+  # a fresh deploy's redirects can take a few seconds to answer
+  for _ in 1 2 3 4 5 6; do
+    TO=$(curl -s -o /dev/null -w '%{redirect_url}' "https://glyph.fru.dev$p")
+    [ "$TO" = "https://glyph.fru.dev/jot" ] && break
+    sleep 5
+  done
   if [ "$TO" != "https://glyph.fru.dev/jot" ]; then
     echo "glyph.fru.dev$p redirects to '$TO', expected /jot"
     exit 1
