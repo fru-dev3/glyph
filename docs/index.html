@@ -100,30 +100,13 @@
   .node.big{flex-direction:row;text-align:left}
   .flow .side{flex-direction:column;align-items:stretch}
 }
-.left .fam{justify-content:space-evenly}
-/* how many rivals the strip holds, by its own width */
-.fam .s4,.fam .s5,.fam .x3{display:none}
-@container (min-width:900px){.fam .x3{display:flex}}
-@container (max-width:520px){.fam .s3,.fam .j5{display:none}}
-@container (max-width:420px){.fam .j2,.fam .j4{display:none}}
 .famnote{margin:0;font-size:12px;color:var(--dim)}
+/* the home strip: five agents when wide, fewer as it narrows (site.css, .agents) */
 @media not ((min-width:960px) and (min-height:560px)){
-  .left .fam{order:4;width:min(100%,440px)}.left .left .fam{justify-content:space-evenly}
-/* how many rivals the strip holds, by its own width */
-.fam .s4,.fam .s5,.fam .x3{display:none}
-@container (min-width:900px){.fam .x3{display:flex}}
-@container (max-width:520px){.fam .s3,.fam .j5{display:none}}
-@container (max-width:420px){.fam .j2,.fam .j4{display:none}}
-.famnote{order:4;width:min(100%,440px);text-align:center}
+  .left .agents{order:4;width:min(100%,440px)}.left .famnote{order:4;width:min(100%,440px);text-align:center}
 }
 @media (max-width:440px){.fam{gap:6px;padding:8px 10px}.fam .grp+.grp{padding-left:6px}.fam .paid{gap:5px}.fam figure img,.fam .ours img{width:32px}}
-@media (min-width:960px) and (min-height:560px){.left .cta.loved{margin-bottom:clamp(44px,6vh,72px)}.left .left .fam{justify-content:space-evenly}
-/* how many rivals the strip holds, by its own width */
-.fam .s4,.fam .s5,.fam .x3{display:none}
-@container (min-width:900px){.fam .x3{display:flex}}
-@container (max-width:520px){.fam .s3,.fam .j5{display:none}}
-@container (max-width:420px){.fam .j2,.fam .j4{display:none}}
-.famnote{margin-top:calc(8px - clamp(28px,6vh,64px))}}
+@media (min-width:960px) and (min-height:560px){.left .cta.loved{margin-bottom:clamp(44px,6vh,72px)}.left .famnote{margin-top:calc(8px - clamp(28px,6vh,64px))}}
 </style>
 </head>
 <body data-page="home">
@@ -135,16 +118,21 @@
       <p class="lede" id="copy-sub">Capture it once. Every agent gets smarter.</p>
     </div>
     <div class="cta loved">
-      <a class="btn go" id="dl" href="https://github.com/fru-dev3/glyph-studio/releases/latest/download/Prevail-mac-arm64.dmg" data-track="file_download" title="Glyph Studio for Mac"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Download <span class="formac">Glyph </span>Studio</span><span class="dlc" data-downloads="fru-dev3/glyph-studio" data-match="\.(dmg|exe)$" data-floor="388" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v12m0 0l-5-5m5 5l5-5"/></svg><b class="n"></b></span></a>
+      <a class="btn go" id="dl" href="https://github.com/fru-dev3/glyph-studio/releases/latest/download/Prevail-mac-arm64.dmg" data-track="file_download" title="Glyph Studio for Mac"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Download <span class="formac">Glyph </span>Studio</span><span class="dlc" data-downloads="fru-dev3/glyph-studio" data-match="\.(dmg|exe|msi)$" data-floor="511" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v12m0 0l-5-5m5 5l5-5"/></svg><b class="n"></b></span></a>
       <a class="btn star" href="https://github.com/fru-dev3/glyph-studio" data-track="star_on_github" aria-label="Star Glyph Studio on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg><span class="lbl">Star</span><span class="count" data-stars="fru-dev3/glyph-studio" data-floor="37" hidden></span><span class="love" aria-hidden="true"><svg class="arrow" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M52 6C51 28 32 44 8 54"/><path d="M44 14l8-10 7 10"/></svg><span class="say">show some love<svg class="heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></span></span></a>
     </div>
-    <div class="alt fam" aria-label="Instead of always-on agents (OpenAI Dots, Meta Muse, xAI Grok Bot, Instinct or Hermes Agent), and Wispr Flow at 15 dollars a month, Superwhisper at 8.49, Willow at 15 or Aqua Voice at 10 for dictation, and Granola at 14, Otter at 16.99, Fireflies at 18 or Fathom at 20 for meetings, the Glyph apps are free on GitHub">
-      <div class="grp"><div class="paid"><figure title="OpenAI Dots"><span class="tile"><img src="/logos/openai.svg" alt="OpenAI Dots"></span><figcaption>Dots</figcaption></figure><figure title="Meta Muse"><span class="tile"><img src="/logos/meta.svg" alt="Meta Muse"></span><figcaption>Muse</figcaption></figure><figure class="s3" title="xAI Grok Bot"><span class="tile"><img src="/logos/grok.svg" alt="xAI Grok Bot"></span><figcaption>Grok Bot</figcaption></figure><figure class="s4" title="Instinct"><span class="tile"><img src="/logos/instinct.png" alt="Instinct"></span><figcaption>Instinct</figcaption></figure><figure class="s5" title="Hermes Agent by Nous Research"><span class="tile"><img src="/logos/hermes.png" alt="Hermes Agent by Nous Research"></span><figcaption>Hermes</figcaption></figure></div><a class="gl" href="/studio"><img src="/family/studio-tile.svg" alt="">Studio</a></div>
-      <div class="grp"><div class="paid"><figure><img src="/logos/wispr.webp" width="48" height="48" alt="Wispr Flow" title="Wispr Flow"><s>$15</s></figure><figure class="j2"><img src="/logos/superwhisper.webp" width="48" height="48" alt="Superwhisper" title="Superwhisper"><s>$8.49</s></figure><figure class="x3"><img src="/logos/willow.webp" width="48" height="48" alt="Willow Voice" title="Willow Voice"><s>$15</s></figure><figure class="x3"><img src="/logos/aqua.webp" width="48" height="48" alt="Aqua Voice" title="Aqua Voice"><s>$10</s></figure><figure><img src="/logos/granola.webp" width="48" height="48" alt="Granola" title="Granola"><s>$14</s></figure><figure class="j4"><img src="/logos/otter.webp" width="48" height="48" alt="Otter" title="Otter"><s>$16.99</s></figure><figure class="j5"><img src="/logos/fireflies.webp" width="48" height="48" alt="Fireflies" title="Fireflies"><s>$18</s></figure><figure class="x3"><img src="/logos/fathom.webp" width="48" height="48" alt="Fathom" title="Fathom"><s>$20</s></figure></div><a class="gl" href="/jot"><img src="/family/dictate-tile.svg" alt="">Jot</a></div>
+    <div class="alt agents" aria-label="Instead of an always-on agent in someone else's cloud (OpenAI Dots, Meta Muse, xAI Grok Bot, Instinct or Hermes Agent), Glyph Studio is free on GitHub, with your memory in your own files">
+      <div class="paid">
+        <figure title="OpenAI Dots"><span class="tile"><img src="/logos/openai.svg" alt="OpenAI Dots"></span><figcaption>Dots</figcaption></figure>
+        <figure title="Meta Muse"><span class="tile"><img src="/logos/meta.svg" alt="Meta Muse"></span><figcaption>Muse</figcaption></figure>
+        <figure class="s3" title="xAI Grok Bot"><span class="tile"><img src="/logos/grok.svg" alt="xAI Grok Bot"></span><figcaption>Grok Bot</figcaption></figure>
+        <figure class="s4" title="Instinct"><span class="tile"><img src="/logos/instinct.png" alt="Instinct"></span><figcaption>Instinct</figcaption></figure>
+        <figure class="s5" title="Hermes Agent by Nous Research"><span class="tile"><img src="/logos/hermes.png" alt="Hermes Agent by Nous Research"></span><figcaption>Hermes</figcaption></figure>
+      </div>
       <span class="or">or</span>
-      <a class="ours" href="https://github.com/fru-dev3"><img src="/family/glyph-tile.svg" width="48" height="48" alt=""><b>Free</b><small>on GitHub</small></a>
+      <a class="ours" href="https://github.com/fru-dev3/glyph-studio"><img src="/family/studio-tile.svg" width="48" height="48" alt=""><b>Free</b><small>on GitHub</small></a>
     </div>
-    <p class="note famnote">Logos belong to their owners. Monthly prices from their sites, October 2026. Not affiliated.</p>
+    <p class="note famnote">Always-on agents, run in their makers' clouds. Logos belong to their owners. Not affiliated.</p>
   </div>
   <div class="right">
     <!-- stargazers -->

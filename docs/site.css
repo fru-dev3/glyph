@@ -50,6 +50,7 @@ a.ours:hover small{color:var(--green)}
 /* a narrow strip drops its last logo and shrinks its own name, so nothing runs past the box */
 .alt{container-type:inline-size}
 @container (max-width:470px){.alt .hide-xs{display:none}.alt .ours b{font-size:20px}}
+.agents{justify-content:space-evenly}
 /* /studio: five always-on agents when the strip is wide, three when it narrows */
 @container (max-width:540px){.agents .s5{display:none}}
 @container (max-width:470px){.agents .s4{display:none}}

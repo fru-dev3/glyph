@@ -109,8 +109,11 @@ $$("[data-stars]").forEach((el) => {
   Promise.all(el.dataset.stars.split(",").map(starsOf)).then((ns) => show(ns.reduce((a, b) => a + b, 0)));
 });
 
-// Download counts: the installers' download_count over every GitHub release, never below the
-// number baked in at the last deploy (scripts/fetch-counts.mjs).
+// Download counts: what people downloaded, read from GitHub. The sum of download_count over every
+// asset of every release whose name matches data-match: the installers only (.dmg, .exe, .msi).
+// The auto-updater's own fetches (latest.json, .app.tar.gz, .sig) are not people downloading the
+// app, so they are left out. Never below the number baked into the page (data-floor), which is a
+// real count taken from the same API at the last edit; never anything invented.
 $$("[data-downloads]").forEach((el) => {
   const floor = +el.dataset.floor || 0, out = $(".n", el), re = new RegExp(el.dataset.match || "\\.dmg$");
   const show = (n) => { n = Math.max(n || 0, floor); if (n > 0) { out.textContent = n.toLocaleString("en-US"); el.title = n.toLocaleString("en-US") + " downloads"; el.hidden = false; } };
@@ -119,8 +122,12 @@ $$("[data-downloads]").forEach((el) => {
   let saved = null; try { saved = JSON.parse(localStorage.getItem(key)); } catch {}
   show(saved?.n);
   if (saved && Date.now() - saved.at < 3600e3) return;
-  fetch(`https://api.github.com/repos/${el.dataset.downloads}/releases?per_page=100`).then((r) => (r.ok ? r.json() : null))
-    .then((rels) => { if (!rels) return; const n = rels.flatMap((r) => r.assets || []).filter((a) => re.test(a.name)).reduce((t, a) => t + (a.download_count || 0), 0);
+  // Every page of releases: glyph-studio has more than 100 of them, and reading only the first
+  // page undercounted it (388 where the true installer total was 511, 2026-10-25).
+  const page = (n, acc) => fetch(`https://api.github.com/repos/${el.dataset.downloads}/releases?per_page=100&page=${n}`)
+    .then((r) => (r.ok ? r.json() : Promise.reject())).then((rels) => (rels.length === 100 ? page(n + 1, acc.concat(rels)) : acc.concat(rels)));
+  page(1, [])
+    .then((rels) => { const n = rels.flatMap((r) => r.assets || []).filter((a) => re.test(a.name)).reduce((t, a) => t + (a.download_count || 0), 0);
       show(n); try { localStorage.setItem(key, JSON.stringify({ n, at: Date.now() })); } catch {} })
     .catch(() => {});
 });
