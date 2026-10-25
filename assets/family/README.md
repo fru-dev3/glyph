@@ -15,7 +15,9 @@ pose of rock art. It holds its shape down to 16 px.
 | Glyph Mobile (`mobile*`) | A phone beside the figure with a voice waveform on its screen: memos and the keyboard on iPhone. |
 | Glyph Record (`record*`) | A record button, a ring around a solid light-green dot: meetings, calls, long talks. |
 | Glyph Cast (`cast*`) | A play triangle inside a screen frame on a short stand: screen videos. Coming, not released. |
-| Glyph Code (`code*`) | A `>_` prompt with a light-green cursor: the command-line tool for coding agents. |
+| Glyph Code (`code*`) | A `>_` prompt with a light-green cursor: the command-line tool's old icon, kept for old links. |
+| Glyph Rig (`rig*`) | A grid of four machines, one lit in light green: the Rig that names, connects and manages every harness across your Macs (was Glyph Code). |
+| Glyph Knowledge (`knowledge*`) | A globe with a light-green equator: what the world knows, live data from 50+ context sources (was Ibis). |
 
 ## Files
 

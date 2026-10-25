@@ -41,10 +41,20 @@ RIGHT = {
     # command line: a ">_" prompt
     "code": '<path d="M53 37l15 15-15 15" stroke-width="7"/>'
             f'<path d="M74 67h16" stroke="{ACCENT}" stroke-width="7"/>',
+    # the Rig: a grid of four machines, one lit, the harnesses it connects and manages
+    "rig": '<rect x="52" y="34" width="16" height="16" rx="4" fill="#b9f0b0" stroke="#b9f0b0" stroke-width="5"/>'
+           f'<rect x="76" y="34" width="16" height="16" rx="4" stroke-width="5"/>'
+           f'<rect x="52" y="58" width="16" height="16" rx="4" stroke-width="5" stroke-opacity="{SOFT}"/>'
+           f'<rect x="76" y="58" width="16" height="16" rx="4" stroke-width="5" stroke-opacity="{SOFT}"/>',
+    # Knowledge: a globe, what the world knows, its equator in light green
+    "knowledge": '<circle cx="72" cy="54" r="19" stroke-width="6"/>'
+                 f'<path d="M72 35c-8.5 5-8.5 33 0 38M72 35c8.5 5 8.5 33 0 38" stroke-width="4.5" stroke-opacity="{SOFT}"/>'
+                 f'<path d="M53 54h38" stroke="{ACCENT}" stroke-width="5"/>',
 }
-APPS = ["studio", "dictate", "mobile", "record", "cast", "code"]
+APPS = ["studio", "dictate", "mobile", "record", "cast", "code", "rig", "knowledge"]
 LABEL = {"glyph": "Glyph", "studio": "Glyph Studio", "dictate": "Glyph Dictate",
-         "mobile": "Glyph Mobile", "record": "Glyph Record", "cast": "Glyph Cast", "code": "Glyph Code"}
+         "mobile": "Glyph Mobile", "record": "Glyph Record", "cast": "Glyph Cast", "code": "Glyph Code",
+         "rig": "Glyph Rig", "knowledge": "Glyph Knowledge"}
 
 
 def mark(name, color="#fff"):
@@ -103,7 +113,7 @@ def main():
         write(f"{app}-macos.svg", macos(app))
         rsvg(f"{HERE}/{app}-macos.svg", f"{HERE}/{app}-1024.png", 1024)
         rsvg(f"{HERE}/{app}-tile.svg", f"{HERE}/{app}-512.png", 512)
-        if app not in ("code", "cast"):  # Mac-only or no app: Cast is a Mac app, Code a command-line tool; no iOS icon
+        if app not in ("code", "cast", "rig", "knowledge"):  # no iOS app: Cast is a Mac app, Code/Rig a command-line tool, Knowledge a website
             src = f"{tmp}/{app}-ios.svg"
             open(src, "w").write(ios(app))
             rsvg(src, f"{tmp}/{app}-ios.png", 1024)
