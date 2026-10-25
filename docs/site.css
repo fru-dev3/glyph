@@ -50,6 +50,9 @@ a.ours:hover small{color:var(--green)}
 /* a narrow strip drops its last logo and shrinks its own name, so nothing runs past the box */
 .alt{container-type:inline-size}
 @container (max-width:470px){.alt .hide-xs{display:none}.alt .ours b{font-size:20px}}
+/* /studio: five always-on agents when the strip is wide, three when it narrows */
+@container (max-width:540px){.agents .s5{display:none}}
+@container (max-width:470px){.agents .s4{display:none}}
 /* a strip in groups: the paid apps, by what they do (the home, /jot) */
 .fam{gap:8px;padding:10px 14px}
 .fam .grp{display:flex;flex-direction:column;align-items:center;gap:5px}
@@ -58,6 +61,8 @@ a.ours:hover small{color:var(--green)}
 .fam figure img,.fam .ours img{width:clamp(34px,4.4vh,44px)}
 .fam .gl{display:inline-flex;align-items:center;gap:5px;font:700 12px -apple-system,sans-serif;color:var(--green);text-decoration:none;white-space:nowrap}
 .fam .gl img{width:16px;height:16px;border-radius:24%}
+.fam figcaption{font:600 12.5px -apple-system,BlinkMacSystemFont,sans-serif}
+.fam{align-items:stretch}.fam .grp{justify-content:flex-end}.fam .or,.fam .ours{align-self:center}
 .fam .gl:hover{text-decoration:underline}
 .fam .ours b{font-size:clamp(18px,2.4vh,22px)}
 span.gl{color:var(--soft)}
