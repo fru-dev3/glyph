@@ -3,5 +3,5 @@
     <filter id="s" x="-10%" y="-10%" width="120%" height="125%"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000" flood-opacity=".22"/></filter></defs>
   <rect x="100" y="100" width="824" height="824" rx="185" filter="url(#s)"/>
   <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#g)"/>
-  <g transform="translate(182.4 182.4) scale(6.592)"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"><circle cx="26" cy="17" r="8" fill="#fff" stroke="none"/><path d="M9 22v4a17 17 0 0 0 34 0v-4M26 43v21M26 64 15 89M26 64l11 25" stroke-width="7"/><circle cx="72" cy="54" r="19" stroke-width="6"/><path d="M72 35c-8.5 5-8.5 33 0 38M72 35c8.5 5 8.5 33 0 38" stroke-width="4.5" stroke-opacity=".78"/><path d="M53 54h38" stroke="#b9f0b0" stroke-width="5"/></g></g>
+  <g transform="translate(182.4 182.4) scale(6.592)"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"><circle cx="26" cy="17" r="8" fill="#fff" stroke="none"/><path d="M9 22v4a17 17 0 0 0 34 0v-4M26 43v21M26 64 15 89M26 64l11 25" stroke-width="7"/><circle cx="72" cy="54" r="19" stroke-width="6"/><path d="M72 35c-8.5 5-8.5 33 0 38M72 35c8.5 5 8.5 33 0 38" stroke-width="4.5" stroke-opacity=".78"/><path d="M56 54h32" stroke="#b9f0b0" stroke-width="5"/></g></g>
 </svg>

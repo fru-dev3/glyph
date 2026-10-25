@@ -79,6 +79,21 @@
       "source": "/record/:path+",
       "destination": "/jot/:path+",
       "statusCode": 301
+    },
+    {
+      "source": "/code",
+      "destination": "/rig",
+      "statusCode": 301
+    },
+    {
+      "source": "/code/",
+      "destination": "/rig",
+      "statusCode": 301
+    },
+    {
+      "source": "/code/:path+",
+      "destination": "/rig/:path+",
+      "statusCode": 301
     }
   ]
 }

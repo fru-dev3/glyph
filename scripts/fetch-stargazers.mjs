@@ -14,7 +14,7 @@ const PAGES = [
   { file: "studio/index.html", repos: ["glyph-studio"], label: "Glyph Studio" },
   // Glyph Record folded into Glyph Jot (2026-10-25); its repo (0 stars) is archived
   { file: "jot/index.html", repos: ["glyph-jot"], label: "Glyph Jot" },
-  { file: "code/index.html", repos: ["glyph"], label: "Glyph Code" },
+  { file: "rig/index.html", repos: ["glyph"], label: "Glyph Rig" },
 ];
 const SHOW = 12, MIN = 3;
 const DOCS = new URL("../docs/", import.meta.url);

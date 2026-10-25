@@ -5,6 +5,8 @@
     "name": "Glyph Studio",
     "short": "Studio",
     "formerly": "Prevail",
+    "layer": 1,
+    "promise": "The environment your agents work in: one harness that builds and runs them.",
     "status": "download"
   },
   {
@@ -13,6 +15,8 @@
     "name": "Glyph Jot",
     "short": "Jot",
     "formerly": "Glyph Dictate",
+    "layer": 2,
+    "promise": "What you know: capture notes, ideas, decisions and meetings as your personal context.",
     "status": "download",
     "includes": "Glyph Record (formerly Memosa), merged 2026-10-25: /record redirects here",
     "repo": "fru-dev3/glyph-jot"
@@ -25,11 +29,33 @@
     "status": "soon"
   },
   {
-    "icon": "code",
-    "path": "code",
-    "name": "Glyph Code",
-    "short": "Code",
-    "formerly": "Agent Rig",
-    "status": "cli"
+    "icon": "knowledge",
+    "path": "knowledge",
+    "name": "Glyph Knowledge",
+    "short": "Knowledge",
+    "formerly": "Ibis",
+    "layer": 3,
+    "promise": "What the world knows: live data and outside knowledge for your agents, from 50+ context sources.",
+    "status": "web",
+    "url": "https://context.fru.dev"
+  },
+  {
+    "icon": "rig",
+    "path": "rig",
+    "name": "Glyph Rig",
+    "short": "Rig",
+    "formerly": "Glyph Code",
+    "layer": 4,
+    "promise": "Where your agents run: one Rig that names, connects and manages every harness across your Macs.",
+    "status": "cli",
+    "repo": "fru-dev3/glyph"
+  },
+  {
+    "icon": "arena",
+    "path": null,
+    "name": "Glyph Arena",
+    "short": "Arena",
+    "promise": "Studio's lab: finds the best model and recipe for each task, tested on your own work.",
+    "status": "soon"
   }
 ]

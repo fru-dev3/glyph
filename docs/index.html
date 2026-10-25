@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Glyph | Apps by fru.dev</title>
-<meta name="description" content="Glyph keeps what you say, jot and record as plain files you own, and gives every AI agent you run the context to act on it. Studio, Jot and Code, by fru.dev.">
+<title>Glyph | Everything your AI agents need to work</title>
+<meta name="description" content="Glyph: everything your AI agents need to work. Four layers: Glyph Studio, the environment your agents work in; Glyph Jot, what you know; Glyph Knowledge, what the world knows; Glyph Rig, where your agents run. Plus two tools, Glyph Arena and Glyph Cast. By fru.dev.">
 <link rel="icon" href="/family/glyph-tile.svg" type="image/svg+xml">
 <link rel="icon" href="/family/glyph-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/family/glyph-180.png">
@@ -15,17 +15,17 @@
 <meta name="theme-color" content="#F7FBF5">
 <meta property="og:site_name" content="Glyph by fru.dev">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Glyph | Apps by fru.dev">
-<meta property="og:description" content="Glyph keeps what you say, jot and record as plain files you own, and gives every AI agent you run the context to act on it. Studio, Jot and Code, by fru.dev.">
+<meta property="og:title" content="Glyph | Everything your AI agents need to work">
+<meta property="og:description" content="Glyph: everything your AI agents need to work. Four layers: Glyph Studio, the environment your agents work in; Glyph Jot, what you know; Glyph Knowledge, what the world knows; Glyph Rig, where your agents run. Plus two tools, Glyph Arena and Glyph Cast. By fru.dev.">
 <meta property="og:url" content="https://glyph.fru.dev/">
 <meta property="og:image" content="https://glyph.fru.dev/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="The Glyph family of app icons in office green">
+<meta property="og:image:alt" content="Glyph: everything your AI agents need to work. Studio, Jot, Knowledge and Rig, plus Arena and Cast">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@fru">
-<meta name="twitter:title" content="Glyph | Apps by fru.dev">
-<meta name="twitter:description" content="Glyph keeps what you say, jot and record as plain files you own, and gives every AI agent you run the context to act on it. Studio, Jot and Code, by fru.dev.">
+<meta name="twitter:title" content="Glyph | Everything your AI agents need to work">
+<meta name="twitter:description" content="Glyph: everything your AI agents need to work. Four layers: Glyph Studio, the environment your agents work in; Glyph Jot, what you know; Glyph Knowledge, what the world knows; Glyph Rig, where your agents run. Plus two tools, Glyph Arena and Glyph Cast. By fru.dev.">
 <meta name="twitter:image" content="https://glyph.fru.dev/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,10 +35,11 @@
 {"@context":"https://schema.org","@graph":[
  {"@type":"Organization","@id":"https://fru.dev/#org","name":"fru.dev","url":"https://fru.dev","logo":"https://fru.dev/icon-512.png","sameAs":["https://github.com/fru-dev3"]},
  {"@type":"WebSite","@id":"https://glyph.fru.dev/#website","name":"Glyph","url":"https://glyph.fru.dev/","publisher":{"@id":"https://fru.dev/#org"}},
- {"@type":"ItemList","name":"The Glyph apps","itemListElement":[
+ {"@type":"ItemList","name":"The four layers of Glyph","itemListElement":[
   {"@type":"ListItem","position":1,"url":"https://glyph.fru.dev/studio","name":"Glyph Studio"},
   {"@type":"ListItem","position":2,"url":"https://glyph.fru.dev/jot","name":"Glyph Jot"},
-  {"@type":"ListItem","position":3,"url":"https://glyph.fru.dev/code","name":"Glyph Code"}]}
+  {"@type":"ListItem","position":3,"url":"https://glyph.fru.dev/knowledge","name":"Glyph Knowledge"},
+  {"@type":"ListItem","position":4,"url":"https://glyph.fru.dev/rig","name":"Glyph Rig"}]}
 ]}
 </script>
 <style>
@@ -62,9 +63,8 @@
 .tab{position:relative;overflow:hidden;width:100%;display:flex;flex-direction:column;align-items:center;gap:6px;padding:clamp(8px,1.4vh,14px) 6px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
 .tab img{width:clamp(34px,5.4vh,52px);height:auto;border-radius:22%}
 .tab b{font:800 clamp(15px,2vh,19px)/1 "Bricolage Grotesque",sans-serif}
-.tab .st{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:var(--green)}
-.tab .st.wait{color:var(--dim)}.tab .st svg{width:13px;height:13px}
-.tab.soon{cursor:default;background:transparent;border-style:dashed}.tab.soon img{opacity:.8}
+.tab .st{display:block;font-size:12px;line-height:1.25;font-weight:600;color:var(--soft);text-align:center;text-wrap:balance}
+.tab .st i{font-style:normal;font-weight:800;color:var(--green);margin-right:5px}
 .tab[aria-selected=true]{border-color:var(--tint-line);background:var(--tint)}
 .tab[aria-selected=true]::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--green);transform-origin:left;animation:fill var(--dur,7s) linear forwards}
 .tabs.hold .tab::after{animation-play-state:paused}
@@ -78,28 +78,31 @@
 @media not ((min-width:960px) and (min-height:560px)){
   .left .top{order:1}.left .cta{order:3}
 }
-@media (max-width:520px){.tab{padding:8px 2px;border-radius:12px}.tab .st span{display:none}.tab b{font-size:14px}}
-@media (min-width:960px) and (min-height:560px){.left{justify-content:center;gap:clamp(28px,6vh,64px)}.lede{font-size:clamp(20px,2.8vh,30px)}.right{gap:clamp(10px,1.8vh,18px)}.stage{width:min(100%,calc((100svh - 44px - 10vh - 260px) * 1.6))}}
+@media (max-width:520px){.tab{padding:8px 2px;border-radius:12px}.tab .st{display:none}.tab b{font-size:13px}}
+/* the two companion tools: smaller, one row under the layers */
+.comps{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 10px;width:100%}
+.comps .plus{font-size:13px;font-weight:700;color:var(--dim)}
+.comp{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 7px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;font-size:14px}
+a.comp:hover{border-color:var(--green)}
+.comp img{width:28px;height:28px;border-radius:22%}
+.comp b{font-weight:700}.comp small{margin-left:6px;color:var(--dim);font-size:12.5px}
+@media (max-width:1499px){.comp small{display:none}}
+@media (max-width:520px){.comps .plus{flex-basis:100%;text-align:center}}
+.comp em{font-style:normal;font-size:11.5px;font-weight:700;color:var(--dim);border:1px dashed var(--line);border-radius:999px;padding:1px 7px}
+.comp.soon{background:transparent;border-style:dashed}
+@media (min-width:960px) and (min-height:560px){.left{justify-content:center;gap:clamp(28px,6vh,64px)}.lede{font-size:clamp(20px,2.8vh,30px)}.right{gap:clamp(10px,1.8vh,18px)}.stage{width:min(100%,calc((100svh - 44px - 10vh - 310px) * 1.6))}}
 @media (max-width:1280px){.formac{display:none}}
-/* how they fit */
-.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:10px;padding:22px 28px 6px}
-.srcs{display:flex;flex-direction:column;gap:8px}
-.node{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:14px;background:var(--card);border:1px solid var(--line);text-decoration:none;color:var(--ink)}
-.node img{width:34px;height:34px;border-radius:22%;flex:none}
-.node b{display:block;font-size:15px;line-height:1.2}
-.node small{display:block;font-size:12.5px;color:var(--dim);line-height:1.3}
-.node.big{flex-direction:column;text-align:center;padding:16px 12px;background:var(--tint);border-color:var(--tint-line)}
-.node.big svg{width:38px;height:38px;color:var(--green)}
-.node.hub img{width:44px;height:44px}
-.flow .arr{width:26px;height:26px;color:var(--dim)}
-.flow .side{grid-column:1/-1;display:flex;align-items:center;gap:12px;margin-top:8px;padding-top:14px;border-top:1px dashed var(--line);color:var(--soft);font-size:14.5px}
-.flow .side .node{flex:none}
-@media (max-width:620px){
-  .flow{grid-template-columns:1fr;padding:16px 18px 4px}
-  .flow .arr{transform:rotate(90deg);justify-self:center}
-  .node.big{flex-direction:row;text-align:left}
-  .flow .side{flex-direction:column;align-items:stretch}
-}
+/* how they fit: the four layers, then the two tools */
+.layers{list-style:none;margin:0;padding:18px 24px 4px;display:grid;gap:8px}
+.layers a,.layers .li{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line);color:var(--ink);text-decoration:none}
+.layers a:hover{border-color:var(--green)}
+.layers i{font:800 20px/1 "Bricolage Grotesque",sans-serif;font-style:normal;color:var(--green);width:16px;flex:none;text-align:center}
+.layers img{width:40px;height:40px;border-radius:22%;flex:none}
+.layers b{font-size:16px}.layers small{display:block;font-size:13.5px;color:var(--soft);line-height:1.35}
+.layers em{font-style:normal;font-size:11.5px;font-weight:700;color:var(--dim);border:1px dashed var(--line);border-radius:999px;padding:1px 7px}
+.layers.two{grid-template-columns:1fr 1fr;padding-top:6px}.layers.two .li{background:transparent;border-style:dashed}
+.bound{margin:6px 24px 4px;padding:10px 14px;border-radius:12px;background:var(--tint);color:var(--green);font-weight:700;font-size:14.5px;text-align:center}
+@media (max-width:620px){.layers{padding:14px 16px 4px}.layers.two{grid-template-columns:1fr}.bound{margin:6px 16px 4px}}
 .famnote{margin:0;font-size:12px;color:var(--dim)}
 /* the home strip: five agents when wide, fewer as it narrows (site.css, .agents) */
 @media not ((min-width:960px) and (min-height:560px)){
@@ -114,8 +117,8 @@
   <div class="left">
     <div class="top">
       <a class="brand" href="/"><img class="icon" src="/family/glyph-tile.svg" width="80" height="80" alt=""><div><b>Glyph</b><span id="copy-label">by fru.dev</span></div></a>
-      <h1 data-lines='["compounds."]' data-fit=".left"><span id="copy-h1">Context</span> <em><span id="said">compounds.</span></em></h1>
-      <p class="lede" id="copy-sub">Capture it once. Every agent gets smarter.</p>
+      <h1 data-lines='["need to work."]' data-fit=".left,.cta"><span id="copy-h1">Everything your AI agents</span> <em><span id="said">need to work.</span></em></h1>
+      <p class="lede" id="copy-sub">Context compounds.</p>
     </div>
     <div class="cta loved">
       <a class="btn go" id="dl" href="https://github.com/fru-dev3/glyph-studio/releases/latest/download/Prevail-mac-arm64.dmg" data-track="file_download" title="Glyph Studio for Mac"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Download <span class="formac">Glyph </span>Studio</span><span class="dlc" data-downloads="fru-dev3/glyph-studio,fru-dev3/glyph-jot,fru-dev3/glyph-record,fru-dev3/glyph,fru-dev3/glyph-engine" data-match="(\.(dmg|exe|msi)|^(prevail|aireadyu)-v[0-9.]+-[a-z0-9-]+\.tar\.gz)$" data-floor="589" data-label="downloads across Glyph: every installer of Studio, Jot, Record and the engine, not counting auto-updates" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v12m0 0l-5-5m5 5l5-5"/></svg><b class="n"></b></span></a>
@@ -141,37 +144,45 @@
     <div class="stage" aria-live="polite">
       <div class="slide full on" data-k="studio"><video muted playsinline preload="metadata" poster="/studio/demos/council-light-start.webp" aria-label="Glyph Studio: a council of models answers a money question"></video></div>
       <div class="slide" data-k="jot"><img src="/jot/mac-recording-summary.webp" width="1600" height="1000" alt="Glyph Jot on the Mac: a meeting filed under Sam Lee, Acme and its tags, with the summary and decisions" loading="lazy"><img class="panel left" src="/jot/recorder-jotting.webp" width="720" height="270" alt="The recorder while you jot: Jotting. Kept out of this recording" loading="lazy"><img class="ph over" src="/jot/iphone-rec.webp" width="506" height="1100" alt="Glyph Jot on iPhone, the words appearing as you talk" loading="lazy"></div>
-      <div class="slide" data-k="code"><img src="/code/terminal.webp" width="1158" height="906" alt="Glyph Code: two named agent sessions side by side" loading="lazy"></div>
+      <div class="slide" data-k="knowledge"><img src="/knowledge/today.webp" width="1600" height="1000" alt="Glyph Knowledge at context.fru.dev: today's brief and every story ranked, from 50+ context sources" loading="lazy"></div>
+      <div class="slide" data-k="rig"><img src="/rig/terminal.webp" width="1158" height="906" alt="Glyph Rig: two named agent sessions side by side, Claude Code and Codex on the same change" loading="lazy"></div>
     </div>
-    <div class="cap"><span id="capline">A private AI harness for your life, on any model.</span><a id="capgo" href="/studio">Open Glyph Studio</a></div>
-    <div class="tabs" role="tablist" aria-label="The Glyph apps">
-      <button class="tab" role="tab" aria-selected="true" data-k="studio" data-href="/studio" data-name="Glyph Studio" data-line="A private AI harness for your life, on any model."><img src="/family/studio-tile.svg" alt=""><b>Studio</b><span class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac, Win</span></span></button>
-      <button class="tab" role="tab" aria-selected="false" data-k="jot" data-href="/jot" data-name="Glyph Jot" data-line="Hold Fn to jot in any app. Click Record for meetings."><img src="/family/dictate-tile.svg" alt=""><b>Jot</b><span class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac, iPhone</span></span></button>
-      <div class="tab soon" aria-disabled="true" title="Glyph Cast: screen videos, cleaned up. Coming soon."><img src="/family/cast-tile.svg" alt=""><b>Cast</b><span class="st wait"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Soon</span></span></div>
-      <button class="tab" role="tab" aria-selected="false" data-k="code" data-href="/code" data-name="Glyph Code" data-line="One identity for every coding agent you run."><img src="/family/code-tile.svg" alt=""><b>Code</b><span class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l6-6-6-6M12 19h8"/></svg><span>CLI</span></span></button>
+    <div class="cap"><span id="capline">The environment your agents work in: one harness that builds and runs them.</span><a id="capgo" href="/studio">Open Glyph Studio</a></div>
+    <div class="tabs" role="tablist" aria-label="The four layers of Glyph">
+      <button class="tab" role="tab" aria-selected="true" data-k="studio" data-href="/studio" data-name="Glyph Studio" data-line="The environment your agents work in: one harness that builds and runs them."><img src="/family/studio-tile.svg" alt=""><b>Studio</b><span class="st"><i>1</i>The environment</span></button>
+      <button class="tab" role="tab" aria-selected="false" data-k="jot" data-href="/jot" data-name="Glyph Jot" data-line="What you know: capture notes, ideas, decisions and meetings as your personal context."><img src="/family/dictate-tile.svg" alt=""><b>Jot</b><span class="st"><i>2</i>What you know</span></button>
+      <button class="tab" role="tab" aria-selected="false" data-k="knowledge" data-href="/knowledge" data-name="Glyph Knowledge" data-line="What the world knows: live data and outside knowledge for your agents, from 50+ context sources."><img src="/family/knowledge-tile.svg" alt=""><b>Knowledge</b><span class="st"><i>3</i>What the world knows</span></button>
+      <button class="tab" role="tab" aria-selected="false" data-k="rig" data-href="/rig" data-name="Glyph Rig" data-line="Where your agents run: one Rig that names, connects and manages every harness across your Macs."><img src="/family/rig-tile.svg" alt=""><b>Rig</b><span class="st"><i>4</i>Where agents run</span></button>
+    </div>
+    <!-- The companion tools, outside the four layers. When a tool's page is live, make its <div class="comp soon"> an <a class="comp" href="/<tool>"> and drop the Soon mark. -->
+    <div class="comps" aria-label="Plus two tools">
+      <span class="plus">Plus two tools</span>
+      <div class="comp soon" data-k="arena" title="Glyph Arena: Studio's lab: finds the best model and recipe for each task, tested on your own work. Coming soon."><img src="/family/arena-tile.svg" alt=""><span><b>Arena</b><small>Studio's lab</small></span><em>Soon</em></div>
+      <div class="comp soon" data-k="cast" title="Glyph Cast: screen videos, cleaned up. Coming soon."><img src="/family/cast-tile.svg" alt=""><span><b>Cast</b><small>Screen videos, cleaned up</small></span><em>Soon</em></div>
     </div>
   </div>
 </main>
 
 <dialog class="sheet" id="features" aria-labelledby="feat-h">
-  <div class="fhead"><img src="/family/glyph-tile.svg" width="40" height="40" alt=""><h2 id="feat-h">How they fit</h2><button type="button" class="fclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="flow" role="img" aria-label="Glyph Jot feeds one vault of plain files; Glyph Studio works on it with any AI. Glyph Code works beside them, for coding agents.">
-    <div class="srcs">
-      <a class="node" href="/jot"><img src="/family/dictate-tile.svg" alt=""><span><b>Jot</b><small>notes, dictation, meetings</small></span></a>
-    </div>
-    <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6l6 6-6 6"/></svg>
-    <div class="node big"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><span><b>One vault</b><small>plain files on your computer</small></span></div>
-    <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6l6 6-6 6"/></svg>
-    <a class="node hub" href="/studio"><img src="/family/studio-tile.svg" alt=""><span><b>Studio</b><small>any AI works on it</small></span></a>
-    <div class="side"><a class="node" href="/code"><img src="/family/code-tile.svg" alt=""><span><b>Code</b><small>for coding agents</small></span></a><span>Beside them: Glyph Code names every coding agent you run, so you can find each one and run them together.</span></div>
+  <div class="fhead"><img src="/family/glyph-tile.svg" width="40" height="40" alt=""><h2 id="feat-h">Four layers, plus two tools</h2><button type="button" class="fclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <ol class="layers" aria-label="The four layers of Glyph">
+    <li><a href="/studio"><i>1</i><img src="/family/studio-tile.svg" alt=""><span><b>Glyph Studio</b><small>The environment your agents work in: one harness that builds and runs them.</small></span></a></li>
+    <li><a href="/jot"><i>2</i><img src="/family/dictate-tile.svg" alt=""><span><b>Glyph Jot</b><small>What you know: capture notes, ideas, decisions and meetings as your personal context.</small></span></a></li>
+    <li><a href="/knowledge"><i>3</i><img src="/family/knowledge-tile.svg" alt=""><span><b>Glyph Knowledge</b><small>What the world knows: live data and outside knowledge for your agents, from 50+ context sources.</small></span></a></li>
+    <li><a href="/rig"><i>4</i><img src="/family/rig-tile.svg" alt=""><span><b>Glyph Rig</b><small>Where your agents run: one Rig that names, connects and manages every harness across your Macs.</small></span></a></li>
+  </ol>
+  <p class="bound">Studio builds and runs a harness; the Rig connects and manages the harnesses across machines.</p>
+  <div class="layers two" aria-label="Plus two tools">
+    <div class="li"><img src="/family/arena-tile.svg" alt=""><span><b>Glyph Arena</b> <em>soon</em><small>Studio's lab: finds the best model and recipe for each task, tested on your own work.</small></span></div>
+    <div class="li"><img src="/family/cast-tile.svg" alt=""><span><b>Glyph Cast</b> <em>soon</em><small>Screen videos, cleaned up.</small></span></div>
   </div>
   <div class="flist">
-    <div class="fq"><h3>Catch it</h3><p>Glyph Jot is one Mac app for two jobs. Hold Fn to jot: your words are typed into whatever app you are in, and Fn + Shift keeps a note. Click Record for meetings and long conversations: it records your mic and the Mac's sound, then writes the transcript and a summary on your Mac. Glyph Record is now part of Jot.</p></div>
-    <div class="fq"><h3>The iPhone app</h3><p>On iPhone it is one app, called Glyph: your notes and the Glyph keyboard. It is in TestFlight testing.</p></div>
-    <div class="fq"><h3>Keep it</h3><p>Everything lands as plain files you can open, back up and move: Markdown, text and audio. No account, and the speech runs on your own devices.</p></div>
-    <div class="fq"><h3>Work on it</h3><p>Glyph Studio reads that vault, area by area: health, money, work, home. Ask one model, or a council of several, and pick a different model for each area.</p></div>
-    <div class="fq"><h3>Glyph Code</h3><p>Glyph Code is for people who run coding agents: Claude Code, Codex, Gemini and Cursor sessions each get one name, so you always know which is which.</p></div>
-    <div class="fq"><h3>Why Glyph</h3><p>Glyph is short for petroglyph. Every icon in the family carries the same figure, with one sign beside it for what that app does.</p></div>
+    <div class="fq"><h3>Context compounds</h3><p>What you jot and what the world publishes both land as context your agents can read. Every note and every source makes the next answer better, on any model.</p></div>
+    <div class="fq"><h3>Your files</h3><p>Jot and Studio keep everything as plain files on your computer: Markdown, text and audio. No account, and the speech runs on your own devices.</p></div>
+    <div class="fq"><h3>Studio and the Rig</h3><p>Studio is one harness: you ask, it works on your vault with one model or a council. The Rig sits under every harness you run, Claude Code, Codex, Gemini or Cursor, and names, connects and manages them across your Macs.</p></div>
+    <div class="fq"><h3>Plus two tools</h3><p>Glyph Arena tests which model and recipe does each task best on your own work, and Studio follows its picks. Glyph Cast turns screen recordings into clean videos.</p></div>
+    <div class="fq"><h3>Formerly</h3><p>Studio was Prevail. Jot took in Dictate and Record (Memosa). Knowledge was Ibis. The Rig was Glyph Code: same glyph command, same repo.</p></div>
+    <div class="fq"><h3>Why Glyph</h3><p>Glyph is short for petroglyph. Every icon in the family carries the same figure, with one sign beside it for what that part does.</p></div>
   </div>
 </dialog>
 

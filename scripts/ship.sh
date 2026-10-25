@@ -33,7 +33,7 @@ vdeploy() {
 echo "deploying"
 vdeploy --prebuilt --prod
 
-for p in / /studio /jot /code /docs /docs.html; do
+for p in / /studio /jot /rig /knowledge /docs /docs.html; do
   CODE=$(curl -sL -o /dev/null -w '%{http_code}' "https://glyph.fru.dev$p")
   if [ "$CODE" != "200" ]; then
     echo "glyph.fru.dev$p answered $CODE, expected 200"
@@ -49,6 +49,18 @@ for p in /dictate /mobile /record /record/ /dictate/; do
   done
   if [ "$TO" != "https://glyph.fru.dev/jot" ]; then
     echo "glyph.fru.dev$p redirects to '$TO', expected /jot"
+    exit 1
+  fi
+done
+# Glyph Code became Glyph Rig (2026-10-25): the old page keeps working.
+for p in /code /code/; do
+  for _ in 1 2 3 4 5 6; do
+    TO=$(curl -s -o /dev/null -w '%{redirect_url}' "https://glyph.fru.dev$p")
+    [ "$TO" = "https://glyph.fru.dev/rig" ] && break
+    sleep 5
+  done
+  if [ "$TO" != "https://glyph.fru.dev/rig" ]; then
+    echo "glyph.fru.dev$p redirects to '$TO', expected /rig"
     exit 1
   fi
 done
