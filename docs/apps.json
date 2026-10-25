@@ -13,15 +13,16 @@
     "name": "Glyph Jot",
     "short": "Jot",
     "formerly": "Glyph Dictate",
-    "status": "download"
+    "status": "download",
+    "includes": "Glyph Record (formerly Memosa), merged 2026-10-25: /record redirects here",
+    "repo": "fru-dev3/glyph-jot"
   },
   {
-    "icon": "record",
-    "path": "record",
-    "name": "Glyph Record",
-    "short": "Record",
-    "formerly": "Memosa",
-    "status": "download"
+    "icon": "cast",
+    "path": null,
+    "name": "Glyph Cast",
+    "short": "Cast",
+    "status": "soon"
   },
   {
     "icon": "code",

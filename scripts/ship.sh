@@ -33,14 +33,14 @@ vdeploy() {
 echo "deploying"
 vdeploy --prebuilt --prod
 
-for p in / /studio /jot /record /code /docs /docs.html; do
+for p in / /studio /jot /code /docs /docs.html; do
   CODE=$(curl -sL -o /dev/null -w '%{http_code}' "https://glyph.fru.dev$p")
   if [ "$CODE" != "200" ]; then
     echo "glyph.fru.dev$p answered $CODE, expected 200"
     exit 1
   fi
 done
-for p in /dictate /mobile; do
+for p in /dictate /mobile /record; do
   # a fresh deploy's redirects can take a few seconds to answer
   for _ in 1 2 3 4 5 6; do
     TO=$(curl -s -o /dev/null -w '%{redirect_url}' "https://glyph.fru.dev$p")

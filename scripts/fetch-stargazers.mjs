@@ -8,12 +8,12 @@ import { mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync, rmSync
 import { execSync } from "node:child_process";
 
 const OWNER = "fru-dev3";
-const FAMILY = ["glyph-studio", "glyph-engine", "glyph-dictate", "glyph-record", "glyph"];
+const FAMILY = ["glyph-studio", "glyph-engine", "glyph-jot", "glyph"];
 const PAGES = [
   { file: "index.html", repos: FAMILY, label: "Glyph" },
   { file: "studio/index.html", repos: ["glyph-studio"], label: "Glyph Studio" },
-  { file: "jot/index.html", repos: ["glyph-dictate"], label: "Glyph Jot" },
-  { file: "record/index.html", repos: ["glyph-record"], label: "Glyph Record" },
+  // Glyph Record folded into Glyph Jot (2026-10-25); its repo (0 stars) is archived
+  { file: "jot/index.html", repos: ["glyph-jot"], label: "Glyph Jot" },
   { file: "code/index.html", repos: ["glyph"], label: "Glyph Code" },
 ];
 const SHOW = 12, MIN = 3;

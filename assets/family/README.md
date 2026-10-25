@@ -14,6 +14,7 @@ pose of rock art. It holds its shape down to 16 px.
 | Glyph Dictate (`dictate*`) | Three sound arcs leaving the figure's head, fading as they go: you talk, it types. |
 | Glyph Mobile (`mobile*`) | A phone beside the figure with a voice waveform on its screen: memos and the keyboard on iPhone. |
 | Glyph Record (`record*`) | A record button, a ring around a solid light-green dot: meetings, calls, long talks. |
+| Glyph Cast (`cast*`) | A play triangle inside a screen frame on a short stand: screen videos. Coming, not released. |
 | Glyph Code (`code*`) | A `>_` prompt with a light-green cursor: the command-line tool for coding agents. |
 
 ## Files

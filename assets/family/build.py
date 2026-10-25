@@ -34,13 +34,17 @@ RIGHT = {
     # recording: the record button, a ring around a solid dot
     "record": f'<circle cx="72" cy="53" r="17" stroke-width="6.5" stroke-opacity="{SOFT}"/>'
               f'<circle cx="72" cy="53" r="8.5" fill="{ACCENT}" stroke="none"/>',
+    # screen video: a play triangle inside a screen frame, on a short stand
+    "cast": f'<rect x="51" y="33" width="42" height="31" rx="6" stroke-width="6" stroke-opacity="{SOFT}"/>'
+            f'<path d="M67 41.5v14l11-7z" fill="{ACCENT}" stroke="{ACCENT}" stroke-width="3"/>'
+            '<path d="M64 77h16M72 64v13" stroke-width="6"/>',
     # command line: a ">_" prompt
     "code": '<path d="M53 37l15 15-15 15" stroke-width="7"/>'
             f'<path d="M74 67h16" stroke="{ACCENT}" stroke-width="7"/>',
 }
-APPS = ["studio", "dictate", "mobile", "record", "code"]
+APPS = ["studio", "dictate", "mobile", "record", "cast", "code"]
 LABEL = {"glyph": "Glyph", "studio": "Glyph Studio", "dictate": "Glyph Dictate",
-         "mobile": "Glyph Mobile", "record": "Glyph Record", "code": "Glyph Code"}
+         "mobile": "Glyph Mobile", "record": "Glyph Record", "cast": "Glyph Cast", "code": "Glyph Code"}
 
 
 def mark(name, color="#fff"):
@@ -99,7 +103,7 @@ def main():
         write(f"{app}-macos.svg", macos(app))
         rsvg(f"{HERE}/{app}-macos.svg", f"{HERE}/{app}-1024.png", 1024)
         rsvg(f"{HERE}/{app}-tile.svg", f"{HERE}/{app}-512.png", 512)
-        if app != "code":  # Code is a command-line tool: no app bundle, no iOS icon
+        if app not in ("code", "cast"):  # Cast is not built yet; Code is a command-line tool: no app bundle, no iOS icon
             src = f"{tmp}/{app}-ios.svg"
             open(src, "w").write(ios(app))
             rsvg(src, f"{tmp}/{app}-ios.png", 1024)

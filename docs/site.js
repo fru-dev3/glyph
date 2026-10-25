@@ -124,3 +124,19 @@ $$("[data-downloads]").forEach((el) => {
       show(n); try { localStorage.setItem(key, JSON.stringify({ n, at: Date.now() })); } catch {} })
     .catch(() => {});
 });
+
+// The version beside an app's name: the latest release's number, asked at most once an hour per
+// browser; the number baked into the page stays until an answer comes.
+$$("[data-version]").forEach((el) => {
+  const key = "ver:" + el.dataset.version;
+  const show = (t) => { const v = (t || "").match(/\d+(\.\d+)+/); if (v) el.textContent = "v" + v[0]; };
+  let saved = null; try { saved = JSON.parse(localStorage.getItem(key)); } catch {}
+  show(saved?.t);
+  if (saved && Date.now() - saved.at < 3600e3) return;
+  // shields.io first (cached, no rate limit for visitors), GitHub's API if that fails
+  fetch(`https://img.shields.io/github/v/release/${el.dataset.version}.json`).then((r) => (r.ok ? r.json() : Promise.reject()))
+    .then((d) => { if (!/\d/.test(d.value || "")) throw 0; return d.value; })
+    .catch(() => fetch(`https://api.github.com/repos/${el.dataset.version}/releases/latest`).then((r) => (r.ok ? r.json() : null)).then((d) => d?.tag_name))
+    .then((t) => { if (!t) return; show(t); try { localStorage.setItem(key, JSON.stringify({ t, at: Date.now() })); } catch {} })
+    .catch(() => {});
+});

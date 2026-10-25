@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Glyph | Apps by fru.dev</title>
-<meta name="description" content="Glyph keeps what you say, jot and record as plain files you own, and gives every AI agent you run the context to act on it. Studio, Jot, Record and Code, by fru.dev.">
+<meta name="description" content="Glyph keeps what you say, jot and record as plain files you own, and gives every AI agent you run the context to act on it. Studio, Jot and Code, by fru.dev.">
 <link rel="icon" href="/family/glyph-tile.svg" type="image/svg+xml">
 <link rel="icon" href="/family/glyph-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/family/glyph-180.png">
@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="Glyph by fru.dev">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Glyph | Apps by fru.dev">
-<meta property="og:description" content="Glyph keeps what you say, jot and record as plain files you own, and gives every AI agent you run the context to act on it. Studio, Jot, Record and Code, by fru.dev.">
+<meta property="og:description" content="Glyph keeps what you say, jot and record as plain files you own, and gives every AI agent you run the context to act on it. Studio, Jot and Code, by fru.dev.">
 <meta property="og:url" content="https://glyph.fru.dev/">
 <meta property="og:image" content="https://glyph.fru.dev/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -25,7 +25,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@fru">
 <meta name="twitter:title" content="Glyph | Apps by fru.dev">
-<meta name="twitter:description" content="Glyph keeps what you say, jot and record as plain files you own, and gives every AI agent you run the context to act on it. Studio, Jot, Record and Code, by fru.dev.">
+<meta name="twitter:description" content="Glyph keeps what you say, jot and record as plain files you own, and gives every AI agent you run the context to act on it. Studio, Jot and Code, by fru.dev.">
 <meta name="twitter:image" content="https://glyph.fru.dev/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,8 +38,7 @@
  {"@type":"ItemList","name":"The Glyph apps","itemListElement":[
   {"@type":"ListItem","position":1,"url":"https://glyph.fru.dev/studio","name":"Glyph Studio"},
   {"@type":"ListItem","position":2,"url":"https://glyph.fru.dev/jot","name":"Glyph Jot"},
-  {"@type":"ListItem","position":3,"url":"https://glyph.fru.dev/record","name":"Glyph Record"},
-  {"@type":"ListItem","position":4,"url":"https://glyph.fru.dev/code","name":"Glyph Code"}]}
+  {"@type":"ListItem","position":3,"url":"https://glyph.fru.dev/code","name":"Glyph Code"}]}
 ]}
 </script>
 <style>
@@ -52,7 +51,7 @@
 .slide.full{padding:0}.slide.full video,.slide.full img{width:100%;height:100%;object-fit:contain;border-radius:0}
 .slide .ph{height:100%;width:auto;border-radius:clamp(14px,2.4vh,26px);border:clamp(3px,.5vh,6px) solid #0B0F0C;background:#0B0F0C}
 .slide .ph.over{position:absolute;right:6%;bottom:6%;height:74%;box-shadow:0 20px 40px var(--shadow)}
-.slide .panel{position:absolute;right:4%;bottom:5%;width:34%;box-shadow:0 14px 30px var(--shadow);border-radius:12px}
+.slide .panel{position:absolute;right:4%;bottom:5%;width:34%;box-shadow:0 14px 30px var(--shadow);border-radius:12px}.slide .panel.left{right:auto;left:5%;bottom:6%;width:32%}
 .slide .pill{position:absolute;left:50%;bottom:5%;transform:translateX(-50%);display:flex;align-items:center;gap:3px;height:clamp(34px,5vh,50px);padding:0 clamp(16px,2vh,24px);border-radius:999px;background:#0B0F0C;color:#fff;font:600 clamp(13px,1.8vh,17px) -apple-system,sans-serif;white-space:nowrap;box-shadow:0 12px 30px rgba(0,0,0,.3)}
 .slide .pill i{display:block;width:4px;height:6px;border-radius:2px;background:#fff;animation:wv 1s ease-in-out infinite;animation-delay:calc(var(--k) * -.12s)}
 .slide .pill b{margin-left:10px}
@@ -65,12 +64,18 @@
 .tab b{font:800 clamp(15px,2vh,19px)/1 "Bricolage Grotesque",sans-serif}
 .tab .st{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:var(--green)}
 .tab .st.wait{color:var(--dim)}.tab .st svg{width:13px;height:13px}
+.tab.soon{cursor:default;background:transparent;border-style:dashed}.tab.soon img{opacity:.8}
 .tab[aria-selected=true]{border-color:var(--tint-line);background:var(--tint)}
 .tab[aria-selected=true]::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--green);transform-origin:left;animation:fill var(--dur,7s) linear forwards}
 .tabs.hold .tab::after{animation-play-state:paused}
 @keyframes fill{from{transform:scaleX(0)}}
 @media not ((min-width:960px) and (min-height:560px)){
-  .right{display:flex;flex-direction:column;align-items:center;gap:12px;order:5;width:min(100%,560px)}
+  .right{display:flex;flex-direction:column;align-items:center;gap:12px;order:5;width:min(100%,440px)}
+  /* phones and tablets: no stage; the tabs are the way to each app */
+  .right .stage,.right .cap,.right .proof{display:none}
+  .lede{font-size:16px}
+}
+@media not ((min-width:960px) and (min-height:560px)){@media (max-height:700px){main{gap:10px}}
   .left .top{order:1}.left .cta{order:3}
 }
 @media (max-width:520px){.tab{padding:8px 2px;border-radius:12px}.tab .st span{display:none}.tab b{font-size:14px}}
@@ -95,22 +100,18 @@
   .node.big{flex-direction:row;text-align:left}
   .flow .side{flex-direction:column;align-items:stretch}
 }
-/* the strip: the paid apps the family replaces, by Glyph app */
-.fam{gap:8px;padding:10px 14px}
-.fam .grp{display:flex;flex-direction:column;align-items:center;gap:5px}
-.fam .grp+.grp{padding-left:10px;border-left:1px solid var(--line)}
-.fam .paid{gap:8px}
-.fam figure img,.fam .ours img{width:clamp(34px,4.4vh,44px)}
-.fam .gl{display:inline-flex;align-items:center;gap:5px;font:700 12px -apple-system,sans-serif;color:var(--green);text-decoration:none;white-space:nowrap}
-.fam .gl img{width:16px;height:16px;border-radius:24%}
-.fam .gl:hover{text-decoration:underline}
-.fam .ours b{font-size:clamp(18px,2.4vh,22px)}
+.left .fam{justify-content:space-evenly}
+@container (max-width:580px){.fam .x3{display:none}}
 .famnote{margin:0;font-size:12px;color:var(--dim)}
 @media not ((min-width:960px) and (min-height:560px)){
-  .left .fam{order:4;width:min(100%,560px);overflow-x:auto;scrollbar-width:none}.left .famnote{order:4;width:min(100%,560px);text-align:center}
+  .left .fam{order:4;width:min(100%,440px)}.left .left .fam{justify-content:space-evenly}
+@container (max-width:580px){.fam .x3{display:none}}
+.famnote{order:4;width:min(100%,440px);text-align:center}
 }
 @media (max-width:440px){.fam{gap:6px;padding:8px 10px}.fam .grp+.grp{padding-left:6px}.fam .paid{gap:5px}.fam figure img,.fam .ours img{width:32px}}
-@media (min-width:960px) and (min-height:560px){.left .cta.loved{margin-bottom:clamp(44px,6vh,72px)}.left .famnote{margin-top:calc(8px - clamp(28px,6vh,64px))}}
+@media (min-width:960px) and (min-height:560px){.left .cta.loved{margin-bottom:clamp(44px,6vh,72px)}.left .left .fam{justify-content:space-evenly}
+@container (max-width:580px){.fam .x3{display:none}}
+.famnote{margin-top:calc(8px - clamp(28px,6vh,64px))}}
 </style>
 </head>
 <body data-page="home">
@@ -125,11 +126,10 @@
       <a class="btn go" id="dl" href="https://github.com/fru-dev3/glyph-studio/releases/latest/download/Prevail-mac-arm64.dmg" data-track="file_download" title="Glyph Studio for Mac"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Download <span class="formac">Glyph </span>Studio</span><span class="dlc" data-downloads="fru-dev3/glyph-studio" data-match="\.(dmg|exe)$" data-floor="388" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v12m0 0l-5-5m5 5l5-5"/></svg><b class="n"></b></span></a>
       <a class="btn star" href="https://github.com/fru-dev3/glyph-studio" data-track="star_on_github" aria-label="Star Glyph Studio on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg><span class="lbl">Star</span><span class="count" data-stars="fru-dev3/glyph-studio" data-floor="37" hidden></span><span class="love" aria-hidden="true"><svg class="arrow" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M52 6C51 28 32 44 8 54"/><path d="M44 14l8-10 7 10"/></svg><span class="say">show some love<svg class="heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></span></span></a>
     </div>
-    <div class="alt fam" aria-label="Instead of Wispr Flow at 15 dollars a month or Superwhisper at 8.49 for dictation, and Granola at 14, Otter at 16.99 or Fireflies at 18 for meetings, the Glyph apps are free on GitHub">
-      <div class="grp"><div class="paid"><figure><img src="/logos/wispr.webp" width="48" height="48" alt="Wispr Flow" title="Wispr Flow"><s>$15</s></figure><figure><img src="/logos/superwhisper.webp" width="48" height="48" alt="Superwhisper" title="Superwhisper"><s>$8.49</s></figure></div><a class="gl" href="/jot"><img src="/family/dictate-tile.svg" alt="">Jot</a></div>
-      <div class="grp"><div class="paid"><figure><img src="/logos/granola.webp" width="48" height="48" alt="Granola" title="Granola"><s>$14</s></figure><figure><img src="/logos/otter.webp" width="48" height="48" alt="Otter" title="Otter"><s>$16.99</s></figure><figure><img src="/logos/fireflies.webp" width="48" height="48" alt="Fireflies" title="Fireflies"><s>$18</s></figure></div><a class="gl" href="/record"><img src="/family/record-tile.svg" alt="">Record</a></div>
+    <div class="alt fam" aria-label="Instead of Wispr Flow at 15 dollars a month, Superwhisper at 8.49, Willow at 15 or Aqua Voice at 10 for dictation, and Granola at 14, Otter at 16.99, Fireflies at 18 or Fathom at 20 for meetings, Glyph Jot is free on GitHub">
+      <div class="grp"><div class="paid"><figure><img src="/logos/wispr.webp" width="48" height="48" alt="Wispr Flow" title="Wispr Flow"><s>$15</s></figure><figure><img src="/logos/superwhisper.webp" width="48" height="48" alt="Superwhisper" title="Superwhisper"><s>$8.49</s></figure><figure class="x3"><img src="/logos/willow.webp" width="48" height="48" alt="Willow Voice" title="Willow Voice"><s>$15</s></figure><figure class="x3"><img src="/logos/aqua.webp" width="48" height="48" alt="Aqua Voice" title="Aqua Voice"><s>$10</s></figure><figure><img src="/logos/granola.webp" width="48" height="48" alt="Granola" title="Granola"><s>$14</s></figure><figure><img src="/logos/otter.webp" width="48" height="48" alt="Otter" title="Otter"><s>$16.99</s></figure><figure><img src="/logos/fireflies.webp" width="48" height="48" alt="Fireflies" title="Fireflies"><s>$18</s></figure><figure class="x3"><img src="/logos/fathom.webp" width="48" height="48" alt="Fathom" title="Fathom"><s>$20</s></figure></div><a class="gl" href="/jot"><img src="/family/dictate-tile.svg" alt="">Jot: dictation and meetings</a></div>
       <span class="or">or</span>
-      <a class="ours" href="https://github.com/fru-dev3/glyph"><img src="/family/glyph-tile.svg" width="48" height="48" alt=""><b>Free</b><small>on GitHub</small></a>
+      <a class="ours" href="https://github.com/fru-dev3/glyph-jot"><img src="/family/dictate-tile.svg" width="48" height="48" alt=""><b>Free</b><small>on GitHub</small></a>
     </div>
     <p class="note famnote">Logos belong to their owners. Monthly prices from their sites, October 2026. Not affiliated.</p>
   </div>
@@ -139,15 +139,14 @@
     <!-- /stargazers -->
     <div class="stage" aria-live="polite">
       <div class="slide full on" data-k="studio"><video muted playsinline preload="metadata" poster="/studio/demos/council-light-start.webp" aria-label="Glyph Studio: a council of models answers a money question"></video></div>
-      <div class="slide" data-k="jot"><img src="/jot/app-ask.webp" width="1600" height="1189" alt="Glyph Jot on the Mac: today's dictations into Slack, Terminal, Mail and Notes" loading="lazy"><img class="ph over" src="/jot/iphone-rec.webp" width="506" height="1100" alt="Glyph Jot on iPhone, the words appearing as you talk" loading="lazy"><div class="pill" aria-hidden="true"><i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i><i style="--k:4"></i><i style="--k:5"></i><i style="--k:6"></i><b>0:04</b></div></div>
-      <div class="slide" data-k="record"><img src="/record/app-light.webp" width="1600" height="1000" alt="Glyph Record: a call filed by person, company and tags, with its summary" loading="lazy"><img class="panel" src="/record/panel-light.webp" width="720" height="272" alt="The recorder panel" loading="lazy"></div>
+      <div class="slide" data-k="jot"><img src="/jot/app-ask.webp" width="1600" height="1189" alt="Glyph Jot on the Mac: today's dictations into Slack, Terminal, Mail and Notes" loading="lazy"><img class="panel left" src="/jot/panel-light.webp" width="720" height="272" alt="The Record panel while a meeting is recorded" loading="lazy"><img class="ph over" src="/jot/iphone-rec.webp" width="506" height="1100" alt="Glyph Jot on iPhone, the words appearing as you talk" loading="lazy"><div class="pill" aria-hidden="true"><i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i><i style="--k:4"></i><i style="--k:5"></i><i style="--k:6"></i><b>0:04</b></div></div>
       <div class="slide" data-k="code"><img src="/code/terminal.webp" width="1158" height="906" alt="Glyph Code: two named agent sessions side by side" loading="lazy"></div>
     </div>
     <div class="cap"><span id="capline">A private AI harness for your life, on any model.</span><a id="capgo" href="/studio">Open Glyph Studio</a></div>
     <div class="tabs" role="tablist" aria-label="The Glyph apps">
       <button class="tab" role="tab" aria-selected="true" data-k="studio" data-href="/studio" data-name="Glyph Studio" data-line="A private AI harness for your life, on any model."><img src="/family/studio-tile.svg" alt=""><b>Studio</b><span class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac, Win</span></span></button>
-      <button class="tab" role="tab" aria-selected="false" data-k="jot" data-href="/jot" data-name="Glyph Jot" data-line="Talk, and your words land in any app, or as a note you keep."><img src="/family/dictate-tile.svg" alt=""><b>Jot</b><span class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac, iPhone</span></span></button>
-      <button class="tab" role="tab" aria-selected="false" data-k="record" data-href="/record" data-name="Glyph Record" data-line="Meetings and calls, filed by who was there."><img src="/family/record-tile.svg" alt=""><b>Record</b><span class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac</span></span></button>
+      <button class="tab" role="tab" aria-selected="false" data-k="jot" data-href="/jot" data-name="Glyph Jot" data-line="Hold Fn to jot in any app. Click Record for meetings."><img src="/family/dictate-tile.svg" alt=""><b>Jot</b><span class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Mac, iPhone</span></span></button>
+      <div class="tab soon" aria-disabled="true" title="Glyph Cast: screen videos, cleaned up. Coming soon."><img src="/family/cast-tile.svg" alt=""><b>Cast</b><span class="st wait"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Soon</span></span></div>
       <button class="tab" role="tab" aria-selected="false" data-k="code" data-href="/code" data-name="Glyph Code" data-line="One identity for every coding agent you run."><img src="/family/code-tile.svg" alt=""><b>Code</b><span class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l6-6-6-6M12 19h8"/></svg><span>CLI</span></span></button>
     </div>
   </div>
@@ -155,10 +154,9 @@
 
 <dialog class="sheet" id="features" aria-labelledby="feat-h">
   <div class="fhead"><img src="/family/glyph-tile.svg" width="40" height="40" alt=""><h2 id="feat-h">How they fit</h2><button type="button" class="fclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="flow" role="img" aria-label="Glyph Jot and Glyph Record feed one vault of plain files; Glyph Studio works on it with any AI. Glyph Code works beside them, for coding agents.">
+  <div class="flow" role="img" aria-label="Glyph Jot feeds one vault of plain files; Glyph Studio works on it with any AI. Glyph Code works beside them, for coding agents.">
     <div class="srcs">
-      <a class="node" href="/jot"><img src="/family/dictate-tile.svg" alt=""><span><b>Jot</b><small>typed in any app, or a note</small></span></a>
-      <a class="node" href="/record"><img src="/family/record-tile.svg" alt=""><span><b>Record</b><small>meetings and calls</small></span></a>
+      <a class="node" href="/jot"><img src="/family/dictate-tile.svg" alt=""><span><b>Jot</b><small>notes, dictation, meetings</small></span></a>
     </div>
     <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6l6 6-6 6"/></svg>
     <div class="node big"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><span><b>One vault</b><small>plain files on your computer</small></span></div>
@@ -167,8 +165,8 @@
     <div class="side"><a class="node" href="/code"><img src="/family/code-tile.svg" alt=""><span><b>Code</b><small>for coding agents</small></span></a><span>Beside them: Glyph Code names every coding agent you run, so you can find each one and run them together.</span></div>
   </div>
   <div class="flist">
-    <div class="fq"><h3>Catch it</h3><p>Glyph Jot is for talking: your words land in whatever app you are in, or as a note you keep. On the Mac, hold Fn to type and Fn + Shift for a note; on iPhone, the Glyph app and the Glyph keyboard. Glyph Record keeps your meetings and long conversations, filed by who was there: Mac first, iPhone later.</p></div>
-    <div class="fq"><h3>The iPhone app</h3><p>On iPhone it is one app, called Glyph: your notes, the Glyph keyboard, and later Record. It is in TestFlight testing.</p></div>
+    <div class="fq"><h3>Catch it</h3><p>Glyph Jot is one Mac app for two jobs. Hold Fn to jot: your words are typed into whatever app you are in, and Fn + Shift keeps a note. Click Record for meetings and long conversations: it records your mic and the Mac's sound, then writes the transcript and a summary on your Mac. Glyph Record is now part of Jot.</p></div>
+    <div class="fq"><h3>The iPhone app</h3><p>On iPhone it is one app, called Glyph: your notes and the Glyph keyboard. It is in TestFlight testing.</p></div>
     <div class="fq"><h3>Keep it</h3><p>Everything lands as plain files you can open, back up and move: Markdown, text and audio. No account, and the speech runs on your own devices.</p></div>
     <div class="fq"><h3>Work on it</h3><p>Glyph Studio reads that vault, area by area: health, money, work, home. Ask one model, or a council of several, and pick a different model for each area.</p></div>
     <div class="fq"><h3>Glyph Code</h3><p>Glyph Code is for people who run coding agents: Claude Code, Codex, Gemini and Cursor sessions each get one name, so you always know which is which.</p></div>
@@ -191,7 +189,7 @@
 // Windows visitors get the Windows installer.
 if(/win/i.test(navigator.userAgent+" "+navigator.platform)&&!/mac/i.test(navigator.platform)){document.getElementById("dl").href="https://github.com/fru-dev3/glyph-studio/releases/latest/download/Prevail-windows-x64-setup.exe";document.getElementById("dl").title="Glyph Studio for Windows"}
 // The stage: each app at work for seven seconds (Studio plays its clip through), a tap picks one, hovering holds it.
-const tabs=document.querySelector(".tabs"),bs=[...tabs.querySelectorAll(".tab")],sl=[...document.querySelectorAll(".slide")];
+const tabs=document.querySelector(".tabs"),bs=[...tabs.querySelectorAll("button.tab")],sl=[...document.querySelectorAll(".slide")];
 const v=document.querySelector(".slide video"),capline=document.getElementById("capline"),capgo=document.getElementById("capgo");
 let i=0,timer,held=false;
 function show(n){i=n;const b=bs[n];bs.forEach(x=>x.setAttribute("aria-selected",x===b));sl.forEach(s=>s.classList.toggle("on",s.dataset.k===b.dataset.k));
@@ -201,7 +199,8 @@ function show(n){i=n;const b=bs[n];bs.forEach(x=>x.setAttribute("aria-selected",
   clearTimeout(timer);if(still||held)return;
   const dur=b.dataset.k==="studio"&&v.duration?Math.max(7,v.duration-1):7;b.style.setProperty("--dur",dur+"s");
   b.style.animation="none";b.offsetWidth;b.style.animation="";timer=setTimeout(()=>show((i+1)%bs.length),dur*1000)}
-bs.forEach((b,n)=>b.addEventListener("click",()=>{show(n);try{gtag("event","home_stage",{app:b.dataset.k})}catch{}}));
+const narrow=matchMedia("not ((min-width:960px) and (min-height:560px))");
+bs.forEach((b,n)=>b.addEventListener("click",()=>{if(narrow.matches){location.href=b.dataset.href;return}show(n);try{gtag("event","home_stage",{app:b.dataset.k})}catch{}}));
 const st=document.querySelector(".right");
 st.addEventListener("mouseenter",()=>{held=true;clearTimeout(timer);tabs.classList.add("hold")});
 st.addEventListener("mouseleave",()=>{held=false;tabs.classList.remove("hold");show(i)});

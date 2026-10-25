@@ -54,6 +54,16 @@
       "source": "/mobile/:path*",
       "destination": "/jot/:path*",
       "permanent": true
+    },
+    {
+      "source": "/record",
+      "destination": "/jot",
+      "permanent": true
+    },
+    {
+      "source": "/record/:path*",
+      "destination": "/jot/:path*",
+      "permanent": true
     }
   ]
 }
