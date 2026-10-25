@@ -97,11 +97,32 @@ $$("button[data-copy]").forEach((b) => b.addEventListener("click", () => {
   track("copy_install");
 }));
 
+// Every live number (stars, downloads, versions) is one small answer from shields.io or GitHub.
+// Each answer is kept in localStorage for an hour, a failed one too, so a page view asks nothing
+// when a fresh answer is saved and a rate-limited visitor does not ask again (and log another
+// 403) for an hour. Only the reduced answer is saved, never a whole release list. Without
+// localStorage (private mode, blocked storage) the page still works: it just asks each time.
+// Without any answer, the number baked into the page stays.
+const HOUR = 3600e3, asked = new Map();
+function cachedJson(url, reduce) {
+  if (asked.has(url)) return asked.get(url);
+  const key = "c1:" + url;
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(key)); } catch {}
+  const p = saved && Date.now() - saved.at < HOUR
+    ? (saved.ok ? Promise.resolve(saved.v) : Promise.reject(new Error("failed within the hour")))
+    : fetch(url).then((r) => (r.ok ? r.json() : Promise.reject(new Error("HTTP " + r.status)))).then(reduce)
+        .then((v) => { try { localStorage.setItem(key, JSON.stringify({ at: Date.now(), ok: true, v })); } catch {} return v; },
+              (e) => { try { localStorage.setItem(key, JSON.stringify({ at: Date.now(), ok: false })); } catch {} throw e; });
+  asked.set(url, p);
+  return p;
+}
+const shieldsNumber = (d) => { const n = parseInt(d.value, 10); if (!(n >= 0)) throw new Error("no number"); return n; };
+
 // Star counts: shields.io first (it caches GitHub, so no visitor meets GitHub's 60 an hour),
 // GitHub's API if that fails, never below the number baked into the page. Several repos add up.
-const starsOf = (repo) => fetch(`https://img.shields.io/github/stars/${repo}.json`).then((r) => (r.ok ? r.json() : Promise.reject()))
-  .then((d) => { const n = parseInt(d.value, 10); if (!(n >= 0)) throw 0; return n; })
-  .catch(() => fetch(`https://api.github.com/repos/${repo}`).then((r) => (r.ok ? r.json() : null)).then((d) => d?.stargazers_count || 0).catch(() => 0));
+const starsOf = (repo) => cachedJson(`https://img.shields.io/github/stars/${repo}.json`, shieldsNumber)
+  .catch(() => cachedJson(`https://api.github.com/repos/${repo}`, (d) => d.stargazers_count || 0)).catch(() => 0);
 $$("[data-stars]").forEach((el) => {
   const floor = +el.dataset.floor || 0, out = $(".n", el) || el;
   const show = (n) => { n = Math.max(n, floor); if (n > 0) { out.textContent = n.toLocaleString("en-US"); el.hidden = false; } };
@@ -116,37 +137,27 @@ $$("[data-stars]").forEach((el) => {
 // app, so they are left out. Never below the number baked into the page (data-floor), which is a
 // real count taken from the same API at the last edit, so it can only undercount (it keeps the
 // number on screen when GitHub rate-limits a visitor); never anything invented.
+// Every page of releases: glyph-studio has more than 100 of them, and reading only the first page
+// undercounted it (388 where the true installer total was 511, 2026-10-25). data-downloads may
+// name several repos (the home's family total): their counts add up.
+const releasePage = (repo, n) => cachedJson(`https://api.github.com/repos/${repo}/releases?per_page=100&page=${n}`,
+  (rels) => ({ full: rels.length === 100, assets: rels.flatMap((r) => (r.assets || []).map((a) => [a.name, a.download_count || 0])) }));
+const allAssets = (repo, n = 1) => releasePage(repo, n).then((pg) => (pg.full ? allAssets(repo, n + 1).then((more) => pg.assets.concat(more)) : pg.assets));
 $$("[data-downloads]").forEach((el) => {
   const floor = +el.dataset.floor || 0, out = $(".n", el), re = new RegExp(el.dataset.match || "\\.dmg$");
   const show = (n) => { n = Math.max(n || 0, floor); if (n > 0) { out.textContent = n.toLocaleString("en-US"); el.title = n.toLocaleString("en-US") + " " + (el.dataset.label || "downloads"); el.setAttribute("aria-label", el.title); el.hidden = false; } };
-  // GitHub allows 60 unsigned requests an hour per network: ask at most once an hour per browser.
-  const key = "dl:" + el.dataset.downloads;
-  let saved = null; try { saved = JSON.parse(localStorage.getItem(key)); } catch {}
-  show(saved?.n);
-  if (saved && Date.now() - saved.at < 3600e3) return;
-  // Every page of releases: glyph-studio has more than 100 of them, and reading only the first
-  // page undercounted it (388 where the true installer total was 511, 2026-10-25).
-  // data-downloads may name several repos (the home's family total): their counts add up.
-  const page = (repo, n, acc) => fetch(`https://api.github.com/repos/${repo}/releases?per_page=100&page=${n}`)
-    .then((r) => (r.ok ? r.json() : Promise.reject())).then((rels) => (rels.length === 100 ? page(repo, n + 1, acc.concat(rels)) : acc.concat(rels)));
-  Promise.all(el.dataset.downloads.split(",").map((repo) => page(repo.trim(), 1, []))).then((all) => all.flat())
-    .then((rels) => { const n = rels.flatMap((r) => r.assets || []).filter((a) => re.test(a.name)).reduce((t, a) => t + (a.download_count || 0), 0);
-      show(n); try { localStorage.setItem(key, JSON.stringify({ n, at: Date.now() })); } catch {} })
+  show(0);
+  Promise.all(el.dataset.downloads.split(",").map((repo) => allAssets(repo.trim())))
+    .then((lists) => show(lists.flat().filter(([name]) => re.test(name)).reduce((t, [, c]) => t + c, 0)))
     .catch(() => {});
 });
 
-// The version beside an app's name: the latest release's number, asked at most once an hour per
-// browser; the number baked into the page stays until an answer comes.
+// The version beside an app's name: the latest release's number, shields.io first, GitHub's API
+// if that fails; the number baked into the page stays until an answer comes.
 $$("[data-version]").forEach((el) => {
-  const key = "ver:" + el.dataset.version;
+  const repo = el.dataset.version;
   const show = (t) => { const v = (t || "").match(/\d+(\.\d+)+/); if (v) el.textContent = "v" + v[0]; };
-  let saved = null; try { saved = JSON.parse(localStorage.getItem(key)); } catch {}
-  show(saved?.t);
-  if (saved && Date.now() - saved.at < 3600e3) return;
-  // shields.io first (cached, no rate limit for visitors), GitHub's API if that fails
-  fetch(`https://img.shields.io/github/v/release/${el.dataset.version}.json`).then((r) => (r.ok ? r.json() : Promise.reject()))
-    .then((d) => { if (!/\d/.test(d.value || "")) throw 0; return d.value; })
-    .catch(() => fetch(`https://api.github.com/repos/${el.dataset.version}/releases/latest`).then((r) => (r.ok ? r.json() : null)).then((d) => d?.tag_name))
-    .then((t) => { if (!t) return; show(t); try { localStorage.setItem(key, JSON.stringify({ t, at: Date.now() })); } catch {} })
-    .catch(() => {});
+  cachedJson(`https://img.shields.io/github/v/release/${repo}.json`, (d) => { if (!/\d/.test(d.value || "")) throw new Error("no version"); return d.value; })
+    .catch(() => cachedJson(`https://api.github.com/repos/${repo}/releases/latest`, (d) => d.tag_name))
+    .then(show).catch(() => {});
 });
