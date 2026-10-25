@@ -114,7 +114,8 @@ $$("[data-stars]").forEach((el) => {
 // on the home also the engine's command-line binaries, prevail-v* and aireadyu-v* .tar.gz).
 // The auto-updater's own fetches (latest.json, .app.tar.gz, .sig) are not people downloading the
 // app, so they are left out. Never below the number baked into the page (data-floor), which is a
-// real count taken from the same API at the last edit; never anything invented.
+// real count taken from the same API at the last edit, so it can only undercount (it keeps the
+// number on screen when GitHub rate-limits a visitor); never anything invented.
 $$("[data-downloads]").forEach((el) => {
   const floor = +el.dataset.floor || 0, out = $(".n", el), re = new RegExp(el.dataset.match || "\\.dmg$");
   const show = (n) => { n = Math.max(n || 0, floor); if (n > 0) { out.textContent = n.toLocaleString("en-US"); el.title = n.toLocaleString("en-US") + " " + (el.dataset.label || "downloads"); el.setAttribute("aria-label", el.title); el.hidden = false; } };
