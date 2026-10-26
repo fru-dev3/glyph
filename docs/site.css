@@ -54,6 +54,7 @@ a.ours:hover small{color:var(--green)}
 /* /studio: five always-on agents when the strip is wide, three when it narrows */
 @container (max-width:540px){.agents .s5{display:none}}
 @container (max-width:470px){.agents .s4{display:none}}
+@container (max-width:620px){.agents .s3{display:none}}
 /* a strip in groups: the paid apps, by what they do (the home, /jot) */
 .fam{gap:8px;padding:10px 14px}
 .fam .grp{display:flex;flex-direction:column;align-items:center;gap:5px}
