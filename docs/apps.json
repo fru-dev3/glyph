@@ -52,10 +52,11 @@
   },
   {
     "icon": "arena",
-    "path": null,
+    "path": "arena",
     "name": "Glyph Arena",
     "short": "Arena",
     "promise": "Studio's lab: finds the best model and recipe for each task, tested on your own work.",
-    "status": "soon"
+    "status": "download",
+    "repo": "fru-dev3/glyph-arena"
   }
 ]

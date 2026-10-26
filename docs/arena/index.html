@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Glyph Arena | Which AI is best for your own work</title>
+<meta name="description" content="Glyph Arena replays your own past tasks on two AI recipes at a time (a model plus its prompt, vault context and tools), settles what it can with checkers, and asks you for two-second blind picks on the rest. It writes the routing policy Glyph Studio follows. Health and money stay on local models. Free and open source for Mac.">
+<link rel="icon" href="/family/arena-tile.svg" type="image/svg+xml">
+<link rel="icon" href="/family/arena-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/family/arena-180.png">
+<link rel="canonical" href="https://glyph.fru.dev/arena">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="author" content="fru.dev">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F7FBF5">
+<meta property="og:site_name" content="Glyph by fru.dev">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Glyph Arena | Which AI is best for your own work">
+<meta property="og:description" content="Your own tasks, two recipes at a time, blind picks in two seconds. The routing policy Glyph Studio follows. Free for Mac.">
+<meta property="og:url" content="https://glyph.fru.dev/arena">
+<meta property="og:image" content="https://glyph.fru.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Glyph family of app icons in office green">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@fru">
+<meta name="twitter:image" content="https://glyph.fru.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+ {"@type":"Organization","@id":"https://fru.dev/#org","name":"fru.dev","url":"https://fru.dev","logo":"https://fru.dev/icon-512.png","sameAs":["https://github.com/fru-dev3"]},
+ {"@type":"SoftwareApplication","@id":"https://glyph.fru.dev/arena#app","name":"Glyph Arena",
+  "applicationCategory":"DeveloperApplication","operatingSystem":"macOS (Apple silicon)",
+  "url":"https://glyph.fru.dev/arena","downloadUrl":"https://github.com/fru-dev3/glyph-arena/releases/latest",
+  "codeRepository":"https://github.com/fru-dev3/glyph-arena","isAccessibleForFree":true,
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@id":"https://fru.dev/#org"},
+  "description":"Tests AI recipes (model, prompt, vault context, tools) on your own past tasks, with checkers and two-second blind picks, and writes the routing policy Glyph Studio follows."}
+]}
+</script>
+<style>
+/* four screens take turns, like Jot's views */
+.views{position:relative}
+.view{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .6s,transform .6s,visibility 0s .6s}
+.view.on{opacity:1;visibility:visible;transform:none;transition:opacity .6s,transform .6s}
+.view .shot{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:14px;box-shadow:0 26px 60px var(--shadow),0 0 0 1px rgba(0,0,0,.06)}
+.seg{display:inline-flex;gap:4px;padding:5px;border-radius:999px;background:var(--card);border:1px solid var(--line)}
+.seg button{position:relative;overflow:hidden;border:0;background:transparent;border-radius:999px;padding:8px 18px;font:600 15px -apple-system,BlinkMacSystemFont,sans-serif;color:var(--soft);cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.seg button svg{width:17px;height:17px}
+.seg button[aria-selected=true]{background:var(--tint);color:var(--green)}
+.seg button[aria-selected=true]::after{content:"";position:absolute;left:14px;right:14px;bottom:3px;height:2px;border-radius:2px;background:var(--green);transform-origin:left;animation:fill 6s linear forwards}
+.seg.hold button::after{animation-play-state:paused}
+@keyframes fill{from{transform:scaleX(0)}}
+/* the alternatives are habits, not products: drawn as plain tiles */
+.alt .tile.k{display:grid;place-items:center;background:#fff;color:var(--soft)}
+.alt .tile.k svg{width:52%;height:52%}
+</style>
+</head>
+<body data-page="arena">
+<main>
+  <div class="left">
+    <div class="top">
+      <a class="brand" href="/arena"><img class="icon" src="/family/arena-tile.svg" width="72" height="72" alt=""><div><b>Glyph Arena<small class="ver" data-version="fru-dev3/glyph-arena" title="Latest release">v0.1.0</small></b><span>The lab for Glyph Studio</span></div></a>
+      <h1 data-lines='["Tested on your work.","Picked blind.","Cheaper, if it&#39;s even."]'>Which AI? <em><span id="said">Tested on your work.</span><i class="caret" aria-hidden="true"></i></em></h1>
+    </div>
+    <div class="alt" aria-label="Instead of public leaderboards, generic benchmarks or a hunch, Glyph Arena tests models on your own tasks, free on GitHub">
+      <div class="paid">
+        <figure title="Public leaderboards rank models on other people's prompts"><span class="tile k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0zM17 5h3v2a3 3 0 01-3 3M7 5H4v2a3 3 0 003 3"/></svg></span><figcaption>Leaderboards</figcaption></figure>
+        <figure title="Generic benchmarks test what a lab chose to test"><span class="tile k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><figcaption>Benchmarks</figcaption></figure>
+        <figure class="s3" title="Or picking the model you heard about"><span class="tile k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg></span><figcaption>A hunch</figcaption></figure>
+      </div>
+      <span class="or">or</span>
+      <a class="ours" href="https://github.com/fru-dev3/glyph-arena"><img src="/family/arena-tile.svg" width="48" height="48" alt=""><b>Your tasks</b><small>free, on GitHub</small></a>
+    </div>
+    <div class="cta loved">
+      <a class="btn go" id="dl" href="https://github.com/fru-dev3/glyph-arena/releases/latest/download/Glyph-Arena-mac-arm64.dmg" data-track="file_download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Download<span class="formac"> for Mac</span></span><span class="dlc" data-downloads="fru-dev3/glyph-arena" data-match="\.dmg$" data-floor="0" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v12m0 0l-5-5m5 5l5-5"/></svg><b class="n"></b></span></a>
+      <a class="btn star" href="https://github.com/fru-dev3/glyph-arena" data-track="star_on_github" aria-label="Star Glyph Arena on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg><span class="lbl">Star</span><span class="count" data-stars="fru-dev3/glyph-arena" data-floor="0" hidden></span><span class="love" aria-hidden="true"><svg class="arrow" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M52 6C51 28 32 44 8 54"/><path d="M44 14l8-10 7 10"/></svg><span class="say">show some love<svg class="heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></span></span></a>
+    </div>
+    <ul class="badges">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-7 9 7v10a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg>Health and money stay home</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Your files</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>Open source</li>
+    </ul>
+    <p class="note">Screens show a made-up demo vault. Apple silicon, macOS 13 or later.</p>
+  </div>
+  <div class="right">
+    <div class="views fill" data-ar="1.6" aria-live="polite">
+      <figure class="view on" data-k="policy" style="margin:0"><img class="shot" src="/arena/policy.webp" width="1600" height="1000" alt="Glyph Arena's routing policy: drafting goes to the cheaper of two even recipes, coding to the one that passed the tests, health to a local model" fetchpriority="high"></figure>
+      <figure class="view" data-k="picks" style="margin:0"><img class="shot" src="/arena/picks.webp" width="1600" height="1000" alt="A blind pick: two answers to one of your own tasks, names hidden, pick one in two seconds" loading="lazy"></figure>
+      <figure class="view" data-k="leagues" style="margin:0"><img class="shot" src="/arena/leagues.webp" width="1600" height="1000" alt="Leagues: each domain and kind of task, with the leading recipe in each" loading="lazy"></figure>
+      <figure class="view" data-k="safety" style="margin:0"><img class="shot" src="/arena/safety.webp" width="1600" height="1000" alt="Safety: the Home Only league keeps health and money on local models; a model that gave unsafe advice is suspended in that domain" loading="lazy"></figure>
+    </div>
+    <div class="seg" role="tablist" aria-label="Glyph Arena's screens">
+      <button type="button" role="tab" aria-selected="true" data-k="policy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 000-7h-11a3.5 3.5 0 010-7H15"/><circle cx="18" cy="5" r="3"/></svg>Policy</button>
+      <button type="button" role="tab" aria-selected="false" data-k="picks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 17.5L3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2M9.5 17.5L21 6V3h-3L6.5 14.5M11 19l-6-6M8 16l-4 4M5 21l-2-2"/></svg>Blind picks</button>
+      <button type="button" role="tab" aria-selected="false" data-k="leagues"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0z"/></svg>Leagues</button>
+      <button type="button" role="tab" aria-selected="false" data-k="safety"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>Safety</button>
+    </div>
+  </div>
+</main>
+
+<dialog class="sheet" id="features" aria-labelledby="feat-h">
+  <div class="fhead"><img src="/family/arena-tile.svg" width="40" height="40" alt=""><h2 id="feat-h">Everything Glyph Arena does</h2><button type="button" class="fclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="flist">
+    <div class="fq"><h3>Recipes, not bare models</h3><p>A recipe is a model plus how it is asked: prompt style, the vault context it gets, and its tools. Arena tests the whole recipe.</p></div>
+    <div class="fq"><h3>Ghost replays of your own tasks</h3><p>The prompts you actually gave your AI tools, replayed on two recipes at a time. Prompts that only made sense in their old conversation are left out.</p></div>
+    <div class="fq"><h3>Leagues and weight classes</h3><p>Every domain and kind of task (drafting, decisions, research, planning, video scripts, coding) is its own league, split into light, middle and heavy by difficulty.</p></div>
+    <div class="fq"><h3>Checkers first</h3><p>A number that must reconcile, valid JSON, code that passes its tests, a word limit, citations. When a checker can settle a duel, nobody has to.</p></div>
+    <div class="fq"><h3>Two-second blind picks</h3><p>Only where the answers really differ: two answers, names hidden, one key to pick. Then the names are shown, with the unblinding score: how often your blind pick matched the current route.</p></div>
+    <div class="fq"><h3>Equivalent, use the cheaper</h3><p>When two recipes come out even, the cheaper one gets the route, and the policy says how much cheaper.</p></div>
+    <div class="fq"><h3>A routing policy with reasons</h3><p>Plain files in your vault. Glyph Studio's Auto follows it and says "routed by Arena"; every route carries one sentence on why.</p></div>
+    <div class="fq"><h3>Home Only league</h3><p>Health and money run on local models only, on this Mac or your own machines, refused before any call. Nothing is sent.</p></div>
+    <div class="fq"><h3>Adverse-event register</h3><p>Flag an answer that made something up or gave unsafe advice. One severe event, or two major ones in 30 days, suspends that model in that domain.</p></div>
+    <div class="fq"><h3>Spend cap and sentinels</h3><p>A monthly cap is checked before every cloud call. Six fixed tasks run weekly to catch a model that quietly got worse.</p></div>
+    <div class="fq"><h3>Scouting</h3><p>New local models and the overnight web scout's picks show up as challengers, one click to add.</p></div>
+    <div class="fq"><h3>Open source</h3><p>MIT. Arena's logic lives in Glyph Engine, next to the model providers it uses.</p></div>
+  </div>
+</dialog>
+
+<footer>
+  <div class="bar">
+    <nav aria-label="Footer">
+      <a class="home" href="/"><img src="/family/glyph-tile.svg" width="16" height="16" alt="">Glyph</a>
+      <a class="feat" href="#features"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Features</a>
+      <a class="opt" href="/studio" title="The app that follows Arena's policy">Studio</a>
+      <a class="opt" href="https://github.com/fru-dev3/glyph-arena/releases" title="Every release">Releases</a>
+      <a class="opt" href="https://github.com/fru-dev3/glyph-arena/issues" title="Contact: open an issue">Contact</a>
+      <a class="opt" href="https://fru.dev"><img src="/fru-dev.png" width="16" height="16" alt="">fru.dev</a>
+    </nav>
+    <a class="built" href="https://github.com/fru-dev3/glyph-arena"><span><span class="bw">Built with </span><svg class="heart-i" width="14" height="14" viewBox="0 0 24 24" fill="#E0465B" aria-label="love"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg> + AI<span class="opt"> · easy to make your own on GitHub</span></span></a>
+  </div>
+</footer>
+<script src="/site.js"></script>
+<script>
+// The screens take turns every six seconds; a tap picks one, hovering holds it.
+const seg=document.querySelector(".seg"),sb=[...seg.querySelectorAll("button")],vw=[...document.querySelectorAll(".view")];
+let vi=0,vt,vh=false;
+function view(n){vi=n;sb.forEach((b,k)=>{b.setAttribute("aria-selected",k===n);b.style.animation="none";b.offsetWidth;b.style.animation=""});vw.forEach((v,k)=>v.classList.toggle("on",k===n));
+  clearTimeout(vt);if(!still&&!vh)vt=setTimeout(()=>view((vi+1)%vw.length),6000)}
+sb.forEach((b,n)=>b.addEventListener("click",()=>{view(n);track("arena_view",{view:b.dataset.k})}));
+const rt=document.querySelector(".right");
+rt.addEventListener("mouseenter",()=>{vh=true;clearTimeout(vt);seg.classList.add("hold")});
+rt.addEventListener("mouseleave",()=>{vh=false;seg.classList.remove("hold");view(vi)});
+view(0);
+</script>
+</body>
+</html>
