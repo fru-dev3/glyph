@@ -1,7 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Glyph Dictate">
-  <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a8f0a"/><stop offset="1" stop-color="#007000"/></linearGradient>
-    <filter id="s" x="-10%" y="-10%" width="120%" height="125%"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000" flood-opacity=".22"/></filter></defs>
-  <rect x="100" y="100" width="824" height="824" rx="185" filter="url(#s)"/>
-  <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#g)"/>
-  <g transform="translate(182.4 182.4) scale(6.592)"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"><circle cx="26" cy="17" r="8" fill="#fff" stroke="none"/><path d="M9 22v4a17 17 0 0 0 34 0v-4M26 43v21M26 64 15 89M26 64l11 25" stroke-width="7"/><path d="M50 13.4a20 20 0 0 1 0 21.2" stroke-width="6.5"/><path d="M60.1 7a32 32 0 0 1 0 33.9" stroke-width="6.5" stroke-opacity=".78"/><path d="M70.3 .7a44 44 0 0 1 0 46.6" stroke-width="6.5" stroke-opacity=".55"/></g></g>
-</svg>
+<svg role="img" aria-label="Glyph Jot" viewBox="-12.136 -12.136 124.272 124.272" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="22" fill="#008000"></rect><rect x="41" y="17" width="18" height="30" rx="9" fill="#fff"></rect><path d="M45.5 26h9M45.5 31h9M45.5 36h9" fill="none" stroke="#008000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity=".55"></path><path d="M29 30v4a21 21 0 0 0 42 0v-4M50 55v13M50 68L39 83M50 68L61 83" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path></svg>

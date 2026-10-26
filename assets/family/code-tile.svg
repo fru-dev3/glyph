@@ -1,4 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Glyph Code">
-  <rect width="100" height="100" rx="22" fill="#008000"/>
-  <g transform="translate(10 10) scale(.8)"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"><circle cx="26" cy="17" r="8" fill="#fff" stroke="none"/><path d="M9 22v4a17 17 0 0 0 34 0v-4M26 43v21M26 64 15 89M26 64l11 25" stroke-width="7"/><path d="M53 37l15 15-15 15" stroke-width="7"/><path d="M74 67h16" stroke="#b9f0b0" stroke-width="7"/></g></g>
-</svg>
+<svg role="img" aria-label="Glyph Rig" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="22" fill="#008000"></rect><rect x="34" y="22" width="32" height="24" rx="5" fill="#fff"></rect><path d="M43.16 29.32l4.68 4.68l-4.68 4.68M50.72 39.04h6.4799999999999995" fill="none" stroke="#008000" stroke-width="2.34" stroke-linecap="round" stroke-linejoin="round"></path><path d="M26 30v4a24 24 0 0 0 48 0v-4M50 58v11M50 69L39 84M50 69L61 84" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
