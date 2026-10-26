@@ -208,4 +208,3 @@ footer .built .heart-i{display:inline-block;vertical-align:-2px;margin:0 1px}
 @media (max-width:380px){footer .built .bw{display:none}}
 .brand span i::before{content:" · "}
 @media (max-width:480px){.brand span i{display:block;margin-top:2px}.brand span i::before{content:none}}
-@media (max-width:440px){footer .built{display:none}} /* the company name comes first on a phone */
