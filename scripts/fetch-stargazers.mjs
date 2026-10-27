@@ -8,13 +8,17 @@ import { mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync, rmSync
 import { execSync } from "node:child_process";
 
 const OWNER = "fru-dev3";
-const FAMILY = ["glyph-studio", "glyph-engine", "glyph-jot", "glyph"];
+const FAMILY = ["glyph-studio", "glyph-engine", "glyph-jot", "glyph", "glyph-arena", "glyph-cast"];
 const PAGES = [
   { file: "index.html", repos: FAMILY, label: "Glyph" },
   { file: "studio/index.html", repos: ["glyph-studio"], label: "Glyph Studio" },
   // Glyph Record folded into Glyph Jot (2026-10-25); its repo (0 stars) is archived
   { file: "jot/index.html", repos: ["glyph-jot"], label: "Glyph Jot" },
   { file: "rig/index.html", repos: ["glyph"], label: "Glyph Rig" },
+  { file: "arena/index.html", repos: ["glyph-arena"], label: "Glyph Arena" },
+  { file: "cast/index.html", repos: ["glyph-cast"], label: "Glyph Cast" },
+  // Ibis's code is private (context.fru.dev), so its page shows the family's stargazers
+  { file: "ibis/index.html", repos: [], label: "Glyph Ibis" },
 ];
 const SHOW = 12, MIN = 3;
 const DOCS = new URL("../docs/", import.meta.url);

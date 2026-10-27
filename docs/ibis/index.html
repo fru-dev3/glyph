@@ -39,19 +39,19 @@
 ]}
 </script>
 <style>
-.lede{margin:0;color:var(--soft);font:600 clamp(16px,2.2vh,21px)/1.35 -apple-system,BlinkMacSystemFont,sans-serif}
 .views{position:relative}
 .view{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .6s,transform .6s,visibility 0s .6s}
 .view.on{opacity:1;visibility:visible;transform:none;transition:opacity .6s,transform .6s}
 .view a{display:block;max-width:100%;max-height:100%}
-.view .shot{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;background:#fff;border:1px solid var(--line)}
+.view .shot{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;background:#fff;border-radius:14px;box-shadow:0 26px 60px var(--shadow),0 0 0 1px rgba(0,0,0,.06)}
 .seg{display:inline-flex;gap:4px;padding:5px;border-radius:999px;background:var(--card);border:1px solid var(--line)}
 .seg button{position:relative;overflow:hidden;border:0;background:transparent;border-radius:999px;padding:8px 18px;font:600 15px -apple-system,BlinkMacSystemFont,sans-serif;color:var(--soft);cursor:pointer}
 .seg button[aria-selected=true]{background:var(--tint);color:var(--green)}
 .seg button[aria-selected=true]::after{content:"";position:absolute;left:14px;right:14px;bottom:3px;height:2px;border-radius:2px;background:var(--green);transform-origin:left;animation:fill 6s linear forwards}
 .seg.hold button::after{animation-play-state:paused}
 @keyframes fill{from{transform:scaleX(0)}}
-.cta .btn.star .lbl{white-space:nowrap;display:inline!important}
+.alt .lab{font:600 12.5px -apple-system,sans-serif;color:var(--dim);white-space:nowrap}
+.badges a{color:inherit;text-decoration:none;display:inherit;align-items:inherit;gap:inherit}.badges a:hover{color:var(--green)}
 </style>
 </head>
 <body data-page="knowledge">
@@ -60,21 +60,35 @@
     <div class="top">
       <a class="brand" href="/ibis"><img class="icon" src="/family/knowledge-tile.svg" width="72" height="72" alt=""><div><b>Glyph Ibis</b><span>What the world knows</span></div></a>
       <h1 data-lines='["Always current.","For every agent.","Free to read."]'>The world, live. <em><span id="said">Always current.</span><i class="caret" aria-hidden="true"></i></em></h1>
-      <p class="lede">Live data and outside knowledge for your agents, from 50+ context sources.</p>
     </div>
-    <div class="cta">
+    <div class="alt agents" aria-label="Instead of reading Hacker News, Product Hunt, TechCrunch, The Verge, Feedly or the TLDR newsletter yourself, Glyph Ibis keeps it organized for your agents, free">
+      <div class="paid">
+        <figure title="Hacker News"><img src="/logos/hackernews.webp" width="48" height="48" alt="Hacker News"><span class="lab">forum</span></figure>
+        <figure title="Product Hunt"><img src="/logos/producthunt.webp" width="48" height="48" alt="Product Hunt"><span class="lab">launches</span></figure>
+        <figure title="TechCrunch"><img src="/logos/techcrunch.webp" width="48" height="48" alt="TechCrunch"><span class="lab">news</span></figure>
+        <figure class="s3" title="The Verge"><img src="/logos/theverge.webp" width="48" height="48" alt="The Verge"><span class="lab">news</span></figure>
+        <figure class="s4" title="Feedly"><img src="/logos/feedly.webp" width="48" height="48" alt="Feedly"><span class="lab">feeds</span></figure>
+        <figure class="s5" title="TLDR newsletter"><img src="/logos/tldr.webp" width="48" height="48" alt="TLDR newsletter"><span class="lab">newsletter</span></figure>
+      </div>
+      <span class="or">or</span>
+      <a class="ours" href="https://context.fru.dev"><img src="/family/knowledge-tile.svg" width="48" height="48" alt=""><b>For agents</b><small>not a feed to read</small></a>
+    </div>
+    <div class="cta loved">
       <a class="btn go" href="https://context.fru.dev" data-track="open_context"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-3 3-3 15 0 18M12 3c3 3 3 15 0 18"/></svg><span>Open context.fru.dev</span></a>
-      <button class="btn star" type="button" data-copy="https://context.fru.dev/llms.txt" data-done="Copied" title="Copy the address your agent reads: https://context.fru.dev/llms.txt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg><span class="lbl">llms.txt</span></button>
+      <a class="btn star" href="https://github.com/fru-dev3/glyph" data-track="star_on_github" aria-label="Star Glyph on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg><span class="lbl">Star</span><span class="count" data-stars="fru-dev3/glyph" hidden></span><span class="love" aria-hidden="true"><svg class="arrow" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M52 6C51 28 32 44 8 54"/><path d="M44 14l8-10 7 10"/></svg><span class="say">show some love<svg class="heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></span></span></a>
     </div>
     <ul class="badges">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>Each source refreshes itself</li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>llms.txt, MCP and API</li>
+      <li><a href="https://context.fru.dev/llms.txt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>llms.txt, MCP and API</a></li>
     </ul>
-    <p class="note">Built only from public sources, each linked. Free to read, free for agents to call.</p>
+    <p class="note">Built only from public sources, each linked. Free to read, free for agents to call. Logos belong to their owners. Not affiliated.</p>
   </div>
   <div class="right">
+    <!-- stargazers -->
+    <div class="proof"><div class="faces"><a href="https://github.com/Albricengwa" target="_blank" rel="noreferrer" title="Albricengwa"><img src="/stargazers/Albricengwa.png" width="40" height="40" alt="Albricengwa" loading="lazy"></a><a href="https://github.com/Wishtrader" target="_blank" rel="noreferrer" title="Wishtrader"><img src="/stargazers/Wishtrader.png" width="40" height="40" alt="Wishtrader" loading="lazy"></a><a href="https://github.com/hamedelbhrawy" target="_blank" rel="noreferrer" title="hamedelbhrawy"><img src="/stargazers/hamedelbhrawy.png" width="40" height="40" alt="hamedelbhrawy" loading="lazy"></a><a href="https://github.com/Nessjk" target="_blank" rel="noreferrer" title="Nessjk"><img src="/stargazers/Nessjk.png" width="40" height="40" alt="Nessjk" loading="lazy"></a><a href="https://github.com/tranngochung0885-pixel" target="_blank" rel="noreferrer" title="tranngochung0885-pixel"><img src="/stargazers/tranngochung0885-pixel.png" width="40" height="40" alt="tranngochung0885-pixel" loading="lazy"></a><a href="https://github.com/MDsniper" target="_blank" rel="noreferrer" title="MDsniper"><img src="/stargazers/MDsniper.png" width="40" height="40" alt="MDsniper" loading="lazy"></a><a href="https://github.com/DFA5" target="_blank" rel="noreferrer" title="DFA5"><img src="/stargazers/DFA5.png" width="40" height="40" alt="DFA5" loading="lazy"></a><a href="https://github.com/TLCSglobal" target="_blank" rel="noreferrer" title="TLCSglobal"><img src="/stargazers/TLCSglobal.png" width="40" height="40" alt="TLCSglobal" loading="lazy"></a><a href="https://github.com/sina-chobak" target="_blank" rel="noreferrer" title="sina-chobak"><img src="/stargazers/sina-chobak.png" width="40" height="40" alt="sina-chobak" loading="lazy"></a><a href="https://github.com/RajaRuling" target="_blank" rel="noreferrer" title="RajaRuling"><img src="/stargazers/RajaRuling.png" width="40" height="40" alt="RajaRuling" loading="lazy"></a><a href="https://github.com/usblsb" target="_blank" rel="noreferrer" title="usblsb"><img src="/stargazers/usblsb.png" width="40" height="40" alt="usblsb" loading="lazy"></a><a href="https://github.com/asthort" target="_blank" rel="noreferrer" title="asthort"><img src="/stargazers/asthort.png" width="40" height="40" alt="asthort" loading="lazy"></a><span class="more">+33</span></div><p><a href="https://github.com/fru-dev3" target="_blank" rel="noreferrer"><b>45</b><span class="dv"> developers</span> starred Glyph<svg class="heart" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></a></p></div>
+    <!-- /stargazers -->
     <div class="views fill" data-ar="1.6" aria-live="polite">
-      <figure class="view on" style="margin:0"><a href="https://context.fru.dev"><img class="shot" src="/ibis/today.webp" width="1600" height="1000" alt="context.fru.dev, Today: the evening brief, what is coming up, and every story ranked by priority with the companies in it" fetchpriority="high"></a></figure>
+      <figure class="view on" style="margin:0"><a href="https://context.fru.dev"><img class="shot" src="/ibis/today.webp" width="1600" height="1000" alt="context.fru.dev, Today: the brief for the day, what is coming up, and every story ranked by priority with the companies in it" fetchpriority="high"></a></figure>
       <figure class="view" style="margin:0"><a href="https://context.fru.dev/sources"><img class="shot" src="/ibis/sources.webp" width="1600" height="1000" alt="context.fru.dev, Sources: every context source with when it last refreshed and what it covers" loading="lazy"></a></figure>
     </div>
     <div class="seg" role="tablist" aria-label="Glyph Ibis at context.fru.dev"><button type="button" role="tab" aria-selected="true">Today</button><button type="button" role="tab" aria-selected="false">Sources</button></div>
@@ -89,7 +103,7 @@
     <div class="fq"><h3>Today</h3><p>One page for the day: a short brief, what is coming up, and every story ranked by priority, with the companies in it and the sources it came from.</p></div>
     <div class="fq"><h3>For your agents</h3><p>Point an agent at context.fru.dev/llms.txt once. It finds the right source, reads it and links what it used. There is an MCP server and an OpenAPI description too.</p></div>
     <div class="fq"><h3>Public and linked</h3><p>Every entry comes from public sources and links to them, so you and your agents can check it.</p></div>
-    <div class="fq"><h3>Why Ibis</h3><p>Named for the ibis, the bird of Thoth, the Egyptian god of knowledge and of writing: the glyphs the family is named for. For two days in October 2026 it was called Glyph Ibis. Same sites, same addresses: context.fru.dev and every source keep their links.</p></div>
+    <div class="fq"><h3>Why Ibis</h3><p>Named for the ibis, the bird of Thoth, the Egyptian god of knowledge and of writing: the glyphs the family is named for. For two days in October 2026 it was called Glyph Knowledge. Same sites, same addresses: context.fru.dev and every source keep their links.</p></div>
   </div>
 </dialog>
 
@@ -98,7 +112,7 @@
     <nav aria-label="Footer">
       <a class="home" href="/"><img src="/family/glyph-small.svg" width="16" height="16" alt="">Glyph</a>
       <a class="feat" href="#features"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Features</a>
-      <a href="https://context.fru.dev/agents">For agents</a>
+      <a class="opt" href="https://context.fru.dev/agents">For agents</a>
       <a class="opt" href="https://fru.dev"><img src="/fru-dev.png" width="16" height="16" alt="">fru.dev</a>
       <a class="legal-link" href="/legal" title="Disclaimer: provided as is, without warranty">Disclaimer</a>
     </nav>
