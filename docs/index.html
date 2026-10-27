@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Glyph | Everything your AI agents need to work</title>
-<meta name="description" content="Glyph: everything your AI agents need to work. Four layers: Glyph Studio, the environment your agents work in; Glyph Jot, what you know; Glyph Ibis, what the world knows; Glyph Rig, where your agents run. Plus two tools, Glyph Arena and Glyph Cast. By fru.dev.">
+<meta name="description" content="Glyph: everything your AI agents need to work. Four layers: Glyph Studio, the environment your agents work in; Glyph Jot, what you know; Glyph Ibis, what the world knows; Glyph Rig, where your agents run. Plus three tools, Glyph Arena, Glyph Cast and Glyph Time. By fru.dev.">
 <link rel="icon" href="/family/glyph-small.svg" type="image/svg+xml">
 <link rel="icon" href="/family/glyph-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/family/glyph-180.png">
@@ -16,16 +16,16 @@
 <meta property="og:site_name" content="Glyph by fru.dev">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Glyph | Everything your AI agents need to work">
-<meta property="og:description" content="Glyph: everything your AI agents need to work. Four layers: Glyph Studio, the environment your agents work in; Glyph Jot, what you know; Glyph Ibis, what the world knows; Glyph Rig, where your agents run. Plus two tools, Glyph Arena and Glyph Cast. By fru.dev.">
+<meta property="og:description" content="Glyph: everything your AI agents need to work. Four layers: Glyph Studio, the environment your agents work in; Glyph Jot, what you know; Glyph Ibis, what the world knows; Glyph Rig, where your agents run. Plus three tools, Glyph Arena, Glyph Cast and Glyph Time. By fru.dev.">
 <meta property="og:url" content="https://glyph.fru.dev/">
 <meta property="og:image" content="https://glyph.fru.dev/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Glyph: everything your AI agents need to work. Studio, Jot, Ibis and Rig, plus Arena and Cast">
+<meta property="og:image:alt" content="Glyph: everything your AI agents need to work. Studio, Jot, Ibis and Rig, plus Arena, Cast and Time">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@fru">
 <meta name="twitter:title" content="Glyph | Everything your AI agents need to work">
-<meta name="twitter:description" content="Glyph: everything your AI agents need to work. Four layers: Glyph Studio, the environment your agents work in; Glyph Jot, what you know; Glyph Ibis, what the world knows; Glyph Rig, where your agents run. Plus two tools, Glyph Arena and Glyph Cast. By fru.dev.">
+<meta name="twitter:description" content="Glyph: everything your AI agents need to work. Four layers: Glyph Studio, the environment your agents work in; Glyph Jot, what you know; Glyph Ibis, what the world knows; Glyph Rig, where your agents run. Plus three tools, Glyph Arena, Glyph Cast and Glyph Time. By fru.dev.">
 <meta name="twitter:image" content="https://glyph.fru.dev/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -79,7 +79,7 @@
   .left .top{order:1}.left .cta{order:3}
 }
 @media (max-width:520px){.tab{padding:8px 2px;border-radius:12px}.tab .st{display:none}.tab b{font-size:13px}}
-/* the two companion tools: smaller, one row under the layers */
+/* the three companion tools: smaller, one row under the layers */
 .comps{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 10px;width:100%}
 .comps .plus{font-size:13px;font-weight:700;color:var(--dim)}
 .comp{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 7px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;font-size:14px}
@@ -92,7 +92,7 @@ a.comp:hover{border-color:var(--green)}
 .comp.soon{background:transparent;border-style:dashed}
 @media (min-width:960px) and (min-height:560px){.left{justify-content:center;gap:clamp(28px,6vh,64px)}.lede{font-size:clamp(20px,2.8vh,30px)}.right{gap:clamp(10px,1.8vh,18px)}.stage{width:min(100%,calc((100svh - 44px - 10vh - 310px) * 1.6))}}
 @media (max-width:1280px){.formac{display:none}}
-/* how they fit: the four layers, then the two tools */
+/* how they fit: the four layers, then the three tools */
 .layers{list-style:none;margin:0;padding:18px 24px 4px;display:grid;gap:8px}
 .layers a,.layers .li{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line);color:var(--ink);text-decoration:none}
 .layers a:hover{border-color:var(--green)}
@@ -100,7 +100,7 @@ a.comp:hover{border-color:var(--green)}
 .layers img{width:40px;height:40px;border-radius:22%;flex:none}
 .layers b{font-size:16px}.layers small{display:block;font-size:13.5px;color:var(--soft);line-height:1.35}
 .layers em{font-style:normal;font-size:11.5px;font-weight:700;color:var(--dim);border:1px dashed var(--line);border-radius:999px;padding:1px 7px}
-.layers.two{grid-template-columns:1fr 1fr;padding-top:6px}.layers.two .li{background:transparent;border-style:dashed}
+.layers.two{grid-template-columns:1fr;padding-top:6px}.layers.two .li{background:transparent;border-style:dashed}
 .bound{margin:6px 24px 4px;padding:10px 14px;border-radius:12px;background:var(--tint);color:var(--green);font-weight:700;font-size:14.5px;text-align:center}
 @media (max-width:620px){.layers{padding:14px 16px 4px}.layers.two{grid-template-columns:1fr}.bound{margin:6px 16px 4px}}
 .famnote{margin:0;font-size:12px;color:var(--dim)}
@@ -157,16 +157,17 @@ a.comp:hover{border-color:var(--green)}
       <button class="tab" role="tab" aria-selected="false" data-k="rig" data-href="/rig" data-name="Glyph Rig" data-line="Where your agents run: one Rig that names, connects and manages every harness across your Macs."><img src="/family/rig-tile.svg" alt=""><b>Rig</b><span class="st"><i>4</i>Where agents run</span></button>
     </div>
     <!-- The companion tools, outside the four layers. When a tool's page is live, make its <div class="comp soon"> an <a class="comp" href="/<tool>"> and drop the Soon mark. -->
-    <div class="comps" aria-label="Plus two tools">
-      <span class="plus">Plus two tools</span>
+    <div class="comps" aria-label="Plus three tools">
+      <span class="plus">Plus three tools</span>
       <a class="comp" href="/arena" data-k="arena" title="Glyph Arena: Studio's lab: finds the best model and recipe for each task, tested on your own work."><img src="/family/arena-tile.svg" alt=""><span><b>Arena</b><small>Studio's lab</small></span></a>
       <a class="comp" href="/cast" data-k="cast" title="Glyph Cast: record your screen, get a clean video."><img src="/family/cast-tile.svg" alt=""><span><b>Cast</b><small>Screen recorder</small></span></a>
+      <a class="comp" href="/time" data-k="time" title="Glyph Time: see where your hours go."><img src="/family/time-tile.svg" alt=""><span><b>Time</b><small>Time tracker</small></span></a>
     </div>
   </div>
 </main>
 
 <dialog class="sheet" id="features" aria-labelledby="feat-h">
-  <div class="fhead"><img src="/family/glyph-tile.svg" width="40" height="40" alt=""><h2 id="feat-h">Four layers, plus two tools</h2><button type="button" class="fclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="fhead"><img src="/family/glyph-tile.svg" width="40" height="40" alt=""><h2 id="feat-h">Four layers, plus three tools</h2><button type="button" class="fclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <ol class="layers" aria-label="The four layers of Glyph">
     <li><a href="/studio"><i>1</i><img src="/family/studio-tile.svg" alt=""><span><b>Glyph Studio</b><small>The environment your agents work in: one harness that builds and runs them.</small></span></a></li>
     <li><a href="/jot"><i>2</i><img src="/family/jot-tile.svg" alt=""><span><b>Glyph Jot</b><small>What you know: capture notes, ideas, decisions and meetings as your personal context.</small></span></a></li>
@@ -174,15 +175,16 @@ a.comp:hover{border-color:var(--green)}
     <li><a href="/rig"><i>4</i><img src="/family/rig-tile.svg" alt=""><span><b>Glyph Rig</b><small>Where your agents run: one Rig that names, connects and manages every harness across your Macs.</small></span></a></li>
   </ol>
   <p class="bound">Studio builds and runs a harness; the Rig connects and manages the harnesses across machines.</p>
-  <div class="layers two" aria-label="Plus two tools">
+  <div class="layers two" aria-label="Plus three tools">
     <a href="/arena"><img src="/family/arena-tile.svg" alt=""><span><b>Glyph Arena</b><small>Studio's lab: finds the best model and recipe for each task, tested on your own work.</small></span></a>
     <a href="/cast"><img src="/family/cast-tile.svg" alt=""><span><b>Glyph Cast</b><small>Record your screen, get a clean video: voice cleaned, ums cut, framed and zoomed.</small></span></a>
+    <a href="/time"><img src="/family/time-tile.svg" alt=""><span><b>Glyph Time</b><small>See where your hours go: a quiet count-up on the edge of your screen, every session saved to your vault.</small></span></a>
   </div>
   <div class="flist">
     <div class="fq"><h3>Context compounds</h3><p>What you jot and what the world publishes both land as context your agents can read. Every note and every source makes the next answer better, on any model.</p></div>
     <div class="fq"><h3>Your files</h3><p>Jot and Studio keep everything as plain files on your computer: Markdown, text and audio. No account, and the speech runs on your own devices.</p></div>
     <div class="fq"><h3>Studio and the Rig</h3><p>Studio is one harness: you ask, it works on your vault with one model or a council. The Rig sits under every harness you run, Claude Code, Codex, Gemini or Cursor, and names, connects and manages them across your Macs.</p></div>
-    <div class="fq"><h3>Plus two tools</h3><p>Glyph Arena tests which model and recipe does each task best on your own work, and Studio follows its picks. Glyph Cast turns screen recordings into clean videos.</p></div>
+    <div class="fq"><h3>Plus three tools</h3><p>Glyph Arena tests which model and recipe does each task best on your own work, and Studio follows its picks. Glyph Cast turns screen recordings into clean videos. Glyph Time shows where your hours go.</p></div>
     <div class="fq"><h3>Formerly</h3><p>Studio was Prevail. Jot took in Dictate and Record (Memosa). Ibis kept its name, as Glyph Ibis. The Rig was Glyph Code: same glyph command, same repo.</p></div>
     <div class="fq"><h3>Why Glyph</h3><p>Glyph is short for petroglyph. Every icon in the family carries the same figure, with one sign beside it for what that part does.</p></div>
   </div>

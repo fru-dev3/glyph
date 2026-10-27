@@ -32,6 +32,15 @@
     "repo": "fru-dev3/glyph-cast"
   },
   {
+    "icon": "time",
+    "path": "time",
+    "name": "Glyph Time",
+    "short": "Time",
+    "status": "download",
+    "promise": "See where your hours go: a quiet count-up on the edge of your screen, a nudge every 30 minutes, every session saved to your vault.",
+    "repo": "fru-dev3/glyph-time"
+  },
+  {
     "icon": "knowledge",
     "path": "ibis",
     "name": "Glyph Ibis",

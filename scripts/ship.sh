@@ -33,7 +33,7 @@ vdeploy() {
 echo "deploying"
 vdeploy --prebuilt --prod
 
-for p in / /studio /jot /rig /ibis /arena /cast /docs /docs.html; do
+for p in / /studio /jot /rig /ibis /arena /cast /time /docs /docs.html; do
   # a fresh deploy can answer 404 for a new path for a few seconds
   for _ in 1 2 3 4 5 6; do
     CODE=$(curl -sL -o /dev/null -w '%{http_code}' "https://glyph.fru.dev$p")
