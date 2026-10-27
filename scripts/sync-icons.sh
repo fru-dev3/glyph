@@ -8,7 +8,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 src=assets/family; out=docs/family
 rm -rf "$out"; mkdir -p "$out"
-for a in glyph studio jot dictate record cast code rig knowledge arena; do
+for a in glyph studio jot dictate record cast code rig knowledge arena time; do
   cp "$src/$a-tile.svg" "$src/$a-small.svg" "$src/$a-512.png" "$src/$a-192.png" "$src/$a-180.png" "$out/"
 done
 cp "$src/glyph-small.svg" docs/favicon.svg
