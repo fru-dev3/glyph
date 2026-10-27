@@ -12,6 +12,7 @@ corner radius 22. The figure's head shows the app's job; nothing else changes.
 | Glyph Rig (`rig*`) | A terminal with a `>_` prompt. |
 | Glyph Cast (`cast*`) | A screen with play over a timeline. |
 | Glyph Arena (`arena*`) | A medal with a "1". |
+| Glyph Time (`time*`) | A stopwatch, its hand at two o'clock. |
 
 `dictate*`, `record*` and `mobile*` are copies of Jot, and `code*` of Rig, kept for old links.
 
@@ -24,7 +25,7 @@ corner radius 22. The figure's head shows the app's job; nothing else changes.
 - `<name>.ico`: 16, 32 and 48, each drawn on its own.
 - `<name>-macos.svg`, `<name>-1024.png`: macOS app icon (the tile at 824 of 1024, centred).
 - `<app>-ios-1024.png` (studio, jot): full-bleed square, no alpha; iOS applies the mask.
-- `<app>.icns` (studio, jot, cast, arena): every size from 16 to 1024, @1x and @2x.
+- `<app>.icns` (studio, jot, cast, arena, time): every size from 16 to 1024, @1x and @2x.
 - `preview.png`: every icon at 256 (macOS), 64, 32 and 16, on light and dark.
 - `concepts/`: the earlier figure studies, kept for history.
 
