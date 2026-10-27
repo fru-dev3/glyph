@@ -36,6 +36,21 @@
   ],
   "redirects": [
     {
+      "source": "/knowledge",
+      "destination": "/ibis",
+      "statusCode": 301
+    },
+    {
+      "source": "/knowledge/",
+      "destination": "/ibis",
+      "statusCode": 301
+    },
+    {
+      "source": "/knowledge/:path+",
+      "destination": "/ibis/:path+",
+      "statusCode": 301
+    },
+    {
       "source": "/dictate",
       "destination": "/jot",
       "statusCode": 301

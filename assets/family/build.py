@@ -13,7 +13,7 @@ from PIL import Image
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, "src")
 NAMES = ["glyph", "studio", "jot", "knowledge", "rig", "cast", "arena"]
-LABEL = {"glyph": "Glyph", "studio": "Glyph Studio", "jot": "Glyph Jot", "knowledge": "Glyph Knowledge",
+LABEL = {"glyph": "Glyph", "studio": "Glyph Studio", "jot": "Glyph Jot", "knowledge": "Glyph Ibis",
          "rig": "Glyph Rig", "cast": "Glyph Cast", "arena": "Glyph Arena"}
 IOS = ["jot", "studio"]                    # apps with an iPhone icon
 ICNS = ["studio", "jot", "cast", "arena"]  # Mac apps

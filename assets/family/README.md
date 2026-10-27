@@ -8,7 +8,7 @@ corner radius 22. The figure's head shows the app's job; nothing else changes.
 | Glyph (`glyph*`) | A plain round head: the family mark, for the site. |
 | Glyph Studio (`studio*`) | An AI sparkle, the figure on a stage line. |
 | Glyph Jot (`jot*`) | A mic capsule. Also the iPhone app "Glyph" for now. |
-| Glyph Knowledge (`knowledge*`) | An eye: what the world knows. |
+| Glyph Ibis (`knowledge*`) | An eye: what the world knows. |
 | Glyph Rig (`rig*`) | A terminal with a `>_` prompt. |
 | Glyph Cast (`cast*`) | A screen with play over a timeline. |
 | Glyph Arena (`arena*`) | A medal with a "1". |
