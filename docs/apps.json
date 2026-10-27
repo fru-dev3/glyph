@@ -23,10 +23,13 @@
   },
   {
     "icon": "cast",
-    "path": null,
+    "path": "cast",
     "name": "Glyph Cast",
     "short": "Cast",
-    "status": "soon"
+    "status": "download",
+    "formerly": "Capture",
+    "promise": "Screen videos, cleaned up: record your screen, get a clean MP4 with the voice cleaned, ums cut, framed and zoomed.",
+    "repo": "fru-dev3/glyph-cast"
   },
   {
     "icon": "knowledge",

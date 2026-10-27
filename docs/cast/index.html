@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Glyph Cast | Screen videos, cleaned up</title>
+<meta name="description" content="Glyph Cast records your Mac's screen and gives back a clean MP4: the voice cleaned and leveled, ums and dead air cut, the screen framed on a wallpaper with zooms where you click. Free and open source for Mac.">
+<link rel="icon" href="/family/cast-small.svg" type="image/svg+xml">
+<link rel="icon" href="/family/cast-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/family/cast-180.png">
+<link rel="canonical" href="https://glyph.fru.dev/cast">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="author" content="fru.dev">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F7FBF5">
+<meta property="og:site_name" content="Glyph by fru.dev">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Glyph Cast | Screen videos, cleaned up">
+<meta property="og:description" content="Record your screen, get a clean video: voice cleaned, ums cut, framed and zoomed. Free for Mac.">
+<meta property="og:url" content="https://glyph.fru.dev/cast">
+<meta property="og:image" content="https://glyph.fru.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Glyph family of app icons in office green">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@fru">
+<meta name="twitter:image" content="https://glyph.fru.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+ {"@type":"Organization","@id":"https://fru.dev/#org","name":"fru.dev","legalName":"Inspired Nation, LLC","url":"https://fru.dev","logo":"https://fru.dev/icon-512.png","sameAs":["https://github.com/fru-dev3"]},
+ {"@type":"SoftwareApplication","@id":"https://glyph.fru.dev/cast#app","name":"Glyph Cast",
+  "applicationCategory":"MultimediaApplication","operatingSystem":"macOS 15 or later (Apple silicon)",
+  "url":"https://glyph.fru.dev/cast","downloadUrl":"https://github.com/fru-dev3/glyph-cast/releases/latest/download/Glyph-Cast.dmg",
+  "codeRepository":"https://github.com/fru-dev3/glyph-cast","isAccessibleForFree":true,
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@id":"https://fru.dev/#org"},
+  "description":"Records your Mac's screen and gives back a clean MP4: voice cleaned and leveled, filler words and dead air cut, the screen framed on a wallpaper with zooms where you click."}
+]}
+</script>
+<style>
+/* four screens take turns, like Jot's views */
+.views{position:relative}
+.view{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .6s,transform .6s,visibility 0s .6s}
+.view.on{opacity:1;visibility:visible;transform:none;transition:opacity .6s,transform .6s}
+.view .shot{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:14px;box-shadow:0 26px 60px var(--shadow),0 0 0 1px rgba(0,0,0,.06)}
+.seg{display:inline-flex;gap:4px;padding:5px;border-radius:999px;background:var(--card);border:1px solid var(--line)}
+.seg button{position:relative;overflow:hidden;border:0;background:transparent;border-radius:999px;padding:8px 18px;font:600 15px -apple-system,BlinkMacSystemFont,sans-serif;color:var(--soft);cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.seg button svg{width:17px;height:17px}
+.seg button[aria-selected=true]{background:var(--tint);color:var(--green)}
+.seg button[aria-selected=true]::after{content:"";position:absolute;left:14px;right:14px;bottom:3px;height:2px;border-radius:2px;background:var(--green);transform-origin:left;animation:fill 6s linear forwards}
+.seg.hold button::after{animation-play-state:paused}
+@keyframes fill{from{transform:scaleX(0)}}
+/* the alternatives are habits, not products: drawn as plain tiles */
+.alt .tile.k{display:grid;place-items:center;background:#fff;color:var(--soft)}
+.alt .tile.k svg{width:52%;height:52%}
+</style>
+</head>
+<body data-page="cast">
+<main>
+  <div class="left">
+    <div class="top">
+      <a class="brand" href="/cast"><img class="icon" src="/family/cast-tile.svg" width="72" height="72" alt=""><div><b>Glyph Cast<small class="ver" data-version="fru-dev3/glyph-cast" title="Latest release">v0.1.2</small></b><span>Screen videos, cleaned up</span></div></a>
+      <h1 data-lines='["Get a clean video.","Ums cut.","Framed and zoomed."]'>Record your screen. <em><span id="said">Get a clean video.</span><i class="caret" aria-hidden="true"></i></em></h1>
+    </div>
+    <div class="alt" aria-label="Instead of a screen recorder, a video editor and an audio cleanup tool, Glyph Cast does all three, free on GitHub">
+      <div class="paid">
+        <figure title="A screen recorder gives you the raw take"><span class="tile k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v12H3zM8 21h8M12 17v4"/></svg></span><figcaption>A recorder</figcaption></figure>
+        <figure title="A video editor to cut the ums by hand"><span class="tile k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3v18M18 3v18M6 8h12M6 16h12"/></svg></span><figcaption>An editor</figcaption></figure>
+        <figure class="s3" title="An audio tool to clean the voice"><span class="tile k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h2l2-6 3 12 3-9 2 6 2-3h4"/></svg></span><figcaption>Audio cleanup</figcaption></figure>
+      </div>
+      <span class="or">or</span>
+      <a class="ours" href="https://github.com/fru-dev3/glyph-cast"><img src="/family/cast-tile.svg" width="48" height="48" alt=""><b>One app</b><small>free, on GitHub</small></a>
+    </div>
+    <div class="cta loved">
+      <a class="btn go" id="dl" href="https://github.com/fru-dev3/glyph-cast/releases/latest/download/Glyph-Cast.dmg" data-track="file_download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Download<span class="formac"> for Mac</span></span><span class="dlc" data-downloads="fru-dev3/glyph-cast" data-match="\.dmg$" data-floor="0" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v12m0 0l-5-5m5 5l5-5"/></svg><b class="n"></b></span></a>
+      <a class="btn star" href="https://github.com/fru-dev3/glyph-cast" data-track="star_on_github" aria-label="Star Glyph Cast on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg><span class="lbl">Star</span><span class="count" data-stars="fru-dev3/glyph-cast" data-floor="0" hidden></span><span class="love" aria-hidden="true"><svg class="arrow" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M52 6C51 28 32 44 8 54"/><path d="M44 14l8-10 7 10"/></svg><span class="say">show some love<svg class="heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></span></span></a>
+    </div>
+    <ul class="badges">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 00-3 3v7a3 3 0 006 0V5a3 3 0 00-3-3zM19 10v2a7 7 0 01-14 0v-2M12 19v3"/></svg>Studio Sound</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-7 9 7v10a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg>Nothing leaves your Mac</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>Open source</li>
+    </ul>
+    <p class="note">Examples show made-up demo screens. Apple silicon, macOS 15 or later; needs <code>brew install ffmpeg whisper-cpp</code>.</p>
+  </div>
+  <div class="right">
+    <div class="views fill" data-ar="1.6" aria-live="polite">
+      <figure class="view on" data-k="framed" style="margin:0"><img class="shot" src="/cast/framed.webp" width="1600" height="1000" alt="An export from Glyph Cast: the screen framed on a green wave wallpaper, with rounded corners and a soft shadow" fetchpriority="high"></figure>
+      <figure class="view" data-k="wallpapers" style="margin:0"><img class="shot" src="/cast/wallpapers.webp" width="1600" height="1000" alt="The same kind of export on a blue wave wallpaper, one of the 18 drawn for the app" loading="lazy"></figure>
+      <figure class="view" data-k="zoom" style="margin:0"><img class="shot" src="/cast/zoom.webp" width="1600" height="1000" alt="A zoom on a click: the video moves in on the Record button, with a click ring around it" loading="lazy"></figure>
+    </div>
+    <div class="seg" role="tablist" aria-label="What Glyph Cast exports">
+      <button type="button" role="tab" aria-selected="true" data-k="framed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h18v18H3zM7 7h10v10H7z"/></svg>Framed</button>
+      <button type="button" role="tab" aria-selected="false" data-k="wallpapers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 16c4-4 6-4 10 0s6 4 10 0M2 10c4-4 6-4 10 0s6 4 10 0"/></svg>Wallpapers</button>
+      <button type="button" role="tab" aria-selected="false" data-k="zoom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4a7 7 0 100 14 7 7 0 000-14zM21 21l-5-5M11 8v6M8 11h6"/></svg>Zoom on clicks</button>
+    </div>
+  </div>
+</main>
+
+<dialog class="sheet" id="features" aria-labelledby="feat-h">
+  <div class="fhead"><img src="/family/cast-tile.svg" width="40" height="40" alt=""><h2 id="feat-h">Everything Glyph Cast does</h2><button type="button" class="fclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="flist">
+    <div class="fq"><h3>Record from anywhere</h3><p>Pick the display and microphone and press Option-Command-R. A countdown runs, and a bar at the top shows the time, your mic, Pause, Restart and Stop. Neither the bar nor the red edge is in the video.</p></div>
+    <div class="fq"><h3>Ready on its own</h3><p>When you stop, it lines the mic up with the video, removes background noise, shapes and levels the voice, and transcribes it. About a minute for every ten recorded.</p></div>
+    <div class="fq"><h3>Ums and pauses</h3><p>Filler words (um, uh, "the the", you know) and long pauses are found and shown in the transcript. One click removes them, a second click brings them back. Pauses while the screen was moving stay in.</p></div>
+    <div class="fq"><h3>Studio Sound</h3><p>Noise removed, voice shaped (rumble cut, presence, de-ess, gentle compression) and leveled to -14 LUFS, YouTube's loudness. Blend your original mic back in if you like.</p></div>
+    <div class="fq"><h3>Edit the words</h3><p>Click a word to play from there; Option-click to cut it or bring it back; select a stretch and Cut. The waveform shows every cut in red.</p></div>
+    <div class="fq"><h3>Framed and zoomed</h3><p>Your screen on one of 18 wave wallpapers, your desktop picture or any image, with padding, corners and shadow, zooms where you click and click rings.</p></div>
+    <div class="fq"><h3>Intro and outro</h3><p>Attach your own clips at export, or leave them off for this one.</p></div>
+    <div class="fq"><h3>Export MP4</h3><p>1080p, 1440p or 4K at 60 fps, with a matching .srt of the words you kept.</p></div>
+    <div class="fq"><h3>Private</h3><p>Transcription and cleanup run on your Mac. Recordings stay in your Movies folder as plain files.</p></div>
+    <div class="fq"><h3>Was Capture</h3><p>Glyph Cast was called Capture until it joined the Glyph family in October 2026.</p></div>
+    <div class="fq"><h3>Open source</h3><p>MIT. Signed and notarized by Apple.</p></div>
+  </div>
+</dialog>
+
+<footer>
+  <div class="bar">
+    <nav aria-label="Footer">
+      <a class="home" href="/"><img src="/family/glyph-small.svg" width="16" height="16" alt="">Glyph</a>
+      <a class="feat" href="#features"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Features</a>
+      <a class="opt" href="/jot" title="Notes and meetings, the other half of capture">Jot</a>
+      <a class="opt" href="https://github.com/fru-dev3/glyph-cast/releases" title="Every release">Releases</a>
+      <a class="opt" href="https://github.com/fru-dev3/glyph-cast/issues" title="Contact: open an issue">Contact</a>
+      <a class="opt" href="https://fru.dev"><img src="/fru-dev.png" width="16" height="16" alt="">fru.dev</a>
+      <a class="legal-link" href="/legal" title="Disclaimer: provided as is, without warranty">Disclaimer</a>
+    </nav>
+    <a class="built" href="https://github.com/fru-dev3/glyph-cast"><span><span class="bw">Built with </span><svg class="heart-i" width="14" height="14" viewBox="0 0 24 24" fill="#E0465B" aria-label="love"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg> + AI<span class="opt"> · easy to make your own on GitHub</span></span></a>
+  </div>
+</footer>
+<script src="/site.js"></script>
+<script>
+// The screens take turns every six seconds; a tap picks one, hovering holds it.
+const seg=document.querySelector(".seg"),sb=[...seg.querySelectorAll("button")],vw=[...document.querySelectorAll(".view")];
+let vi=0,vt,vh=false;
+function view(n){vi=n;sb.forEach((b,k)=>{b.setAttribute("aria-selected",k===n);b.style.animation="none";b.offsetWidth;b.style.animation=""});vw.forEach((v,k)=>v.classList.toggle("on",k===n));
+  clearTimeout(vt);if(!still&&!vh)vt=setTimeout(()=>view((vi+1)%vw.length),6000)}
+sb.forEach((b,n)=>b.addEventListener("click",()=>{view(n);track("cast_view",{view:b.dataset.k})}));
+const rt=document.querySelector(".right");
+rt.addEventListener("mouseenter",()=>{vh=true;clearTimeout(vt);seg.classList.add("hold")});
+rt.addEventListener("mouseleave",()=>{vh=false;seg.classList.remove("hold");view(vi)});
+view(0);
+</script>
+</body>
+</html>
