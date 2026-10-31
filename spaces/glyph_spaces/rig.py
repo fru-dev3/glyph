@@ -527,7 +527,8 @@ def act_engine(act):
                       % (fleet.tilde(onpath), fleet.tilde(mine)))
         else:
             act.point(engine, onpath)
-            said.append("%s to it" % fleet.tilde(onpath))
+            said.append("%s to %s" % (fleet.tilde(onpath),
+                                      "it" if said else "the installed engine"))
     if not act.wanted():
         act.nothing("the engine and the name on PATH are the same build")
         return
