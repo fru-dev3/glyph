@@ -202,6 +202,7 @@ glyph fleet report  # what this machine is: disks, memory, agents, accounts
 glyph fleet status  # every machine side by side, with who is online
 glyph fleet diff    # what is on one machine and not another
 glyph rig plan      # what would change to make this machine able to work
+glyph rig apps      # what the other machines have installed and this one does not
 ```
 
 ## Agents
@@ -439,9 +440,10 @@ glyph fleet setup     # what a machine still needs before it can do the work
 efficiency, memory and swap, every mounted volume including the externals and
 the network shares, which agents are installed and at which version, which
 login each one is signed into, what is running right now, local inference
-models, and a flat map of versions, MCP servers, skills and loaded services for
-comparing against another machine. It writes one file per machine and appends a
-line of history, so a trend exists later:
+models, everything installed from Homebrew or sitting in `/Applications`, and a
+flat map of versions, MCP servers, skills and loaded services for comparing
+against another machine. It writes one file per machine and appends a line of
+history, so a trend exists later:
 
 ```
 ~/.config/glyph/rig/machines/<machine>.json
@@ -517,6 +519,64 @@ tool.pi                                0.79.9              -                    
 launchd.homebrew.mxcl.ollama           -                   loaded                only studio
 ```
 
+### What it has installed
+
+A new Mac is not missing a setting, it is missing two hundred things. So the
+report carries an `installed` block: what is in the Cellar and the Caskroom,
+what is in `/Applications` and `~/Applications`, and Herdr's own plugins.
+
+```json
+"installed": {
+  "brew": "/opt/homebrew",
+  "casks_known": 7823,
+  "casks":    [ { "name": "obsidian", "version": "1.12.7", "asked": true } ],
+  "formulae": [ { "name": "workmux", "version": "0.9.2",
+                  "tap": "ben/workmux", "asked": true },
+                { "name": "libpng",  "version": "1.6.50" } ],
+  "apps":     [ { "id": "com.google.Chrome", "name": "Google Chrome",
+                  "version": "156.0", "cask": "google-chrome" },
+                { "id": "com.acme.notes", "name": "Acme Notes", "version": "0.23.3" } ],
+  "herdr":    { "version": "0.9.5", "plugins": [ "Quick Select", "Spreader" ] }
+}
+```
+
+| Field | |
+|---|---|
+| `asked` | installed by name, and nothing else installed depends on it |
+| `tap` | the tap, left out for `homebrew/core` and `homebrew/cask` |
+| `cask` | the cask that would install this app again, or absent |
+| `casks_known` | how many casks Homebrew knows here, `null` when it has no index |
+
+It is read off the disk. `brew list --versions` is a ruby start-up and seconds
+of work; the two folders and each keg's own `INSTALL_RECEIPT.json` say the same
+thing in twelve milliseconds, and the receipt says the thing that matters most
+here: whether a formula was asked for. On this machine 132 of 193 formulae were
+never asked for, and of the 61 that were, 11 are a dependency of another one
+that was, so installing that brings them. 50 names is a list you recognise and
+193 is a wall, which is why `asked` is brew's own `leaves --installed-on-request`
+rather than everything in the Cellar.
+
+The `cask` on an app is what could install it again, and it is the one guess in
+the block. A cask brew recorded for a bundle it installed is certain. Otherwise
+a cask of the same name counts, because a token is made from the app's own name,
+so a Chrome nobody installed with brew is still one `brew install --cask
+google-chrome` away. `Tailscale` misses `tailscale-app` and `zoom.us` misses
+`zoom`, and a miss reads as a download, which is the direction that costs
+nothing. A cask of that name installing something else would be the other
+direction, and reading every cask's own app list to rule it out is `brew info`
+once per app, which is minutes.
+
+None of this goes into `glyph fleet diff`. Two hundred and fifty rows would
+swamp a table meant to be read at a glance, and a version that changed this
+morning is not a difference anyone acts on. `glyph rig apps` is where it lands.
+
+**Herdr's plugins** come from `herdr plugin list --json`, the one
+machine-readable list it has; it answers in milliseconds, starts no server and
+needs none. Its integrations, the per-agent ones it installs for Claude, Codex,
+pi and a dozen more, have `install` and `uninstall` and no `list`, so which of
+those a machine has cannot be read. It is left out rather than guessed at. A
+Herdr too old for `plugin list` leaves `plugins` null and a line in `errors`.
+
 ### Can it actually do the work
 
 Online and useless is a real state. A Mac with 101 MB free, no Apple ID in
@@ -577,7 +637,7 @@ machine is missing, and `glyph rig` is what does something about it.
 
 ### What it can therefore do
 
-Thirteen checks say what is broken on a machine. They do not say what work it
+The checks say what is broken on a machine. They do not say what work it
 can take, which is the half that makes placement possible: given a job that
 needs a Swift build, which machines can have it. So the report carries a short
 `capabilities` list beside them.
@@ -739,10 +799,11 @@ of that which needs nobody at the keyboard.
 
 ```sh
 glyph rig plan          # what would change here, and what only you can do
+glyph rig apps          # what the other machines have installed and this one does not
 glyph rig apply --yes   # do the automatable part
 ```
 
-Every action is named for one of the thirteen checks. The plan is generated
+Every action is named for one of the checks. The plan is generated
 from those checks as they answer right now, and the same check is what proves
 the action worked afterwards, so there is nothing to keep in step and no
 second list of what can go wrong.
@@ -817,7 +878,7 @@ is named beneath.
 
 ### What it can do
 
-Seven actions, each one the automatable half of a check's own `fix`.
+Eight actions, each one the automatable half of a check's own `fix`.
 
 | Check | What the action does |
 |---|---|
@@ -828,6 +889,7 @@ Seven actions, each one the automatable half of a check's own `fix`.
 | `engine.version` | Installs the engine, and points the name on PATH at it where a stale build answers instead |
 | `locks` | Writes the three lock conventions down, so every script on the machine agrees which path is which. It never takes a lock |
 | `submodule.glyphcore` | Copies a healthy `Packages/GlyphCore` into a checkout that has none. A copy, never a link, which git refuses |
+| `apps.missing` | Installs what the other machines have and this one does not, from Homebrew. Never a bundle copied off another Mac |
 
 ### What only you can do
 
@@ -854,6 +916,14 @@ it.
   `xcode-select -p`, and changing that wants sudo, so it is yours.
 - **Attaching the iPhone once** and trusting it, so Xcode fetches support for
   its iOS version.
+- **Signing in to anything.** Rig can put 1Password on a machine and must
+  never read as having signed into it. Every app with an account is named,
+  with the step, every time, and is never counted as done.
+- **Downloading an app no cask knows.** It is named with where it came from,
+  and a silent skip is what that is instead of.
+- **Installing Homebrew**, which is a download piped into a shell, a password
+  prompt and the Command Line Tools. The same class of thing as installing
+  Xcode, so the check reports it as the blocker it is.
 
 ### Four rules
 
@@ -891,11 +961,82 @@ out there.
 otherwise. Changing PATH or `DEVELOPER_DIR` underneath work already running
 somewhere else is the damage this exists to prevent.
 
+### Everything a new Mac is missing
+
+The fifteen checks are settings. This is the other half of setting a machine
+up: the apps and tools your other machines already have.
+
+```sh
+glyph rig apps                  # what is missing here
+glyph rig apps --machine air    # what is missing there, from the reading it wrote
+glyph rig apps --all            # and what only some of them have
+```
+
+```
+air  27 casks, 161 formulae, 27 apps, 22 herdr plugins, 149 missing against laptop and studio
+
+WHAT                           KIND     ON    WHO     HOW
+Google Docs                    app      2/2   you     no cask knows it, so download it from its own site
+1password                      cask     2/2   rig     brew install --cask 1password
+eza                            formula  2/2   rig     brew install eza
+workmux                        formula  2/2   rig     brew install workmux
+
+sign in  1password            open 1Password, sign in to the account, then turn on the browser extension and the CLI integration
+sign in  google-chrome        open Chrome and sign in to the profile this machine uses
+
+39 of the 42 every other machine has are installable from Homebrew; the rest is a download or an account
+107 more that only some of them have: glyph rig apps --machine air --all
+apply runs on the machine it changes: ssh air '~/.local/bin/glyph-fleet rig apply --yes'
+```
+
+A view of its own rather than a flag on `diff` or a section of `plan`, because
+it is one question about one machine where both of those are tables about every
+machine at once, and two hundred rows would swamp either.
+
+**`ON` is how many of the others have it**, and the ones they all have come
+first. That column is the difference between a baseline and somebody's
+experiment: a name on every other machine is what a new Mac is missing, and a
+name on one of three is a choice. Only the baseline is in the table by default,
+only the baseline is what the check counts, and only the baseline is what
+`apply` installs. `--all` prints the rest.
+
+**Nothing here decides what you want installed.** The set is what your other
+machines already have, read out of the readings they wrote, which is also why
+this answers for a machine you are not sitting at. Narrow it with a list of
+your own, the way `GLYPH_SPACES` and the `git` block already work:
+
+| | |
+|---|---|
+| `GLYPH_INSTALL` | the names to care about, comma separated |
+| `install` | the same, as a list beside `git` in `machines.json` |
+
+With neither, every name the others have counts. The check this view belongs
+to is `apps.missing`: `ok` when nothing the others all have is missing,
+`broken` with no fix when there is no Homebrew to install anything with, and
+`unknown` when nothing says what the machine should have, which is one machine
+on its own with no list. It answers on the machine it runs on, so it needs the
+other readings to be readable from there: point `GLYPH_RIG` at a synced folder,
+or ask from a machine that has them all with `--machine`.
+
+**`apply` installs from Homebrew and from nowhere else.** An app copied off
+another Mac carries that machine's signature, its licence and its login, cannot
+update itself, and macOS moves one it does not trust to the Trash on launch. So
+the only thing that runs is the `brew install` you could have typed, and that
+same line is the undo printed for it. Each one prints as it starts, because a
+hundred installs is an hour and an hour of silence is indistinguishable from a
+hang; nothing polls anything.
+
+A run installs `GLYPH_INSTALL_MAX` of them, 20 by default, says how many are
+left, reads `part` rather than `done`, and exits non-zero. Run it again and it
+carries on. One command that then runs unattended for an hour is not something
+to hand anybody, and a partial run that reported success would be worse.
+
 ### A new machine, end to end
 
 ```sh
 glyph fleet report                   # a baseline before anything is done
 glyph rig plan                       # what would change, and what is yours
+glyph rig apps                       # what the others have and this does not
 glyph rig apply --yes                # the automatable part, each step verified
 glyph fleet setup                    # the checks again, from scratch
 ```
@@ -950,6 +1091,9 @@ plan` does.
 | `GLYPH_ASC_KEY_ID`, `GLYPH_ASC_ISSUER_ID` | The two ids a build needs beside that key |
 | `GLYPH_ENGINE_SRC` | An engine binary to install from, on a machine with none |
 | `GLYPH_GLYPHCORE_SRC` | A healthy `Packages/GlyphCore` to copy from |
+| `GLYPH_INSTALL` | The names `glyph rig apps` cares about; otherwise every name the other machines have |
+| `GLYPH_INSTALL_MAX` | How many `glyph rig apply` installs in one run (default 20) |
+| `GLYPH_INSTALL_TIMEOUT` | Seconds one `brew install` gets (default 600) |
 
 **Machine tags** come from the system computer name when available. On macOS,
 Glyph reads `scutil --get ComputerName`; Windows/WSL and Linux use the system

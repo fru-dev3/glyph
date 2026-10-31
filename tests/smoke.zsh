@@ -367,6 +367,53 @@ STUB
     || { print -ru2 -- "FAIL: setup must name the check behind each one: $out"; exit 1; }
   print -r -- 'PASS: capabilities in the report, one line in status and the deciding checks in setup'
 
+  # glyph rig apps: what the other machines have installed and this one does
+  # not. Against three readings written here, so the answer is the one under
+  # test and nothing is read off the machine the suite runs on. The one thing
+  # this must never do is copy an app from another Mac, so what is checked is
+  # that every installable row is a `brew install` line, that an app no cask
+  # knows is named as a download rather than skipped, and that an account is
+  # named and never counted.
+  mkdir -p $test_dir/apps-rig/machines
+  for m in studio air; do
+    print -r -- '{"schema":1,"taken":"2026-01-01T00:00:00-05:00",
+     "machine":{"id":"'$m'","role":"dev"},
+     "installed":{"brew":"/opt/homebrew","casks":[{"name":"obsidian","version":"1"},
+        {"name":"1password","version":"8"}],
+      "formulae":[{"name":"eza","version":"1","asked":true},
+        {"name":"libpng","version":"1"}],
+      "apps":[{"id":"com.acme.notes","name":"Acme Notes","version":"1"},
+        {"id":"md.obsidian","name":"Obsidian","version":"1","cask":"obsidian"}],
+      "herdr":{"version":"0.9.5","plugins":["Agent Metadata","Quick Select"]}}}' \
+     > $test_dir/apps-rig/machines/$m.json
+  done
+  print -r -- '{"schema":1,"taken":"2026-01-01T00:00:00-05:00",
+   "machine":{"id":"laptop","role":"dev"},
+   "installed":{"brew":"/opt/homebrew","casks":[],"formulae":[],"apps":[],
+    "herdr":null}}' > $test_dir/apps-rig/machines/laptop.json
+  # GLYPH_SPACES is pointed at the suite's own map, since the install list that
+  # narrows the set is the person's own and must not be read off this machine.
+  apps() { GLYPH_RIG=$test_dir/apps-rig GLYPH_TAILSCALE=$test_dir/bin/no-tailscale \
+           GLYPH_SPACES=$map python3 "$repo/spaces/glyph-fleet" "$@" }
+  out=$(apps rig apps --machine laptop)
+  [[ $out == *'brew install --cask obsidian'* && $out == *'brew install eza'* ]] \
+    || { print -ru2 -- "FAIL: an installable row is a brew line: $out"; exit 1; }
+  [[ $out == *'Acme Notes'*'download it from its own site'* ]] \
+    || { print -ru2 -- "FAIL: an app no cask knows must be named as a download: $out"; exit 1; }
+  [[ $out == *'sign in'*'1password'* ]] \
+    || { print -ru2 -- "FAIL: an account must be named: $out"; exit 1; }
+  [[ $out != *'libpng'* ]] \
+    || { print -ru2 -- "FAIL: a dependency is nothing anybody installs: $out"; exit 1; }
+  [[ $out != *'Obsidian '*'app'* ]] \
+    || { print -ru2 -- "FAIL: an app a cask installs is counted as that cask: $out"; exit 1; }
+  [[ $out == *'apply runs on the machine it changes'* ]] \
+    || { print -ru2 -- "FAIL: there is no remote apply: $out"; exit 1; }
+  # And the collector carries the block it compares, Herdr's own plugins in it.
+  out=$(apps status --machine studio)
+  [[ $out == *'have'*'2 casks, 2 formulae, 2 apps, 2 herdr plugins'* ]] \
+    || { print -ru2 -- "FAIL: status must say what a machine has: $out"; exit 1; }
+  print -r -- 'PASS: glyph rig apps names every brew install, every download and every account, and leaves dependencies out'
+
   print -r -- 'solo = claude' > "$test_dir/fleet-solo.conf"
   out=$(GLYPH_DRYRUN=1 GLYPH_FLEET_CONF="$test_dir/fleet-solo.conf" glyph fleet solo)
   [[ $out == *'pane 1  claude on local'* ]] \

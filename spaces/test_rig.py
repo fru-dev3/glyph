@@ -489,6 +489,230 @@ def test_a_summary_never_reports_the_before_state_as_the_after_state():
     assert "path.noninteractive" in said
 
 
+# --- installing what the other machines have ---------------------------------
+# Fru's requirement, and the one thing it must never do: every app installed on
+# a new Mac, and not one of them copied from another machine. So these check
+# the source, the leftovers and the accounts, with a brew that is a shell
+# script in a temporary folder and no network anywhere near it.
+
+
+def brewery(home, fails=()):
+    """A Homebrew prefix with a `brew` that installs by making the folder.
+
+    A stand-in, because the real one is a network call and minutes of work.
+    What is checked through it is what rig does and does not run: the command
+    it builds, that it builds no other, and that nothing is believed until the
+    folder it names is on the disk.
+    """
+    prefix = os.path.join(home, "brew")
+    os.makedirs(os.path.join(prefix, "bin"))
+    log = os.path.join(home, "brew.log")
+    with open(os.path.join(prefix, "bin", "brew"), "w") as f:
+        f.write("#!/bin/sh\n"
+                "echo \"$@\" >> %s\n"
+                "name=$3; dir=Caskroom\n"
+                "[ \"$2\" = --cask ] || { name=$2; dir=Cellar; }\n"
+                "for bad in %s; do [ \"$name\" = \"$bad\" ] && exit 1; done\n"
+                "mkdir -p %s/$dir/$name/1.0\n"
+                % (log, " ".join(fails) or "''", prefix))
+    os.chmod(os.path.join(prefix, "bin", "brew"), 0o755)
+    for d in ("Cellar", "Caskroom"):
+        os.makedirs(os.path.join(prefix, d))
+    return prefix, log
+
+
+def inst(casks=(), formulae=(), apps=(), brew="/opt/homebrew"):
+    return {"brew": brew, "casks": [{"name": n, "version": "1"} for n in casks],
+            "formulae": [{"name": n, "version": "1", "asked": True}
+                         for n in formulae],
+            "apps": [dict(a) for a in apps]}
+
+
+def with_fleet(prefix, mine, reps, fn):
+    """rig, run against a fleet invented for the purpose."""
+    keep = (fleet.brew_prefix, fleet.load_reports, dict(fleet._INSTALLED))
+    try:
+        fleet.brew_prefix = lambda: prefix
+        fleet.load_reports = lambda: dict(
+            (k, {"installed": v}) for k, v in reps.items())
+        fleet._INSTALLED["d"] = mine
+        return fn()
+    finally:
+        fleet.brew_prefix, fleet.load_reports = keep[0], keep[1]
+        fleet._INSTALLED.clear()
+        fleet._INSTALLED.update(keep[2])
+
+
+def test_an_install_comes_from_homebrew_and_never_from_another_machine():
+    """The requirement in one test. An app copied off another Mac carries that
+    machine's signature and its login, cannot update itself, and macOS moves
+    one it does not trust to the Trash on launch. So the only thing rig runs
+    is the `brew install` a person could type, and the proof is the folder
+    brew made, read off the disk."""
+    def go(home):
+        prefix, log = brewery(home)
+        act = rig.Act("apps.missing", False, None)
+        with_fleet(prefix, inst(brew=prefix),
+                   {"studio": inst(casks=["obsidian"], formulae=["eza"]),
+                    "air": inst(casks=["obsidian"], formulae=["eza"])},
+                   lambda: quiet(lambda: rig.act_install(act)))
+        ran = sorted(open(log).read().split("\n")[:-1])
+        assert ran == ["install --cask obsidian", "install eza"], ran
+        assert not rig.unproved(act), rig.unproved(act)
+        assert os.path.isdir(os.path.join(prefix, "Cellar", "eza"))
+        assert all("brew uninstall" in u for u in act.undos), act.undos
+        # Nothing was copied from anywhere: the only source named is brew.
+        assert "cp" not in " ".join(act.undos)
+    sand(go)
+
+
+def test_a_cask_homebrew_does_not_know_is_a_download_and_never_a_skip():
+    """A silent skip is how a machine ends up half set up while every check
+    reads ok. The app is named, the download is somebody's, and the run says
+    so out loud."""
+    def go(home):
+        prefix, log = brewery(home)
+        act = rig.Act("apps.missing", False, None)
+        mine = inst(brew=prefix)
+        reps = dict((m, inst(apps=[{"name": "Acme Notes", "id": "com.acme.notes"},
+                                   {"name": "Pages",
+                                    "id": "com.apple.iWork.Pages"}]))
+                    for m in ("studio", "air"))
+        with_fleet(prefix, mine, reps,
+                   lambda: quiet(lambda: rig.act_install(act)))
+        assert not os.path.exists(log), "nothing was installed"
+        said = " ".join(act.blocked)
+        assert "Acme Notes" in said and "download" in said, said
+        assert "Pages" in said and "App Store" in said, said
+        assert not act.proofs, "and nothing was claimed"
+        assert rig.who(act, "missing") == "you"
+    sand(go)
+
+
+def test_a_partial_install_reports_part_and_exits_non_zero():
+    """A new Mac is two hundred names behind, and one command that then runs
+    unattended for an hour is not something to hand somebody. So a run
+    installs a fixed number, says how many are left, and never reads done
+    while any of them are."""
+    def go(home):
+        prefix, log = brewery(home)
+        keep = rig.INSTALL_MAX
+        try:
+            rig.INSTALL_MAX = 2
+            mine = inst(brew=prefix)
+            reps = dict((m, inst(formulae=["a", "b", "c", "d"]))
+                        for m in ("studio", "air"))
+            verdict, act, after, missing = with_fleet(
+                prefix, mine, reps,
+                lambda: with_jobs(rows(), lambda: quiet(
+                    lambda: rig.run_action("apps.missing", None))[0]))
+            assert sorted(os.listdir(os.path.join(prefix, "Cellar"))) == \
+                ["a", "b"], os.listdir(os.path.join(prefix, "Cellar"))
+            assert not missing, "what it did claim, it did"
+            assert verdict == "part", verdict
+            assert any("2 more" in w for w in act.blocked), act.blocked
+        finally:
+            rig.INSTALL_MAX = keep
+    sand(go)
+    # And the whole command says so: `part` in the table, how many are left
+    # beneath it, how to undo every one, and a non-zero exit, which is the
+    # half a script notices.
+    def whole(home):
+        prefix, log = brewery(home)
+        keep = (rig.INSTALL_MAX, rig.ORDER)
+        try:
+            rig.INSTALL_MAX, rig.ORDER = 2, ["apps.missing"]
+            reps = dict((m, inst(formulae=["a", "b", "c", "d"]))
+                        for m in ("studio", "air"))
+            got, said = with_fleet(
+                prefix, inst(brew=prefix), reps,
+                lambda: with_jobs(rows(), lambda: quiet(
+                    lambda: rig.cmd_apply(Args(yes=True)))))
+        finally:
+            rig.INSTALL_MAX, rig.ORDER = keep
+        assert got == 1, said
+        assert "install  formula a" in said, "it says where it got to"
+        assert "part" in said, said
+        assert "2 more to install" in said, said
+        assert "brew uninstall a" in said, "every change says how to reverse it"
+        assert "0 of 1 verified" in said, said
+    sand(whole)
+
+
+def test_an_install_that_fails_is_not_done_however_brew_exited():
+    """Nothing is believed on the strength of having run. brew has printed a
+    warning, exited 0 and installed nothing where a cask was already there
+    under another name, so the folder is looked for afterwards."""
+    def go(home):
+        prefix, log = brewery(home, fails=("eza",))
+        act = rig.Act("apps.missing", False, None)
+        with_fleet(prefix, inst(brew=prefix),
+                   dict((m, inst(formulae=["eza"])) for m in ("studio", "air")),
+                   lambda: quiet(lambda: rig.act_install(act)))
+        assert rig.unproved(act) == ["formula eza"], rig.unproved(act)
+        assert "brew uninstall eza" in act.undos, act.undos
+    sand(go)
+
+
+def test_a_sign_in_is_named_every_time_and_never_counted():
+    """1Password is exactly the line rig must not cross. It can put the app on
+    a machine and must never read as having signed into it, so the account is
+    in `blocked` and never in `proofs`, whether the app is here yet or not."""
+    def go(home):
+        prefix, log = brewery(home)
+        act = rig.Act("apps.missing", False, None)
+        with_fleet(prefix, inst(brew=prefix),
+                   dict((m, inst(casks=["1password"])) for m in ("studio", "air")),
+                   lambda: quiet(lambda: rig.act_install(act)))
+        said = " ".join(act.blocked)
+        assert "signed in by you, never by this" in said, said
+        assert [w for w, _ in act.proofs] == ["cask 1password"], act.proofs
+        assert "sign" not in " ".join(w for w, _ in act.proofs)
+        # Already installed here and nothing missing: still named, still not
+        # a thing anybody claimed.
+        act = rig.Act("apps.missing", False, None)
+        with_fleet(prefix, inst(brew=prefix, casks=["1password"]),
+                   dict((m, inst(casks=["1password"])) for m in ("studio", "air")),
+                   lambda: quiet(lambda: rig.act_install(act)))
+        assert not act.proofs, "nothing to install"
+        assert any("1password" in w for w in act.blocked), act.blocked
+    sand(go)
+
+
+def test_no_homebrew_is_the_blocker_and_rig_does_not_install_it():
+    """A download piped into a shell, a password prompt and the Command Line
+    Tools. The same class of thing as installing Xcode, and the honest answer
+    is to name it rather than to do it quietly."""
+    def go(home):
+        act = rig.Act("apps.missing", False, None)
+        with_fleet(None, inst(brew=None), {"studio": inst(formulae=["eza"])},
+                   lambda: rig.act_install(act))
+        assert not act.proofs, act.proofs
+        assert any("brew.sh" in w for w in act.blocked), act.blocked
+        assert rig.who(act, "broken") == "you"
+    sand(go)
+
+
+def test_the_view_writes_nothing_and_says_what_cannot_be_installed():
+    """`glyph rig apps` is the question a new machine asks, and it is a view:
+    it reads the readings every machine wrote and changes nothing at all."""
+    def go(home):
+        prefix, log = brewery(home)
+        before = tree(home)
+        reps = dict((m, inst(casks=["obsidian"], formulae=["eza"],
+                             apps=[{"name": "Acme Notes", "id": "com.acme.notes"}]))
+                    for m in ("studio", "air"))
+        got, said = with_fleet(
+            prefix, inst(brew=prefix), reps,
+            lambda: quiet(lambda: rig.cmd_apps(Args(all=False))))
+        assert got == 0, said
+        assert "brew install --cask obsidian" in said, said
+        assert "Acme Notes" in said and "download it" in said, said
+        assert "2 of the 3" in said, said
+        assert tree(home) == before, "a view wrote something"
+        assert not os.path.exists(log), "and ran brew"
+    sand(go)
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for t in tests:

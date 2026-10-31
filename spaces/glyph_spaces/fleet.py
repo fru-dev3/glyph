@@ -1054,7 +1054,8 @@ SETUP_ORDER = ("tcc.microphone", "tcc.speech", "tcc.screen-recording",
                "signing.identity", "xcode.appleid", "xcode.devicesupport",
                "xcode.developer-dir", "disk.boot-free", "build.scratch",
                "path.noninteractive", "engine.version", "locks",
-               "submodule.glyphcore", "repo.access", "repo.one-account")
+               "submodule.glyphcore", "repo.access", "repo.one-account",
+               "apps.missing")
 # What a reader runs by hand to see the same thing. A check with something
 # more exact to say overrides it; a check that never ran still carries it,
 # which is what keeps an `unknown` row honest.
@@ -1074,6 +1075,7 @@ SETUP_PROOF = {
     "repo.access": "gh api user --jq .login, then git ls-remote the probe repo",
     "repo.one-account": "gh auth status",
     "submodule.glyphcore": "git submodule status in a worktree",
+    "apps.missing": "glyph rig apps, against what the other machines wrote",
 }
 # Worst first when a reader is shown the list, rather than the fixed order the
 # block is written in.
@@ -1953,6 +1955,469 @@ def glyphcore_check(roots):
                     "tree and leave HEAD where it was")]
 
 
+# --- what is installed, and what could install it again ----------------------
+# Setting up a new Mac is the question this section answers: what the other
+# machines have that this one does not, and which of it can be installed from
+# its real source. Never from another machine. A copied app bundle carries the
+# signature, the licence and the login of the Mac it came from, cannot update
+# itself, and the first thing macOS does with one it does not trust is refuse
+# to open it.
+#
+# Homebrew is the half that can be installed again by name, so it is the half
+# worth listing in full. An app no cask installs can only be named, with the
+# download left to a person, and saying so is the feature: a silent skip is how
+# a machine ends up half set up while every check reads ok.
+#
+# Everything here is read off the disk. `brew list --versions` is a ruby
+# start-up and seconds of work; the Cellar, the Caskroom and each keg's own
+# install receipt say the same thing in twelve milliseconds, and the receipt
+# says one thing more that matters here: whether a formula was asked for or
+# pulled in as a dependency. 132 of this machine's 193 formulae were never
+# asked for, and nobody installs a dependency.
+
+BREW_PREFIXES = ("/opt/homebrew", "/usr/local", "~/homebrew")
+# The tap a name comes from is only worth a row when it is not the obvious
+# one, since `brew install <name>` finds these two without being told.
+DEFAULT_TAPS = ("homebrew/core", "homebrew/cask")
+APP_DIRS = ("/Applications", "~/Applications")
+# An account is a person, always. These are named rather than counted: Rig can
+# put 1Password on a machine and must never read as having signed into it.
+SIGN_IN = {
+    "1password": "open 1Password, sign in to the account, then turn on the "
+                 "browser extension and the CLI integration",
+    "1password-cli": "run `op signin` once, after the app itself is signed in",
+    "google-chrome": "open Chrome and sign in to the profile this machine uses",
+    "tailscale": "open Tailscale and sign in, so the machine joins the tailnet",
+    "slack": "open Slack and sign in to the workspace",
+    "dropbox": "open Dropbox, sign in, and choose which folders sync here",
+}
+
+
+def brew_prefix():
+    """Where Homebrew is, or None on a Mac that has none.
+
+    Read off the disk rather than asked of `brew --prefix`, which is a ruby
+    start-up for an answer that is one of three paths, and which answers
+    nothing at all on the machine this question is really about.
+    """
+    for p in BREW_PREFIXES:
+        d = os.path.expanduser(p)
+        if os.path.isdir(os.path.join(d, "Cellar")) or \
+                os.path.isfile(os.path.join(d, "bin", "brew")):
+            return d
+    return None
+
+
+def keg_row(name, version, tap, asked):
+    """One installed thing, with the defaults left out.
+
+    Two hundred of these are read side by side with another machine's two
+    hundred, so a row carries what differs and nothing else.
+    """
+    row = {"name": name, "version": version}
+    if tap and tap not in DEFAULT_TAPS:
+        row["tap"] = tap
+    if asked:
+        row["asked"] = True
+    return row
+
+
+def brew_formulae(prefix):
+    """Every formula in the Cellar, with its tap, and which ones were asked for.
+
+    `asked` is brew's own `leaves --installed-on-request`, worked out from the
+    receipts already being read: a formula somebody installed by name that
+    nothing else installed depends on. Both halves are needed. 132 of this
+    machine's 193 were never asked for at all, and of the 61 that were, 11 are
+    a dependency of something else that was, so installing the other thing
+    brings them. 50 names is a list a person recognises; 193 is a wall.
+    """
+    out, deps = [], set()
+    root = os.path.join(prefix, "Cellar")
+    for name in listnames(root):
+        d = os.path.join(root, name)
+        vers = [v for v in listnames(d)
+                if not v.startswith(".") and os.path.isdir(os.path.join(d, v))]
+        if not vers:
+            continue
+        v = vers[-1]
+        r = read_json(os.path.join(d, v, "INSTALL_RECEIPT.json")) or {}
+        out.append(keg_row(name, v, (r.get("source") or {}).get("tap"),
+                           r.get("installed_on_request")))
+        for x in r.get("runtime_dependencies") or []:
+            if isinstance(x, dict) and x.get("full_name"):
+                deps.add(x["full_name"].split("/")[-1])
+    for row in out:
+        if row["name"] in deps:
+            row.pop("asked", None)
+    return out
+
+
+def brew_casks(prefix):
+    """(the casks, app bundle name -> the cask that installed it).
+
+    The second half is the only certain answer to "did this app come from
+    Homebrew": the cask's own receipt lists the bundles it installed, so an app
+    is matched to a cask by what brew recorded rather than by its name.
+    """
+    out, from_cask = [], {}
+    root = os.path.join(prefix, "Caskroom")
+    for token in listnames(root):
+        d = os.path.join(root, token)
+        if token.startswith(".") or not os.path.isdir(d):
+            continue
+        vers = [v for v in listnames(d) if not v.startswith(".")]
+        r = read_json(os.path.join(d, ".metadata", "INSTALL_RECEIPT.json")) or {}
+        out.append(keg_row(token, vers[-1] if vers else None,
+                           (r.get("source") or {}).get("tap"),
+                           r.get("installed_on_request", True)))
+        for art in r.get("uninstall_artifacts") or []:
+            if not isinstance(art, dict):
+                continue
+            for a in art.get("app") or []:
+                if isinstance(a, str):
+                    from_cask[a] = token
+    return out, from_cask
+
+
+def cask_names(prefix):
+    """Every cask token Homebrew knows here, or None when nothing says.
+
+    `brew search` is a network call, and since Homebrew 4 the cask tap is not
+    on disk at all: the names live in its API cache, and that one file is the
+    whole answer. A machine that has never asked brew about a cask has no file,
+    and then whether a cask exists for an app is unknown rather than no, which
+    is why this returns None and not an empty set.
+    """
+    base = os.environ.get("HOMEBREW_CACHE") or \
+        os.path.expanduser("~/Library/Caches/Homebrew")
+    path = os.path.join(base, "api", "cask_names.txt")
+    if not os.path.isfile(path):
+        note("casks", "no cask index at %s, so whether a cask exists for an "
+                      "app is unknown here" % tilde(path))
+        return None
+    with open(path) as f:
+        return set(x.strip() for x in f if x.strip())
+
+
+def app_rows(from_cask, known):
+    """Every app in /Applications and ~/Applications: id, name, version, cask.
+
+    `cask` is what could install it again: the cask brew recorded for a bundle
+    it installed, else a cask of the same name that Homebrew knows about, since
+    an app installed by hand is still one `brew install --cask` away. An app
+    with no cask is the half that needs a download, and it says so rather than
+    going missing.
+
+    ponytail: the name match is a guess, and the only way this is wrong. A
+    cask token is made from the app's own name, so `Google Chrome` finds
+    `google-chrome` and a Chrome nobody installed with brew is still
+    installable; `Tailscale` misses `tailscale-app` and `zoom.us` misses
+    `zoom`, and a miss reads as a download, which is the safe direction. A
+    cask of the same name that installs something else would be the unsafe
+    one. Reading each cask's own app list would settle it, and that is
+    `brew info --cask` once per app or a megabyte of API cache parsed, so
+    until one of those is cheap the guess stands and says so here.
+    """
+    out = []
+    for base in APP_DIRS:
+        d = os.path.expanduser(base)
+        for n in listnames(d):
+            if not n.endswith(".app"):
+                continue
+            # A bundle with no readable Info.plist is a fact about the bundle,
+            # not a fact that could not be read, so it is a row and not an
+            # error line: the name is the half worth comparing anyway.
+            info = {}
+            try:
+                import plistlib
+                with open(os.path.join(d, n, "Contents", "Info.plist"), "rb") as f:
+                    info = plistlib.load(f)
+            except Exception:
+                pass
+            name = n[:-4]
+            token = core.token(name)
+            row = {"id": info.get("CFBundleIdentifier"), "name": name,
+                   "version": info.get("CFBundleShortVersionString")
+                   or info.get("CFBundleVersion")}
+            cask = from_cask.get(n) or (token if known and token in known else None)
+            if cask:
+                row["cask"] = cask
+            out.append(row)
+    return out
+
+
+def herdr_block():
+    """Herdr's own plugins, asked of Herdr.
+
+    `herdr plugin list --json` is the one machine-readable list it has, and it
+    answers without a running server. Its integrations, the per-agent ones it
+    installs for Claude, Codex, pi and a dozen more, have `install` and
+    `uninstall` and no `list` at all, so which of those a machine has cannot be
+    read and is not guessed at here.
+    """
+    b = find_bin("herdr")
+    if not b:
+        return None
+    out = {"version": version_of(b), "plugins": None}
+    got = run([b, "plugin", "list", "--json"], strict=True)
+    if not got or "{" not in got:
+        note("herdr", "herdr plugin list --json answered nothing")
+        return out
+    d = json.loads(got[got.index("{"):])
+    rows = ((d.get("result") or {}).get("plugins")) or []
+    out["plugins"] = sorted(p.get("id") or p.get("name") or "?"
+                            for p in rows if isinstance(p, dict))
+    return out
+
+
+_INSTALLED = {}
+_INSTALLED_LOCK = threading.Lock()
+
+
+def installed_block():
+    """Everything on this machine that came from somewhere it can come from again.
+
+    Read once per run and kept, because two things ask for it: the reader that
+    writes it into the report, and the `apps.missing` check that compares it
+    with what the other machines wrote. Reading the same folders twice is how
+    one question gets two answers.
+    """
+    with _INSTALLED_LOCK:
+        if "d" not in _INSTALLED:
+            _INSTALLED["d"] = _installed()
+        return _INSTALLED["d"]
+
+
+def _installed():
+    prefix = brew_prefix()
+    casks, from_cask = brew_casks(prefix) if prefix else ([], {})
+    known = cask_names(prefix) if prefix else None
+    out = {"brew": prefix,
+           "casks": casks,
+           "formulae": brew_formulae(prefix) if prefix else [],
+           "casks_known": len(known) if known else None,
+           "apps": guard("apps", app_rows, from_cask, known) or [],
+           "herdr": guard("herdr", herdr_block)}
+    return out
+
+
+# --- what the other machines have and this one does not ----------------------
+# The set is never this tool's to choose. It is what the other machines already
+# have, which their own readings carry, narrowed by a list in the person's own
+# config the way `GLYPH_SPACES` and the `git` block already are. Nothing about
+# anybody's machine belongs in this repo.
+
+def wanted_names():
+    """The names a person's own config narrows the set to, or None for all.
+
+    `GLYPH_INSTALL` names them outright, comma separated; otherwise an
+    `install` list beside the `git` block in machines.json. Neither is
+    required: with nothing set, what the other machines have is the answer.
+    """
+    got = os.environ.get("GLYPH_INSTALL")
+    if not got:
+        try:
+            with open(os.path.join(core.map_root(), "machines.json")) as f:
+                got = json.load(f).get("install")
+        except Exception:
+            got = None
+        if isinstance(got, (list, tuple)):
+            got = ",".join(str(x) for x in got)
+    if not got:
+        return None
+    return set(x.strip() for x in str(got).replace("\n", ",").split(",")
+               if x.strip())
+
+
+def cask_for(block, folds):
+    """Which cask installs each app in a block, app bundle name -> token.
+
+    An app carries its own cask when the machine that wrote it could tell, and
+    a machine whose brew has never fetched the cask index cannot tell at all.
+    So the whole fleet's answers are pooled before anything is compared:
+    `folds` is every app-to-cask pair any machine knew, and a machine that
+    knew none of them still has its Chrome read as `google-chrome` rather than
+    as an app nothing can install. Without this one app was two rows, a cask on
+    the machine that knew and an app on the machine that did not.
+    """
+    out = {}
+    for r in (block or {}).get("apps") or []:
+        got = r.get("cask") or folds.get(r["name"])
+        if got:
+            out[r["name"]] = got
+    return out
+
+
+def folds_across(blocks):
+    """Every app-to-cask pair any machine in the fleet knew."""
+    out = {}
+    for b in blocks:
+        for r in (b or {}).get("apps") or []:
+            if r.get("cask"):
+                out[r["name"]] = r["cask"]
+    return out
+
+
+def listed(block, kind, folds=None):
+    """(name, version, bundle id) for one kind of thing in an `installed` block.
+
+    Two rules, both about not asking for the same thing twice. An app a cask
+    installs is counted as that cask, because it is the same thing and the
+    cask is the name that installs it again, whichever way it got there this
+    time. And a formula nobody asked for is left out: brew pulls a dependency
+    in by itself, and 143 of one machine's 193 formulae are a dependency or
+    were never asked for.
+    """
+    block = block or {}
+    casks = cask_for(block, folds or {})
+    if kind == "cask":
+        out = [(r["name"], r.get("version"), None)
+               for r in block.get("casks") or []]
+        return out + [(casks[r["name"]], r.get("version"), r.get("id"))
+                      for r in block.get("apps") or [] if r["name"] in casks]
+    if kind == "formula":
+        return [(r["name"], r.get("version"), None)
+                for r in block.get("formulae") or [] if r.get("asked")]
+    return [(r["name"], r.get("version"), r.get("id"))
+            for r in block.get("apps") or [] if r["name"] not in casks]
+
+
+KINDS = ("cask", "formula", "app")
+
+
+def install_how(kind, name, bundle):
+    """(whose job it is, the one line that does it).
+
+    Homebrew is the whole of what can be automated, and it is named by the
+    command a person could run themselves. An app no cask knows needs a
+    download, and an Apple one needs the App Store: neither is a gap to close
+    later, so both say so in the row rather than being left out of it.
+    """
+    if kind == "formula":
+        return "rig", "brew install %s" % name
+    if kind == "cask":
+        return "rig", "brew install --cask %s" % name
+    if (bundle or "").startswith("com.apple."):
+        return "you", "from the App Store, or it ships with macOS"
+    return "you", "no cask knows it, so download it from its own site"
+
+
+def install_rows(mine=None, mid=None):
+    """What the other machines have and this one does not.
+
+    A row carries how many of them have it, because that is the difference
+    between a baseline and somebody's experiment: a name every other machine
+    carries is what a new Mac is missing, and one that only one machine has is
+    a choice rather than a gap. The check counts only the ones they all have,
+    and the view prints those first.
+    """
+    mid = mid or core.machine_id()
+    mine = installed_block() if mine is None else mine
+    reps = dict((k, v) for k, v in load_reports().items()
+                if k != mid and v.get("installed"))
+    folds = folds_across([mine] + [r.get("installed") for r in reps.values()])
+    # By name and not by name and kind: one machine's cask is another's
+    # formula often enough, and a row saying a machine is missing something it
+    # has under the other kind is worse than missing the row.
+    have = set(name for kind in KINDS
+               for name, _, _ in listed(mine, kind, folds))
+    want = wanted_names()
+    seen, ids = {}, {}
+    for who in sorted(reps):
+        for kind in KINDS:
+            for name, _, bundle in listed(reps[who].get("installed"), kind, folds):
+                if name in have:
+                    continue
+                if want is not None and name not in want:
+                    continue
+                seen.setdefault((kind, name), set()).add(who)
+                if bundle:
+                    ids.setdefault((kind, name), bundle)
+    rows = []
+    for (kind, name), on in seen.items():
+        who, how = install_how(kind, name, ids.get((kind, name)))
+        rows.append({"kind": kind, "name": name, "on": sorted(on),
+                     "all": len(on) == len(reps), "who": who, "how": how,
+                     "sign_in": SIGN_IN.get(name)})
+    # Every other machine first, then the most widely installed, then by name,
+    # so the top of the list is the baseline and reading stops where it stops
+    # mattering.
+    rows.sort(key=lambda r: (not r["all"], -len(r["on"]), r["kind"], r["name"]))
+    return rows, sorted(reps)
+
+
+def sign_ins(rows, mine):
+    """The accounts a person has to sign into, whether the app is here yet.
+
+    Both halves, on purpose. An app about to be installed needs a sign-in and
+    one already installed may still be waiting for one, and this tool cannot
+    tell: nothing it can read says whether somebody signed in. So it names
+    them and never counts them, which is the same rule the three permissions
+    keep.
+    """
+    out = dict((r["name"], r["sign_in"]) for r in rows if r.get("sign_in"))
+    for kind in ("cask", "app"):
+        for name, _, _ in listed(mine, kind, folds_across([mine])):
+            if name in SIGN_IN:
+                out[name] = SIGN_IN[name]
+    return sorted(out.items())
+
+
+def install_check(roots=None):
+    """What a new Mac is missing, and whether anything here could install it.
+
+    Homebrew's absence is reported rather than fixed. Installing it is a
+    download piped into a shell, a password prompt and the Command Line Tools,
+    which is the same class of thing as installing Xcode, and a tool that
+    quietly did all three would be the worst version of this.
+    """
+    mine = installed_block()
+    if not mine.get("brew"):
+        return [chk("apps.missing", "broken",
+                    "no Homebrew on this machine, so nothing can be installed "
+                    "from its real source and every app would be a download by "
+                    "hand. It is the first thing a new Mac needs",
+                    proof="no Cellar and no bin/brew under %s"
+                          % ", ".join(BREW_PREFIXES),
+                    human="install Homebrew first: it asks for your password "
+                          "and installs the Command Line Tools, so it is not "
+                          "something this does for you. See https://brew.sh")]
+    rows, others = install_rows(mine)
+    base = [r for r in rows if r["all"]]
+    human = "; ".join("%s: %s" % (n, s) for n, s in sign_ins(base, mine)) or None
+    if not others:
+        return [chk("apps.missing", "unknown",
+                    "nothing says what this machine should have: no other "
+                    "machine has written a reading with an installed block "
+                    "into %s, and no install list is configured"
+                    % tilde(rig_dir()),
+                    proof="glyph fleet report on another machine, or set "
+                          "GLYPH_INSTALL",
+                    human=human)]
+    if not base:
+        return [chk("apps.missing", "ok",
+                    "nothing %s %s is missing here%s"
+                    % (" and ".join(others),
+                       "have" if len(others) > 1 else "has",
+                       ", and %d name%s only one of them has"
+                       % (len(rows), "" if len(rows) == 1 else "s")
+                       if rows else ""),
+                    human=human)]
+    rig = [r for r in base if r["who"] == "rig"]
+    return [chk("apps.missing", "missing",
+                "%d thing%s every other machine has %s missing here, %d of "
+                "them installable from Homebrew: %s"
+                % (len(base), "" if len(base) == 1 else "s",
+                   "is" if len(base) == 1 else "are", len(rig),
+                   ", ".join(r["name"] for r in base[:6])
+                   + (", and %d more" % (len(base) - 6) if len(base) > 6 else "")),
+                proof="glyph rig apps names every one, and where it is installed",
+                human=human,
+                fix="brew install the %d Homebrew name%s; the rest is a "
+                    "download or an account"
+                    % (len(rig), "" if len(rig) == 1 else "s"))]
+
 # --- the block ---------------------------------------------------------------
 
 SETUP_JOBS = {
@@ -1969,6 +2434,7 @@ SETUP_JOBS = {
     "submodule.glyphcore": glyphcore_check,
     "repo.access": lambda roots: repo_access_check(),
     "repo.one-account": lambda roots: one_account_check(),
+    "apps.missing": install_check,
 }
 
 
@@ -2113,6 +2579,26 @@ def capabilities(checks, spaces):
     return out
 
 
+def have_line(inst):
+    """One line for what a machine has installed, counts only.
+
+    Two hundred names belong in `glyph rig apps`, where the question is which
+    of them is missing somewhere. Here the only useful fact is the size of the
+    thing, and whether Homebrew is there to install any of it.
+    """
+    if not inst:
+        return None
+    parts = ["%d casks" % len(inst.get("casks") or []),
+             "%d formulae" % len(inst.get("formulae") or []),
+             "%d apps" % len(inst.get("apps") or [])]
+    plugins = ((inst.get("herdr") or {}).get("plugins")) or []
+    if plugins:
+        parts.append("%d herdr plugins" % len(plugins))
+    if not inst.get("brew"):
+        parts.append("no homebrew")
+    return ", ".join(parts)
+
+
 def can_line(caps):
     """A machine's capabilities in one line: what it can do, with a `?` on what
     is not known. What it cannot do is the absence. None for a report written
@@ -2229,6 +2715,7 @@ def collect(account_tag_given=None):
             "spaces": lambda: spaces_block(record, spaces),
             "tools": lambda: probe_versions(TOOLS),
             "setup": lambda: setup_block(record),
+            "installed": installed_block,
         }
         running = dict((ex.submit(guard, name, fn), name) for name, fn in jobs.items())
         for f in futures.as_completed(running):
@@ -2237,7 +2724,7 @@ def collect(account_tag_given=None):
            "taken": stamp(time.time()),
            "took_ms": None}
     for name in ("machine", "tailscale", "compute", "storage", "setup", "agents",
-                 "sessions", "inference", "backends", "spaces"):
+                 "sessions", "inference", "backends", "spaces", "installed"):
         rep[name] = got.get(name)
     # Derived from two blocks that already answered, so it is worked out after
     # them rather than being a reader of its own: it reads nothing and costs
@@ -2401,6 +2888,9 @@ def cmd_report(args):
     got = can_line(rep.get("capabilities"))
     if got:
         print("  can      %s" % got)
+    got = have_line(rep.get("installed"))
+    if got:
+        print("  have     %s" % got)
     for w in s.get("warnings") or []:
         print("  warning  %s" % w)
     for e in rep.get("errors") or []:
@@ -2731,6 +3221,10 @@ def show_machine(mid, rep, net, record, answered=False):
                                          s.get("pid"), s.get("cwd") or "-"))
     if not live:
         print("  no agent sessions running")
+    got = have_line(rep.get("installed"))
+    if got:
+        print("")
+        print("  have    %s  (glyph rig apps for what is missing)" % got)
     inf = (rep.get("inference") or {}).get("ollama") or {}
     if inf.get("running"):
         print("")
