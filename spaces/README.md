@@ -82,13 +82,17 @@ that prompt itself, checks free memory before every launch and stops at
 ## Code
 
     glyph-spaces                 argument parsing and dispatch
-    glyph-fleet                  the same, for glyph fleet report, status, diff and setup
+    glyph-fleet                  the same, for glyph fleet and glyph rig
     glyph_spaces/core.py         the layout itself; no terminal tool is named here
     glyph_spaces/fleet.py        what a machine is, and how machines differ
     glyph_spaces/claims.py       who owns which area of work, across machines
     glyph_spaces/backends/       one file per tool: herdr.py
     test_fleet.py                asserts over invented machines; python3 spaces/test_fleet.py
     test_claims.py               the claim race, run rather than argued; python3 spaces/test_claims.py
+    glyph_spaces/rig.py          making a machine able to do the work
+    glyph_spaces/backends/       one file per tool: herdr.py
+    test_fleet.py                asserts over invented machines; python3 spaces/test_fleet.py
+    test_rig.py                  the same for rig; python3 spaces/test_rig.py
 
 Supporting another tool is one new file under `backends/` and one word in
 `machines.json`; no space file changes.
@@ -135,3 +139,26 @@ a moment earlier: the handover from a stale claim renames the holder file, then
 decides from the file that rename actually took, because an earlier version
 decided from the earlier read and handed one area to two sessions at once,
 twice in forty rounds. `test_claims.py` runs both races with real processes.
+`rig.py` is the other half: the actions. Each one is named for a check in that
+block, so `glyph rig plan` is generated from the checks as they answer rather
+than from a list kept here, and the same check is what proves the action
+afterwards. Four rules hold it.
+
+A step without a check is not done, so each action is read back twice: every
+path it says it wrote is looked for on the disk, and its check is asked again.
+`done` needs both, and an exit code is never evidence, because `git reset
+--hard` has printed a fatal error, exited 0, moved the working tree and left
+HEAD where it was. Dry run is the default, so `plan` writes nothing and `apply`
+refuses without `--yes`; one function describes and does each action, which is
+what keeps the plan from drifting from the work. A human step is never counted:
+the three permissions have no action, they print apart from everything else,
+and they keep the machine not ready. And nothing is made worse: every change
+prints how to reverse it, a file is copied to `<name>.glyph-rig.bak` before it
+is edited, everything in `~/.zshenv` goes between two markers, a folder with
+output in it is left alone, no keychain is touched, no lock another process
+holds is removed, and the whole block is read again at the end so an action
+that broke a different check is reported rather than missed.
+
+`apply` runs on the machine it changes and refuses any other: there is no
+remote half, and changing PATH or `DEVELOPER_DIR` underneath work running
+somewhere else is the damage it exists to prevent.

@@ -13,7 +13,7 @@ Formerly Glyph Code. Same `glyph` command, same repo: `glyph update` keeps worki
 [![stars](https://img.shields.io/github/stars/fru-dev3/glyph?style=flat&label=stars&color=008000&labelColor=0b1a10)](https://github.com/fru-dev3/glyph/stargazers)
 [![license](https://img.shields.io/badge/license-MIT-008000?style=flat&labelColor=0b1a10)](LICENSE)
 
-[Install](#install) · [Usage](#usage) · [Fleets](#fleets) · [glyph.fru.dev/rig](https://glyph.fru.dev/rig)
+[Install](#install) · [Usage](#usage) · [Fleets](#fleets) · [Rig](#rig) · [glyph.fru.dev/rig](https://glyph.fru.dev/rig)
 
 </div>
 
@@ -201,6 +201,7 @@ glyph fleet ci  # a preset of agents, each in its own marked pane
 glyph fleet report  # what this machine is: disks, memory, agents, accounts
 glyph fleet status  # every machine side by side, with who is online
 glyph fleet diff    # what is on one machine and not another
+glyph rig plan      # what would change to make this machine able to work
 ```
 
 ## Agents
@@ -520,7 +521,7 @@ Three rules hold them up, and all three were paid for:
 
 Everything in the block reads. Nothing installs, grants, links, deletes,
 points `DEVELOPER_DIR` or touches a keychain: `glyph fleet` says what a
-machine is missing, and a person decides what to do about it.
+machine is missing, and `glyph rig` is what does something about it.
 
 Every reader stands on its own. One that cannot answer adds a line to `errors`
 and the rest of the report still comes out, because losing a machine over one
@@ -608,6 +609,187 @@ branch, which is the other way two agents disagree about what is done. And it
 is not the lock on a shared resource: the three `mkdir` locks that `glyph fleet
 setup` reports under `locks` are still the answer for one machine's screen,
 simulator and build output.
+## Rig
+
+`glyph fleet setup` says what a machine is missing. `glyph rig` does the part
+of that which needs nobody at the keyboard.
+
+```sh
+glyph rig plan          # what would change here, and what only you can do
+glyph rig apply --yes   # do the automatable part
+```
+
+Every action is named for one of the thirteen checks. The plan is generated
+from those checks as they answer right now, and the same check is what proves
+the action worked afterwards, so there is nothing to keep in step and no
+second list of what can go wrong.
+
+```
+bens-air  not ready, 10 of 13 checks
+
+CHECK                 STATE    WOULD CHANGE                                      WHO
+xcode.developer-dir   broken   DEVELOPER_DIR to /Volumes/studio/Xcode.app        rig
+path.noninteractive   broken   3 folders onto the PATH in ~/.zshenv              rig
+submodule.glyphcore   broken   GlyphCore copied into 2 of 3 checkouts            rig+you
+tcc.microphone        missing  no shell can grant a permission                   you
+tcc.speech            missing  no shell can grant a permission                   you
+tcc.screen-recording  missing  no shell can grant a permission                   you
+signing.identity      missing  nothing here touches a keychain                   you
+xcode.appleid         missing  the key into ~/.appstoreconnect/private_keys      rig
+xcode.devicesupport   missing  xcode.developer-dir covers the Xcode half         you
+engine.version        missing  the engine installed, ~/.local/bin/prevail to it  rig
+disk.boot-free        ok       -                                                 -
+build.scratch         ok       build output to /Volumes/studio/glyph-build, 19   rig
+locks                 ok       the 3 lock conventions into ~/.config/glyph/lock  rig
+
+waiting  submodule.glyphcore  1 checkout has files but no Package.swift
+
+only a person can do these, at the keyboard of bens-air:
+  tcc.microphone         System Settings, Privacy and Security, Microphone, turn on the terminal
+  tcc.speech             System Settings, Privacy and Security, Speech Recognition, turn on the terminal
+  tcc.screen-recording   System Settings, Privacy and Security, Screen Recording, turn on the terminal
+  xcode.devicesupport    attach the iPhone once and trust it
+
+nothing was changed. glyph rig apply --yes does the 7 marked rig
+```
+
+And what `apply` prints is the same table with the state before, the state
+after, and whether the check bore it out:
+
+```
+CHECK                 WAS      NOW      DID                                    RESULT
+xcode.appleid         missing  ok       the key into ~/.appstoreconnect/pri    done
+xcode.developer-dir   broken   ok       DEVELOPER_DIR to /Volumes/studio/Xc    done
+build.scratch         ok       ok       build output to /Volumes/studio/gly    done
+path.noninteractive   broken   ok       3 folders onto the PATH in ~/.zshenv   done
+engine.version        missing  ok       the engine installed, ~/.local/bin/    done
+locks                 ok       ok       the 3 lock conventions into ~/.conf    done
+submodule.glyphcore   broken   broken   GlyphCore copied into 2 of 3 check     part
+
+waiting  submodule.glyphcore  1 checkout has files but no Package.swift
+undo     xcode.appleid        rm ~/.appstoreconnect/private_keys/AuthKey_ACME1234.p8
+undo     xcode.developer-dir  take the lines between # >>> glyph rig >>> and # <<< glyph rig <<< out of ~/.zshenv
+undo     build.scratch        rm ~/Library/Developer/Xcode/DerivedData
+undo     engine.version       ln -sfn ~/src/engine/prevail ~/.local/bin/prevail
+
+CHECK                WAS      NOW
+xcode.appleid        missing  ok
+xcode.developer-dir  broken   ok
+path.noninteractive  broken   ok
+engine.version       missing  ok
+
+6 of 7 verified by their own checks: build.scratch, engine.version, locks, path.noninteractive, xcode.appleid, xcode.developer-dir
+bens-air  not ready, 5 of 13 checks
+```
+
+`submodule.glyphcore` reads `part` rather than `done`, and the run exits 1,
+because its check is still broken: one checkout had files in it and no
+`Package.swift`, which is somebody's half-finished work, so nothing touched
+it. The machine is still not ready afterwards, and the three permissions are
+most of why.
+
+The `WHO` column is the whole table in one word. `rig` is this command's work,
+`you` is yours, `rig+you` is a row where some of it is automatable and the rest
+is named beneath.
+
+### What it can do
+
+Seven actions, each one the automatable half of a check's own `fix`.
+
+| Check | What the action does |
+|---|---|
+| `path.noninteractive` | Adds the installed folders to the PATH in `~/.zshenv`, the one file a non-interactive shell reads |
+| `xcode.developer-dir` | Exports `DEVELOPER_DIR` for a full Xcode, wherever it lives, in the same file. Not `xcode-select -s`, which wants sudo and changes the machine for everything on it |
+| `build.scratch` | Links Xcode's build folder and every Swift package's `.build` to a volume with room, so output lands off the boot disk with no flag to remember |
+| `xcode.appleid` | Links the App Store Connect key where `xcodebuild` looks, which is how an iPhone install needs no interactive sign-in |
+| `engine.version` | Installs the engine, and points the name on PATH at it where a stale build answers instead |
+| `locks` | Writes the three lock conventions down, so every script on the machine agrees which path is which. It never takes a lock |
+| `submodule.glyphcore` | Copies a healthy `Packages/GlyphCore` into a checkout that has none. A copy, never a link, which git refuses |
+
+### What only you can do
+
+This is not a gap to be closed later. Say it out loud rather than work around
+it.
+
+- **Microphone, Speech Recognition and Screen Recording.** No shell can grant
+  a TCC permission. `xcrun simctl privacy ... grant speech-recognition`
+  answers `Operation not permitted`. Each one names the exact System Settings
+  path and whose permission it has to be, and it keeps the machine not ready
+  however much else was fixed.
+- **A revoked signing certificate.** Nothing here touches a keychain. The
+  check finds the revocation and names it; deleting the wrong identity costs
+  more than the broken build it was meant to fix.
+- **An Apple ID in Xcode.** The App Store Connect key is the route that needs
+  no sign-in, and the action wires it in. Signing in is still yours.
+- **Freeing disk space**, which means deleting files somebody put there.
+  `build.scratch` moves build output instead, which is the half that is safe.
+- **Installing Xcode**, a download and a licence prompt.
+- **`xcode-select -s`**, if you want `DEVELOPER_DIR` true for every process on
+  the machine and not only for shells. The action writes it to `~/.zshenv`,
+  which reaches every build a script or an agent starts, because those all
+  come through a shell. A launchd job or an app that did not still reads
+  `xcode-select -p`, and changing that wants sudo, so it is yours.
+- **Attaching the iPhone once** and trusting it, so Xcode fetches support for
+  its iOS version.
+
+### Four rules
+
+- **A step without a check is not done.** Every action is read back twice:
+  each thing it says it wrote is looked for on the disk, and the check it is
+  named for is asked again. `done` needs both. An action that ran and left its
+  check broken reads `failed`, one that did part of the work reads `part`, and
+  a check that will not answer reads `unknown`. Nothing is done on the
+  strength of having run, because `git reset --hard` has printed a fatal
+  error, exited 0, moved the working tree and left HEAD where it was.
+- **Dry run is the default.** `plan` writes nothing. `apply` without `--yes`
+  prints the plan, says so, and exits 2. One function both describes and does
+  each action, so a plan cannot drift from what apply would run.
+- **A human step is never counted.** Those permissions are printed apart from
+  everything else, under their own line, because naming the clicks is the
+  feature and implying they were handled is the worst thing this could do.
+- **Nothing is made worse.** Every change prints how to reverse it. A file is
+  copied to `<name>.glyph-rig.bak` before it is edited, and everything written
+  to `~/.zshenv` goes between two markers, so deleting the block undoes it. A
+  folder with output in it is left exactly as it is. A real file where a link
+  should go is moved aside rather than thrown away. No keychain is touched and
+  no lock another process holds is removed. At the end every check is read
+  again, not only the ones that were touched, so an action that fixed its own
+  check and broke another one is reported rather than missed.
+
+### Where it runs
+
+`plan` runs anywhere, including over ssh, because it writes nothing.
+`plan --machine <id>` reads the reading that machine wrote and says which
+checks this has an action for, without the steps: which volume, which Xcode
+and which folders are facts about that machine's own disks, so they are worked
+out there.
+
+`apply` runs on the machine it is changing and refuses any other, over ssh or
+otherwise. Changing PATH or `DEVELOPER_DIR` underneath work already running
+somewhere else is the damage this exists to prevent.
+
+### A new machine, end to end
+
+```sh
+glyph fleet report                   # a baseline before anything is done
+glyph rig plan                       # what would change, and what is yours
+glyph rig apply --yes                # the automatable part, each step verified
+glyph fleet setup                    # the checks again, from scratch
+```
+
+Take the baseline first, while the machine is still bare. It is the only
+honest before, and without it there is no telling later what Rig did and what
+was already true.
+
+Then the human steps the plan named, at that keyboard, and then a real job
+rather than a green check: a Swift build, a simulator test and a Mac screen
+check. Anything you still had to do by hand is either a Rig gap worth fixing
+or a human step worth writing down, and the difference has to be explicit.
+
+Rig is the same Python as Fleet, from the same clone, and reaches the same
+file: `install.sh` links `glyph-fleet` into `~/.local/bin`, so
+`ssh laptop '~/.local/bin/glyph-fleet rig plan'` works as well as `glyph rig
+plan` does.
 
 <details>
 <summary><b>Configuration</b></summary>
@@ -640,6 +822,11 @@ simulator and build output.
 | `GLYPH_SIGN_IDENTITY` | The codesigning identity `signing.identity` verifies, by hash or name |
 | `GLYPH_ENGINE` | Where the Glyph engine is (default `~/.local/lib/glyph/prevail`) |
 | `GLYPH_GLYPHCORE` | Extra `Packages/GlyphCore` paths to check, colon separated |
+| `GLYPH_BUILD_SCRATCH` | Where `glyph rig` puts build output; otherwise the roomiest volume that is not the boot disk |
+| `GLYPH_ASC_KEY` | The `AuthKey_<id>.p8` to link where `xcodebuild` looks for it |
+| `GLYPH_ASC_KEY_ID`, `GLYPH_ASC_ISSUER_ID` | The two ids a build needs beside that key |
+| `GLYPH_ENGINE_SRC` | An engine binary to install from, on a machine with none |
+| `GLYPH_GLYPHCORE_SRC` | A healthy `Packages/GlyphCore` to copy from |
 
 **Machine tags** come from the system computer name when available. On macOS,
 Glyph reads `scutil --get ComputerName`; Windows/WSL and Linux use the system
