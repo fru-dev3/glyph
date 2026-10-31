@@ -524,6 +524,30 @@ def test_a_space_that_does_not_exist_lists_the_ones_that_do():
     assert "ops" not in said, "a space this machine does not take is not on offer"
 
 
+def test_a_renamed_tailnet_node_folds_onto_the_machine_it_is():
+    """A tailnet name is renamed freely; a machine's key in the map is not.
+    When the Macs were renamed to `...-16in-m2-16gb-01`, every one appeared
+    twice, once as a node that had never reported and once as a machine that
+    was never up, and the machine running the command called itself down."""
+    machines = {"laptop": {"role": "dev"}, "studio": {"role": "hub"}}
+    reps = {"laptop": {}, "studio": {}}
+    net = {"laptop-16in-m2-16gb-01": {"online": True},
+           "studio-m4-16gb-01": {"online": True},
+           "phone-15-pro-01": {"online": True}}
+    out = fleet.fold_roster(net, machines, reps)
+    assert set(out) == {"laptop", "studio", "phone-15-pro-01"}, out
+
+    # The map may say so outright, which wins over the name.
+    said = {"mini": {"role": "hub", "tailnet": "Studio m4 16gb 01"}}
+    assert set(fleet.fold_roster({"studio-m4-16gb-01": {}}, said, {})) == {"mini"}
+
+    # A node two ids could claim is left alone: a wrong join is worse than two rows.
+    two = {"air": {}, "air-2": {}}
+    assert set(fleet.fold_roster({"air-2-m5-01": {}}, two, {})) == {"air-2"}
+    amb = {"a": {}, "a-b": {}}
+    assert set(fleet.fold_roster({"a-b-c": {}}, amb, {})) == {"a-b"}
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for t in tests:

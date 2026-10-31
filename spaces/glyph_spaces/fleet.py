@@ -2345,6 +2345,39 @@ def probe_live(ids, machines, net):
     return out
 
 
+def fold_roster(net, machines, reps):
+    """Fold a tailnet node onto the machine it is, when the names differ.
+
+    A tailnet name is renamed freely and a machine's key in the map is not.
+    When a Mac is renamed to `laptop-16in-m2-16gb-01`, its node and
+    its own readings stopped joining: every Mac appeared twice, once as a
+    node that had never reported and once as a machine that was never up, and
+    the machine running the command called itself down.
+
+    A node folds onto a known id when the map says so (`"tailnet": "<name>"`),
+    or when the known id is the front of the node's name at a hyphen. Two ids
+    that are both the front of one name cannot be the same length, so the
+    longest is the more specific and wins: `air-2-m5-01` is `air-2`, not
+    `air`. A node nothing claims keeps its own name and shows as itself.
+    """
+    known = set(machines) | set(reps)
+    said = {}
+    for k, v in (machines or {}).items():
+        if isinstance(v, dict) and v.get("tailnet"):
+            said[core.token(v["tailnet"])] = k
+    out = {}
+    for nid, row in (net or {}).items():
+        if nid in known:
+            out[nid] = row
+            continue
+        if nid in said:
+            out[said[nid]] = row
+            continue
+        hits = [k for k in known if nid.startswith(k + "-")]
+        out[max(hits, key=len) if hits else nid] = row
+    return out
+
+
 def cmd_status(args):
     net = guard("tailscale", tailnet) or {}
     try:
@@ -2352,6 +2385,7 @@ def cmd_status(args):
     except Exception:
         machines = {}
     reps = load_reports()
+    net = fold_roster(net, machines, reps)
     ids = sorted(set(list(reps) + list(net) + list(machines)))
     if args.machine:
         ids = [m for m in ids if m == args.machine]
