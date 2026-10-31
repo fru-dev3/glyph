@@ -9,7 +9,7 @@ command, which is the whole promise worth checking. A reader that cannot read
 has to become a line in `errors` rather than a traceback, because a caller
 losing a whole machine over one unreadable fact is the failure that matters.
 """
-import contextlib, io, os, shutil, sys, tempfile, time
+import contextlib, io, json, os, shutil, sys, tempfile, time
 
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 
@@ -563,6 +563,61 @@ def test_a_machine_that_will_not_answer_says_what_to_do_about_it():
     # Anything it has no words for is passed through rather than swallowed.
     assert fleet.why_no_answer("kex_exchange_identification: read: broken pipe") \
         == "kex_exchange_identification: read: broken pipe"
+
+
+def test_what_a_status_says_is_not_what_a_clone_does():
+    """Three green signals and a broken capability, all on one machine: a
+    status named the right account while its token answered 401, the git setup
+    completed while a clone could not read a username, and the credential
+    helper was right with a dead token behind it. So the check asks the host
+    who we are and then lists a private repo, and when nothing says which
+    account to expect it answers unknown rather than ok."""
+    keep = dict(os.environ)
+    try:
+        for k in ("GLYPH_GIT_ACCOUNT", "GLYPH_GIT_PROBE"):
+            os.environ.pop(k, None)
+        with tempfile.TemporaryDirectory() as d:
+            os.environ["GLYPH_SPACES"] = d          # a map with no git block
+            os.makedirs(os.path.join(d, "spaces"), exist_ok=True)
+            with open(os.path.join(d, "machines.json"), "w") as f:
+                json.dump({"machines": {}}, f)
+            row = fleet.repo_access_check()[0]
+            assert row["state"] == "unknown", row
+            assert row["proof"], "an unknown row still says what would have been run"
+    finally:
+        os.environ.clear()
+        os.environ.update(keep)
+
+
+def test_a_second_github_account_on_a_machine_is_reported():
+    """Two identities on a machine agents drive is two chances to commit as
+    the wrong one, and on a public repo that is permanent. Read off the local
+    config, never by asking the network, and never reading a token."""
+    keep = dict(os.environ)
+    try:
+        with tempfile.TemporaryDirectory() as d:
+            os.environ["GH_CONFIG_DIR"] = d
+            with open(os.path.join(d, "hosts.yml"), "w") as f:
+                f.write("github.com:\n    git_protocol: https\n    users:\n"
+                        "        bens-other:\n        bendev:\n    user: bendev\n")
+            names, active = fleet.git_accounts()
+            assert names == ["bens-other", "bendev"], names
+            assert active == "bendev", active
+            os.environ["GLYPH_GIT_ACCOUNT"] = "bendev"
+            row = fleet.one_account_check()[0]
+            assert row["state"] == "missing", row
+            assert "bens-other" in row["detail"], row
+            assert row["human"] and "logout" in row["human"], row
+            # One account is fine, and says which.
+            with open(os.path.join(d, "hosts.yml"), "w") as f:
+                f.write("github.com:\n    users:\n        bendev:\n    user: bendev\n")
+            assert fleet.one_account_check()[0]["state"] == "ok"
+            # No gh config at all is unknown, never ok.
+            os.environ["GH_CONFIG_DIR"] = os.path.join(d, "nope")
+            assert fleet.one_account_check()[0]["state"] == "unknown"
+    finally:
+        os.environ.clear()
+        os.environ.update(keep)
 
 
 def main():

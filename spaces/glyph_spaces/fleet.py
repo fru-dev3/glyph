@@ -219,6 +219,25 @@ def remembered(key, fn):
     return got
 
 
+def recently(key, ttl):
+    """Whether `key` was remembered less than `ttl` seconds ago.
+
+    `remembered` keeps an answer that cannot change, keyed on the thing that
+    would change it. This is for an answer that can: a network call whose
+    result is worth not making twice in a minute, but which must not be
+    believed for an hour.
+    """
+    at = cache().get("@" + key)
+    return isinstance(at, (int, float)) and (time.time() - at) < ttl
+
+
+def keep(key):
+    c = cache()
+    with _LOCK:
+        c["@" + key] = time.time()
+        _DIRTY.append("@" + key)
+
+
 def save_cache():
     if not _DIRTY:
         return
@@ -1035,7 +1054,7 @@ SETUP_ORDER = ("tcc.microphone", "tcc.speech", "tcc.screen-recording",
                "signing.identity", "xcode.appleid", "xcode.devicesupport",
                "xcode.developer-dir", "disk.boot-free", "build.scratch",
                "path.noninteractive", "engine.version", "locks",
-               "submodule.glyphcore")
+               "submodule.glyphcore", "repo.access", "repo.one-account")
 # What a reader runs by hand to see the same thing. A check with something
 # more exact to say overrides it; a check that never ran still carries it,
 # which is what keeps an `unknown` row honest.
@@ -1052,6 +1071,8 @@ SETUP_PROOF = {
     "path.noninteractive": "ssh <machine> 'echo $PATH'",
     "engine.version": "the engine --version, against the one on PATH",
     "locks": "ls -d /tmp/glyph-*.lock*",
+    "repo.access": "gh api user --jq .login, then git ls-remote the probe repo",
+    "repo.one-account": "gh auth status",
     "submodule.glyphcore": "git submodule status in a worktree",
 }
 # Worst first when a reader is shown the list, rather than the fixed order the
@@ -1685,6 +1706,146 @@ def engine_versions():
             version_of(onpath) if onpath else None)
 
 
+def git_expected():
+    """Which account this machine must be signed in as, and a repo to prove it.
+
+    Never hardcoded: this is a public repo and the answer is somebody's own.
+    `GLYPH_GIT_ACCOUNT` and `GLYPH_GIT_PROBE`, else the spaces map's top level.
+    Nothing set means the question cannot be answered, which is `unknown`, not
+    `ok`.
+    """
+    acc = os.environ.get("GLYPH_GIT_ACCOUNT")
+    probe = os.environ.get("GLYPH_GIT_PROBE")
+    if not (acc and probe):
+        try:
+            with open(os.path.join(core.map_root(), "machines.json")) as f:
+                git = json.load(f).get("git")
+        except Exception:
+            git = None
+        if isinstance(git, dict):
+            acc = acc or git.get("account")
+            probe = probe or git.get("probe")
+    return acc, probe
+
+
+def git_accounts():
+    """Every account `gh` is configured with here, and the active one.
+
+    Read off `hosts.yml` rather than asked of `gh auth status`, which goes to
+    the network to validate every token and was a quarter of the whole
+    report's time. Whether a token still works is `repo.access`'s question,
+    and it asks it properly. This one is only "how many identities are sitting
+    on this machine". No token is ever read.
+    """
+    path = os.path.join(os.environ.get("GH_CONFIG_DIR")
+                        or os.path.expanduser("~/.config/gh"), "hosts.yml")
+    names, active, inusers = [], None, False
+    try:
+        with open(path) as f:
+            for line in f:
+                bare = line.strip()
+                if bare.startswith("users:"):
+                    inusers = True
+                    continue
+                if inusers:
+                    m = re.match(r"^([A-Za-z0-9][A-Za-z0-9-]*):$", bare)
+                    if m:
+                        names.append(m.group(1))
+                        continue
+                    if bare and not line.startswith(" " * 8):
+                        inusers = False
+                m = re.match(r"^user:\s*([A-Za-z0-9-]+)$", bare)
+                if m:
+                    active = m.group(1)
+    except Exception:
+        return [], None
+    return names, active
+
+
+def repo_access_check():
+    """Can this machine actually clone a private repo, not does a status say so.
+
+    Three green signals and a broken capability, all seen on one machine in
+    one sequence: `gh auth status` named the right account while its token
+    answered 401, `gh auth setup-git` completed while a clone still could not
+    read a username, and the credential helper was configured correctly with a
+    dead token behind it. So the check is the thing itself: ask the host who it
+    thinks we are, then list a private repo.
+    """
+    acc, probe = git_expected()
+    if not shutil.which("gh") and not acc:
+        return [chk("repo.access", "unknown",
+                    "nothing here says which account this machine should be signed in as",
+                    proof="set GLYPH_GIT_ACCOUNT and GLYPH_GIT_PROBE, or a git block in the map")]
+    if not (acc and probe):
+        return [chk("repo.access", "unknown",
+                    "no expected account or probe repo is configured, so a clone cannot be judged",
+                    proof="set GLYPH_GIT_ACCOUNT and GLYPH_GIT_PROBE, or a git block in the map")]
+    # The same bargain as the probe below: a name that answered is remembered
+    # briefly, a silence never is.
+    wkey = "gh-user:%s" % acc
+    who = cache().get(wkey) if recently(wkey, 600) else None
+    if not who:
+        who = (run(["gh", "api", "user", "--jq", ".login"], timeout=15, strict=True) or "").strip()
+        if who:
+            with _LOCK:
+                cache()[wkey] = who
+                _DIRTY.append(wkey)
+            keep(wkey)
+    if not who:
+        return [chk("repo.access", "broken",
+                    "the host would not say who this machine is, so its token is dead or absent",
+                    proof="gh api user --jq .login",
+                    fix="sign in again as %s" % acc)]
+    if who != acc:
+        return [chk("repo.access", "broken",
+                    "signed in as %s, not %s, which reads as a missing repo rather than a "
+                    "wrong account" % (who, acc),
+                    proof="gh api user --jq .login says %s" % who,
+                    fix="sign out and sign in as %s" % acc)]
+    # A success is remembered for ten minutes, because this is the slowest
+    # reader in the whole report and a token rarely dies inside one. A failure
+    # is never remembered: a machine that cannot clone must say so every time,
+    # not once and then quietly out of a cache.
+    key = "ls-remote:%s:%s" % (acc, probe)
+    if recently(key, 600):
+        r = "ok"
+    else:
+        r = run(["git", "ls-remote", probe], timeout=25, strict=True)
+        if r is not None:
+            keep(key)
+    if r is None:
+        return [chk("repo.access", "broken",
+                    "signed in as %s and still cannot list the probe repo, so the token is "
+                    "authenticating and seeing nothing" % who,
+                    proof="git ls-remote %s" % probe,
+                    fix="refresh the token, then check the credential helper")]
+    return [chk("repo.access", "ok", "signed in as %s and the probe repo lists" % who,
+                proof="gh api user --jq .login, then git ls-remote %s" % probe)]
+
+
+def one_account_check():
+    """One account on a machine agents drive.
+
+    Two is two chances to commit as the wrong identity, and on a public repo
+    that is written into history permanently.
+    """
+    acc, _ = git_expected()
+    names, active = git_accounts()
+    if not names:
+        return [chk("repo.one-account", "unknown", "gh is not signed in to anything here",
+                    proof="gh auth status")]
+    extra = [n for n in names if acc and n != acc]
+    if not extra:
+        return [chk("repo.one-account", "ok", "only %s is signed in here" % (active or names[0]),
+                    proof="gh auth status")]
+    return [chk("repo.one-account", "missing",
+                "%s also signed in here, so a commit can be made as the wrong identity"
+                % ", ".join(extra),
+                proof="gh auth status",
+                human="gh auth logout --hostname github.com --user %s" % extra[0])]
+
+
 def engine_check():
     engine, onpath = engine_paths()
     ev, pv = engine_versions()
@@ -1806,6 +1967,8 @@ SETUP_JOBS = {
     "engine.version": lambda roots: engine_check(),
     "locks": lambda roots: locks_check(),
     "submodule.glyphcore": glyphcore_check,
+    "repo.access": lambda roots: repo_access_check(),
+    "repo.one-account": lambda roots: one_account_check(),
 }
 
 

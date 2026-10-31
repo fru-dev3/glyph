@@ -65,6 +65,10 @@ NO_ACTION = {
                       "build output instead",
     "xcode.devicesupport": "xcode.developer-dir covers the Xcode half, a "
                            "cable covers the rest",
+    "repo.access": "signing in is a browser and a person; a token written "
+                   "from here would be a secret this never handles",
+    "repo.one-account": "signing an identity out of a machine is somebody's "
+                        "own account, not this tool's call",
 }
 
 

@@ -631,6 +631,33 @@ that cannot change, a version or a model name, is kept in
 Fleet is Python beside Spaces, from the same clone: `install.sh` links
 `glyph-fleet` into `~/.local/bin`.
 
+### Which account a machine can clone as
+
+Two checks, because a status is not a capability. `gh auth status` has named
+the right account while its token answered 401, `gh auth setup-git` has
+finished while a clone still could not read a username, and the credential
+helper has been configured correctly with a dead token behind it. Three green
+signals and nothing worked. So `repo.access` asks the host who this machine is
+and then lists a private repo, which exercises the token, the helper and the
+repo's visibility in one go.
+
+`repo.one-account` is the other half: a second identity on a machine agents
+drive is a second chance to commit as the wrong one, and on a public repo that
+is written into history for good. It reads the names out of the local config
+and never a token.
+
+Neither knows your account. Set them, or leave the checks saying so:
+
+| Variable | |
+|---|---|
+| `GLYPH_GIT_ACCOUNT` | the one account this machine should answer as |
+| `GLYPH_GIT_PROBE` | a private repo URL that only that account can list |
+
+A `git` block in `machines.json` does the same for every machine at once.
+Nothing is ever cached for long: a name and a successful listing are kept for
+ten minutes, because this is the slowest reader in the report, and a failure
+is never kept at all.
+
 ## Claims
 
 Two agents can start the same piece of work. On one morning here, two of them
