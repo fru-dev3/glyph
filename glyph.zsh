@@ -1112,6 +1112,7 @@ glyph spaces   your workspaces and tabs per machine, built in Herdr [check|names
 glyph fleet report  collect this machine: disks, memory, agents, accounts
 glyph fleet status  every machine side by side [--live] [--machine <id>]
 glyph fleet diff    the configuration that is not the same everywhere
+glyph fleet setup   what a machine still needs before it can work [--machine <id>]
 glyph fleet init create example fleets without replacing existing presets
 glyph fleet [p] launch a preset of agents, each in its own marked tmux pane
 glyph presets  list the presets in ~/.config/glyph/fleet.conf
@@ -1391,7 +1392,7 @@ glyph-fleet() {
   # cannot be reached. `command` skips this function, which is what keeps the
   # one name working both here and over ssh.
   case ${1:-} in
-    report|status|diff)
+    report|status|diff|setup)
       if ! command -v glyph-fleet >/dev/null 2>&1; then
         print -ru2 -- "glyph fleet $1 runs from a clone of the repo:"
         print -ru2 -- "  git clone https://github.com/fru-dev3/glyph && cd glyph && source ./install.sh"

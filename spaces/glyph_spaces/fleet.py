@@ -3,6 +3,8 @@
 `report` collects one machine's facts and writes them where every machine can
 read them. `status` lays the machines side by side with Tailscale's word on who
 is up. `diff` prints only the configuration that is not the same everywhere.
+`setup` prints the named checks that say whether a machine can do the work, as
+opposed to merely being switched on.
 
 Three rules hold this file together:
 
@@ -10,11 +12,14 @@ Three rules hold this file together:
   rest of the report still comes out, so a caller never loses a machine over a
   fact that happened to be unreadable.
 - Nothing is written outside the report folder. The collector runs on machines
-  with a few gigabytes free, so there is no temp file and no scratch copy.
+  with a few gigabytes free, so there is no temp file and no scratch copy. The
+  one exception is named where it is made, in the signing check, which signs a
+  throwaway in a folder it removes and does not run at all when the disk is
+  nearly full.
 - Nothing is read twice from two places. The agents and their flags are read
   out of glyph.zsh, the machine's roots and profiles out of the spaces map.
 """
-import json, os, re, subprocess, threading, time
+import json, os, re, shutil, subprocess, sys, tempfile, threading, time
 from concurrent import futures
 
 from glyph_spaces import core
@@ -972,6 +977,839 @@ def spaces_block(record, spaces):
             "presets": presets()}
 
 
+# --- setup: whether a machine can do the work, not whether it is switched on -
+# Online and useless is a real state. A Mac with 101 MB free, no Apple ID in
+# Xcode and a revoked signing certificate answers every question above and
+# cannot build anything, and until these checks existed the fleet could not
+# tell it from one that can.
+#
+# Everything here reads. Nothing installs, grants, links, deletes, points
+# DEVELOPER_DIR, touches a keychain or takes a lock: provisioning a machine is
+# the other half and none of it is in this file. The one thing that writes at
+# all is the signing probe, which signs a copy of a system binary inside a
+# folder it makes and removes, because that is the only way to see a revoked
+# certificate (below).
+#
+# Three rules, from ten ways a Mac looked ready and was not:
+#
+# - A check without a proof is not a check. Every one carries the command
+#   whose failure it is reporting, so the next person can run it by hand.
+# - `unknown` is never `ok`. A check that cannot run, runs out of time or hits
+#   a permission wall says so and says why, and `ready` is false while any
+#   check is unknown. Silence must not read as health.
+# - `human` and `fix` are different fields. `human` is the clicks only a
+#   person can do; `fix` is what could be automated later. Naming the clicks
+#   exactly is the feature. Implying they were handled is the worst outcome.
+
+# The spec's own order, worst first, which is also the order of the block.
+SETUP_ORDER = ("tcc.microphone", "tcc.speech", "tcc.screen-recording",
+               "signing.identity", "xcode.appleid", "xcode.devicesupport",
+               "xcode.developer-dir", "disk.boot-free", "build.scratch",
+               "path.noninteractive", "engine.version", "locks",
+               "submodule.glyphcore")
+# What a reader runs by hand to see the same thing. A check with something
+# more exact to say overrides it; a check that never ran still carries it,
+# which is what keeps an `unknown` row honest.
+SETUP_PROOF = {
+    "tcc.microphone": "AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio",
+    "tcc.speech": "SFSpeechRecognizer authorizationStatus",
+    "tcc.screen-recording": "CGPreflightScreenCaptureAccess()",
+    "signing.identity": "codesign a throwaway, then spctl -a -vvv -t exec on it",
+    "xcode.appleid": "defaults read com.apple.dt.Xcode DVTDeveloperAccountManagerAppleIDLists",
+    "xcode.devicesupport": "ls $(xcode-select -p)/Platforms/iPhoneOS.platform/DeviceSupport",
+    "xcode.developer-dir": "xcode-select -p, or DEVELOPER_DIR when it is set",
+    "disk.boot-free": "df -k /",
+    "build.scratch": "defaults read com.apple.dt.Xcode IDECustomDerivedDataLocation",
+    "path.noninteractive": "ssh <machine> 'echo $PATH'",
+    "engine.version": "the engine --version, against the one on PATH",
+    "locks": "ls -d /tmp/glyph-*.lock*",
+    "submodule.glyphcore": "git submodule status in a worktree",
+}
+# Worst first when a reader is shown the list, rather than the fixed order the
+# block is written in.
+WORST = {"broken": 0, "missing": 1, "unknown": 2, "ok": 3}
+# Below this a build dies without mentioning the disk: `ld: write() failed
+# errno=28`, or SwiftPM's "Could not resolve package dependencies", and a
+# disk-full abort leaves a half-extracted xcframework it then refuses forever.
+DISK_FLOOR = float(os.environ.get("GLYPH_FLEET_DISK_FLOOR_GB") or 5) * 1e9
+DISK_TIGHT = 20e9
+# One per shared resource, per machine, each taken with mkdir and released by
+# a trap. A lock with no holder is reported as unknown, never assumed stale.
+LOCKS = (("build", "/tmp/glyph-build.lock.d"),
+         ("sim", "/tmp/glyph-sim.lock"),
+         ("mac-ui", "/tmp/glyph-mac-ui.lock.d"))
+REVOKED = "CSSMERR_TP_CERT_REVOKED"
+
+
+def chk(cid, state, detail, proof=None, human=None, fix=None):
+    """One check. `proof` falls back to the command this check is named for."""
+    return {"id": cid, "state": state, "detail": detail,
+            "proof": proof or SETUP_PROOF.get(cid), "human": human, "fix": fix}
+
+
+def gbs(n):
+    if n is None:
+        return "?"
+    return "%.1f GB" % (n / 1e9) if n < 1e12 else "%.1f TB" % (n / 1e12)
+
+
+def free_on(path):
+    """Free bytes on the volume holding a path, existing or not yet.
+
+    A folder a build has not made yet still lands on a volume, so the nearest
+    parent that does exist is the one asked.
+    """
+    p = os.path.realpath(os.path.expanduser(path))
+    while not os.path.exists(p):
+        up = os.path.dirname(p)
+        if up == p:
+            return None
+        p = up
+    st = os.statvfs(p)
+    return st.f_bavail * st.f_frsize
+
+
+def on_boot(path):
+    """Whether a path sits on the boot volume."""
+    try:
+        p = os.path.realpath(os.path.expanduser(path))
+        while not os.path.exists(p):
+            up = os.path.dirname(p)
+            if up == p:
+                return None
+            p = up
+        return os.stat(p).st_dev == os.stat("/").st_dev
+    except OSError:
+        return None
+
+
+def listnames(path):
+    try:
+        return sorted(os.listdir(path))
+    except OSError:
+        return []
+
+
+_TREES = {}
+
+
+def project_dirs(roots):
+    """Every folder up to two deep under this machine's roots, walked once.
+
+    Two checks want the same walk, where a build lands and whether the
+    GlyphCore submodule arrived, and one of these machines carries 115
+    worktrees. So it is walked once per report and remembered for the run.
+    """
+    if "d" in _TREES:
+        return _TREES["d"]
+    out = []
+    for val in sorted(set(v for v in (roots or {}).values() if v)):
+        base = os.path.expanduser(val)
+        out.append(base)
+        for a in _subdirs(base):
+            out.append(a)
+            out.extend(_subdirs(a))
+    _TREES["d"] = out[:4000]
+    return _TREES["d"]
+
+
+def _subdirs(path):
+    try:
+        with os.scandir(path) as it:
+            return sorted(e.path for e in it
+                          if not e.name.startswith(".")
+                          and e.is_dir(follow_symlinks=False))
+    except OSError:
+        return []
+
+
+def found_under(roots, tail):
+    """Every `<folder>/<tail>` that exists under the roots, links included."""
+    out = []
+    for d in project_dirs(roots):
+        p = os.path.join(d, tail)
+        if os.path.lexists(p):
+            out.append(p)
+    return out
+
+
+# --- the three permissions a shell cannot grant ------------------------------
+# Microphone, Speech Recognition and Screen Recording. Three sessions chased
+# voice and capture failures as code regressions on a machine where these had
+# never been granted. They cannot be granted from a shell: `xcrun simctl
+# privacy ... grant speech-recognition` answers `Operation not permitted`. So
+# each one detects, names the exact clicks in `human`, and leaves `fix` null.
+
+TCC_SERVICES = (
+    ("tcc.microphone", "microphone", "Microphone",
+     "nothing here can record and a dictation or meeting check cannot pass"),
+    ("tcc.speech", "speech", "Speech Recognition",
+     "on-device transcription cannot run, and it fails as if the code were wrong"),
+    ("tcc.screen-recording", "screen-recording", "Screen Recording",
+     "a Mac screen check cannot pass"),
+)
+
+
+def tcc_main():
+    """Print this process's three permissions as JSON. The child of tcc_probe.
+
+    Asked of the frameworks, not of TCC.db, which needs Full Disk Access to
+    open and so would answer `unknown` on most machines. Asking is a read:
+    `authorizationStatus` never prompts, and the call that would prompt,
+    `requestAccess`, is not made here or anywhere in this file.
+    """
+    import ctypes
+    out = {}
+    av_words = {0: "never asked", 1: "restricted", 2: "denied", 3: "granted"}
+    sf_words = {0: "never asked", 1: "denied", 2: "restricted", 3: "granted"}
+
+    def objc():
+        o = ctypes.CDLL("/usr/lib/libobjc.A.dylib")
+        o.objc_getClass.restype = ctypes.c_void_p
+        o.objc_getClass.argtypes = [ctypes.c_char_p]
+        o.sel_registerName.restype = ctypes.c_void_p
+        o.sel_registerName.argtypes = [ctypes.c_char_p]
+        return o
+
+    def screen():
+        cg = ctypes.CDLL("/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics")
+        cg.CGPreflightScreenCaptureAccess.restype = ctypes.c_bool
+        return "granted" if cg.CGPreflightScreenCaptureAccess() else "not granted"
+
+    def microphone():
+        o = objc()
+        av = ctypes.CDLL("/System/Library/Frameworks/AVFoundation.framework/AVFoundation")
+        send = o.objc_msgSend
+        send.restype = ctypes.c_long
+        send.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p]
+        return av_words.get(send(o.objc_getClass(b"AVCaptureDevice"),
+                                 o.sel_registerName(b"authorizationStatusForMediaType:"),
+                                 ctypes.c_void_p.in_dll(av, "AVMediaTypeAudio")))
+
+    def speech():
+        o = objc()
+        ctypes.CDLL("/System/Library/Frameworks/Speech.framework/Speech")
+        send = o.objc_msgSend
+        send.restype = ctypes.c_long
+        send.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+        return sf_words.get(send(o.objc_getClass(b"SFSpeechRecognizer"),
+                                 o.sel_registerName(b"authorizationStatus")))
+
+    for name, fn in (("microphone", microphone), ("speech", speech),
+                     ("screen-recording", screen)):
+        try:
+            out[name] = fn()
+        except Exception as e:
+            out[name] = "unreadable: %s" % type(e).__name__
+    print(json.dumps(out))
+
+
+def tcc_probe():
+    """The three permissions, asked in a short-lived child.
+
+    In a child because tcc_main reaches into AVFoundation and Speech through
+    ctypes, and a reader that dies there has to cost one line in `errors`
+    rather than the whole report. A crash cannot be caught in process.
+    """
+    code = ("import sys; sys.path.insert(0, %r); "
+            "from glyph_spaces import fleet; fleet.tcc_main()" % core.ROOT)
+    out = run([sys.executable, "-I", "-c", code], timeout=SLOW, strict=True)
+    if not out or "{" not in out:
+        return None
+    return json.loads(out[out.index("{"):])
+
+
+def asker():
+    """Who a permission would have to be granted to.
+
+    TCC grants to the responsible app, which for a shell is the terminal it
+    runs in and over ssh is the ssh service, never python. Saying which is
+    half the instruction.
+    """
+    if os.environ.get("SSH_CONNECTION"):
+        return "the ssh service"
+    return (os.environ.get("__CFBundleIdentifier")
+            or os.environ.get("TERM_PROGRAM") or "the terminal this ran in")
+
+
+def tcc_verdict(statuses, who):
+    """A check per permission. `granted` is the only `ok` there is."""
+    out = []
+    for cid, key, label, cost in TCC_SERVICES:
+        got = (statuses or {}).get(key)
+        clicks = ("System Settings, Privacy and Security, %s, turn on %s"
+                  % (label, who))
+        if got == "granted":
+            out.append(chk(cid, "ok", "%s is granted to %s" % (label, who)))
+        elif not got:
+            out.append(chk(cid, "unknown",
+                           "macOS did not say whether %s is granted" % label,
+                           human=clicks))
+        elif got.startswith("unreadable"):
+            out.append(chk(cid, "unknown",
+                           "%s could not be read: %s" % (label, got),
+                           human=clicks))
+        else:
+            out.append(chk(cid, "missing",
+                           "%s is %s for %s, so %s" % (label, got, who, cost),
+                           proof="%s returns %s"
+                                 % (SETUP_PROOF[cid], got),
+                           human=clicks))
+    return out
+
+
+def tcc_checks():
+    statuses = tcc_probe()
+    return tcc_verdict(statuses, asker())
+
+
+# --- signing -----------------------------------------------------------------
+
+def identity_rows(found):
+    """(hash, name) for every codesigning identity `security` printed."""
+    return re.findall(r'^\s*\d+\)\s+([0-9A-F]{40})\s+"([^"]*)"', found or "", re.M)
+
+
+def signing_verdict(found, signed, verdict, name):
+    """Three texts in, one state out, so the states can be checked anywhere.
+
+    `spctl` rejecting a development signature is not the finding: it rejects
+    every one of them, since Gatekeeper wants a notarized Developer ID build.
+    The finding is the revocation marker, which is the one thing a revoked
+    certificate says out loud and `security find-identity -v` does not: one of
+    these machines printed three valid identities while apps signed with one
+    of them were being moved to the Trash on launch.
+    """
+    both = (found or "") + (signed or "") + (verdict or "")
+    if REVOKED in both:
+        return ("broken",
+                "a revoked certificate is in the login keychain. macOS treats a "
+                "revoked signature as malware: the app dies on launch and is moved "
+                "to the Trash, and nothing in the error says certificate",
+                "delete the revoked certificate from the login keychain, and hand "
+                "scripts one known-good identity rather than leaving them to pick "
+                "with find-identity | grep -v REVOKED | head -1, which selects the "
+                "revoked one wherever the marker is absent")
+    low = (signed or "").lower()
+    if "error" in low or "not found" in low or "no identity" in low:
+        return ("broken",
+                "codesign refused: %s"
+                % (signed or "").strip().splitlines()[0][:140],
+                "install a signing certificate, or name the one to use in "
+                "GLYPH_SIGN_IDENTITY")
+    return ("ok", "%s signed a throwaway and Gatekeeper reported no revocation"
+            % name, None)
+
+
+def sign_probe(identity):
+    """Sign a copy of a system binary in a folder made for it, and ask spctl.
+
+    The only thing in this file that writes, and it writes into a temp folder
+    it removes again, never beside anything real. It is here because a revoked
+    certificate is invisible until something is signed with it: see
+    signing_verdict. Skipped on a machine with no room, which disk.boot-free
+    knows before this runs.
+    """
+    tmp = tempfile.mkdtemp(prefix="glyph-sign-")
+    try:
+        probe = os.path.join(tmp, "probe")
+        shutil.copyfile("/bin/echo", probe)
+        os.chmod(probe, 0o755)
+        signed = run(["codesign", "-f", "-s", identity, probe]) or ""
+        verdict = run(["spctl", "-a", "-vvv", "-t", "exec", probe]) or ""
+        return signed, verdict
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def signing_check():
+    found = run(["security", "find-identity", "-v", "-p", "codesigning"])
+    if found is None:
+        return [chk("signing.identity", "unknown",
+                    "security find-identity answered nothing inside %.1fs" % TIMEOUT)]
+    rows = identity_rows(found)
+    if not rows:
+        return [chk("signing.identity", "missing",
+                    "no codesigning identity in the login keychain, so nothing "
+                    "local can be built and run",
+                    fix="install an Apple Development certificate for the team")]
+    want = os.environ.get("GLYPH_SIGN_IDENTITY")
+    pick = next((r for r in rows if r[0] == want or r[1] == want), None) if want else None
+    if want and not pick:
+        pick = (want, want)                  # named but absent: let codesign say so
+    if not pick:
+        pick = next((r for r in rows if r[1].startswith("Apple Development")), rows[0])
+    room = free_on(tempfile.gettempdir())
+    if room is not None and room < DISK_FLOOR:
+        return [chk("signing.identity", "unknown",
+                    "not run: the volume holding the temp folder has %s free, and "
+                    "this check has to sign a throwaway" % gbs(room),
+                    proof="skipped before %s" % SETUP_PROOF["signing.identity"])]
+    signed, verdict = sign_probe(pick[0])
+    state, detail, fix = signing_verdict(found, signed, verdict, pick[1])
+    return [chk("signing.identity", state,
+                "%s. %d identit%s in the keychain" % (detail, len(rows),
+                                                      "y" if len(rows) == 1 else "ies"),
+                proof="codesign -f -s %s on a throwaway, then spctl -a -vvv -t exec, "
+                      "read for %s" % (pick[0][:8], REVOKED),
+                fix=fix)]
+
+
+# --- xcode -------------------------------------------------------------------
+
+def xcode_apps():
+    """Every full Xcode on this machine, the external disks included.
+
+    One of these machines keeps Xcode on an external SSD, where a build finds
+    it only because something points at it.
+    """
+    bases = ["/Applications"] + [os.path.join("/Volumes", n, "Applications")
+                                 for n in listnames("/Volumes")]
+    out, seen = [], set()
+    for b in bases:
+        for name in listnames(b):
+            if not (name.startswith("Xcode") and name.endswith(".app")):
+                continue
+            d = os.path.join(b, name, "Contents", "Developer")
+            try:
+                st = os.stat(d)
+            except OSError:
+                continue
+            if (st.st_dev, st.st_ino) in seen:
+                continue                     # the same Xcode under two names
+            seen.add((st.st_dev, st.st_ino))
+            out.append(d)
+    return out
+
+
+def developer_dir():
+    """(path, kind): what a build here would use, and what kind of thing it is.
+
+    DEVELOPER_DIR is read, never set. A build also needs this to be a full
+    Xcode rather than the Command Line Tools, or the FoundationModels macro
+    plugin fails with an error that reads like a source problem.
+    """
+    want = os.environ.get("DEVELOPER_DIR")
+    path = (want or (run(["xcode-select", "-p"], timeout=1.5) or "")).strip()
+    if not path:
+        return None, None
+    if os.path.isdir(os.path.join(path, "Platforms")) and \
+            os.path.isfile(os.path.join(path, "usr", "bin", "xcodebuild")):
+        return path, "xcode"
+    if os.path.isdir(path):
+        return path, "tools"
+    return path, "gone"
+
+
+def devdir_check():
+    path, kind = developer_dir()
+    where = "DEVELOPER_DIR" if os.environ.get("DEVELOPER_DIR") else "xcode-select -p"
+    others = xcode_apps()
+    if kind == "xcode":
+        disk = "an external disk" if not on_boot(path) else "the boot volume"
+        return [chk("xcode.developer-dir", "ok",
+                    "%s is a full Xcode, on %s, named by %s"
+                    % (tilde(path), disk, where))]
+    if not path:
+        return [chk("xcode.developer-dir", "unknown",
+                    "neither DEVELOPER_DIR nor xcode-select said anything")]
+    if kind == "gone":
+        return [chk("xcode.developer-dir", "broken",
+                    "%s names %s, which is not there at all, so every xcrun in a "
+                    "build resolves against nothing"
+                    % (where, tilde(path)),
+                    fix="point it at %s" % (tilde(others[0]) if others
+                                            else "a full Xcode, once one is installed"))]
+    if not others:
+        return [chk("xcode.developer-dir", "missing",
+                    "%s names %s, which is not a full Xcode, and there is no Xcode "
+                    "on this machine to point at" % (where, tilde(path)),
+                    fix="install Xcode, then set DEVELOPER_DIR to its "
+                        "Contents/Developer")]
+    return [chk("xcode.developer-dir", "broken",
+                "%s names %s, the Command Line Tools and not a full Xcode, so a "
+                "Swift macro plugin fails with an error that reads like a source "
+                "problem. A full Xcode is at %s"
+                % (where, tilde(path), tilde(others[0])),
+                fix="set DEVELOPER_DIR to %s for builds, which needs no sudo, or "
+                    "run xcode-select -s on it once" % tilde(others[0]))]
+
+
+ASC_KEY_DIRS = ("./private_keys", "~/private_keys", "~/.private_keys",
+                "~/.appstoreconnect/private_keys")
+
+
+def asc_keys():
+    """App Store Connect keys where xcodebuild looks for them.
+
+    The way to install on a device with no interactive sign-in:
+    -authenticationKeyPath, -authenticationKeyID, -authenticationKeyIssuerID.
+    """
+    out = []
+    for d in ASC_KEY_DIRS:
+        p = os.path.expanduser(d)
+        out += [os.path.join(p, n) for n in listnames(p)
+                if n.startswith("AuthKey_") and n.endswith(".p8")]
+    return out
+
+
+def appleid_check():
+    out = run(["defaults", "read", "com.apple.dt.Xcode",
+               "DVTDeveloperAccountManagerAppleIDLists"], timeout=1.5)
+    if out is None:
+        return [chk("xcode.appleid", "unknown", "defaults answered nothing")]
+    ids = len(re.findall(r"identifier\s*=", out)) if "does not exist" not in out else 0
+    keys = asc_keys()
+    if ids:
+        return [chk("xcode.appleid", "ok",
+                    "%d Apple ID%s signed into Xcode"
+                    % (ids, "" if ids == 1 else "s"))]
+    if keys:
+        return [chk("xcode.appleid", "ok",
+                    "no Apple ID in Xcode, but an App Store Connect key is at %s, "
+                    "which is what -authenticationKeyPath needs and wants no "
+                    "interactive sign-in" % tilde(keys[0]))]
+    return [chk("xcode.appleid", "missing",
+                "no Apple ID signed into Xcode and no App Store Connect key on "
+                "disk, so -allowProvisioningUpdates has nothing to register a "
+                "device with and an iPhone install cannot be signed",
+                human="Xcode, Settings, Accounts, add the Apple ID",
+                fix="put an App Store Connect key in ~/.appstoreconnect/private_keys "
+                    "and pass -authenticationKeyPath, -authenticationKeyID and "
+                    "-authenticationKeyIssuerID, which needs no sign-in")]
+
+
+def ios_versions(developer):
+    """The iOS versions this machine can install to, and where they came from."""
+    out = {}
+    if developer:
+        d = os.path.join(developer, "Platforms", "iPhoneOS.platform", "DeviceSupport")
+        for n in listnames(d):
+            if n[:1].isdigit():
+                out[n.split()[0]] = "xcode"
+    for n in listnames(os.path.expanduser("~/Library/Developer/Xcode/iOS DeviceSupport")):
+        if n[:1].isdigit():
+            out.setdefault(n.split()[0], "attached device")
+    return out
+
+
+def devicesupport_check():
+    path, kind = developer_dir()
+    full = path if kind == "xcode" else next(iter(xcode_apps()), None)
+    got = ios_versions(full)
+    if got:
+        newest = sorted(got, key=lambda v: [int(x) for x in re.findall(r"\d+", v)])[-1]
+        return [chk("xcode.devicesupport", "ok",
+                    "%d iOS version%s on this machine, newest %s, from %s"
+                    % (len(got), "" if len(got) == 1 else "s", newest,
+                       tilde(full) if full else "an attached device"))]
+    return [chk("xcode.devicesupport", "missing",
+                "no iOS DeviceSupport on this machine, so an install to an iPhone "
+                "has nothing to pair against%s"
+                % ("" if full else " and there is no full Xcode here either"),
+                human="attach the iPhone once and trust it, so Xcode fetches "
+                      "support for its iOS version",
+                fix="point DEVELOPER_DIR at a full Xcode, which ships the versions "
+                    "it knows")]
+
+
+# --- disk and build output ---------------------------------------------------
+
+def disk_check():
+    free = free_on("/")
+    if free is None:
+        return [chk("disk.boot-free", "unknown", "the boot volume would not answer")]
+    if free < DISK_FLOOR:
+        return [chk("disk.boot-free", "broken",
+                    "%s free on the boot volume. Below about %s a Swift link dies "
+                    "with ld: write() failed errno=28 and SwiftPM with Could not "
+                    "resolve package dependencies, neither of which mentions the "
+                    "disk, and the failed extract leaves an xcframework it then "
+                    "refuses forever" % (gbs(free), gbs(DISK_FLOOR)),
+                    proof="df -k / says %s available" % gbs(free),
+                    fix="move build output to another volume, or free space")]
+    note = "" if free >= DISK_TIGHT else ", which is tight for a Swift build"
+    return [chk("disk.boot-free", "ok",
+                "%s free on the boot volume%s" % (gbs(free), note),
+                proof="df -k / says %s available" % gbs(free))]
+
+
+def derived_data():
+    out = run(["defaults", "read", "com.apple.dt.Xcode",
+               "IDECustomDerivedDataLocation"], timeout=1.5)
+    if out and out.strip() and "does not exist" not in out:
+        return os.path.expanduser(out.strip()), "IDECustomDerivedDataLocation"
+    return os.path.expanduser("~/Library/Developer/Xcode/DerivedData"), "the default"
+
+
+def scratch_check(roots):
+    where, named = derived_data()
+    free = free_on(where)
+    if free is None:
+        return [chk("build.scratch", "unknown",
+                    "could not tell which volume %s is on" % tilde(where))]
+    builds = found_under(roots, ".build")
+    off = [b for b in builds if on_boot(b) is False]
+    census = ""
+    if builds:
+        census = (", and %d of %d swift build folders under this machine's roots "
+                  "resolve off the boot volume" % (len(off), len(builds)))
+    boot = on_boot(where)
+    volume = "the boot volume" if boot else "another volume"
+    if free < DISK_FLOOR:
+        return [chk("build.scratch", "broken",
+                    "build output goes to %s (%s), on %s with %s free%s"
+                    % (tilde(where), named, volume, gbs(free), census),
+                    proof="statvfs on %s says %s available" % (tilde(where), gbs(free)),
+                    fix="link the build folders to a volume with room, so no "
+                        "caller has to remember a flag")]
+    return [chk("build.scratch", "ok",
+                "build output goes to %s (%s), on %s with %s free%s"
+                % (tilde(where), named, volume, gbs(free), census),
+                proof="statvfs on %s says %s available" % (tilde(where), gbs(free)))]
+
+
+# --- the PATH a command over ssh is given ------------------------------------
+
+def noninteractive_path():
+    """(PATH, how it was asked for).
+
+    `ssh <machine> 'cmd'` runs the login shell non-interactively: it reads
+    /etc/zshenv and ~/.zshenv and nothing else, so a folder added in
+    ~/.zprofile or ~/.zshrc is simply not there. In a session that already
+    arrived over ssh this process's own PATH is the answer; otherwise the
+    shell is asked with the environment stripped to what sshd hands it.
+    """
+    if os.environ.get("SSH_CONNECTION"):
+        return os.environ.get("PATH") or "", "this session's own PATH, over ssh"
+    import pwd
+    shell = pwd.getpwuid(os.getuid()).pw_shell or "/bin/zsh"
+    out = run(["env", "-i", "HOME=%s" % HOME, "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+               "SHELL=%s" % shell, shell, "-c", 'printf %s "$PATH"'],
+              timeout=2.0, strict=True)
+    return (out or ""), "%s -c with the environment stripped to sshd's" % shell
+
+
+def path_verdict(got, how, want):
+    """Which folders a remote command would not find, of the ones installed."""
+    have = set(p for p in (got or "").split(":") if p)
+    if not have:
+        return chk("path.noninteractive", "unknown",
+                   "could not read the PATH a non-interactive shell gets",
+                   proof=how)
+    gone = [d for d in want if d not in have]
+    shown = ":".join(tilde(p) for p in sorted(have))
+    if not gone:
+        return chk("path.noninteractive", "ok",
+                   "a command over ssh finds %s" % ", ".join(tilde(d) for d in want),
+                   proof="%s: %s" % (how, shown[:160]))
+    return chk("path.noninteractive", "broken",
+               "a command over ssh gets none of %s, so a tool installed there is "
+               "not found and a chain like xcodegen generate && xcodebuild falls "
+               "through without saying why"
+               % ", ".join(tilde(d) for d in gone),
+               proof="%s: %s" % (how, shown[:160]),
+               fix="add the folder in ~/.zshenv, the one file a non-interactive "
+                   "shell reads, or set the PATH for remote work rather than "
+                   "leaving each caller to export it")
+
+
+def path_check():
+    got, how = noninteractive_path()
+    want = [d for d in ("/opt/homebrew/bin", "/usr/local/bin",
+                        os.path.join(HOME, ".local", "bin")) if os.path.isdir(d)]
+    return [path_verdict(got, how, want)]
+
+
+# --- the engine, and a stale one on PATH -------------------------------------
+
+def engine_paths():
+    """(the installed engine, whatever answers to `prevail` on PATH)."""
+    engine = os.path.expanduser(os.environ.get("GLYPH_ENGINE")
+                                or "~/.local/lib/glyph/prevail")
+    return (engine if os.path.exists(engine) else None), find_bin("prevail")
+
+
+def engine_versions():
+    """Both versions. Asked once per binary: version_of keeps the answer
+    against the file's own path, size and time, so a second caller is free."""
+    engine, onpath = engine_paths()
+    return (version_of(engine) if engine else None,
+            version_of(onpath) if onpath else None)
+
+
+def engine_check():
+    engine, onpath = engine_paths()
+    ev, pv = engine_versions()
+    if not engine:
+        return [chk("engine.version", "missing",
+                    "no Glyph engine installed%s, so nothing here can be built or "
+                    "tested against it"
+                    % (", though %s answers to prevail at %s" % (tilde(onpath), pv)
+                       if onpath else ""),
+                    proof="no file at ~/.local/lib/glyph/prevail",
+                    fix="install the engine")]
+    same = onpath and os.path.realpath(onpath) == os.path.realpath(engine)
+    if onpath and not same and not (ev and pv):
+        return [chk("engine.version", "unknown",
+                    "the engine is at %s and something else answers to prevail at "
+                    "%s, and one of the two would not say its version, so whether "
+                    "they are the same build is unknown"
+                    % (tilde(engine), tilde(onpath)))]
+    if onpath and not same and ev != pv:
+        return [chk("engine.version", "broken",
+                    "the engine is %s, but anyone typing prevail in a shell gets "
+                    "%s from %s" % (ev, pv, tilde(onpath)),
+                    proof="%s --version says %s, %s --version says %s"
+                          % (tilde(engine), ev, tilde(onpath), pv),
+                    fix="point the prevail on PATH at the installed engine")]
+    return [chk("engine.version", "ok",
+                "the engine is %s%s" % (ev, ", and so is the prevail on PATH"
+                                        if same or pv == ev else
+                                        ", and nothing else answers to prevail"),
+                proof="%s --version says %s" % (tilde(engine), ev))]
+
+
+# --- the shared-resource locks -----------------------------------------------
+
+def lock_rows():
+    """(name, holder) per lock: None when free, "" when held by nobody named."""
+    out = []
+    for name, path in LOCKS:
+        if not os.path.exists(path):
+            out.append((name, None))
+            continue
+        holder = ""
+        for p in (os.path.join(path, "holder"), path + ".holder", path):
+            if os.path.isfile(p):
+                try:
+                    with open(p) as f:
+                        holder = f.read().strip()[:120]
+                except OSError:
+                    holder = ""
+                if holder:
+                    break
+        out.append((name, holder))
+    return out
+
+
+def locks_check():
+    rows = lock_rows()
+    held = [(n, h) for n, h in rows if h is not None]
+    blind = [n for n, h in held if not h]
+    if blind:
+        return [chk("locks", "unknown",
+                    "%s %s held with no holder written, and a lock with no holder "
+                    "is never assumed stale"
+                    % (" and ".join(blind), "is" if len(blind) == 1 else "are"),
+                    proof="ls -d %s" % " ".join(p for n, p in LOCKS if n in blind))]
+    if not held:
+        return [chk("locks", "ok", "all %d locks are free" % len(rows))]
+    return [chk("locks", "ok",
+                "%s; %s free"
+                % ("; ".join("%s held by %s" % (n, h) for n, h in held),
+                   " and ".join(n for n, h in rows if h is None) or "nothing else"))]
+
+
+# --- the GlyphCore submodule -------------------------------------------------
+
+def glyphcore_check(roots):
+    paths = [os.path.expanduser(p) for p in
+             (os.environ.get("GLYPH_GLYPHCORE") or "").split(":") if p]
+    paths += found_under(roots, "Packages/GlyphCore")
+    if not paths:
+        return [chk("submodule.glyphcore", "unknown",
+                    "no Packages/GlyphCore under this machine's roots, so there is "
+                    "nothing here to check")]
+    bad = []
+    for p in paths:
+        if os.path.islink(p):
+            bad.append((p, "a symbolic link, which git refuses with expected "
+                           "submodule path not to be a symbolic link while "
+                           "printing the commit it thinks it is on"))
+        elif not os.path.isfile(os.path.join(p, "Package.swift")):
+            bad.append((p, "empty, so the submodule never arrived"))
+    if not bad:
+        return [chk("submodule.glyphcore", "ok",
+                    "%d GlyphCore checkout%s, all with sources"
+                    % (len(paths), "" if len(paths) == 1 else "s"),
+                    proof="Package.swift present in each")]
+    return [chk("submodule.glyphcore", "broken",
+                "%d of %d GlyphCore checkouts cannot be used: %s"
+                % (len(bad), len(paths),
+                   "; ".join("%s is %s" % (tilde(p), why) for p, why in bad[:3])),
+                proof="lstat on %s" % tilde(bad[0][0]),
+                fix="copy GlyphCore in rather than linking it, then remove its "
+                    ".git file, and read HEAD back afterwards: git reset can print "
+                    "could not reset submodule index, exit 0, move the working "
+                    "tree and leave HEAD where it was")]
+
+
+# --- the block ---------------------------------------------------------------
+
+SETUP_JOBS = {
+    "tcc": lambda roots: tcc_checks(),
+    "signing.identity": lambda roots: signing_check(),
+    "xcode.appleid": lambda roots: appleid_check(),
+    "xcode.devicesupport": lambda roots: devicesupport_check(),
+    "xcode.developer-dir": lambda roots: devdir_check(),
+    "disk.boot-free": lambda roots: disk_check(),
+    "build.scratch": scratch_check,
+    "path.noninteractive": lambda roots: path_check(),
+    "engine.version": lambda roots: engine_check(),
+    "locks": lambda roots: locks_check(),
+    "submodule.glyphcore": glyphcore_check,
+}
+
+
+def owner(cid):
+    """Which job a check id belongs to, for naming the one that did not run."""
+    return "tcc" if cid.startswith("tcc.") else cid
+
+
+def setup_block(record):
+    """Every check, concurrently, each one on its own.
+
+    A check that throws is a line in `errors` like any other reader, and its
+    row still comes out, as `unknown` with the reason. That is the rule that
+    keeps the block honest: a check that did not happen must never be missing
+    from the list, because a missing row reads as nothing to report.
+    """
+    roots = (record or {}).get("roots")
+    got = []
+    with futures.ThreadPoolExecutor(max_workers=len(SETUP_JOBS)) as ex:
+        running = dict((ex.submit(guard, "setup %s" % n, fn, roots), n)
+                       for n, fn in SETUP_JOBS.items())
+        for f in futures.as_completed(running):
+            got.extend(f.result() or [])
+    by_id = dict((c["id"], c) for c in got if c.get("id"))
+    with _LOCK:
+        why = dict((e["what"], e["why"]) for e in ERRORS)
+    checks = []
+    for cid in SETUP_ORDER:
+        checks.append(by_id.get(cid) or chk(
+            cid, "unknown", "the check did not run: %s"
+            % (why.get("setup %s" % owner(cid)) or "no reason was recorded")))
+    return {"ready": all(c["state"] == "ok" for c in checks), "checks": checks}
+
+
+def worst_first(checks):
+    """The checks a reader should see first: broken, missing, unknown, then ok,
+    and inside each the spec's own ranking."""
+    rank = dict((cid, i) for i, cid in enumerate(SETUP_ORDER))
+    return sorted(checks or [], key=lambda c: (WORST.get(c["state"], 9),
+                                               rank.get(c["id"], 99)))
+
+
+def setup_mark(rep):
+    """One cell for the table: whether this machine can do the work."""
+    s = (rep or {}).get("setup")
+    if not s:
+        return "-"
+    bad = [c for c in s.get("checks") or [] if c["state"] != "ok"]
+    return "ok" if s.get("ready") else "%d bad" % len(bad)
+
+
 # --- the diff surface -------------------------------------------------------
 
 def launchd_jobs():
@@ -1017,6 +1855,15 @@ def config_map(rep, tools):
         if v:
             cfg["tool.%s" % name] = v
     cfg["tool.glyph"] = glyph_version() or "unknown"
+    # From the setup block, only what a version makes comparable. A state is
+    # about one machine's own disk, keychain and permissions, and a row saying
+    # `broken` beside `ok` is not a configuration difference anyone can act on
+    # from here: `glyph fleet setup` is where those belong.
+    ev, pv = guard("engine", engine_versions) or (None, None)
+    if ev:
+        cfg["setup.engine.version"] = ev
+    if pv:
+        cfg["tool.prevail"] = pv
     m = rep.get("machine") or {}
     for k in ("macos", "build"):
         if m.get(k):
@@ -1068,6 +1915,7 @@ def collect(account_tag_given=None):
             "backends": lambda: probe_versions(BACKENDS),
             "spaces": lambda: spaces_block(record, spaces),
             "tools": lambda: probe_versions(TOOLS),
+            "setup": lambda: setup_block(record),
         }
         running = dict((ex.submit(guard, name, fn), name) for name, fn in jobs.items())
         for f in futures.as_completed(running):
@@ -1075,7 +1923,7 @@ def collect(account_tag_given=None):
     rep = {"schema": SCHEMA,
            "taken": stamp(time.time()),
            "took_ms": None}
-    for name in ("machine", "tailscale", "compute", "storage", "agents",
+    for name in ("machine", "tailscale", "compute", "storage", "setup", "agents",
                  "sessions", "inference", "backends", "spaces"):
         rep[name] = got.get(name)
     if not rep.get("machine"):
@@ -1182,6 +2030,13 @@ def cmd_report(args):
              live, rep.get("took_ms") or 0))
     print("  %s" % tilde(path))
     print("  %s" % tilde(hist))
+    setup = rep.get("setup") or {}
+    bad = [c for c in worst_first(setup.get("checks")) if c["state"] != "ok"]
+    if setup and not bad:
+        print("  setup    ready, %d checks" % len(setup.get("checks") or []))
+    elif setup:
+        print("  setup    not ready: %s  (glyph fleet setup)"
+              % ", ".join("%s %s" % (c["id"], c["state"]) for c in bad))
     for w in s.get("warnings") or []:
         print("  warning  %s" % w)
     for e in rep.get("errors") or []:
@@ -1318,9 +2173,9 @@ def cmd_status(args):
         up = (net.get(mid) or {}).get("online")
         return (not up, age(((reps.get(mid) or {}).get("taken"))) == "none", mid)
 
-    print("%-16s %-5s %-4s %-9s %-12s %-6s %-11s %-12s %s"
+    print("%-16s %-5s %-4s %-9s %-12s %-6s %-11s %-12s %-5s %s"
           % ("MACHINE", "ROLE", "UP", "READING", "CHIP", "CORES", "FREE MEM",
-             "BOOT DISK", "LIVE"))
+             "BOOT DISK", "LIVE", "SETUP"))
     for mid in sorted(ids, key=sort_key):
         rep, n = reps.get(mid) or {}, net.get(mid) or {}
         m = rep.get("machine") or {}
@@ -1335,7 +2190,7 @@ def cmd_status(args):
         if boot.get("total_bytes"):
             disk = "%d%% of %s" % (boot["used_percent"], gb(boot["total_bytes"]))
         live = (rep.get("sessions") or {}).get("live")
-        print("%-16s %-5s %-4s %-9s %-12s %-6s %-11s %-12s %s"
+        print("%-16s %-5s %-4s %-9s %-12s %-6s %-11s %-12s %-5s %s"
               % (mid[:16],
                  (m.get("role") or (machines.get(mid) or {}).get("role") or "-")[:5],
                  "yes" if n.get("online") else "no",
@@ -1343,7 +2198,14 @@ def cmd_status(args):
                  (m.get("chip") or n.get("os") or "-")[:12],
                  "%s+%s" % (cores.get("performance") or "-", cores.get("efficiency") or "-")
                  if cores.get("total") else "-",
-                 mem, disk, len(live) if live is not None else "-"))
+                 mem, disk, len(live) if live is not None else "-",
+                 setup_mark(rep)))
+    for mid in sorted(ids):
+        # Online is not the same as able to do the work, and the row above
+        # cannot tell them apart, so every check that is not ok gets a line.
+        for c in worst_first(((reps.get(mid) or {}).get("setup") or {}).get("checks")):
+            if c["state"] != "ok":
+                print("setup    %-16s %-22s %s" % (mid, c["id"], c["state"]))
     for mid in sorted(ids):
         for w in ((reps.get(mid) or {}).get("storage") or {}).get("warnings") or []:
             print("warning  %-16s %s" % (mid, w))
@@ -1357,6 +2219,7 @@ def cmd_status(args):
              tilde(rig_dir())))
     print("glyph fleet status --live    ask every reachable machine now")
     print("glyph fleet status --machine <id>    one machine in full")
+    print("glyph fleet setup    what each machine still needs before it can work")
     return 0
 
 
@@ -1419,11 +2282,37 @@ def show_machine(mid, rep, net, record):
     if inf.get("running"):
         print("")
         print("  ollama  %s" % ", ".join(m["name"] for m in (inf.get("models") or [])[:8]))
+    setup = rep.get("setup") or {}
+    if setup:
+        print("")
+        print("  setup      %s" % ("ready" if setup.get("ready")
+                                   else "not ready"))
+        for c in worst_first(setup.get("checks")):
+            print("  %-8s %-22s %s" % (c["state"], c["id"], (c.get("detail") or "")[:90]))
+        show_human(setup.get("checks"), "  ", mid)
     for w in ((rep.get("storage") or {}).get("warnings") or []):
         print("  warning  %s" % w)
     for e in rep.get("errors") or []:
         print("  missed   %s: %s" % (e["what"], e["why"]))
     return 0
+
+
+def show_human(checks, pad="", where="that machine"):
+    """The clicks nobody here can do, kept apart from everything else.
+
+    Separate on purpose. The three permissions cannot be granted from a
+    shell, so naming the exact clicks is the whole of what this can do about
+    them, and printing them among the automatable fixes would read as though
+    something had been handled.
+    """
+    human = [c for c in worst_first(checks)
+             if c.get("human") and c["state"] != "ok"]
+    if not human:
+        return
+    print("")
+    print("%sonly a person can do these, at the keyboard of %s:" % (pad, where))
+    for c in human:
+        print("%s  %-22s %s" % (pad, c["id"], c["human"]))
 
 
 def config_diff(reps):
@@ -1475,3 +2364,42 @@ def cmd_diff(args):
           % (len(rows), len(set().union(*[set((r.get("config") or {}).keys())
                                           for r in reps.values()])), len(ids)))
     return 0
+
+
+def cmd_setup(args):
+    """What each machine still needs before it can take work.
+
+    Reads the last report rather than asking: `glyph fleet report` on the
+    machine, or `glyph fleet status --live`, is what refreshes one. Worst
+    first, and the clicks a person has to do are kept apart from the rest.
+    """
+    reps = load_reports()
+    if args.machine:
+        reps = dict((k, v) for k, v in reps.items() if k == args.machine)
+        if not reps:
+            print("no reading for %s in %s" % (args.machine, tilde(rig_dir())))
+            print("run: glyph fleet status --machine %s --live" % args.machine)
+            return 2
+    with_setup = dict((k, v) for k, v in reps.items() if v.get("setup"))
+    if not with_setup:
+        print("%d machine reading in %s, none of them with a setup block."
+              % (len(reps), tilde(rig_dir())))
+        print("run glyph fleet report on each machine, or: glyph fleet status --live")
+        return 1
+    for mid in sorted(with_setup):
+        setup = with_setup[mid]["setup"]
+        checks = worst_first(setup.get("checks"))
+        bad = [c for c in checks if c["state"] != "ok"]
+        print("%s  %s  read %s" % (mid, "ready" if setup.get("ready")
+                                   else "not ready, %d of %d checks"
+                                        % (len(bad), len(checks)),
+                                   age(with_setup[mid].get("taken"))))
+        for c in checks:
+            print("  %-8s %-22s %s" % (c["state"], c["id"], c.get("detail") or ""))
+            if c["state"] != "ok" and c.get("proof"):
+                print("           %-22s proof: %s" % ("", c["proof"]))
+            if c["state"] != "ok" and c.get("fix"):
+                print("           %-22s fix: %s" % ("", c["fix"]))
+        show_human(checks, "", mid)
+        print("")
+    return 0 if all(r["setup"].get("ready") for r in with_setup.values()) else 1
