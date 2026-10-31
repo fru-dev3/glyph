@@ -1181,6 +1181,7 @@ glyph fleet status  every machine side by side [--live] [--machine <id>]
 glyph fleet diff    the configuration that is not the same everywhere
 glyph fleet setup   what a machine still needs before it can work [--machine <id>]
 glyph rig plan      what would change to make this machine able to work; writes nothing
+glyph rig apps      what the other machines have installed and this one does not [--machine <id>]
 glyph rig apply     do the automatable part of that plan [--yes]
 glyph fleet init create example fleets without replacing existing presets
 glyph fleet [p] launch a preset of agents, each in its own marked tmux pane

@@ -73,6 +73,11 @@ def main():
     gp = gsub.add_parser("plan", help="what would change, and what only a person can do")
     gp.add_argument("--machine", help="another machine, from the reading it wrote")
     gp.set_defaults(func=rig.cmd_plan)
+    gi = gsub.add_parser("apps", help="what the other machines have and this one does not")
+    gi.add_argument("--machine", help="another machine, from the reading it wrote")
+    gi.add_argument("--all", action="store_true",
+                    help="also what only some of them have, not just the baseline")
+    gi.set_defaults(func=rig.cmd_apps)
     ga = gsub.add_parser("apply", help="do the automatable part of the plan")
     ga.add_argument("--yes", action="store_true",
                     help="actually change this machine; without it, the plan is printed")

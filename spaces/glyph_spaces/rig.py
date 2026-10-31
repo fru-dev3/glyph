@@ -55,6 +55,14 @@ PATH_WANT = ("/opt/homebrew/bin", "/usr/local/bin", "~/.local/bin")
 # Build output wants more room than the floor a build dies under, or moving it
 # has bought nothing.
 SCRATCH_WANT = fleet.DISK_FLOOR * 4
+# A download, a build from source and a dependency tree: ten minutes is a
+# normal cask and a long formula, and a wait with an end is the point.
+INSTALL_TIMEOUT = float(os.environ.get("GLYPH_INSTALL_TIMEOUT") or 600)
+# How many one run installs. A new Mac is two hundred names behind, and one
+# command that then runs for an hour unattended is not something to hand
+# somebody: the run installs this many, says how many are left, reads `part`
+# and exits non-zero, and the next run carries on where it stopped.
+INSTALL_MAX = int(os.environ.get("GLYPH_INSTALL_MAX") or 20)
 # Why a check that is not ok has no action. Each one is a rule, not a gap.
 NO_ACTION = {
     "tcc.microphone": "no shell can grant a permission",
@@ -186,6 +194,36 @@ class Act:
         if real:
             os.replace(link, link + SUFFIX)
         swap(target, link)
+
+    def install(self, prefix, kind, name):
+        """One thing installed from Homebrew, which is the only source here.
+
+        Never a copied bundle. An app copied off another Mac carries that
+        machine's signature, its licence and its login, cannot update itself,
+        and macOS moves one it does not trust to the Trash on launch. So the
+        only install this knows is the one `brew install` a person could type
+        themselves, which is also the undo line printed for it.
+
+        The proof is the folder brew puts it in, read off the disk afterwards,
+        never brew's exit code: `brew install` has printed a warning, exited 0
+        and installed nothing when a cask was already there under another name.
+        """
+        where = os.path.join(prefix, "Caskroom" if kind == "cask" else "Cellar",
+                             name)
+        if os.path.isdir(where):
+            return
+        cask = ["--cask"] if kind == "cask" else []
+        self.undo("brew uninstall %s%s" % ("--cask " if cask else "", name))
+        self.proof("%s %s" % (kind, name), lambda: os.path.isdir(where))
+        if self.dry:
+            return
+        # One line as each one starts, because a hundred installs is an hour
+        # and silence for an hour is indistinguishable from a hang. Printed
+        # here rather than watched from anywhere: there is no loop asking how
+        # it is going, only the thing itself saying where it has got to.
+        print("  install  %s %s" % (kind, name))
+        fleet.run([os.path.join(prefix, "bin", "brew"), "install"] + cask + [name],
+                  timeout=INSTALL_TIMEOUT)
 
     def copy_file(self, src, dst, mode=0o755):
         if os.path.exists(dst):
@@ -641,6 +679,59 @@ def act_glyphcore(act):
             % (len(bad) - waiting, len(bad)))
 
 
+def act_install(act):
+    """The apps and tools the other machines have, from Homebrew and nowhere else.
+
+    Fru's words are the requirement: every app installed on a new Mac, and not
+    one of them copied from another machine. So the only thing this runs is
+    `brew install`, the set is what the other machines' own readings say they
+    have, and everything Homebrew cannot reach is named rather than skipped.
+
+    Three things it will not do, each of them a rule and not a gap. It will not
+    install Homebrew, which wants a password and the Command Line Tools. It
+    will not download an app no cask knows; it names the app instead. And it
+    will never sign in to anything: an account is a person, and a machine with
+    1Password on it and nobody signed in is not a machine that is ready.
+    """
+    prefix = fleet.brew_prefix()
+    if not prefix:
+        act.block("no Homebrew here, and installing it wants your password and "
+                  "the Command Line Tools; see https://brew.sh")
+        return
+    rows, others = fleet.install_rows()
+    if not others:
+        act.nothing("no other machine has written what it has")
+        return
+    # Only what every other machine has. A name on one machine out of three is
+    # somebody trying something out, and a new Mac does not need it to work.
+    base = [r for r in rows if r["all"]]
+    brewable = [r for r in base if r["who"] == "rig"]
+    yours = [r for r in base if r["who"] != "rig"]
+    for r in brewable[:INSTALL_MAX]:
+        act.install(prefix, r["kind"], r["name"])
+    left = brewable[INSTALL_MAX:]
+    if left:
+        act.block("%d more to install: run apply again, which carries on from "
+                  "here" % len(left))
+    for r in yours[:3]:
+        act.block("%s: %s" % (r["name"], r["how"]))
+    if len(yours) > 3:
+        act.block("%d more that nothing here can install; glyph rig apps names "
+                  "them" % (len(yours) - 3))
+    # Said every time, whether the app is here yet or not, and never as
+    # something done: nothing this can read says whether anybody signed in.
+    for name, step in fleet.sign_ins(base, fleet.installed_block()):
+        act.block("%s is signed in by you, never by this: %s" % (name, step))
+    if not act.wanted():
+        act.nothing("nothing every other machine has is missing here"
+                    if not base else
+                    "%d missing, none of it installable from Homebrew"
+                    % len(base))
+        return
+    act.say("%d of %d missing, from Homebrew"
+            % (min(len(brewable), INSTALL_MAX), len(base)))
+
+
 ACTIONS = {
     "path.noninteractive": act_path,
     "xcode.developer-dir": act_devdir,
@@ -649,6 +740,7 @@ ACTIONS = {
     "engine.version": act_engine,
     "locks": act_locks,
     "submodule.glyphcore": act_glyphcore,
+    "apps.missing": act_install,
 }
 # Worst first, the order fleet.SETUP_ORDER puts them in, so the thing that
 # breaks a build soonest is both planned and applied first.
@@ -666,10 +758,13 @@ def forget():
     """Drop every answer kept from before an action ran.
 
     A version is remembered against a file's path, size and time, and a folder
-    walk is remembered for the run. Both are right for a report and wrong
-    here: the whole question after an action is whether the disk changed.
+    walk and what is installed are remembered for the run. All of them are
+    right for a report and wrong here: the whole question after an action is
+    whether the disk changed, and an installed list read before `brew install`
+    ran is the one answer that must not survive it.
     """
     fleet._TREES.clear()
+    fleet._INSTALLED.clear()
     fleet.CACHE.clear()
     fleet.CACHE["_"] = 1                     # loaded, and deliberately empty
 
@@ -846,6 +941,78 @@ def cmd_plan(args):
     print("nothing was changed. %s"
           % ("glyph rig apply --yes does the %d marked rig" % len(todo) if todo
              else "nothing here for glyph rig apply to do"))
+    return 0
+
+
+APP = "%-30s %-8s %-5s %-7s %s"
+
+
+def cmd_apps(args):
+    """What the other machines have and this one does not. Writes nothing.
+
+    A view of its own rather than a flag on `glyph fleet diff` or a section of
+    `glyph rig plan`: two hundred and fifty rows would swamp either table, and
+    this is one question, asked about the one machine being set up rather than
+    about every pair of machines at once.
+    """
+    mid = getattr(args, "machine", None) or core.machine_id()
+    here = mid == core.machine_id()
+    if here:
+        mine = fleet.installed_block()
+    else:
+        rep = fleet.load_reports().get(mid)
+        mine = (rep or {}).get("installed")
+        if not mine:
+            print("no reading with an installed block for %s in %s"
+                  % (mid, fleet.tilde(fleet.rig_dir())))
+            print("glyph fleet status --machine %s --live    ask it for one" % mid)
+            return 2
+    rows, others = fleet.install_rows(mine, mid)
+    if not others:
+        print("%s  nothing to compare with: no other machine has written a "
+              "reading with an installed block into %s"
+              % (mid, fleet.tilde(fleet.rig_dir())))
+        print("glyph fleet report    on each of the others")
+        return 1
+    base = [r for r in rows if r["all"]]
+    rest = [r for r in rows if not r["all"]]
+    shown = rows if getattr(args, "all", False) else base
+    print("%s  %s, %d missing against %s"
+          % (mid, fleet.have_line(mine) or "nothing read",
+             len(rows), " and ".join(others)))
+    if not mine.get("brew"):
+        print("no Homebrew here, so none of it can be installed from its real "
+              "source yet. See https://brew.sh")
+    print("")
+    print(APP % ("WHAT", "KIND", "ON", "WHO", "HOW"))
+    for r in shown:
+        print(APP % (r["name"][:30], r["kind"],
+                     "%d/%d" % (len(r["on"]), len(others)),
+                     r["who"] if mine.get("brew") else "you", r["how"]))
+    if not shown:
+        print("nothing")
+    print("")
+    for name, step in fleet.sign_ins(shown, mine):
+        print("%-8s %-20s %s" % ("sign in", name[:20], step))
+    brewable = [r for r in base if r["who"] == "rig"] if mine.get("brew") else []
+    print("")
+    print("%d of the %d %s %s installable from Homebrew; the rest is a "
+          "download or an account"
+          % (len(brewable), len(base),
+             "every other machine has" if len(others) > 1 else "the other has",
+             "is" if len(base) == 1 else "are"))
+    if rest and not getattr(args, "all", False):
+        # Left out of the table rather than mixed into it: a name on one
+        # machine out of several is somebody trying something, and a new Mac
+        # does not need it to work. `--all` is where they are.
+        print("%d more that only some of them have: glyph rig apps%s --all"
+              % (len(rest), "" if here else " --machine %s" % mid))
+    if here:
+        print("nothing was changed. glyph rig apply --yes installs up to %d of "
+              "them per run" % INSTALL_MAX)
+    else:
+        print("apply runs on the machine it changes: ssh %s "
+              "'~/.local/bin/glyph-fleet rig apply --yes'" % mid)
     return 0
 
 

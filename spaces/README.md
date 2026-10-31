@@ -156,6 +156,21 @@ the spaces map is shaped as a check by `root_check` for that reason, so a
 capability resting on a root is traceable the same way as one resting on the
 block.
 
+`installed_block` is the other reader worth a note, because two things ask for
+it: the one that writes it into the report and the `apps.missing` check that
+compares it with what the other machines wrote. It is read once per run and
+kept, since reading the same folders twice is how one question gets two
+answers, and `rig.forget` drops it before anything is verified. Everything in
+it comes off the disk: the Cellar, the Caskroom, each keg's own install
+receipt, `/Applications` and one `herdr plugin list --json`, which together are
+twelve milliseconds where `brew list --versions` is seconds. `install_rows` is
+the comparison, and the set it compares against is never this repo's: it is
+what the other machines' own readings carry, narrowed by `GLYPH_INSTALL` or an
+`install` list in the map. The one guess in the whole section is matching an
+app to a cask of the same name, which is what makes a hand-installed Chrome
+installable on the next machine; a miss reads as a download, and that is the
+direction that costs nothing.
+
 `up_verdict` is the one rule for whether a machine is reachable, and both
 `status` and the single-machine view go through it rather than reading the
 roster flag themselves. `tailscale status --json` has reported a machine

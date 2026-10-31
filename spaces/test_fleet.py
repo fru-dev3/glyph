@@ -620,6 +620,240 @@ def test_a_second_github_account_on_a_machine_is_reported():
         os.environ.update(keep)
 
 
+# --- what is installed, and what a new Mac is missing ------------------------
+# Fru's requirement in one line: every app the other machines have, installed
+# on a new one, and never copied from another machine. So what is checked here
+# is the arithmetic that decides which half is which: a name Homebrew can
+# install, a name only a person can, and a sign-in that is never either.
+
+
+def inst(casks=(), formulae=(), deps=(), apps=(), brew="/opt/homebrew",
+         known=None):
+    """An `installed` block, invented. `deps` are formulae nobody asked for."""
+    return {"brew": brew, "casks_known": known,
+            "casks": [{"name": n, "version": "1"} for n in casks],
+            "formulae": [{"name": n, "version": "1", "asked": True}
+                         for n in formulae]
+            + [{"name": n, "version": "1"} for n in deps],
+            "apps": [dict(a) for a in apps]}
+
+
+def with_reports(reps, fn):
+    keep = fleet.load_reports
+    try:
+        fleet.load_reports = lambda: reps
+        return fn()
+    finally:
+        fleet.load_reports = keep
+
+
+def with_installed(block, fn):
+    keep = dict(fleet._INSTALLED)
+    try:
+        fleet._INSTALLED["d"] = block
+        return fn()
+    finally:
+        fleet._INSTALLED.clear()
+        fleet._INSTALLED.update(keep)
+
+
+def rows_for(mine, reps, mid="laptop"):
+    return with_reports(dict((k, {"installed": v}) for k, v in reps.items()),
+                        lambda: fleet.install_rows(mine, mid))
+
+
+def test_a_dependency_is_nothing_anybody_installs():
+    """`brew install imagemagick` brings fifty formulae with it, and a list of
+    all fifty-one is a wall nobody reads. The receipt says which were asked
+    for, and brew's own definition of a leaf drops the ones that are a
+    dependency of something else that was asked for too."""
+    with tempfile.TemporaryDirectory() as d:
+        cellar = os.path.join(d, "Cellar")
+        for name, asked, needs in (("imagemagick", True, ["libpng", "freetype"]),
+                                   ("freetype", True, ["libpng"]),
+                                   ("libpng", True, []),
+                                   ("libtiff", False, [])):
+            keg = os.path.join(cellar, name, "1.0")
+            os.makedirs(keg)
+            with open(os.path.join(keg, "INSTALL_RECEIPT.json"), "w") as f:
+                json.dump({"installed_on_request": asked,
+                           "source": {"tap": "homebrew/core"},
+                           "runtime_dependencies":
+                               [{"full_name": n} for n in needs]}, f)
+        rows = fleet.brew_formulae(d)
+        assert len(rows) == 4, rows
+        asked = sorted(r["name"] for r in rows if r.get("asked"))
+        assert asked == ["imagemagick"], asked
+        assert fleet.listed({"formulae": rows}, "formula") == \
+            [("imagemagick", "1.0", None)]
+
+
+def test_a_tap_is_a_row_only_when_it_is_not_the_obvious_one():
+    """`brew install <name>` finds homebrew/core and homebrew/cask without
+    being told, and two hundred rows saying so is two hundred rows of noise."""
+    assert "tap" not in fleet.keg_row("git", "2.5", "homebrew/core", True)
+    assert fleet.keg_row("workmux", "1", "ben/tap", True)["tap"] == "ben/tap"
+    assert "asked" not in fleet.keg_row("libpng", "1", None, False)
+
+
+def test_an_app_is_matched_to_a_cask_by_the_receipt_then_by_name():
+    """The receipt is certain, the name is a guess, and no cask at all is a
+    download. The guess is what makes a Chrome nobody installed with brew
+    installable on the next machine, and a miss reads as a download, which is
+    the direction that cannot do any harm."""
+    with tempfile.TemporaryDirectory() as d:
+        where = os.path.join(d, "Applications")
+        for name, ident in (("Obsidian.app", "md.obsidian"),
+                            ("Google Chrome.app", "com.google.Chrome")):
+            os.makedirs(os.path.join(where, name, "Contents"))
+            with open(os.path.join(where, name, "Contents", "Info.plist"), "wb") as f:
+                import plistlib
+                plistlib.dump({"CFBundleIdentifier": ident,
+                               "CFBundleShortVersionString": "4.2"}, f)
+        # A bundle with no Info.plist at all: a fact about the bundle, so it is
+        # a row with what is known and never a missing row.
+        os.makedirs(os.path.join(where, "Half Copied.app"))
+        keep = fleet.APP_DIRS
+        try:
+            fleet.APP_DIRS = (where,)
+            rows = dict((r["name"], r) for r in fleet.app_rows(
+                {"Obsidian.app": "obsidian"}, set(["google-chrome"])))
+            # With no cask index on the machine, whether a cask exists is
+            # unknown, so the name match is not made at all: brew is never
+            # told to install something on the strength of nothing.
+            blind = dict((r["name"], r) for r in fleet.app_rows({}, None))
+            assert "cask" not in blind["Google Chrome"], blind
+        finally:
+            fleet.APP_DIRS = keep
+    assert rows["Obsidian"]["cask"] == "obsidian", rows["Obsidian"]
+    assert rows["Obsidian"]["version"] == "4.2"
+    assert rows["Google Chrome"]["cask"] == "google-chrome", "matched by name"
+    assert "cask" not in rows["Half Copied"], "no cask knows it"
+    assert rows["Half Copied"]["id"] is None
+    # And an app no cask knows is a download, never a silent skip, which is
+    # the whole difference between a machine that is set up and one that reads
+    # as though it were.
+    assert fleet.install_how("app", "Half Copied", None)[0] == "you"
+    assert "download" in fleet.install_how("app", "Half Copied", None)[1]
+    assert "App Store" in fleet.install_how("app", "Pages", "com.apple.iWork.Pages")[1]
+
+
+def test_only_what_every_other_machine_has_is_the_baseline():
+    """A name on one machine out of three is somebody trying something out. A
+    name on both of the others is what the new Mac is missing."""
+    rows, others = rows_for(inst(), {"studio": inst(formulae=["git", "eza"]),
+                                     "air": inst(formulae=["git"])})
+    assert others == ["air", "studio"]
+    by = dict((r["name"], r) for r in rows)
+    assert by["git"]["all"] is True and by["git"]["on"] == ["air", "studio"]
+    assert by["eza"]["all"] is False, by["eza"]
+    assert [r["name"] for r in rows] == ["git", "eza"], "the baseline first"
+    # And what this machine already has is not missing, whichever way it got
+    # there: a cask on one machine and a hand-installed app here is one thing.
+    rows, _ = rows_for(inst(apps=[{"name": "Obsidian", "cask": "obsidian"}]),
+                       {"studio": inst(casks=["obsidian"])})
+    assert rows == [], rows
+
+
+def test_one_app_is_one_row_however_much_each_machine_knew():
+    """A machine whose brew has never fetched the cask index cannot say which
+    cask installs an app. Before the fleet pooled its answers, Chrome was two
+    rows, a cask on the machine that knew and an app on the machine that did
+    not, and neither of them read 2 of 2."""
+    knows = inst(apps=[{"name": "Google Chrome", "id": "com.google.Chrome",
+                        "cask": "google-chrome"}])
+    blind = inst(apps=[{"name": "Google Chrome", "id": "com.google.Chrome"}])
+    rows, others = rows_for(inst(), {"studio": knows, "air": blind})
+    assert len(rows) == 1, rows
+    assert rows[0]["kind"] == "cask" and rows[0]["name"] == "google-chrome"
+    assert rows[0]["on"] == ["air", "studio"], "both of them have it"
+    assert rows[0]["who"] == "rig"
+
+
+def test_no_homebrew_is_the_blocker_and_says_so_rather_than_fixing_it():
+    """Installing Homebrew is a download piped into a shell, a password and
+    the Command Line Tools. It is the same class of thing as installing Xcode,
+    and a tool that quietly did all three would be the worst version of this."""
+    got = with_installed(inst(brew=None), lambda: fleet.install_check()[0])
+    assert got["state"] == "broken", got
+    assert got["fix"] is None, "nothing here installs Homebrew"
+    assert "brew.sh" in got["human"], got
+    assert got["proof"], "a check without a proof is not a check"
+
+
+def test_nothing_saying_what_a_machine_should_have_is_unknown_not_ok():
+    """The same rule the rest of the block keeps. One machine on its own
+    cannot answer this, and silence must not read as having everything."""
+    got = with_installed(inst(), lambda: with_reports(
+        {}, lambda: fleet.install_check()[0]))
+    assert got["state"] == "unknown", got
+    assert "GLYPH_INSTALL" in got["proof"], got
+    # With another machine to compare against and nothing missing, it is ok.
+    got = with_installed(inst(formulae=["git"]), lambda: with_reports(
+        {"studio": {"installed": inst(formulae=["git"])}},
+        lambda: fleet.install_check()[0]))
+    assert got["state"] == "ok", got
+    got = with_installed(inst(), lambda: with_reports(
+        {"studio": {"installed": inst(formulae=["git"])}},
+        lambda: fleet.install_check()[0]))
+    assert got["state"] == "missing", got
+    assert "git" in got["detail"], got
+
+
+def test_a_sign_in_is_named_whether_the_app_is_here_yet_or_not():
+    """Nothing this can read says whether somebody signed in, so a sign-in is
+    named and never counted: an app about to be installed needs one, and one
+    already installed may still be waiting for it."""
+    rows, _ = rows_for(inst(), {"studio": inst(casks=["1password"])})
+    assert rows[0]["sign_in"] and "sign in" in rows[0]["sign_in"]
+    named = dict(fleet.sign_ins(rows, inst()))
+    assert "1password" in named, named
+    # Already installed here, so not a row at all, and still named.
+    named = dict(fleet.sign_ins([], inst(casks=["1password", "eza"])))
+    assert sorted(named) == ["1password"], named
+
+
+def test_your_own_config_narrows_the_set_and_this_repo_never_holds_it():
+    """The set is what the other machines have, and a list in the person's own
+    config narrows it, the way GLYPH_SPACES and the git block already work.
+    Nothing about anybody's machine belongs in this repo."""
+    keep = dict(os.environ)
+    try:
+        os.environ["GLYPH_INSTALL"] = "git, eza"
+        assert fleet.wanted_names() == set(["git", "eza"])
+        rows, _ = rows_for(inst(), {"studio": inst(formulae=["git", "btop"])})
+        assert [r["name"] for r in rows] == ["git"], rows
+        os.environ.pop("GLYPH_INSTALL")
+        with tempfile.TemporaryDirectory() as d:
+            os.environ["GLYPH_SPACES"] = d
+            os.makedirs(os.path.join(d, "spaces"), exist_ok=True)
+            with open(os.path.join(d, "machines.json"), "w") as f:
+                json.dump({"machines": {}, "install": ["btop"]}, f)
+            assert fleet.wanted_names() == set(["btop"])
+            with open(os.path.join(d, "machines.json"), "w") as f:
+                json.dump({"machines": {}}, f)
+            assert fleet.wanted_names() is None, "no list is every name"
+    finally:
+        os.environ.clear()
+        os.environ.update(keep)
+
+
+def test_the_installed_list_is_read_once_per_run():
+    """Two things ask for it, the reader that writes it into the report and
+    the check that compares it with the other machines, and reading the same
+    folders twice is how one question gets two answers."""
+    fleet._INSTALLED.clear()
+    keep = fleet._installed
+    try:
+        calls = []
+        fleet._installed = lambda: calls.append(1) or {"brew": None}
+        fleet.installed_block()
+        fleet.installed_block()
+        assert len(calls) == 1, calls
+    finally:
+        fleet._installed = keep
+        fleet._INSTALLED.clear()
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for t in tests:
