@@ -479,9 +479,22 @@ def test_a_summary_never_reports_the_before_state_as_the_after_state():
                       {"id": "locks", "state": "ok"}]}
     after = {"id": "path.noninteractive", "state": "ok", "detail": "on the PATH"}
     results = {"path.noninteractive": ("done", after)}
-    out = io.StringIO()
-    with contextlib.redirect_stdout(out):
-        rig.finish("bens-air", was, results, {}, {"roots": {}})
+    # The re-read is stubbed. Letting it run for real made this check depend on
+    # the machine it ran on: it passed where the host's own PATH check happened
+    # to be broken and failed where it was not, which is a check that tests the
+    # room rather than the code.
+    keep = fleet.setup_block
+    try:
+        fleet.setup_block = lambda record=None: {
+            "ready": False,
+            "checks": [{"id": "path.noninteractive", "state": "broken", "detail": "not on it"},
+                       {"id": "locks", "state": "ok", "detail": "free"}],
+        }
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            rig.finish("bens-air", was, results, {}, {"roots": {}})
+    finally:
+        fleet.setup_block = keep
     said = out.getvalue()
     assert "stale" in said, said        # the disagreement is named
     assert "a new shell reads ok" in said, said
