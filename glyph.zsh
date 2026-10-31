@@ -33,6 +33,7 @@
 #   GLYPH_FLEET_BACKEND=auto|herdr|cmux|zellij|wezterm|tmux   fleet workspace backend
 #   ~/.config/glyph/names.tsv    "<dir-name>\t<Display Name>" overrides
 #   ~/.config/glyph/accounts.tsv "<email>\t<tag>" for the account field (GLYPH_ACCOUNTS)
+#   ~/.config/glyph/claims/      areas sessions have taken (GLYPH_CLAIMS)
 
 # The version belongs to this file, not the environment: an in-place reload
 # after `glyph update` must report the file it just loaded.
@@ -848,6 +849,53 @@ _glyph_star_ask() {
   return 0
 }
 
+# --- claims -------------------------------------------------------------------
+# One session owns an area of work, so another does not start the same thing.
+# The atomic part and the shared state are the collector's; this works out who
+# is asking and hands the area back on the way out.
+typeset -ga GLYPH_CLAIM_HELD=()
+
+# Called from the TERM trap and again from zshexit, so it has to be safe twice:
+# releasing an area nothing holds is a no-op that says so.
+_glyph_claim_hand_back() {
+  local a
+  for a in $GLYPH_CLAIM_HELD; do
+    command glyph-fleet release "$a" --pid $$ >/dev/null 2>&1
+  done
+  GLYPH_CLAIM_HELD=()
+}
+
+# "<pid>\t<session name>" for whoever is asking. An agent that owns this shell
+# holds a claim itself, by its own name and pid, so the claim outlives the one
+# shell that took it: a tool call is a new shell every time. A plain shell
+# holds its own, under the mark the label would have produced.
+_glyph_claim_who() {
+  local sess="" pid=$$ sf
+  if sf=$(_glyph_claude_session); then
+    sess=$(_glyph_session_field "$sf" name)
+    pid=$(_glyph_session_num "$sf" pid)
+  fi
+  [[ -n $sess ]] || sess=$(_glyph_compose "${1:-}" "$(_glyph_project "$PWD")")
+  [[ -n $pid ]] || pid=$$          # a session file with no pid in it answers nothing
+  printf '%s\t%s\n' "$pid" "$sess"
+}
+
+_glyph_claim() {
+  # The first word that is not an option: the area, wherever --branch sits.
+  local area=${${@:#-*}[1]:-}
+  local who=$(_glyph_claim_who "$area") pid sess
+  pid=${who%%$'\t'*}; sess=${who#*$'\t'}
+  command glyph-fleet claim "$@" --session "$sess" --pid "$pid" || return
+  [[ $pid == $$ ]] || return 0
+  # Only a claim this shell holds itself can this shell hand back. A trap set
+  # with the trap builtin inside a function is local to the function, so the
+  # handler is a TRAPTERM function, which is not; an existing one is left alone.
+  GLYPH_CLAIM_HELD+=("$area")
+  (( $+functions[TRAPTERM] )) || TRAPTERM() { _glyph_claim_hand_back }
+  (( $+functions[TRAPHUP] ))  || TRAPHUP()  { _glyph_claim_hand_back }
+  autoload -Uz add-zsh-hook && add-zsh-hook zshexit _glyph_claim_hand_back
+}
+
 glyph() {
   case ${1:-help} in
     ls|log)
@@ -1080,6 +1128,21 @@ glyph() {
       fi
       print -r -- "use any of these after a colon, e.g. glyph fleet cloud with codex:mini" ;;
     fleet) shift; glyph-fleet "$@" ;;
+    claim|claims|release)
+      local csub=$1; shift
+      if ! command -v glyph-fleet >/dev/null 2>&1; then
+        print -ru2 -- "glyph $csub runs from a clone of the repo:"
+        print -ru2 -- "  git clone https://github.com/fru-dev3/glyph && cd glyph && source ./install.sh"
+        return 1
+      fi
+      case $csub in
+        claim) _glyph_claim "$@" ;;
+        claims) command glyph-fleet claims "$@" ;;
+        release)
+          local rwho=$(_glyph_claim_who "${${@:#-*}[1]:-}")
+          command glyph-fleet release "$@" \
+            --pid "${rwho%%$'\t'*}" --session "${rwho#*$'\t'}" ;;
+      esac ;;
     usage) shift; glyph-usage "$@" ;;
     wake) shift; glyph-wake "$@" ;;
     spaces)
@@ -1108,6 +1171,9 @@ glyph ps       every agent session running right now, named or not
 glyph doctor   check the install and say what is wrong
 glyph usage    tokens and quota across agents [claude|codex|agy] [--live]
 glyph wake     continue sessions a usage limit stopped, at the reset [hook|cancel]
+glyph claim    take an area of work so no other session starts it [--branch <b>]
+glyph claims   who owns what right now, across machines
+glyph release  give an area back [--force]
 glyph spaces   your workspaces and tabs per machine, built in Herdr [check|names|apply|start|remark]
 glyph fleet report  collect this machine: disks, memory, agents, accounts
 glyph fleet status  every machine side by side [--live] [--machine <id>]

@@ -3,7 +3,9 @@
 
 `report` collects this machine and writes it where every machine can read it;
 `report --json` prints it and writes nothing, which is what the app and an ssh
-probe use. `status`, `diff` and `setup` read what each machine wrote.
+probe use. `status`, `diff` and `setup` read what each machine wrote. `claim`, `claims`
+and `release` are the same file because it is already on PATH; they are reached
+as `glyph claim`, and the shell hands in who is asking.
 
 An executable file, not a shell function, so `ssh laptop glyph-fleet report
 --json` works non-interactively. install.sh links it into ~/.local/bin.
@@ -14,7 +16,7 @@ import argparse, os, sys
 # ~/.local/bin, and the package is found from where the script actually lives.
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 
-from glyph_spaces import fleet
+from glyph_spaces import claims, fleet
 from glyph_spaces.core import MapMissing
 
 
@@ -39,6 +41,24 @@ def main():
     u = sub.add_parser("setup", help="what a machine still needs before it can work")
     u.add_argument("--machine", help="one machine instead of all of them")
     u.set_defaults(func=fleet.cmd_setup)
+    # These three are reached as `glyph claim`, not `glyph fleet claim`, which
+    # is why they are hidden here. They share this file because it is the
+    # Python command install.sh already puts on PATH, and a second executable
+    # for three subcommands is a moving part nobody needs. The shell works out
+    # who is asking and hands it in, as it does the account tag.
+    for name, fn in (("claim", claims.cmd_claim), ("claims", claims.cmd_claims),
+                     ("release", claims.cmd_release)):
+        p = sub.add_parser(name, prog="glyph %s" % name, help=argparse.SUPPRESS)
+        if name != "claims":
+            p.add_argument("area")
+            p.add_argument("--session", help="the session name that holds it")
+            p.add_argument("--pid", type=int, help="the pid that holds it")
+        if name == "claim":
+            p.add_argument("--branch", help="the branch the work is on")
+        if name == "release":
+            p.add_argument("--force", action="store_true",
+                           help="let go of a claim this session does not hold")
+        p.set_defaults(func=fn)
     args = ap.parse_args()
     if not getattr(args, "func", None):
         ap.print_help()
