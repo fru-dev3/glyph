@@ -239,12 +239,13 @@ def tabs_for(machine, spaces):
     return out
 
 
-def free_gb():
-    """Free plus inactive memory, which is what a new session can actually use."""
+def vm_pages():
+    """(page size, every counter vm_stat prints). Empty when it cannot be read."""
     try:
-        out = subprocess.run(["vm_stat"], capture_output=True, text=True).stdout
+        out = subprocess.run(["vm_stat"], capture_output=True, text=True,
+                             timeout=5).stdout
     except Exception:
-        return 99.0
+        return 4096, {}
     pages = {}
     size = 4096
     head = out.splitlines()[0] if out else ""
@@ -258,6 +259,14 @@ def free_gb():
         v = v.strip().rstrip(".")
         if v.isdigit():
             pages[k.strip()] = int(v)
+    return size, pages
+
+
+def free_gb():
+    """Free plus inactive memory, which is what a new session can actually use."""
+    size, pages = vm_pages()
+    if not pages:
+        return 99.0
     return (pages.get("Pages free", 0) + pages.get("Pages inactive", 0)) * size / 1073741824.0
 
 

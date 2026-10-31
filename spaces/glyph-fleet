@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+"""glyph fleet: one machine's facts as JSON, and the table across machines.
+
+`report` collects this machine and writes it where every machine can read it;
+`report --json` prints it and writes nothing, which is what the app and an ssh
+probe use. `status` and `diff` read what each machine wrote.
+
+An executable file, not a shell function, so `ssh laptop glyph-fleet report
+--json` works non-interactively. install.sh links it into ~/.local/bin.
+"""
+import argparse, os, sys
+
+# realpath, not abspath: the command is reached through a symlink in
+# ~/.local/bin, and the package is found from where the script actually lives.
+sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
+
+from glyph_spaces import fleet
+from glyph_spaces.core import MapMissing
+
+
+def main():
+    ap = argparse.ArgumentParser(prog="glyph fleet")
+    sub = ap.add_subparsers(dest="cmd")
+    r = sub.add_parser("report", help="collect this machine")
+    r.add_argument("--json", action="store_true",
+                   help="print the report instead of writing it")
+    # glyph.zsh works out which login an agent is signed into, from the
+    # person's own accounts file and its own rules. It hands the answer in
+    # rather than have a second set of rules here to disagree with it.
+    r.add_argument("--account-tag", help="the account tag glyph's shell derived")
+    r.set_defaults(func=fleet.cmd_report)
+    s = sub.add_parser("status", help="every machine, side by side")
+    s.add_argument("--live", action="store_true",
+                   help="ask every reachable machine over ssh first")
+    s.add_argument("--machine", help="one machine, in full")
+    s.set_defaults(func=fleet.cmd_status)
+    d = sub.add_parser("diff", help="the configuration that is not the same everywhere")
+    d.set_defaults(func=fleet.cmd_diff)
+    args = ap.parse_args()
+    if not getattr(args, "func", None):
+        ap.print_help()
+        return 0
+    try:
+        return args.func(args)
+    except MapMissing as e:
+        # The map is the person's, not this repo's. A machine with no map still
+        # reports itself, so this only reaches here from status and diff.
+        print("glyph fleet: %s" % e)
+        print("\nWrite machines.json there, or set GLYPH_SPACES.")
+        print("spaces/example/ in the glyph repo shows the shape.")
+        return 2
+    except BrokenPipeError:
+        # `glyph fleet status | head` closes the pipe partway; that is the
+        # reader's choice, not an error worth a traceback.
+        os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
+        return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
