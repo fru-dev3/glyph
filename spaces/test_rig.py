@@ -164,7 +164,10 @@ def test_apply_refuses_without_the_flag():
         assert got == 2, got
         assert "apply needs --yes" in said, said
         assert "nothing was changed" in said.lower(), said
-        assert tree(home) == before, "a refused apply wrote something"
+        now = tree(home)
+        assert now == before, ("a refused apply wrote something: added %s, removed %s"
+                               % (sorted(set(now) - set(before))[:6],
+                                  sorted(set(before) - set(now))[:6]))
     sand(go)
 
 
