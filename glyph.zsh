@@ -160,11 +160,11 @@ _glyph_agent_segment() {
 }
 
 # The account segment: which login the agent runs under, short enough to read
-# in a session list (sam.lee4@example.com is too long, sl4 is not). The tag is
+# in a session list (ben.carter4@example.com is too long, bc4 is not). The tag is
 # worked out from the address: the initial of each word before the @, then its
-# trailing digits. samwork4 has no dot to split on, so when an address opens
+# trailing digits. benwork4 has no dot to split on, so when an address opens
 # with your own first name, as the computer has it (GLYPH_ME says otherwise),
-# that name is the first word: sam + work, sw4. A line in accounts.tsv
+# that name is the first word: ben + work, bw4. A line in accounts.tsv
 # overrides an address the rule gets wrong. Only Claude Code is verified: it
 # keeps the login in .claude.json. The name is cut at launch, so a /login
 # inside a running session leaves the old tag until the next launch.
@@ -1109,6 +1109,9 @@ glyph doctor   check the install and say what is wrong
 glyph usage    tokens and quota across agents [claude|codex|agy] [--live]
 glyph wake     continue sessions a usage limit stopped, at the reset [hook|cancel]
 glyph spaces   your workspaces and tabs per machine, built in Herdr [check|names|apply|start|remark]
+glyph fleet report  collect this machine: disks, memory, agents, accounts
+glyph fleet status  every machine side by side [--live] [--machine <id>]
+glyph fleet diff    the configuration that is not the same everywhere
 glyph fleet init create example fleets without replacing existing presets
 glyph fleet [p] launch a preset of agents, each in its own marked tmux pane
 glyph presets  list the presets in ~/.config/glyph/fleet.conf
@@ -1383,6 +1386,26 @@ _glyph_fleet_wezterm() {
 
 glyph-fleet() {
   emulate -L zsh
+  # report, status and diff are the collector in spaces/, an executable file so
+  # that `ssh laptop glyph-fleet report --json` works where a shell function
+  # cannot be reached. `command` skips this function, which is what keeps the
+  # one name working both here and over ssh.
+  case ${1:-} in
+    report|status|diff)
+      if ! command -v glyph-fleet >/dev/null 2>&1; then
+        print -ru2 -- "glyph fleet $1 runs from a clone of the repo:"
+        print -ru2 -- "  git clone https://github.com/fru-dev3/glyph && cd glyph && source ./install.sh"
+        return 1
+      fi
+      # The account tag is this shell's to work out: it reads the person's own
+      # accounts file and glyph's own rules. Handing it over beats a second set
+      # of rules in Python for the two to disagree about.
+      local tag=""
+      [[ $1 == report ]] && tag=$(_glyph_account claude)
+      if [[ -n $tag ]]; then command glyph-fleet "$@" --account-tag "$tag"
+      else command glyph-fleet "$@"; fi
+      return ;;
+  esac
   if [[ ${1:-} == init ]]; then _glyph_fleet_init; return; fi
   local preset=${1:-default}; shift 2>/dev/null
   local -a slots
