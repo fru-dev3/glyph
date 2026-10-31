@@ -62,22 +62,22 @@ assert_eq "$(GLYPH_ORDER='label stamp' _glyph_compose 'Fix Login' 'Acme API' cla
 # Claude Code's own config, only when GLYPH_ORDER names it, and worked out from
 # the address: initials and trailing digits, with accounts.tsv to overrule it.
 mkdir -p "$test_dir/cfg" "$test_dir/cfg2"
-print -r -- '{ "oauthAccount": { "emailAddress": "Sam.Lee4@example.com" } }' > "$test_dir/cfg/.claude.json"
-print -r -- '{ "oauthAccount": { "emailAddress": "samwork4@example.com" } }' > "$test_dir/cfg2/.claude.json"
-export CLAUDE_CONFIG_DIR="$test_dir/cfg" GLYPH_ACCOUNTS="$test_dir/accounts-none.tsv" GLYPH_ME='Sam Lee'
+print -r -- '{ "oauthAccount": { "emailAddress": "Ben.Carter4@example.com" } }' > "$test_dir/cfg/.claude.json"
+print -r -- '{ "oauthAccount": { "emailAddress": "benwork4@example.com" } }' > "$test_dir/cfg2/.claude.json"
+export CLAUDE_CONFIG_DIR="$test_dir/cfg" GLYPH_ACCOUNTS="$test_dir/accounts-none.tsv" GLYPH_ME='Ben Carter'
 # An address with no dot in it splits after the person's own first name.
-assert_eq "$(CLAUDE_CONFIG_DIR="$test_dir/cfg2" glyph account)" 'sw4' 'an unbroken address splits after your own name'
-assert_eq "$(CLAUDE_CONFIG_DIR="$test_dir/cfg2" GLYPH_ME=Someone glyph account)" 's4' 'and stays one word when it is not your name'
+assert_eq "$(CLAUDE_CONFIG_DIR="$test_dir/cfg2" glyph account)" 'bw4' 'an unbroken address splits after your own name'
+assert_eq "$(CLAUDE_CONFIG_DIR="$test_dir/cfg2" GLYPH_ME=Someone glyph account)" 'b4' 'and stays one word when it is not your name'
 assert_eq "$(_glyph_compose 'Fix Login' 'Acme API' claude)" \
   'fix-login·acme-api·claude-code·test·stamp' 'account stays out of the default order'
 assert_eq "$(GLYPH_ORDER='label account' _glyph_compose 'Fix Login' 'Acme API' claude)" \
-  'fix-login·sl4' 'account falls back to initials and digits'
+  'fix-login·bc4' 'account falls back to initials and digits'
 assert_eq "$(GLYPH_ORDER='label account' _glyph_compose 'Fix Login' 'Acme API' codex)" \
   'fix-login' 'only Claude Code has a known account'
-printf '# address\ttag\nsam.lee4@example.com\tWork\n' > "$test_dir/accounts.tsv"
+printf '# address\ttag\nben.carter4@example.com\tWork\n' > "$test_dir/accounts.tsv"
 assert_eq "$(GLYPH_ACCOUNTS="$test_dir/accounts.tsv" GLYPH_ORDER='account label' _glyph_compose 'Fix Login' 'Acme API' claude)" \
   'work·fix-login' 'accounts.tsv names the account'
-assert_eq "$(glyph account)" 'sl4' 'glyph account prints the tag by itself'
+assert_eq "$(glyph account)" 'bc4' 'glyph account prints the tag by itself'
 assert_eq "$(CLAUDE_CONFIG_DIR="$test_dir/nowhere" GLYPH_ORDER='label account' _glyph_compose 'Fix Login' 'Acme API' claude)" \
   'fix-login' 'no login, no account segment'
 unset CLAUDE_CONFIG_DIR GLYPH_ACCOUNTS GLYPH_ME
@@ -242,6 +242,28 @@ if command -v python3 >/dev/null 2>&1; then
   out=$(PATH="$repo/spaces:$PATH" GLYPH_SPACES=$map GLYPH_SPACES_MACHINE=laptop ZDOTDIR=$test_dir/zdot glyph spaces names)
   [[ $out == *'lt-work-api'* ]] || { print -ru2 -- 'FAIL: glyph spaces dispatch'; exit 1; }
   print -r -- 'PASS: spaces check, names, a missing map, and the glyph spaces front door'
+
+  # glyph fleet: report, status and diff go to the collector, a file ssh can
+  # run, and the preset launcher keeps the same name. Both have to work, and
+  # the function must not call itself.
+  cat > "$test_dir/bin/glyph-fleet" <<'STUB'
+#!/bin/zsh
+print -r -- "collector: ${(j: :)@}"
+STUB
+  chmod +x "$test_dir/bin/glyph-fleet"
+  out=$(CLAUDE_CONFIG_DIR="$test_dir/cfg" GLYPH_ACCOUNTS="$test_dir/none.tsv" \
+        GLYPH_ME='Ben Carter' glyph fleet report --json)
+  assert_eq "$out" 'collector: report --json --account-tag bc4' \
+    'glyph fleet report reaches the collector with the account tag this shell worked out'
+  out=$(glyph fleet status --live)
+  assert_eq "$out" 'collector: status --live' 'glyph fleet status reaches the collector'
+  out=$(glyph fleet diff)
+  assert_eq "$out" 'collector: diff' 'glyph fleet diff reaches the collector'
+  print -r -- 'solo = claude' > "$test_dir/fleet-solo.conf"
+  out=$(GLYPH_DRYRUN=1 GLYPH_FLEET_CONF="$test_dir/fleet-solo.conf" glyph fleet solo)
+  [[ $out == *'pane 1  claude on local'* ]] \
+    || { print -ru2 -- "FAIL: a preset still launches: $out"; exit 1; }
+  print -r -- 'PASS: fleet report, status and diff reach the collector, presets still launch'
 fi
 print -r -- 'PASS: one-command fleet init, custom config path, existing definitions, repeat runs and dry run'
 print -r -- 'PASS: AGY labels, prompts, print mode, management commands and opt-in flags'
