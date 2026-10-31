@@ -347,10 +347,18 @@ STUB
   # written here, not this machine's own, so the states are the ones under test.
   mkdir -p $test_dir/caps-rig/machines
   print -r -- '{"schema":1,"taken":"2026-01-01T00:00:00-05:00","machine":{"id":"laptop","role":"dev"},
-   "capabilities":[{"id":"vault","can":"yes","from":["spaces.root.vault"]},
-     {"id":"swift-build","can":"no","from":["xcode.developer-dir"]},
-     {"id":"mac-screen","can":"unknown","from":["tcc.screen-recording"]},
-     {"id":"iphone-sim","can":"yes","from":["xcode.devicesupport","xcode.appleid"]}],
+   "agents":[{"id":"agy","label":"Antigravity","installed":true,"version":"1.4.12",
+     "auth":{"state":"no","session":"ssh","proof":"agy models","at":"2026-01-01T00:00:00-05:00",
+      "detail":"asked over ssh, agy models says: Error: Please sign in to view available models"}},
+    {"id":"claude","label":"Claude Code","installed":true,"version":"2.1.0",
+     "auth":{"state":"unknown","session":"ssh","at":"2026-01-01T00:00:00-05:00",
+      "proof":"nothing was run: no catalogue call for claude",
+      "detail":"a record of a sign-in, not proof: the account block names the login configured here and nothing exercised its token. No catalogue call is wired up for claude"}}],
+   "capabilities":[{"id":"vault","can":"yes","from":["spaces.root.vault"],"at":"2026-01-01T00:00:00-05:00"},
+     {"id":"swift-build","can":"no","from":["xcode.developer-dir"],"at":"2026-01-01T00:00:00-05:00"},
+     {"id":"mac-screen","can":"unknown","from":["tcc.screen-recording"],"at":"2026-01-01T00:00:00-05:00"},
+     {"id":"iphone-sim","can":"yes","from":["xcode.devicesupport","xcode.appleid"],"at":"2026-01-01T00:00:00-05:00"},
+     {"id":"agy-session","can":"no","from":["auth.agy"],"at":"2026-01-01T00:00:00-05:00"}],
    "setup":{"ready":false,"checks":[{"id":"xcode.developer-dir","state":"broken","detail":"made up"},
      {"id":"tcc.screen-recording","state":"unknown","detail":"made up"}]}}' \
    > $test_dir/caps-rig/machines/laptop.json
@@ -362,10 +370,32 @@ STUB
   [[ $out != *'swift-build'* ]] \
     || { print -ru2 -- "FAIL: what it cannot do is the absence: $out"; exit 1; }
   rc=0; out=$(caps setup) || rc=$?
-  [[ $out == *'CAPABILITY'*'CAN'*'FROM'* && $out == *'swift-build    no       xcode.developer-dir'* \
-     && $out == *'mac-screen     unknown  tcc.screen-recording'* ]] \
+  [[ $out == *'CAPABILITY'*'CAN'*'PROVEN'*'FROM'* \
+     && $out == *'swift-build    no       '*'xcode.developer-dir'* \
+     && $out == *'mac-screen     unknown  '*'tcc.screen-recording'* ]] \
     || { print -ru2 -- "FAIL: setup must name the check behind each one: $out"; exit 1; }
   print -r -- 'PASS: capabilities in the report, one line in status and the deciding checks in setup'
+
+  # Authentication: whether an agent can be used right now, not whether it is
+  # installed. Against the same reading, so the states are the ones under
+  # test. An answer has to name the session it is about, since agy keeps its
+  # credential in the login keychain and so cannot authenticate over ssh at
+  # all, and a capability resting on an agent that is not signed in is not yes.
+  out=$(caps status)
+  [[ $out == *'auth     laptop'*'agy no, claude unknown  (asked over ssh)'* ]] \
+    || { print -ru2 -- "FAIL: status must say which agents can be used: $out"; exit 1; }
+  rc=0; out=$(caps setup) || rc=$?
+  [[ $out == *'AGENT'*'AUTH'*'ASKED'*'PROVEN'*'DETAIL'* \
+     && $out == *'agy'*'no       ssh'* && $out == *'Please sign in'* ]] \
+    || { print -ru2 -- "FAIL: setup must show what proved each one: $out"; exit 1; }
+  [[ $out == *'claude'*'unknown  ssh'*'not proof'* ]] \
+    || { print -ru2 -- "FAIL: an account block is not proof of auth: $out"; exit 1; }
+  [[ $out == *'agy-session    no       '*'auth.agy'* ]] \
+    || { print -ru2 -- "FAIL: a capability on an unauthenticated agent is not yes: $out"; exit 1; }
+  out=$(caps status --machine laptop)
+  [[ $out == *'AGENT'*'VERSION'*'AUTH'*'ACCOUNT'*'USAGE'* && $out == *'agy'*'1.4.12'*'no'* ]] \
+    || { print -ru2 -- "FAIL: the agent table needs an auth column: $out"; exit 1; }
+  print -r -- 'PASS: auth per agent, the session each answer is about, and a capability that will not say yes without it'
 
   # glyph rig apps: what the other machines have installed and this one does
   # not. Against three readings written here, so the answer is the one under

@@ -330,10 +330,11 @@ def test_a_folder_reachable_down_two_roots_is_counted_once():
 # build to.
 
 
-def capability(cid, states, spaces=None):
+def capability(cid, states, spaces=None, agents=None):
     """One capability, from states invented for the checks it rests on."""
     checks = [fleet.chk(k, v, "made up") for k, v in states.items()]
-    return dict((c["id"], c) for c in fleet.capabilities(checks, spaces))[cid]
+    return dict((c["id"], c)
+                for c in fleet.capabilities(checks, spaces, agents))[cid]
 
 
 def test_a_capability_is_yes_only_when_every_check_it_needs_is_ok():
@@ -402,6 +403,167 @@ def test_the_one_line_form_says_what_a_machine_can_do():
     assert fleet.can_line(caps) == "vault mac-screen?"
     assert fleet.can_line([{"id": "vault", "can": "no", "from": []}]) == "none"
     assert fleet.can_line(None) is None, "a report written before this gets no line"
+
+
+# --- installed is not usable -------------------------------------------------
+# Three sessions spent an afternoon believing a machine could sign an iOS
+# build. It could not, and no machine in the fleet can. Every state here is
+# built from the text or the exit code that would cause it, so none of these
+# needs an agent, a network or a credential to run.
+
+
+def test_a_zero_exit_with_a_sign_in_message_is_not_authenticated():
+    """The lesson `gh auth status` already taught, in another CLI: the output
+    is the answer and the exit code is worth nothing. agy has printed this and
+    exited 0."""
+    state, detail = fleet.auth_verdict(
+        0, "Fetching available models...\nError: Please sign in to view "
+           "available models. Launch the CLI without arguments to sign in.",
+        "agy models", "login")
+    assert state == "no", (state, detail)
+    assert "Please sign in" in detail, detail
+    # The same text with a non-zero exit is the same answer, for the same
+    # reason: the code was never what decided it.
+    assert fleet.auth_verdict(1, "Error: Please sign in to view available models.",
+                              "agy models", "login")[0] == "no"
+    state, detail = fleet.auth_verdict(0, "gemini-3-pro\ngemini-3-flash",
+                                       "agy models", "login")
+    assert state == "yes", (state, detail)
+
+
+def test_a_probe_that_could_not_answer_is_unknown_and_never_no():
+    """A network that was down proves nothing about a credential. unknown is
+    never yes, and it is not no either: calling a machine signed out on the
+    strength of a timeout is the same wrong answer in the other direction."""
+    state, detail = fleet.auth_verdict(None, "", "agy models", "login")
+    assert state == "unknown", (state, detail)
+    assert "answered nothing" in detail, detail
+    state, detail = fleet.auth_verdict(7, "dial tcp: lookup host: no such host",
+                                       "agy models", "login")
+    assert state == "unknown", (state, detail)
+    assert "exited 7" in detail, detail
+    assert fleet.auth_verdict(0, "", "agy models", "login")[0] == "unknown", \
+        "a command that printed nothing at all said nothing at all"
+
+
+def test_an_account_block_is_a_record_of_a_sign_in_and_not_proof():
+    """Claude Code and Codex both write down which account signed in, and the
+    report already carries it. That is the same shape as a status naming the
+    right account while its token answers 401, so it is unknown here rather
+    than yes, and it says why."""
+    row = fleet.unprobed_auth("claude", "login")
+    assert row["state"] == "unknown", row
+    assert "not proof" in row["detail"], row
+    assert row["proof"] and "nothing was run" in row["proof"], row
+    assert row["at"], "a row nobody could answer still says when it was asked"
+    other = fleet.unprobed_auth("crush", "ssh")
+    assert other["state"] == "unknown" and other["session"] == "ssh", other
+
+
+def test_an_answer_names_the_session_it_is_about():
+    """agy keeps its credential in the login keychain, which an ssh session
+    cannot open at all, so a probe over ssh answers for the ssh session. A row
+    saying `not authenticated` without saying which session asked would be a
+    new wrong answer in place of an old one."""
+    over_ssh = fleet.auth_verdict(0, "Error: Please sign in to view available "
+                                  "models.", "agy models", "ssh",
+                                  fleet.AUTH_PROBES["agy"]["keychain"])[1]
+    assert "over ssh" in over_ssh and "login keychain" in over_ssh, over_ssh
+    assert "not the machine" in over_ssh, over_ssh
+    at_keyboard = fleet.auth_verdict(0, "Error: Please sign in.", "agy models",
+                                     "login",
+                                     fleet.AUTH_PROBES["agy"]["keychain"])[1]
+    assert "login session" in at_keyboard, at_keyboard
+    assert "keychain" not in at_keyboard, "the caveat belongs to ssh only"
+    # The one line says it once, since one run asks them all from one place.
+    line = fleet.auth_line(
+        [{"id": "agy", "installed": True, "auth": {"state": "no", "session": "ssh"}},
+         {"id": "claude", "installed": True,
+          "auth": {"state": "unknown", "session": "ssh"}}])
+    assert line == "agy no, claude unknown  (asked over ssh)", line
+    assert fleet.auth_line([{"id": "pi", "installed": True}]) is None, \
+        "an agent nobody asked about gets no word in the line"
+
+
+def test_a_negative_is_never_served_from_cache():
+    """A machine that cannot be used has to say so every run, not once and
+    then quietly out of a cache. A positive is the other bargain, the one
+    `repo.access` already makes: these are network calls, so a yes is kept for
+    a few minutes and carries the time it was actually proven."""
+    keep_env, keep_ask = dict(os.environ), fleet.ask_agent
+    try:
+        with tempfile.TemporaryDirectory() as d:
+            os.environ["GLYPH_STATE"] = d
+            os.environ.pop("SSH_CONNECTION", None)
+            fleet.CACHE.clear()
+            del fleet._DIRTY[:]
+            calls = []
+            fleet.ask_agent = lambda p, a, timeout=None: calls.append(1) or (
+                0, "Error: Please sign in to view available models.")
+            assert fleet.auth_block("agy", "/made/up/agy")["state"] == "no"
+            assert fleet.auth_block("agy", "/made/up/agy")["state"] == "no"
+            assert len(calls) == 2, "a negative is asked again every run"
+            del calls[:]
+            fleet.ask_agent = lambda p, a, timeout=None: calls.append(1) or (
+                0, "gemini-3-pro\ngemini-3-flash")
+            first = fleet.auth_block("agy", "/made/up/agy")
+            assert first["state"] == "yes", first
+            again = fleet.auth_block("agy", "/made/up/agy")
+            assert len(calls) == 1, "a positive is not asked twice in ten minutes"
+            assert again["at"] == first["at"], \
+                "and it says when it was proven, not when it was read"
+    finally:
+        fleet.ask_agent = keep_ask
+        fleet.CACHE.clear()
+        del fleet._DIRTY[:]
+        os.environ.clear()
+        os.environ.update(keep_env)
+
+
+def test_a_capability_needing_an_unauthenticated_agent_is_not_yes():
+    """An installed agent that cannot be used can take no work. Until this
+    column existed, `installed` was the whole of what the report said."""
+    row = {"id": "agy", "installed": True,
+           "auth": {"state": "yes", "session": "login", "detail": "made up",
+                    "proof": "agy models", "at": fleet.stamp(time.time())}}
+    assert capability("agy-session", {}, None, [row])["can"] == "yes"
+    for state, can in (("no", "no"), ("unknown", "unknown")):
+        row["auth"] = dict(row["auth"], state=state)
+        got = capability("agy-session", {}, None, [row])
+        assert got["can"] == can, got
+        assert got["from"] == ["auth.agy"], "it names what decided it"
+    assert capability("agy-session", {}, None,
+                      [{"id": "agy", "installed": False}])["can"] == "no", \
+        "an agent that is not here can take no work either"
+    assert capability("agy-session", {}, None, [])["can"] == "unknown", \
+        "nothing in the report about it is not the same as a no"
+    assert fleet.auth_check([], "agy")["proof"], \
+        "a check without a proof is not a check, auth or not"
+
+
+def test_a_capability_that_cannot_be_done_stays_in_the_report():
+    """No machine here can sign an iOS build today, and a report that dropped
+    the row for being irrelevant would leave the next person to work that out
+    again. The day somebody signs into Xcode, three failures clear at once:
+    provisioning, the iPhone install, and a Mac app that dies about 14 ms
+    after launch with no crash report. So a no is a row, with the checks that
+    caused it and when it was last proven."""
+    caps = fleet.capabilities([fleet.chk("xcode.appleid", "missing", "made up"),
+                               fleet.chk("xcode.devicesupport", "ok", "made up")],
+                              None, None, "2026-10-31T09:00:00-05:00")
+    rows = dict((c["id"], c) for c in caps)
+    assert sorted(rows) == sorted(c for c, _ in fleet.CAPABILITIES), \
+        "every capability is a row, whatever it says"
+    got = rows["iphone-sim"]
+    assert got["can"] == "no" and got["from"] == ["xcode.appleid"], got
+    assert got["at"] == "2026-10-31T09:00:00-05:00", got
+    # A verdict leaning on a kept authentication is only as new as that.
+    old, now = fleet.stamp(time.time() - 400), fleet.stamp(time.time())
+    agents = [{"id": "agy", "installed": True,
+               "auth": {"state": "yes", "session": "login", "at": old}}]
+    rows = dict((c["id"], c) for c in fleet.capabilities([], None, agents, now))
+    assert rows["agy-session"]["at"] == old, rows["agy-session"]
+    assert rows["vault"]["at"] == now, rows["vault"]
 
 
 # --- reachable is not a flag -------------------------------------------------
