@@ -1016,6 +1016,27 @@ def test_the_installed_list_is_read_once_per_run():
         fleet._installed = keep
         fleet._INSTALLED.clear()
 
+def test_an_apple_id_in_a_list_is_not_a_thing_that_can_sign():
+    """An account in Xcode's list says somebody signed in once. A build needs
+    a provisioning profile, and with none there it stops at exit 65 while the
+    account list looks perfectly healthy. Same overstatement as calling an
+    installed agent a usable one."""
+    keep = (fleet.run, fleet.provisioning_profiles, fleet.asc_keys)
+    try:
+        fleet.run = lambda *a, **k: 'identifier = "ben@example.com";'
+        fleet.asc_keys = lambda: []
+        fleet.provisioning_profiles = lambda: 0
+        row = fleet.appleid_check()[0]
+        assert row["state"] == "broken", row
+        assert "exit 65" in row["detail"], row
+        assert row["human"], "a person downloads a profile; nothing here does"
+        fleet.provisioning_profiles = lambda: 3
+        ok = fleet.appleid_check()[0]
+        assert ok["state"] == "ok" and "3 provisioning profiles" in ok["detail"], ok
+    finally:
+        fleet.run, fleet.provisioning_profiles, fleet.asc_keys = keep
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for t in tests:

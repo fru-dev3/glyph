@@ -1693,6 +1693,24 @@ def expected_team():
         return None
 
 
+def provisioning_profiles():
+    """How many provisioning profiles are on disk.
+
+    An Apple ID in Xcode's account list says a sign-in happened. A profile is
+    what a build actually needs, and with none there a signed build stops at
+    exit 65 with an account list that looks perfectly healthy.
+    """
+    n = 0
+    for d in ("~/Library/Developer/Xcode/UserData/Provisioning Profiles",
+              "~/Library/MobileDevice/Provisioning Profiles"):
+        try:
+            n += len([f for f in os.listdir(os.path.expanduser(d))
+                      if f.endswith((".mobileprovision", ".provisionprofile"))])
+        except OSError:
+            pass
+    return n
+
+
 def appleid_check():
     out = run(["defaults", "read", "com.apple.dt.Xcode",
                "DVTDeveloperAccountManagerAppleIDLists"], timeout=1.5)
@@ -1700,10 +1718,26 @@ def appleid_check():
         return [chk("xcode.appleid", "unknown", "defaults answered nothing")]
     ids = len(re.findall(r"identifier\s*=", out)) if "does not exist" not in out else 0
     keys = asc_keys()
-    if ids:
+    profiles = provisioning_profiles()
+    if ids and profiles:
         return [chk("xcode.appleid", "ok",
-                    "%d Apple ID%s signed into Xcode"
-                    % (ids, "" if ids == 1 else "s"))]
+                    "%d Apple ID%s signed into Xcode and %d provisioning profile%s"
+                    % (ids, "" if ids == 1 else "s",
+                       profiles, "" if profiles == 1 else "s"),
+                    proof="defaults read com.apple.dt.Xcode "
+                          "DVTDeveloperAccountManagerAppleIDLists, and the profiles on disk")]
+    if ids and not profiles:
+        # An account in Xcode's list is a record that somebody signed in, not a
+        # thing that can sign. With no profile, -allowProvisioningUpdates has
+        # nothing to work from and a build stops at exit 65, which is the same
+        # shape of overstatement as calling an installed agent a usable one.
+        return [chk("xcode.appleid", "broken",
+                    "%d Apple ID%s in Xcode and no provisioning profile, so a signed "
+                    "build stops at exit 65 while the account list looks right"
+                    % (ids, "" if ids == 1 else "s"),
+                    proof="no files in ~/Library/Developer/Xcode/UserData/Provisioning Profiles",
+                    human="Xcode, Settings, Accounts, Download Manual Profiles, or build "
+                          "once with -allowProvisioningUpdates at the keyboard")]
     if keys:
         return [chk("xcode.appleid", "ok",
                     "no Apple ID in Xcode, but an App Store Connect key is at %s, "
