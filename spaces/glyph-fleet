@@ -48,7 +48,9 @@ def main():
     # who is asking and hands it in, as it does the account tag.
     for name, fn in (("claim", claims.cmd_claim), ("claims", claims.cmd_claims),
                      ("release", claims.cmd_release)):
-        p = sub.add_parser(name, prog="glyph %s" % name, help=argparse.SUPPRESS)
+        # No help line: they belong to `glyph claim`, so `glyph fleet --help`
+        # lists the name without describing a command that is not fleet's.
+        p = sub.add_parser(name, prog="glyph %s" % name)
         if name != "claims":
             p.add_argument("area")
             p.add_argument("--session", help="the session name that holds it")
