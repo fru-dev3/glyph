@@ -82,7 +82,7 @@ that prompt itself, checks free memory before every launch and stops at
 ## Code
 
     glyph-spaces                 argument parsing and dispatch
-    glyph-fleet                  the same, for glyph fleet report, status and diff
+    glyph-fleet                  the same, for glyph fleet report, status, diff and setup
     glyph_spaces/core.py         the layout itself; no terminal tool is named here
     glyph_spaces/fleet.py        what a machine is, and how machines differ
     glyph_spaces/backends/       one file per tool: herdr.py
@@ -103,3 +103,15 @@ non-zero exit for an unreadable fact. And nothing is read twice from two
 places: the agents and their auto-approve flags are parsed out of `glyph.zsh`,
 where that table is written, and the account tag is handed in by the shell that
 works it out, because a second set of rules here would be a second answer.
+
+The `setup` block in `fleet.py` says whether a machine can do the work rather
+than whether it is switched on, and it keeps three more. A check without a
+proof is not a check, so each one carries the command whose failure it is
+reporting. `unknown` is never `ok`, so a check that could not run says why and
+`setup.ready` stays false. And `human` and `fix` are separate fields, because
+the three permissions cannot be granted from a shell at all: naming the clicks
+is the answer, and implying they were handled would be the worst outcome.
+Every check reads. The one exception signs a throwaway in a folder it makes and
+removes, because a revoked certificate is invisible to `security find-identity`
+on some machines and visible to `spctl` on all of them. Nothing in the block
+installs, grants, links, deletes or points `DEVELOPER_DIR`.
