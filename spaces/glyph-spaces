@@ -50,6 +50,8 @@ def main():
     sub = ap.add_subparsers(dest="cmd")
     c = sub.add_parser("check", help="resolve every path for this machine")
     c.add_argument("--machine", help="check as another machine instead")
+    c.add_argument("--space", action="append",
+                   help="only this space, by its id or its workspace name; repeat for more")
     c.set_defaults(func=core.cmd_check)
     a = sub.add_parser("apply", help="build the spaces for this machine")
     a.add_argument("--machine", help="treat this as another machine")
@@ -62,16 +64,20 @@ def main():
                    help="build the workspaces and tabs but leave each pane a shell")
     a.add_argument("--prune", action="store_true",
                    help="close workspaces for spaces this machine does not take")
+    a.add_argument("--space", action="append",
+                   help="only this space, by its id or its workspace name; repeat for more")
     a.set_defaults(func=backend_command("apply"))
     n = sub.add_parser("names", help="print the session name each tab's agent answers to")
     n.add_argument("--machine", help="treat this as another machine")
+    n.add_argument("--space", action="append",
+                   help="only this space, by its id or its workspace name; repeat for more")
     n.set_defaults(func=core.cmd_names)
     st = sub.add_parser("start", help="start agents in tabs that are still shells")
     st.add_argument("--machine", help="treat this as another machine")
     st.add_argument("--dry-run", action="store_true")
     st.add_argument("--max", type=int, default=0, help="stop after this many")
     st.add_argument("--space", action="append",
-                    help="only this space; repeat for more")
+                    help="only this space, by its id or its workspace name; repeat for more")
     st.add_argument("--continue", dest="resume", action="store_true",
                     help="resume each folder's last conversation instead of starting fresh")
     st.add_argument("--floor", type=float, default=2.0,

@@ -397,6 +397,31 @@ shape, and [spaces/README.md](spaces/README.md) the details. Spaces is Python
 and runs from a clone: `install.sh` links `glyph-spaces` into `~/.local/bin`.
 Herdr is the only backend today.
 
+### One space at a time
+
+The four commands above are whole-machine: they answer for, or build, every
+space this machine's profiles select. `--space` narrows a run to one, by its
+id or by the workspace it builds:
+
+```sh
+glyph spaces check --space fru-dev-apps   # watch it resolve before building it
+glyph spaces apply --space fru-dev-apps   # build that one and nothing else
+glyph spaces start --space fru-dev-apps   # start its agents and no others
+```
+
+Every other workspace is left exactly as it was. A narrowed run does not
+close, rename or write to a workspace it was not asked about, and `--prune` is
+refused outright with `--space`, since pruning is about the workspaces this
+machine does not take and that is every workspace the run was not named for.
+An orphan, a workspace whose space file is no longer in the layout, is left
+where it stands either way.
+
+Name a space this machine's profiles do not select, or one that is not in the
+layout at all, and the run refuses and prints the spaces this machine does
+take. A refusal rather than a quiet nothing to do: a narrowed run that matched
+nothing would print what a machine with everything already built prints, and
+the difference between those two is a workspace nobody made.
+
 ## Fleet
 
 A preset launches agents. The commands below answer the other question: what
@@ -437,23 +462,50 @@ rather than a shell function so that ssh can reach it at all. For the same
 reason it looks for each agent in the folders agents install into, and does not
 believe `command -v`.
 
-`status` joins those readings to Tailscale, which is the only honest answer to
-whether a machine is even on. A phone appears as a row with what Tailscale
-knows and nothing more. `--machine <id>` prints one machine in full, every
-volume and session included, and `--live` asks every reachable machine over ssh
-first instead of reading the last file.
+`status` joins those readings to Tailscale. A phone appears as a row with what
+Tailscale knows and nothing more. `--machine <id>` prints one machine in full,
+every volume and session included, and `--live` asks every Mac over ssh first
+instead of reading the last file.
 
 ```
 MACHINE          ROLE  UP   READING   CHIP         CORES  FREE MEM    BOOT DISK    LIVE  SETUP
 laptop           dev   yes  just now  Apple M2 Pro 6+4    5G of 17G   61% of 494G  3     ok
 studio           hub   yes  4m        Apple M4     4+6    1G of 17G   97% of 245G  9     4 bad
 bens-phone       -     yes  none      iOS          -      -           -            -     -
-air              demo  no   21d       Apple M1     4+4    -           -            -     -
+air              demo  no   21d       Apple M1     4+4    -           -            -     unknown
+can      laptop           vault swift-build mac-screen iphone-sim
+can      studio           vault swift-build
+reach    studio           roster says offline; it wrote a reading 4m ago
 setup    studio           tcc.screen-recording   missing
 setup    studio           signing.identity       broken
 warning  studio           / is 97 percent full
 offline  air              last seen 21d ago
 ```
+
+### Up is a conclusion, not a flag
+
+Tailscale's `Online` is the weakest evidence there is. It has reported a Mac
+offline while an ssh session to its tailnet address was open, it had just
+written a full report and nine agents were running on it: a direct LAN path
+with no recent control-plane handshake leaves the flag stale while the machine
+is perfectly reachable. So `UP` is decided by the best evidence there is. A
+machine that answered this very command is up; so is one that wrote a reading
+in the last few minutes (`GLYPH_FLEET_FRESH_S`); so is the machine you are
+typing on. The flag is believed where there is nothing better, and `Online`
+false with an old reading and no answer is down.
+
+Where the conclusion and the flag disagree, a `reach` line says so. The column
+is the answer and the line is the evidence it was reached on, rather than one
+of the two quietly winning on a row that then contradicts the reading beside
+it. `--live` asks every Mac whether the flag likes it or not, because a
+machine skipped for being offline and then called offline on the strength of
+the flag that skipped it is the one circle here worth closing; asking a
+machine that really is off costs one connect timeout, in parallel with the
+rest.
+
+`SETUP` is `unknown` for a Mac that has never reported and blank for a row
+that is not a Mac at all. The two looked the same in that column and they are
+not the same thing.
 
 `diff` prints only the keys that are not identical everywhere, with the odd
 machine named, so a tool installed here and missing there is one glance:
@@ -522,6 +574,50 @@ Three rules hold them up, and all three were paid for:
 Everything in the block reads. Nothing installs, grants, links, deletes,
 points `DEVELOPER_DIR` or touches a keychain: `glyph fleet` says what a
 machine is missing, and `glyph rig` is what does something about it.
+
+### What it can therefore do
+
+Thirteen checks say what is broken on a machine. They do not say what work it
+can take, which is the half that makes placement possible: given a job that
+needs a Swift build, which machines can have it. So the report carries a short
+`capabilities` list beside them.
+
+```json
+"capabilities": [
+  { "id": "vault",       "can": "yes",     "from": ["spaces.root.vault"] },
+  { "id": "swift-build", "can": "no",      "from": ["xcode.developer-dir"] },
+  { "id": "mac-screen",  "can": "unknown", "from": ["tcc.screen-recording"] },
+  { "id": "iphone-sim",  "can": "yes",     "from": ["xcode.devicesupport",
+                                                    "xcode.appleid"] }
+]
+```
+
+| Capability | Yes when |
+|---|---|
+| `vault` | this machine's `vault` root is a folder that resolves here |
+| `swift-build` | `xcode.developer-dir` names a full Xcode and `build.scratch` has room on the volume it writes to |
+| `mac-screen` | `tcc.screen-recording` is granted, so a screen check can pass |
+| `iphone-sim` | `xcode.devicesupport` has a version, and an Apple ID or an App Store Connect key is on disk |
+
+Nothing is probed for these. Each one is read off checks that already ran in
+the same report, so a capability costs nothing, cannot disagree with the check
+it came from, and says nothing twice. `from` names the checks that decided it:
+the ones that are not ok for a `no`, so a no leads back to a check with a
+proof on it, and the ones that could not answer for an `unknown`. And
+`unknown` is never `yes`, the same rule the checks keep, because a machine
+that might be able to build is not one you hand a build to.
+
+`glyph fleet status` prints a `can` line per machine, naming what it can do
+with a `?` on what is not known; what it cannot do is the absence.
+`glyph fleet setup` prints the table, with the checks each verdict came from:
+
+```
+CAPABILITY     CAN      FROM
+vault          yes      spaces.root.vault
+swift-build    yes      xcode.developer-dir, build.scratch
+mac-screen     no       tcc.screen-recording
+iphone-sim     no       xcode.appleid
+```
 
 Every reader stands on its own. One that cannot answer adds a line to `errors`
 and the rest of the report still comes out, because losing a machine over one

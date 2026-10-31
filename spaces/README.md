@@ -73,6 +73,28 @@ command, says which one this is when the name does not match.
 over ssh too, and on a machine with no backend installed. The other three go
 through the backend.
 
+`check`, `names`, `apply` and `start` take `--space <id>`, which narrows the
+run to one space: a template you launch rather than the whole machine. A space
+is named by its id or by the workspace it builds, since the id is what the
+file is called and the workspace name is what you see in the terminal, and
+they need not match.
+
+One function does the narrowing, `core.narrowed`, and the commands iterate
+what it hands back rather than filtering again on the way past, so there is
+one place where the question of which spaces a run covers is answered. Two
+rules it keeps, both about the same thing: narrowing must not widen the blast
+radius.
+
+A name that selects nothing is refused and prints the spaces this machine does
+take, whether it belongs to another profile or is not in the layout at all. A
+quiet no-op would print exactly what a machine with everything already built
+prints, and the difference between those two is a workspace nobody made. And a
+narrowed `apply` does not look at the workspaces it was not asked about: the
+loop that reports a space this machine does not take is skipped entirely,
+`--prune` is refused rather than ignored, and an orphan, a workspace whose
+space file has left the layout, is never closed, renamed or written to. There
+were six running agent sessions in one when this was written.
+
 `apply` refuses to start an agent in a folder Claude Code has not been trusted
 with: such an agent stops on the trust prompt, never registers, and so never
 gets its name. Claude Code asks once per folder, not per tree. `start` answers
@@ -86,12 +108,10 @@ that prompt itself, checks free memory before every launch and stops at
     glyph_spaces/core.py         the layout itself; no terminal tool is named here
     glyph_spaces/fleet.py        what a machine is, and how machines differ
     glyph_spaces/claims.py       who owns which area of work, across machines
-    glyph_spaces/backends/       one file per tool: herdr.py
-    test_fleet.py                asserts over invented machines; python3 spaces/test_fleet.py
-    test_claims.py               the claim race, run rather than argued; python3 spaces/test_claims.py
     glyph_spaces/rig.py          making a machine able to do the work
     glyph_spaces/backends/       one file per tool: herdr.py
     test_fleet.py                asserts over invented machines; python3 spaces/test_fleet.py
+    test_claims.py               the claim race, run rather than argued; python3 spaces/test_claims.py
     test_rig.py                  the same for rig; python3 spaces/test_rig.py
 
 Supporting another tool is one new file under `backends/` and one word in
@@ -121,6 +141,38 @@ Every check reads. The one exception signs a throwaway in a folder it makes and
 removes, because a revoked certificate is invisible to `security find-identity`
 on some machines and visible to `spctl` on all of them. Nothing in the block
 installs, grants, links, deletes or points `DEVELOPER_DIR`.
+
+`capabilities` is the other side of that block: what the machine can do rather
+than what is broken on it. It is derived and never probed, worked out after
+the readers finish from the `setup` checks and the `spaces` block they already
+produced, which is why it costs microseconds and cannot disagree with the
+check it came from. `CAPABILITIES` is the whole of the table, four entries,
+each naming the check ids it rests on; a new one is a line there and no new
+reader. The two rules the block keeps hold here too: `from` names the checks
+that decided a verdict, so a `no` leads back to something with a proof on it
+rather than being an opinion of its own, and `unknown` is never `yes`, since a
+machine that might be able to build is not one you hand a build to. A root of
+the spaces map is shaped as a check by `root_check` for that reason, so a
+capability resting on a root is traceable the same way as one resting on the
+block.
+
+`up_verdict` is the one rule for whether a machine is reachable, and both
+`status` and the single-machine view go through it rather than reading the
+roster flag themselves. `tailscale status --json` has reported a machine
+Online false with an ssh session open to its tailnet address, a report written
+a minute earlier and nine agents running on it, so a flag is the weakest
+evidence here and a machine that answered is the strongest. Where the two
+disagree the function returns the reason beside the verdict, because the
+column is the conclusion and the evidence has to live somewhere a reader can
+get at it. `--live` probes every Mac for the same reason: skipping a machine
+for being offline and then calling it offline on the strength of the flag that
+skipped it is circular.
+
+`tailnet` gives two nodes that normalise to one id different ids rather than
+letting the second overwrite the first, which silently dropped a machine from
+the roster. Which one takes the suffix is decided by the node's own stable id
+and never by the order the peers came out of the status object: an id that
+moves between runs splits one machine's history across two files.
 
 `claims.py` is the one thing here that writes outside a report, and it writes
 only inside `GLYPH_CLAIMS`. It is in this package for the same reason

@@ -435,14 +435,39 @@ def tailscale_block():
     return peer_row(d.get("Self") or {}, True)
 
 
+def node_key(node):
+    """Something about a node that is the same on every run.
+
+    Its tailnet id first, then its key, then its address. All three are facts
+    about the node; the order the peers happen to come out of the status
+    object is not.
+    """
+    return str(node.get("ID") or node.get("PublicKey")
+               or (node.get("TailscaleIPs") or [""])[0] or node.get("HostName") or "")
+
+
 def tailnet():
-    """Every node in the tailnet, by machine id."""
+    """Every node in the tailnet, by machine id.
+
+    Two nodes can normalise to one id: a tailnet holding both `Ben MacBook
+    Air` and `Ben-MacBook-Air` has them. The second takes a suffix, and which
+    one takes it is decided by the node's own stable id, never by the order
+    the peers were iterated in, because an id that moves between runs splits
+    one machine's history across two files. Self keeps the bare id, since that
+    is the name its own report is written under.
+    """
     d = tailscale_status() or {}
-    out = {}
+    nodes = []
     if d.get("Self"):
-        out[peer_id(d["Self"])] = peer_row(d["Self"], True)
+        nodes.append((peer_id(d["Self"]), d["Self"], True))
     for p in (d.get("Peer") or {}).values():
-        out[peer_id(p)] = peer_row(p)
+        nodes.append((peer_id(p), p, False))
+    out = {}
+    for base in sorted(set(n[0] for n in nodes)):
+        same = sorted((n for n in nodes if n[0] == base),
+                      key=lambda n: (not n[2], node_key(n[1])))
+        for i, (_, node, is_self) in enumerate(same):
+            out[base if not i else "%s-%d" % (base, i)] = peer_row(node, is_self)
     return out
 
 
@@ -1823,13 +1848,116 @@ def worst_first(checks):
                                                rank.get(c["id"], 99)))
 
 
-def setup_mark(rep):
-    """One cell for the table: whether this machine can do the work."""
+def setup_mark(rep, net=None):
+    """One cell for the table: whether this machine can do the work.
+
+    A Mac that has never reported is `unknown`, not blank. Blank is for a row
+    that is not a Mac at all, a phone the tailnet knows and nothing else,
+    where there is no setup block to be missing: the two states looked
+    identical in the column and they are not the same thing.
+    """
     s = (rep or {}).get("setup")
     if not s:
-        return "-"
+        return "unknown" if (net or {}).get("os") in (None, "macOS") else "-"
     bad = [c for c in s.get("checks") or [] if c["state"] != "ok"]
     return "ok" if s.get("ready") else "%d bad" % len(bad)
+
+
+# --- capabilities: what a machine can therefore do ---------------------------
+# The checks say what is broken on a machine. A capability says what work it
+# can take, which is the half that makes placement possible: given a job that
+# needs a Swift build, these are the machines it can go to.
+#
+# Derived, never probed. Every one is read off checks that already ran in this
+# same report, so a capability costs nothing, cannot disagree with the check it
+# came from, and nothing is asserted twice. Two rules, the same two the block
+# itself keeps:
+#
+# - A `no` names the checks that caused it, so it leads back to a check with a
+#   proof on it rather than being an opinion of its own.
+# - `unknown` is never `yes`. A capability resting on a check that could not
+#   run is unknown, because a machine that might be able to build is not a
+#   machine you hand a build to.
+
+CAPABILITIES = (
+    ("vault", ("spaces.root.vault",)),
+    ("swift-build", ("xcode.developer-dir", "build.scratch")),
+    ("mac-screen", ("tcc.screen-recording",)),
+    ("iphone-sim", ("xcode.devicesupport", "xcode.appleid")),
+)
+# A check's state, as what it says about being able to do the work. `missing`
+# and `broken` are both no: the job fails either way.
+CAN = {"ok": "yes", "missing": "no", "broken": "no", "unknown": "unknown"}
+
+
+def root_check(spaces, key):
+    """One of the spaces map's roots, as a check.
+
+    Read off the block the collector already built rather than going near the
+    disk again: `spaces` carries the roots and which of them did not resolve.
+    It is shaped as a check so a capability resting on a root is traceable the
+    same way as one resting on the setup block.
+    """
+    cid = "spaces.root.%s" % key
+    proof = "the %s root in this machine's machines.json entry" % key
+    if not spaces or spaces.get("roots") is None:
+        return chk(cid, "unknown",
+                   "this machine is not in the spaces map, so where it keeps "
+                   "the %s is not written down anywhere" % key, proof=proof)
+    roots = spaces.get("roots") or {}
+    if not roots.get(key):
+        return chk(cid, "missing",
+                   "this machine's map entry has no %s root" % key, proof=proof)
+    if key in (spaces.get("missing_roots") or []):
+        return chk(cid, "missing",
+                   "the %s root is %s, which is not a folder on this machine"
+                   % (key, roots[key]), proof=proof)
+    return chk(cid, "ok", "the %s root is %s" % (key, roots[key]), proof=proof)
+
+
+def capability_checks(checks, spaces):
+    """Every check a capability may rest on, by id.
+
+    The setup block's own, plus the spaces map's roots read as checks, plus an
+    `unknown` row for anything a capability names that did not answer at all,
+    so no capability can reach a missing key and read it as health.
+    """
+    by = dict((c["id"], c) for c in (checks or []) if c.get("id"))
+    for _, deps in CAPABILITIES:
+        for d in deps:
+            if d.startswith("spaces.root."):
+                by.setdefault(d, root_check(spaces, d.split(".")[-1]))
+            else:
+                by.setdefault(d, chk(d, "unknown", "the check did not run"))
+    return by
+
+
+def capabilities(checks, spaces):
+    """What this machine can take, from the checks that already answered.
+
+    `from` names the checks that decided it: the ones that are not ok for a
+    `no`, the ones that could not answer for an `unknown`, and all of them for
+    a `yes`. No detail is repeated here; the check it names carries that.
+    """
+    by = capability_checks(checks, spaces)
+    out = []
+    for cid, deps in CAPABILITIES:
+        no = [d for d in deps if CAN.get(by[d]["state"], "unknown") == "no"]
+        unsure = [d for d in deps if CAN.get(by[d]["state"], "unknown") == "unknown"]
+        out.append({"id": cid,
+                    "can": "no" if no else ("unknown" if unsure else "yes"),
+                    "from": no or unsure or list(deps)})
+    return out
+
+
+def can_line(caps):
+    """A machine's capabilities in one line: what it can do, with a `?` on what
+    is not known. What it cannot do is the absence. None for a report written
+    before capabilities existed, so no line is printed for it at all."""
+    if caps is None:
+        return None
+    return " ".join([c["id"] for c in caps if c["can"] == "yes"]
+                    + ["%s?" % c["id"] for c in caps if c["can"] == "unknown"]) or "none"
 
 
 # --- the diff surface -------------------------------------------------------
@@ -1948,6 +2076,12 @@ def collect(account_tag_given=None):
     for name in ("machine", "tailscale", "compute", "storage", "setup", "agents",
                  "sessions", "inference", "backends", "spaces"):
         rep[name] = got.get(name)
+    # Derived from two blocks that already answered, so it is worked out after
+    # them rather than being a reader of its own: it reads nothing and costs
+    # no time. Guarded all the same, so a bug here is a line in `errors`.
+    rep["capabilities"] = guard("capabilities", capabilities,
+                                (got.get("setup") or {}).get("checks"),
+                                got.get("spaces")) or []
     if not rep.get("machine"):
         rep["machine"] = {"id": mid}
     if account_tag_given and rep.get("machine"):
@@ -2007,15 +2141,24 @@ def history_line(rep):
             "errors": len(rep.get("errors") or [])}
 
 
+def age_s(iso):
+    """Seconds since a reading, or None when there is none to read."""
+    if not iso:
+        return None
+    try:
+        then = time.mktime(time.strptime(iso[:19], "%Y-%m-%dT%H:%M:%S"))
+    except Exception:
+        return None
+    return max(0, int(time.time() - then))
+
+
 def age(iso):
     """How long ago a reading was taken, in words."""
     if not iso:
         return "none"
-    try:
-        then = time.mktime(time.strptime(iso[:19], "%Y-%m-%dT%H:%M:%S"))
-    except Exception:
+    s = age_s(iso)
+    if s is None:
         return "?"
-    s = max(0, int(time.time() - then))
     if s < 90:
         return "just now"
     for n, unit in ((86400, "d"), (3600, "h"), (60, "m")):
@@ -2028,6 +2171,39 @@ def gb(n):
     if not n:
         return "-"
     return "%.0fG" % (n / 1e9) if n < 1e12 else "%.1fT" % (n / 1e12)
+
+
+# A reading this new is evidence the machine was there when it was taken, and
+# nothing in the roster outweighs it.
+UP_FRESH_S = float(os.environ.get("GLYPH_FLEET_FRESH_S") or 300)
+
+
+def up_verdict(rep, net, answered=False):
+    """(up, why): whether a machine is reachable, and on what evidence.
+
+    A roster flag is the weakest evidence there is. `tailscale status --json`
+    has reported a machine Online false while an ssh session to its tailnet
+    address was open, it had just written a full report and nine agents were
+    running on it: a direct LAN path with no recent control-plane handshake
+    leaves the flag stale. So the flag is believed only where there is nothing
+    better, and a machine that just answered is up whatever it says.
+
+    `why` is filled only where the conclusion and the flag disagree, so a
+    reader is never left to pick between two answers on one row, and the
+    disagreement is said out loud rather than resolved silently.
+    """
+    net = net or {}
+    flag = bool(net.get("online"))
+    if answered:
+        return True, None if flag else "roster says offline; it answered this run"
+    if net.get("self"):
+        return True, None if flag else "roster says offline; it is the machine asking"
+    seconds = age_s((rep or {}).get("taken"))
+    if seconds is not None and seconds <= UP_FRESH_S:
+        seen = age(rep.get("taken"))
+        return True, (None if flag else "roster says offline; it wrote a reading %s"
+                      % (seen if seen == "just now" else "%s ago" % seen))
+    return flag, None
 
 
 # --- commands ---------------------------------------------------------------
@@ -2059,6 +2235,9 @@ def cmd_report(args):
     elif setup:
         print("  setup    not ready: %s  (glyph fleet setup)"
               % ", ".join("%s %s" % (c["id"], c["state"]) for c in bad))
+    got = can_line(rep.get("capabilities"))
+    if got:
+        print("  can      %s" % got)
     for w in s.get("warnings") or []:
         print("  warning  %s" % w)
     for e in rep.get("errors") or []:
@@ -2179,24 +2358,39 @@ def cmd_status(args):
         if not ids:
             print("unknown machine: %s" % args.machine)
             return 2
+    answered = set()
     if args.live:
-        mac = [m for m in ids if (net.get(m, {}).get("online") or m == core.machine_id())
-               and (net.get(m, {}).get("os") in (None, "macOS"))]
+        # Every Mac, flag or no flag. Skipping the ones the roster calls
+        # offline and then reporting them down on the strength of that same
+        # flag is circular: the probe is the evidence that settles it, and it
+        # costs one connect timeout, in parallel, to ask a machine that is
+        # genuinely off.
+        mac = [m for m in ids if (net.get(m) or {}).get("os") in (None, "macOS")]
         print("asking %d machines..." % len(mac))
-        reps.update(probe_live(mac, machines, net))
+        fresh = probe_live(mac, machines, net)
+        answered = set(fresh)
+        reps.update(fresh)
     if args.machine and len(ids) == 1:
-        return show_machine(ids[0], reps.get(ids[0]), net.get(ids[0]), machines.get(ids[0]))
+        return show_machine(ids[0], reps.get(ids[0]), net.get(ids[0]),
+                            machines.get(ids[0]), ids[0] in answered)
     if not reps and not net:
         print("no readings in %s and no tailnet." % tilde(rig_dir()))
         print("run: glyph fleet report")
         return 1
 
-    def sort_key(mid):
-        up = (net.get(mid) or {}).get("online")
-        return (not up, age(((reps.get(mid) or {}).get("taken"))) == "none", mid)
+    up = dict((mid, up_verdict(reps.get(mid), net.get(mid), mid in answered))
+              for mid in ids)
 
-    print("%-16s %-5s %-4s %-9s %-12s %-6s %-11s %-12s %-5s %s"
-          % ("MACHINE", "ROLE", "UP", "READING", "CHIP", "CORES", "FREE MEM",
+    def sort_key(mid):
+        return (not up[mid][0], age(((reps.get(mid) or {}).get("taken"))) == "none", mid)
+
+    # Wide enough for the longest id, the way the diff table already is. A
+    # fixed 16 truncated a 28-character tailnet name to something that read as
+    # another machine's id with a collision suffix on it, which is two
+    # different machines looking identical in the one column that names them.
+    w = max(16, max(len(m) for m in ids))
+    print("%-*s %-5s %-4s %-9s %-12s %-6s %-11s %-12s %-5s %s"
+          % (w, "MACHINE", "ROLE", "UP", "READING", "CHIP", "CORES", "FREE MEM",
              "BOOT DISK", "LIVE", "SETUP"))
     for mid in sorted(ids, key=sort_key):
         rep, n = reps.get(mid) or {}, net.get(mid) or {}
@@ -2212,40 +2406,51 @@ def cmd_status(args):
         if boot.get("total_bytes"):
             disk = "%d%% of %s" % (boot["used_percent"], gb(boot["total_bytes"]))
         live = (rep.get("sessions") or {}).get("live")
-        print("%-16s %-5s %-4s %-9s %-12s %-6s %-11s %-12s %-5s %s"
-              % (mid[:16],
+        print("%-*s %-5s %-4s %-9s %-12s %-6s %-11s %-12s %-5s %s"
+              % (w, mid,
                  (m.get("role") or (machines.get(mid) or {}).get("role") or "-")[:5],
-                 "yes" if n.get("online") else "no",
+                 "yes" if up[mid][0] else "no",
                  age(rep.get("taken")),
                  (m.get("chip") or n.get("os") or "-")[:12],
                  "%s+%s" % (cores.get("performance") or "-", cores.get("efficiency") or "-")
                  if cores.get("total") else "-",
                  mem, disk, len(live) if live is not None else "-",
-                 setup_mark(rep)))
+                 setup_mark(rep, n)))
+    for mid in sorted(ids):
+        got = can_line((reps.get(mid) or {}).get("capabilities"))
+        if got:
+            print("can      %-*s %s" % (w, mid, got))
+    for mid in sorted(ids):
+        # The conclusion is in the column; the evidence it was reached on
+        # belongs where a reader can get at it rather than nowhere.
+        if up[mid][1]:
+            print("reach    %-*s %s" % (w, mid, up[mid][1]))
     for mid in sorted(ids):
         # Online is not the same as able to do the work, and the row above
         # cannot tell them apart, so every check that is not ok gets a line.
         for c in worst_first(((reps.get(mid) or {}).get("setup") or {}).get("checks")):
             if c["state"] != "ok":
-                print("setup    %-16s %-22s %s" % (mid, c["id"], c["state"]))
+                print("setup    %-*s %-22s %s" % (w, mid, c["id"], c["state"]))
     for mid in sorted(ids):
-        for w in ((reps.get(mid) or {}).get("storage") or {}).get("warnings") or []:
-            print("warning  %-16s %s" % (mid, w))
+        for warn in ((reps.get(mid) or {}).get("storage") or {}).get("warnings") or []:
+            print("warning  %-*s %s" % (w, mid, warn))
     for mid in sorted(ids):
         n = net.get(mid) or {}
-        if not n.get("online") and n.get("last_seen"):
-            print("offline  %-16s last seen %s ago" % (mid, age(n["last_seen"])))
+        # Only where the verdict is down too. A machine the roster calls
+        # offline that answered a minute ago already has its `reach` line, and
+        # a `last seen` beside it would be the contradiction over again.
+        if not up[mid][0] and n.get("last_seen"):
+            print("offline  %-*s last seen %s ago" % (w, mid, age(n["last_seen"])))
     print("")
-    print("%d machines, %d online, readings from %s"
-          % (len(ids), sum(1 for m in ids if (net.get(m) or {}).get("online")),
-             tilde(rig_dir())))
+    print("%d machines, %d up, readings from %s"
+          % (len(ids), sum(1 for m in ids if up[m][0]), tilde(rig_dir())))
     print("glyph fleet status --live    ask every reachable machine now")
     print("glyph fleet status --machine <id>    one machine in full")
     print("glyph fleet setup    what each machine still needs before it can work")
     return 0
 
 
-def show_machine(mid, rep, net, record):
+def show_machine(mid, rep, net, record, answered=False):
     if not rep:
         print("%s  no reading in %s" % (mid, tilde(rig_dir())))
         if net:
@@ -2262,6 +2467,8 @@ def show_machine(mid, rep, net, record):
                                                     ",".join(m.get("profiles") or []) or "-"))
     print("  uptime     %s, read %s" % (age(stamp(time.time() - (m.get("uptime_s") or 0))),
                                         age(rep.get("taken"))))
+    reach, why = up_verdict(rep, net, answered)
+    print("  reach      %s%s" % ("up" if reach else "down", "  (%s)" % why if why else ""))
     if net:
         print("  tailscale  %s  %s  %s" % (net.get("dns") or "-", net.get("ip") or "-",
                                            "online" if net.get("online") else "offline"))
@@ -2311,12 +2518,25 @@ def show_machine(mid, rep, net, record):
                                    else "not ready"))
         for c in worst_first(setup.get("checks")):
             print("  %-8s %-22s %s" % (c["state"], c["id"], (c.get("detail") or "")[:90]))
+        show_capabilities(rep.get("capabilities"), "  ")
         show_human(setup.get("checks"), "  ", mid)
     for w in ((rep.get("storage") or {}).get("warnings") or []):
         print("  warning  %s" % w)
     for e in rep.get("errors") or []:
         print("  missed   %s: %s" % (e["what"], e["why"]))
     return 0
+
+
+def show_capabilities(caps, pad=""):
+    """What the machine can take, and which checks said so. Nothing a check
+    already said is repeated: the ids in FROM are where a `no` leads back to."""
+    if not caps:
+        return
+    print("")
+    print("%s%-14s %-8s %s" % (pad, "CAPABILITY", "CAN", "FROM"))
+    for c in caps:
+        print("%s%-14s %-8s %s" % (pad, c["id"], c["can"],
+                                   ", ".join(c.get("from") or [])))
 
 
 def show_human(checks, pad="", where="that machine"):
@@ -2422,6 +2642,7 @@ def cmd_setup(args):
                 print("           %-22s proof: %s" % ("", c["proof"]))
             if c["state"] != "ok" and c.get("fix"):
                 print("           %-22s fix: %s" % ("", c["fix"]))
+        show_capabilities(with_setup[mid].get("capabilities"))
         show_human(checks, "", mid)
         print("")
     return 0 if all(r["setup"].get("ready") for r in with_setup.values()) else 1

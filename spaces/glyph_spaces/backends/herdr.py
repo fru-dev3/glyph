@@ -8,8 +8,8 @@ import glob, json, os, re, subprocess, time
 
 import shlex
 
-from glyph_spaces.core import (carries_name, free_gb, is_trusted, norm, renamed, resolve, session_name,
-                        space_label, this_machine, token, trust_table, wants)
+from glyph_spaces.core import (carries_name, free_gb, is_trusted, narrowed, norm, renamed, resolve,
+                        session_name, space_label, this_machine, token, trust_table, wants)
 
 
 def herdr(*args):
@@ -53,6 +53,17 @@ def cmd_apply(args):
     mid, m, spaces = this_machine(args)
     if not mid:
         return 2
+    mine = narrowed(args, mid, m, spaces)
+    if mine is None:
+        return 2
+    only = bool(getattr(args, "space", None))
+    # Narrowing must never widen the blast radius. Pruning is about the
+    # workspaces this machine does not take, which with --space is every
+    # workspace the run was not asked about, so the two cannot be combined.
+    if only and args.prune:
+        print("--prune is refused with --space: --space narrows the run to one")
+        print("workspace, and --prune closes the ones it was not asked about.")
+        return 2
     roots = m["roots"]
     have = existing_workspaces()
     dry = args.dry_run
@@ -63,9 +74,7 @@ def cmd_apply(args):
     # on its trust prompt and never registers a session, so it is never named
     # and never reachable. Better to say so than to launch into a wall.
     blocked = []
-    for sp in spaces:
-        if not wants(m, sp):
-            continue
+    for sp in mine:
         for tab in sp["tabs"]:
             try:
                 path = resolve(tab["path"], roots)
@@ -85,7 +94,9 @@ def cmd_apply(args):
 
     # A space this machine does not take, still open under any of its names.
     # A space kept to one machine is opened from the others with herdr --remote.
-    for sp in spaces:
+    # Not looked at under --space at all: a run narrowed to one workspace must
+    # not so much as mention another, let alone offer to close it.
+    for sp in [] if only else spaces:
         if wants(m, sp):
             continue
         names = set(norm(x) for x in [sp["space"]] + sp.get("previous", []))
@@ -99,9 +110,7 @@ def cmd_apply(args):
             else:
                 print("%-18s not for this machine; --prune closes it" % label)
 
-    for sp in sorted(spaces, key=lambda s: s["id"]):
-        if not wants(m, sp):
-            continue
+    for sp in sorted(mine, key=lambda s: s["id"]):
         want_label = space_label(m, sp)
         tabs = []
         for tab in sp["tabs"]:
@@ -302,12 +311,12 @@ def cmd_start(args):
     mid, m, spaces = this_machine(args)
     if not mid:
         return 2
+    mine = narrowed(args, mid, m, spaces)
+    if mine is None:
+        return 2
     started = failed = 0
     seen_tabs = set()
-    only = set(args.space or [])
-    for sp, tab, path, pane in described_panes(m, spaces):
-        if only and sp["space"] not in only:
-            continue
+    for sp, tab, path, pane in described_panes(m, mine):
         # One agent per tab: a tab split into panes gets it in its first shell.
         if not tab.get("agent") or pane.get("agent") or pane["tab_id"] in seen_tabs:
             seen_tabs.add(pane["tab_id"])
