@@ -534,6 +534,81 @@ that cannot change, a version or a model name, is kept in
 Fleet is Python beside Spaces, from the same clone: `install.sh` links
 `glyph-fleet` into `~/.local/bin`.
 
+## Claims
+
+Two agents can start the same piece of work. On one morning here, two of them
+built the same feature in the same worktree and committed over each other, and
+another built a feature that was already finished, because nothing told it so.
+A claim is one session saying it has an area of work, so the next session that
+reaches for that area is told who holds it and where.
+
+```sh
+glyph claim <area> [--branch <b>]   # take it, or hear who has it
+glyph claims                        # who owns what right now, across machines
+glyph release <area>                # give it back
+```
+
+```
+AREA                   HOLDER                                         MACHINE        BRANCH           AGE       HELD
+docs-rewrite           docs·acme-api·cc·laptop·261031-0914            laptop         -                2h        x
+provisioning           rig·acme-api·codex·studio·261031-1010          studio         glyph-provision  12m       ?
+ibis-funding           funding·acme-api·cc·laptop·261031-1021         laptop         glyph-claims     just now  ok
+stale    docs-rewrite           docs·acme-api·cc·laptop·261031-0914 is gone
+unknown  provisioning           no reading from studio since the claim
+```
+
+`ok` is held by a session that is running. `x` is stale: the session that took
+it is gone, so the next `glyph claim` takes the area over and says whose it
+was. `?` is unknown: either the holder cannot be read, or the machine holding
+it has not reported since the claim was made. Unknown is never read as dead, so
+it still blocks; `glyph release <area> --force` lets go of one once you have
+looked at it.
+
+An area is taken with `mkdir`, never a lock file. `mkdir` creates the directory
+for exactly one caller and fails for every other, which is the whole of the
+race. A plain file cannot do that at all, so a lock file is worse than nothing:
+every waiter falls through and believes it won, which is what a 0-byte
+`/tmp/glyph-mac-ui.lock` did here for a day. macOS has no `flock` either. The
+holder is written into the directory on the next line, so the only moment a
+claim exists without one is between those two lines, and a reader that lands
+there says unknown rather than guessing.
+[spaces/test_claims.py](spaces/test_claims.py) runs it rather than argues it:
+eight processes reach for one area at the same instant, forty times over, and
+exactly one may come away with it, twice over, since taking a stale claim from
+its dead holder is its own race.
+
+A shell that took a claim itself hands it back on the way out, a kill included,
+so a closed terminal does not hold an area forever. A claim taken inside an
+agent session belongs to the session rather than the shell, because each tool
+call is a new shell; when that session goes, its claim reads as stale rather
+than being released behind your back.
+
+Claims live with your own config, never in this repo:
+
+```
+~/.config/glyph/claims/<area>.claim.d/holder
+```
+
+Point `GLYPH_CLAIMS` at a synced folder, or link `~/.config/glyph/claims` to
+one, the way `GLYPH_SPACES` and `GLYPH_RIG` already work, and a claim taken on
+one machine is readable on all of them with no network call. `glyph fleet
+report` then carries the holder on the session row that has it:
+
+```json
+{ "name": "funding·acme-api·cc·laptop·261031-1021", "pid": 4821,
+  "claim": { "area": "ibis-funding", "branch": "glyph-claims",
+             "at": "2026-10-31T10:21:46-05:00" } }
+```
+
+That is why claims are part of Rig rather than a tool of their own: ownership
+shows up beside the session actually doing the work, on every machine at once.
+
+What a claim does not fix. It says nothing about a session reading a stale
+branch, which is the other way two agents disagree about what is done. And it
+is not the lock on a shared resource: the three `mkdir` locks that `glyph fleet
+setup` reports under `locks` are still the answer for one machine's screen,
+simulator and build output.
+
 <details>
 <summary><b>Configuration</b></summary>
 
@@ -559,6 +634,7 @@ Fleet is Python beside Spaces, from the same clone: `install.sh` links
 | `GLYPH_SPACES` | Folder holding your spaces layout (default `~/.config/glyph/spaces`) |
 | `GLYPH_SPACES_MACHINE` | Which machine in that layout this is, when the computer name does not match |
 | `GLYPH_RIG` | Folder holding the fleet reports (default `~/.config/glyph/rig`) |
+| `GLYPH_CLAIMS` | Folder holding the areas sessions have claimed (default `~/.config/glyph/claims`) |
 | `GLYPH_FLEET_TIMEOUT` | Seconds any one reader of `glyph fleet report` gets (default 2) |
 | `GLYPH_FLEET_DISK_FLOOR_GB` | Free space below which a build is reported broken (default 5) |
 | `GLYPH_SIGN_IDENTITY` | The codesigning identity `signing.identity` verifies, by hash or name |

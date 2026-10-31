@@ -85,8 +85,10 @@ that prompt itself, checks free memory before every launch and stops at
     glyph-fleet                  the same, for glyph fleet report, status, diff and setup
     glyph_spaces/core.py         the layout itself; no terminal tool is named here
     glyph_spaces/fleet.py        what a machine is, and how machines differ
+    glyph_spaces/claims.py       who owns which area of work, across machines
     glyph_spaces/backends/       one file per tool: herdr.py
     test_fleet.py                asserts over invented machines; python3 spaces/test_fleet.py
+    test_claims.py               the claim race, run rather than argued; python3 spaces/test_claims.py
 
 Supporting another tool is one new file under `backends/` and one word in
 `machines.json`; no space file changes.
@@ -115,3 +117,21 @@ Every check reads. The one exception signs a throwaway in a folder it makes and
 removes, because a revoked certificate is invisible to `security find-identity`
 on some machines and visible to `spctl` on all of them. Nothing in the block
 installs, grants, links, deletes or points `DEVELOPER_DIR`.
+
+`claims.py` is the one thing here that writes outside a report, and it writes
+only inside `GLYPH_CLAIMS`. It is in this package for the same reason
+`fleet.py` is: it needs the machine's own id and the way a name is normalised,
+and the collector hangs each holder on the session row that has it, which is
+the only place the two meet. `glyph claim`, `glyph claims` and `glyph release`
+are subcommands of the `glyph-fleet` file rather than a fourth command, since
+that file is already on PATH and three subcommands do not need an executable of
+their own.
+
+Two rules of its own, both the same shape as the `locks` check. An area is
+taken with `mkdir`, which creates the directory for one caller and fails for
+every other; a lock file cannot do that, and the 0-byte one that taught this
+lesson let every waiter through. And ownership never changes on a reading taken
+a moment earlier: the handover from a stale claim renames the holder file, then
+decides from the file that rename actually took, because an earlier version
+decided from the earlier read and handed one area to two sessions at once,
+twice in forty rounds. `test_claims.py` runs both races with real processes.

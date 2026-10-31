@@ -267,6 +267,75 @@ STUB
   [[ $out == *'pane 1  claude on local'* ]] \
     || { print -ru2 -- "FAIL: a preset still launches: $out"; exit 1; }
   print -r -- 'PASS: fleet report, status, diff and setup reach the collector, presets still launch'
+
+  # glyph claim, claims and release: the front door hands the collector the
+  # session and the pid this shell worked out, the way fleet report hands it
+  # the account tag. The stub above is still on PATH, so this is the handover.
+  #
+  # A suite run from inside an agent session must not read that session's own
+  # name and pid, which is what glyph claim asks for first, so this part of it
+  # has a home with no sessions in it.
+  # Its own home, not the one the wake tests filled with session files.
+  mkdir -p "$test_dir/claims-home"
+  HOME=$test_dir/claims-home
+  unset CLAUDE_PID
+  out=$(glyph claim demo-area --branch glyph-claims)
+  [[ $out == "collector: claim demo-area --branch glyph-claims --session demo-area·acme-api·shell·test·stamp --pid $$" ]] \
+    || { print -ru2 -- "FAIL: glyph claim handover: $out"; exit 1; }
+  out=$(glyph claims)
+  assert_eq "$out" 'collector: claims' 'glyph claims reaches the collector'
+  out=$(glyph release demo-area --force)
+  [[ $out == "collector: release demo-area --force --pid $$ --session demo-area·acme-api·shell·test·stamp" ]] \
+    || { print -ru2 -- "FAIL: glyph release handover: $out"; exit 1; }
+  GLYPH_CLAIM_HELD=()
+
+  # And now against the real collector, in a claims folder of its own: an area
+  # is taken once, the second session is refused, and a shell that is killed
+  # hands its area back on the way out rather than holding it forever.
+  cat > "$test_dir/bin/glyph-fleet" <<STUB
+#!/bin/zsh
+exec python3 "$repo/spaces/glyph-fleet" "\$@"
+STUB
+  chmod +x "$test_dir/bin/glyph-fleet"
+  export GLYPH_CLAIMS="$test_dir/claims"
+  out=$(glyph claim mac-screen-check --branch glyph-claims)
+  [[ $out == 'claimed  mac-screen-check'* ]] \
+    || { print -ru2 -- "FAIL: a first claim: $out"; exit 1; }
+  rc=0; out=$(GLYPH_MACHINE=test zsh -c "
+    source '$repo/glyph.zsh'
+    _glyph_project() { print -r -- 'Acme API' }
+    glyph claim mac-screen-check") || rc=$?
+  assert_eq "$rc" 1 'a second session is refused'
+  [[ $out == *'is claimed'* && $out == *'held     ok'* ]] \
+    || { print -ru2 -- "FAIL: the refusal names the holder: $out"; exit 1; }
+  out=$(glyph claims)
+  [[ $out == *'AREA'*'HOLDER'*'MACHINE'*'HELD'* && $out == *'mac-screen-check'*' ok'* ]] \
+    || { print -ru2 -- "FAIL: glyph claims table: $out"; exit 1; }
+  out=$(glyph release mac-screen-check)
+  assert_eq "$out" 'released  mac-screen-check' 'the holder may give it back'
+
+  # The trap. A killed shell runs its TERM trap once the command it is sitting
+  # in returns, so the area comes back without anyone having to notice.
+  cat > "$test_dir/holder.zsh" <<STUB
+source '$repo/glyph.zsh'
+_glyph_project() { print -r -- 'Acme API' }
+glyph claim killed-area >/dev/null
+print -r -- \$\$ > "$test_dir/holder.pid"
+sleep 0.4
+STUB
+  GLYPH_MACHINE=test zsh "$test_dir/holder.zsh" &
+  for i in 1 2 3 4 5 6 7 8 9 10; do
+    [[ -r $test_dir/holder.pid ]] && break
+    command sleep 0.1
+  done
+  [[ -d $test_dir/claims/killed-area.claim.d ]] \
+    || { print -ru2 -- 'FAIL: the holder never took the area'; exit 1; }
+  command kill -TERM "$(<$test_dir/holder.pid)"
+  wait
+  [[ ! -d $test_dir/claims/killed-area.claim.d ]] \
+    || { print -ru2 -- 'FAIL: a killed shell kept its claim'; exit 1; }
+  unset GLYPH_CLAIMS
+  print -r -- 'PASS: claims taken once, refused twice, listed, released, and handed back on a kill'
 fi
 print -r -- 'PASS: one-command fleet init, custom config path, existing definitions, repeat runs and dry run'
 print -r -- 'PASS: AGY labels, prompts, print mode, management commands and opt-in flags'

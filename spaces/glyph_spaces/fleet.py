@@ -22,7 +22,7 @@ Three rules hold this file together:
 import json, os, re, shutil, subprocess, sys, tempfile, threading, time
 from concurrent import futures
 
-from glyph_spaces import core
+from glyph_spaces import claims, core
 
 HOME = os.path.expanduser("~")
 SCHEMA = 1
@@ -895,6 +895,10 @@ def sessions_block(ps):
             r.setdefault("started_at", got["started_at"])
         if r.get("name") and "·" in r["name"]:
             r["mark"] = r["name"].split("·")[0]
+    # Who owns which area of work, beside the session doing it. Its own reader,
+    # guarded like the rest: a claims folder that cannot be read costs the
+    # holder on a row, not the row and not the report.
+    guard("claims", claims.attach, live)
     return {"live": live, "recent": recent_sessions()}
 
 
