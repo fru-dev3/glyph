@@ -548,6 +548,23 @@ def test_a_renamed_tailnet_node_folds_onto_the_machine_it_is():
     assert set(fleet.fold_roster({"a-b-c": {}}, amb, {})) == {"a-b"}
 
 
+def test_a_machine_that_will_not_answer_says_what_to_do_about_it():
+    """The first new Mac tried was on the tailnet and refused ssh, because
+    Remote Login was off. "no answer over ssh" sends someone hunting for a key
+    or a PATH; it was one switch in System Settings."""
+    assert "Remote Login" in fleet.why_no_answer(
+        "ssh: connect to host 192.0.2.9 port 22: Operation timed out")
+    assert "Remote Login" in fleet.why_no_answer("ssh: connect to port 22: Connection refused")
+    assert "ssh-copy-id" in fleet.why_no_answer("Permission denied (publickey).")
+    assert "trusted" in fleet.why_no_answer("Host key verification failed.")
+    assert "install.sh" in fleet.why_no_answer("zsh: command not found: glyph-fleet")
+    assert fleet.why_no_answer("") == "no answer over ssh"
+    assert fleet.why_no_answer(None) == "no answer over ssh"
+    # Anything it has no words for is passed through rather than swallowed.
+    assert fleet.why_no_answer("kex_exchange_identification: read: broken pipe") \
+        == "kex_exchange_identification: read: broken pipe"
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for t in tests:

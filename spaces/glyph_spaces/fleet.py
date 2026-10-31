@@ -2303,6 +2303,34 @@ def ssh_target(mid, record, net):
     return "%s@%s" % (user, name) if user else name
 
 
+def why_no_answer(got):
+    """Why a machine did not answer, in the words of whoever can fix it.
+
+    A new Mac is on the tailnet and refuses ssh, because Remote Login is off
+    and nothing on the network can turn it on. "no answer over ssh" sends
+    someone hunting for a key or a PATH; the first machine this was tried on
+    needed one switch in System Settings. The same applies to a key that was
+    never trusted and to a collector that was never installed: each has one
+    obvious next step and none of them is a mystery.
+    """
+    line = (got or "").strip().splitlines()[-1][:160] if (got or "").strip() else ""
+    low = line.lower()
+    if not line:
+        return "no answer over ssh"
+    if "operation timed out" in low or "connection refused" in low or "port 22" in low:
+        return ("ssh is not answering, so Remote Login is probably off: "
+                "System Settings, General, Sharing, Remote Login")
+    if "permission denied" in low or "publickey" in low:
+        return "ssh refused the key: copy one over with ssh-copy-id, then try again"
+    if "host key verification" in low or "known_hosts" in low:
+        return "the host key is not trusted yet: ssh to it once by hand to accept it"
+    if "could not resolve" in low or "name or service" in low:
+        return "the name does not resolve: check it is on the tailnet"
+    if "no such file" in low or "command not found" in low:
+        return "the collector is not installed there: run install.sh from its own clone"
+    return line
+
+
 def probe_live(ids, machines, net):
     """Ask every reachable machine for a fresh report, all at once."""
     mine = core.machine_id()
@@ -2320,8 +2348,7 @@ def probe_live(ids, machines, net):
         # A login shell may print a banner before the report; take the object
         # and leave the rest, and say so plainly when there is no object at all.
         if not got or "{" not in got:
-            note("ssh %s" % mid, (got or "no answer").strip().splitlines()[-1][:120]
-                 if got else "no answer over ssh")
+            note("ssh %s" % mid, why_no_answer(got))
             return None
         return json.loads(got[got.index("{"):])
 
