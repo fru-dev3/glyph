@@ -9,7 +9,7 @@ the machine it runs on, and the four rules are what is checked: a plan writes
 nothing, apply refuses without the flag, an action that cannot be read back is
 never done, and a step only a person can do is never counted.
 """
-import io, os, shutil, sys, tempfile
+import contextlib, io, os, shutil, sys, tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 
@@ -467,6 +467,26 @@ def test_who_says_whose_job_each_row_is():
     assert rig.who(act, "broken") == "rig+you"
     assert rig.who(None, "ok") == "-"
     assert rig.who(None, "missing") == "you"
+
+
+def test_a_summary_never_reports_the_before_state_as_the_after_state():
+    """Putting a folder on the PATH in ~/.zshenv is true for the next shell
+    and invisible to the one that wrote it, so the whole-block re-read still
+    called it broken and the closing line said nine of fifteen when the
+    machine was already at eight. The action's own verification wins for the
+    check it acted on, and the disagreement is printed rather than hidden."""
+    was = {"checks": [{"id": "path.noninteractive", "state": "broken"},
+                      {"id": "locks", "state": "ok"}]}
+    after = {"id": "path.noninteractive", "state": "ok", "detail": "on the PATH"}
+    results = {"path.noninteractive": ("done", after)}
+    out = io.StringIO()
+    with contextlib.redirect_stdout(out):
+        rig.finish("bens-air", was, results, {}, {"roots": {}})
+    said = out.getvalue()
+    assert "stale" in said, said        # the disagreement is named
+    assert "a new shell reads ok" in said, said
+    # and the closing headline counts it as fixed, not as still broken
+    assert "path.noninteractive" in said
 
 
 def main():

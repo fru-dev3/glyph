@@ -988,6 +988,21 @@ def finish(mid, was, results, roots, record):
     """
     forget()
     now = fleet.setup_block(record if record is not None else {"roots": roots})
+    # An action's own verification outranks this re-read for the check it
+    # acted on. Some changes cannot be seen from inside the process that made
+    # them: putting a folder on the PATH in ~/.zshenv is true for the next
+    # shell and invisible to this one, so the whole-block read still called it
+    # broken and the closing line said nine of fifteen when the machine was
+    # already at eight. A summary that reports the before state as the after
+    # state is the failure this tool exists to catch.
+    stale = []
+    byid = dict((c["id"], c) for c in now.get("checks") or [])
+    for cid, (_, after) in (results or {}).items():
+        seen = byid.get(cid)
+        if after and seen and seen["state"] != after["state"]:
+            stale.append((cid, "this process still reads %s; a new shell reads %s"
+                          % (seen["state"], after["state"])))
+            seen.update(after)
     old = dict((c["id"], c["state"]) for c in was.get("checks") or [])
     moved, worse = [], []
     for c in now.get("checks") or []:
@@ -1002,6 +1017,7 @@ def finish(mid, was, results, roots, record):
     if not moved:
         print("nothing moved")
     print("")
+    beneath("stale", stale)
     beneath("worse", worse)
     done = [c for c, (v, _) in sorted(results.items()) if v == "done"]
     print("%d of %d verified by their own checks: %s"
