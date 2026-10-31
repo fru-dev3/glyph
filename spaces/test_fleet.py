@@ -309,6 +309,20 @@ def test_every_check_carries_a_proof():
     assert sorted(fleet.SETUP_JOBS) == sorted(
         set(fleet.owner(c) for c in fleet.SETUP_ORDER))
 
+def test_a_folder_reachable_down_two_roots_is_counted_once():
+    """`home: ~` and `code: ~/code` both reach `~/code/wt/Packages/GlyphCore`.
+    It counted twice, printed the same path twice in the check's detail, and
+    inflated every "N of M checkouts" number on a machine whose roots overlap.
+    """
+    with tempfile.TemporaryDirectory() as d:
+        os.makedirs(os.path.join(d, "code", "wt", "Packages", "GlyphCore"))
+        roots = {"home": d, "code": os.path.join(d, "code")}
+        assert len(fleet.found_under(roots, "Packages/GlyphCore")) == 1
+        # a link to the same real folder is still the same checkout
+        os.symlink(os.path.join(d, "code", "wt"), os.path.join(d, "wt-link"))
+        assert len(fleet.found_under(roots, "Packages/GlyphCore")) == 1
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for t in tests:
@@ -320,3 +334,5 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
+

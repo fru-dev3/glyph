@@ -1103,9 +1103,15 @@ def project_dirs(roots):
     Two checks want the same walk, where a build lands and whether the
     GlyphCore submodule arrived, and one of these machines carries 115
     worktrees. So it is walked once per report and remembered for the run.
+
+    Remembered against the roots it walked, not against the run. A report only
+    ever asks about one machine, but a caller that asks twice with different
+    roots was handed the first machine's folders, which is the kind of answer
+    that looks right and is not.
     """
-    if "d" in _TREES:
-        return _TREES["d"]
+    key = tuple(sorted(set(v for v in (roots or {}).values() if v)))
+    if key in _TREES:
+        return _TREES[key]
     out = []
     for val in sorted(set(v for v in (roots or {}).values() if v)):
         base = os.path.expanduser(val)
@@ -1113,8 +1119,8 @@ def project_dirs(roots):
         for a in _subdirs(base):
             out.append(a)
             out.extend(_subdirs(a))
-    _TREES["d"] = out[:4000]
-    return _TREES["d"]
+    _TREES[key] = out[:4000]
+    return _TREES[key]
 
 
 def _subdirs(path):
@@ -1128,12 +1134,24 @@ def _subdirs(path):
 
 
 def found_under(roots, tail):
-    """Every `<folder>/<tail>` that exists under the roots, links included."""
-    out = []
+    """Every `<folder>/<tail>` that exists under the roots, links included.
+
+    Roots overlap: a machine with `home: ~` and `code: ~/code` reaches
+    `~/code/wt/Packages/GlyphCore` down both, which counted one checkout twice
+    and printed the same path twice in a check's detail. Each real folder is
+    counted once, by its resolved path, keeping the first spelling found so the
+    detail still reads the way the map writes it.
+    """
+    out, seen = [], set()
     for d in project_dirs(roots):
         p = os.path.join(d, tail)
-        if os.path.lexists(p):
-            out.append(p)
+        if not os.path.lexists(p):
+            continue
+        key = os.path.realpath(p)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(p)
     return out
 
 
