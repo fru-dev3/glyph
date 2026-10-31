@@ -932,6 +932,7 @@ def table(mid, block, acts):
 
 def cmd_plan(args):
     """What would change here, and what only a person can do. Writes nothing."""
+    fleet.WRITES_NOTHING = True
     if getattr(args, "machine", None) and args.machine != core.machine_id():
         return plan_elsewhere(args.machine)
     roots, record = this_machine()
@@ -955,6 +956,7 @@ def cmd_apps(args):
     this is one question, asked about the one machine being set up rather than
     about every pair of machines at once.
     """
+    fleet.WRITES_NOTHING = True
     mid = getattr(args, "machine", None) or core.machine_id()
     here = mid == core.machine_id()
     if here:

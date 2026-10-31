@@ -2147,6 +2147,13 @@ def app_rows(from_cask, known):
     return out
 
 
+# Set while a caller has promised to change nothing: `rig plan`, and an apply
+# that was refused for want of --yes. Asking Herdr for its plugins makes Herdr
+# create ~/.config/herdr/.plugins.lock, which on a machine that did not have
+# one already is a plan writing a file. The promise outranks the fact.
+WRITES_NOTHING = False
+
+
 def herdr_block():
     """Herdr's own plugins, asked of Herdr.
 
@@ -2160,6 +2167,10 @@ def herdr_block():
     if not b:
         return None
     out = {"version": version_of(b), "plugins": None}
+    if WRITES_NOTHING:
+        note("herdr", "not asked for its plugins: it writes a lock file, and this "
+                      "run promised to change nothing")
+        return out
     got = run([b, "plugin", "list", "--json"], strict=True)
     if not got or "{" not in got:
         note("herdr", "herdr plugin list --json answered nothing")
