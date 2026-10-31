@@ -778,6 +778,151 @@ MCP = {"claude": claude_mcp, "codex": codex_mcp}
 USAGE = {"claude": claude_usage, "codex": codex_usage}
 
 
+# --- whether an agent can be used, not whether it is installed ---------------
+# Installed and signed out is the same state as online and useless. Three
+# sessions spent an afternoon believing a machine could sign an iOS build; an
+# inventory carrying auth state would have said no in one line.
+#
+# Four rules, and the first two are why this is a probe and not a file read:
+#
+# - The output is the answer, never the exit code. `agy models` has printed
+#   `Please sign in to view available models` and exited 0, the same way
+#   `gh auth status` named the right account while its token answered 401.
+# - A catalogue call only. Listing models is a lookup; asking a model to answer
+#   a prompt spends inference tokens, so nothing here sends one.
+# - A probe answers for the session it ran in, not for the machine. agy keeps
+#   its credential in the login keychain, which an ssh session cannot open at
+#   all, so `no` over ssh means an ssh session cannot drive agy and says
+#   nothing about the person at that keyboard. Every row names which session it
+#   is, the way the three permissions name the asker.
+# - `unknown` is never `yes`, and a negative is never remembered. A positive is
+#   kept ten minutes, the bargain `repo.access` already makes, because these
+#   are network calls; a machine that cannot be used has to say so every run
+#   rather than once and then quietly out of a cache.
+AUTH_PROBES = {
+    "agy": {"args": ["models"],
+            "keychain": "its credential is in the login keychain, which an ssh "
+                        "session cannot open"},
+}
+# What a CLI says when nobody is signed in. Read for the refusal rather than
+# against a list of what success looks like: a release changes its greeting far
+# more often than it changes the way it says no. Nothing here appears in a
+# sentence about being signed in, which `logged in` and a bare `login` both do.
+SIGNED_OUT = ("sign in", "sign-in", "signin", "log in", "login required",
+              "not authenticated", "unauthenticated", "unauthorized", "401",
+              "no credentials", "please authenticate", "not signed in")
+AUTH_TTL = 600
+
+
+def auth_session():
+    """Which session a probe is answering for.
+
+    The same distinction `asker` makes about a permission, for the same
+    reason: an answer that does not say which session it is about is a new
+    wrong answer in place of an old one.
+    """
+    return "ssh" if os.environ.get("SSH_CONNECTION") else "login"
+
+
+def ask_agent(path, args, timeout=None):
+    """(exit code, everything it printed), or (None, why) when it never
+    answered. Both halves, because neither alone is the answer.
+
+    On the ordinary budget rather than the long one, which is the same bargain
+    `tailscale_status` makes. `version_of` earns SLOW because a miss happens
+    once per installed version and is then remembered; a negative here is
+    never remembered, so it is paid on every run and belongs on the short
+    clock. A slow link raises both with GLYPH_FLEET_TIMEOUT, and a probe that
+    runs out of time is `unknown`, never `no`.
+    """
+    try:
+        r = subprocess.run([path] + list(args), capture_output=True, text=True,
+                           stdin=subprocess.DEVNULL, timeout=timeout or TIMEOUT)
+    except subprocess.TimeoutExpired:
+        return None, ""
+    except Exception as e:
+        return None, "%s: %s" % (type(e).__name__, e)
+    return r.returncode, (r.stdout or "") + (r.stderr or "")
+
+
+def auth_verdict(code, out, proof, session, keychain=None):
+    """(state, detail) from what a CLI printed, and only then from how it exited.
+
+    The text first on purpose. A zero exit with a sign-in message is `no`, and
+    a non-zero exit with no message at all is `unknown` rather than `no`,
+    because a network that was down proves nothing about a credential.
+    """
+    lines = [x.strip() for x in (out or "").splitlines() if x.strip()]
+    said = lines[-1][:140] if lines else ""
+    where = "over ssh" if session == "ssh" else "in a login session"
+    if any(w in (out or "").lower() for w in SIGNED_OUT):
+        detail = "asked %s, %s says: %s" % (where, proof, said)
+        if session == "ssh" and keychain:
+            detail += ". That is this ssh session and not the machine: %s, so " \
+                      "somebody at its keyboard may be signed in perfectly well" \
+                      % keychain
+        return "no", detail
+    if code == 0 and said:
+        return "yes", "asked %s, %s answered: %s" % (where, proof, said)
+    if code is None:
+        return "unknown", "%s answered nothing inside %.1fs %s%s" \
+            % (proof, TIMEOUT, where, ": %s" % said if said else "")
+    return "unknown", "%s exited %s %s and said nothing about signing in: %s" \
+        % (proof, code, where, said or "nothing at all")
+
+
+def auth_unknown(session, detail, proof):
+    """A row for an agent that could not be asked. Never `yes`."""
+    return {"state": "unknown", "detail": detail, "proof": proof,
+            "session": session, "at": stamp(time.time())}
+
+
+def unprobed_auth(aid, session):
+    """An agent with no catalogue call to make.
+
+    Claude Code and Codex both write down which account signed in, and the
+    report already carries it. That record is not proof: it is the same shape
+    as a status naming the right account while its token answers 401. So the
+    account block stays where it is and this says unknown, rather than reading
+    a file and calling it authentication.
+    """
+    why = ("a record of a sign-in, not proof: the account block names the login "
+           "configured here and nothing exercised its token"
+           if aid in ACCOUNTS else
+           "nothing on disk says whether %s is signed in" % aid)
+    return auth_unknown(session, "%s. No catalogue call is wired up for %s"
+                        % (why, aid),
+                        "nothing was run: no catalogue call for %s" % aid)
+
+
+def auth_block(aid, path):
+    """Whether this agent can be used right now, proven by running something.
+
+    A positive is kept against the binary for ten minutes. A negative and an
+    unknown are never kept at all.
+    """
+    probe = AUTH_PROBES.get(aid)
+    session = auth_session()
+    if not probe:
+        return unprobed_auth(aid, session)
+    proof = "%s %s" % (aid, " ".join(probe["args"]))
+    key = "auth %s %s %s" % (aid, os.path.realpath(path), session)
+    if recently(key, AUTH_TTL):
+        got = cache().get(key)
+        if got:
+            return got
+    code, out = ask_agent(path, probe["args"])
+    state, detail = auth_verdict(code, out, proof, session, probe.get("keychain"))
+    row = {"state": state, "detail": detail, "proof": proof,
+           "session": session, "at": stamp(time.time())}
+    if state == "yes":
+        with _LOCK:
+            cache()[key] = row
+            _DIRTY.append(key)
+        keep(key)
+    return row
+
+
 def agents_block():
     table = agent_table()
     found = {}
@@ -785,14 +930,20 @@ def agents_block():
         p = find_bin(aid)
         if p:
             found[aid] = p
-    # Every version at once: serially this is ten seconds, and one agent that
-    # hangs on --version must not hold up the rest of the report.
-    versions = {}
+    # Every version and every auth probe at once: serially the versions alone
+    # are ten seconds, and one agent that hangs must not hold up the rest of
+    # the report.
+    versions, auths = {}, {}
     if found:
-        with futures.ThreadPoolExecutor(max_workers=min(12, len(found))) as ex:
-            jobs = dict((ex.submit(version_of, p), a) for a, p in found.items())
+        with futures.ThreadPoolExecutor(max_workers=min(16, 2 * len(found))) as ex:
+            jobs = dict((ex.submit(version_of, p), ("version", a))
+                        for a, p in found.items())
+            jobs.update((ex.submit(auth_block, a, p), ("auth", a))
+                        for a, p in found.items())
             for f in futures.as_completed(jobs):
-                versions[jobs[f]] = guard("version %s" % jobs[f], f.result)
+                kind, aid = jobs[f]
+                got = guard("%s %s" % (kind, aid), f.result)
+                (versions if kind == "version" else auths)[aid] = got
     out = []
     for aid in sorted(table):
         row = {"id": aid, "label": table[aid]["label"],
@@ -800,6 +951,9 @@ def agents_block():
                "path": tilde(found.get(aid)),
                "auto_approve_flag": table[aid]["auto_approve_flag"]}
         if aid in found:
+            row["auth"] = auths.get(aid) or auth_unknown(
+                auth_session(), "the auth probe did not finish, and errors says why",
+                "%s, which threw" % aid)
             if aid in ACCOUNTS:
                 row["account"] = guard("account %s" % aid, ACCOUNTS[aid])
             if aid in MCP:
@@ -2544,10 +2698,17 @@ CAPABILITIES = (
     ("swift-build", ("xcode.developer-dir", "build.scratch")),
     ("mac-screen", ("tcc.screen-recording",)),
     ("iphone-sim", ("xcode.devicesupport", "xcode.appleid")),
-)
+    # One per agent with a probe, generated rather than listed, so wiring a
+    # probe wires the capability and the two cannot drift apart. An agent that
+    # is installed and signed out can take no work, and until this row existed
+    # nothing in the report said so.
+) + tuple(("%s-session" % a, ("auth.%s" % a,)) for a in sorted(AUTH_PROBES))
 # A check's state, as what it says about being able to do the work. `missing`
 # and `broken` are both no: the job fails either way.
 CAN = {"ok": "yes", "missing": "no", "broken": "no", "unknown": "unknown"}
+# An agent's authentication, as a check's state. `no` is `missing` because
+# that is what it is: the credential a job needs is not there to be used.
+AUTH_STATE = {"yes": "ok", "no": "missing", "unknown": "unknown"}
 
 
 def root_check(spaces, key):
@@ -2575,38 +2736,92 @@ def root_check(spaces, key):
     return chk(cid, "ok", "the %s root is %s" % (key, roots[key]), proof=proof)
 
 
-def capability_checks(checks, spaces):
+def auth_check(agents, aid):
+    """One agent's authentication, shaped as a check.
+
+    So a capability resting on it leads back to a row with a proof on it, the
+    same way one resting on a root of the spaces map does, rather than naming
+    an id a reader cannot find anywhere.
+    """
+    cid = "auth.%s" % aid
+    row = next((a for a in (agents or []) if a.get("id") == aid), None)
+    if row is None:
+        return chk(cid, "unknown",
+                   "nothing in this report says whether %s is signed in here" % aid,
+                   proof="%s was never asked" % aid)
+    if not row.get("installed"):
+        return chk(cid, "missing", "%s is not installed here" % aid,
+                   proof="no %s in the folders agents install into" % aid)
+    auth = row.get("auth") or {}
+    return chk(cid, AUTH_STATE.get(auth.get("state"), "unknown"),
+               auth.get("detail")
+               or "nothing said whether %s is signed in" % aid,
+               proof=auth.get("proof"))
+
+
+def capability_checks(checks, spaces, agents=None):
     """Every check a capability may rest on, by id.
 
-    The setup block's own, plus the spaces map's roots read as checks, plus an
-    `unknown` row for anything a capability names that did not answer at all,
-    so no capability can reach a missing key and read it as health.
+    The setup block's own, plus the spaces map's roots and each agent's
+    authentication read as checks, plus an `unknown` row for anything a
+    capability names that did not answer at all, so no capability can reach a
+    missing key and read it as health.
     """
     by = dict((c["id"], c) for c in (checks or []) if c.get("id"))
     for _, deps in CAPABILITIES:
         for d in deps:
             if d.startswith("spaces.root."):
                 by.setdefault(d, root_check(spaces, d.split(".")[-1]))
+            elif d.startswith("auth."):
+                by.setdefault(d, auth_check(agents, d.split(".", 1)[1]))
             else:
                 by.setdefault(d, chk(d, "unknown", "the check did not run"))
     return by
 
 
-def capabilities(checks, spaces):
+def proven_at(now, deps, agents):
+    """When a verdict was last proven: the oldest evidence under it.
+
+    Everything a capability rests on was read in this same report, bar one: an
+    authentication kept from a run minutes ago. A verdict leaning on that is
+    only as new as the thing it leans on, and something deciding where work
+    goes has to be able to tell this morning's failure from last week's.
+    """
+    stamps = [now]
+    for d in deps:
+        if not d.startswith("auth."):
+            continue
+        row = next((a for a in (agents or [])
+                    if a.get("id") == d.split(".", 1)[1]), None)
+        got = ((row or {}).get("auth") or {}).get("at")
+        if got:
+            stamps.append(got)
+    return max(stamps, key=lambda s: age_s(s) or 0)
+
+
+def capabilities(checks, spaces, agents=None, taken=None):
     """What this machine can take, from the checks that already answered.
+
+    Every capability is a row, whatever it says. A `no` is the answer most
+    worth keeping: no machine here can sign an iOS build today, and a report
+    that dropped `iphone-sim` for being irrelevant would leave the next person
+    to work that out again. So a `no` stays, names the checks that caused it,
+    and carries when it was last proven.
 
     `from` names the checks that decided it: the ones that are not ok for a
     `no`, the ones that could not answer for an `unknown`, and all of them for
     a `yes`. No detail is repeated here; the check it names carries that.
     """
-    by = capability_checks(checks, spaces)
+    by = capability_checks(checks, spaces, agents)
+    now = taken or stamp(time.time())
     out = []
     for cid, deps in CAPABILITIES:
         no = [d for d in deps if CAN.get(by[d]["state"], "unknown") == "no"]
         unsure = [d for d in deps if CAN.get(by[d]["state"], "unknown") == "unknown"]
         out.append({"id": cid,
                     "can": "no" if no else ("unknown" if unsure else "yes"),
-                    "from": no or unsure or list(deps)})
+                    "from": no or unsure or list(deps),
+                    "at": proven_at(now, deps, agents)})
     return out
 
 
@@ -2628,6 +2843,26 @@ def have_line(inst):
     if not inst.get("brew"):
         parts.append("no homebrew")
     return ", ".join(parts)
+
+
+SESSION_WORDS = {"ssh": "asked over ssh", "login": "asked in a login session"}
+
+
+def auth_line(agents):
+    """Which agents can be used right now, in one line.
+
+    Every state, a `yes` included, because leaving the usable ones out is how
+    `installed` came to read as usable in the first place. The session is said
+    once, since one run asks them all from the same place.
+    """
+    rows = [a for a in (agents or []) if a.get("auth")]
+    if not rows:
+        return None
+    where = set(a["auth"].get("session") for a in rows)
+    said = (SESSION_WORDS.get(list(where)[0], "asked somewhere") if len(where) == 1
+            else "asked in more than one session")
+    return "%s  (%s)" % (", ".join("%s %s" % (a["id"], a["auth"].get("state") or "?")
+                                   for a in rows), said)
 
 
 def can_line(caps):
@@ -2762,7 +2997,8 @@ def collect(account_tag_given=None):
     # no time. Guarded all the same, so a bug here is a line in `errors`.
     rep["capabilities"] = guard("capabilities", capabilities,
                                 (got.get("setup") or {}).get("checks"),
-                                got.get("spaces")) or []
+                                got.get("spaces"), got.get("agents"),
+                                rep["taken"]) or []
     if not rep.get("machine"):
         rep["machine"] = {"id": mid}
     if account_tag_given and rep.get("machine"):
@@ -2916,6 +3152,9 @@ def cmd_report(args):
     elif setup:
         print("  setup    not ready: %s  (glyph fleet setup)"
               % ", ".join("%s %s" % (c["id"], c["state"]) for c in bad))
+    got = auth_line(rep.get("agents"))
+    if got:
+        print("  auth     %s" % got)
     got = can_line(rep.get("capabilities"))
     if got:
         print("  can      %s" % got)
@@ -3162,6 +3401,13 @@ def cmd_status(args):
                  mem, disk, len(live) if live is not None else "-",
                  setup_mark(rep, n)))
     for mid in sorted(ids):
+        # Installed is not usable, and this column is the difference. A row
+        # read off a machine's own ssh probe says so, because an answer that
+        # does not name the session it is about is a new wrong answer.
+        got = auth_line((reps.get(mid) or {}).get("agents"))
+        if got:
+            print("auth     %-*s %s" % (w, mid, got))
+    for mid in sorted(ids):
         got = can_line((reps.get(mid) or {}).get("capabilities"))
         if got:
             print("can      %-*s %s" % (w, mid, got))
@@ -3235,7 +3481,10 @@ def show_machine(mid, rep, net, record, answered=False):
                                                v.get("role") or "-", gb(v.get("free_bytes")),
                                                v.get("used_percent")))
     print("")
-    print("  %-14s %-10s %-20s %s" % ("AGENT", "VERSION", "ACCOUNT", "USAGE"))
+    # AUTH beside ACCOUNT, and the two say different things: the account is the
+    # login that is configured, and auth is whether it can be used right now.
+    print("  %-14s %-10s %-6s %-20s %s"
+          % ("AGENT", "VERSION", "AUTH", "ACCOUNT", "USAGE"))
     for a in rep.get("agents") or []:
         if not a.get("installed"):
             continue
@@ -3244,7 +3493,9 @@ def show_machine(mid, rep, net, record, answered=False):
         u = a.get("usage") or {}
         w5 = (u.get("window_5h") or {}).get("percent")
         use = "%s%% of the 5h window" % w5 if w5 is not None else (u.get("source") or "-")
-        print("  %-14s %-10s %-20s %s" % (a["id"], a.get("version") or "?", who, use))
+        print("  %-14s %-10s %-6s %-20s %s"
+              % (a["id"], a.get("version") or "?",
+                 (a.get("auth") or {}).get("state") or "-", who, use))
     live = (rep.get("sessions") or {}).get("live") or []
     print("")
     for s in live:
@@ -3276,16 +3527,48 @@ def show_machine(mid, rep, net, record, answered=False):
     return 0
 
 
+def show_auth(agents, pad=""):
+    """Whether each agent can be used right now, and what proved it.
+
+    Apart from the checks because it is a different question, and under the
+    ids the capability table uses, so an `auth.agy` in a `from` leads here
+    rather than nowhere. ASKED is a column and not a footnote: an agent whose
+    credential is in the login keychain cannot authenticate over ssh at all,
+    so a row read off an ssh run is that session's answer and not the
+    machine's.
+    """
+    rows = [(a["id"], a["auth"]) for a in (agents or []) if a.get("auth")]
+    if not rows:
+        return
+    print("")
+    print("%s%-14s %-8s %-6s %-9s %s"
+          % (pad, "AGENT", "AUTH", "ASKED", "PROVEN", "DETAIL"))
+    for aid, auth in rows:
+        print("%s%-14s %-8s %-6s %-9s %s"
+              % (pad, aid, auth.get("state") or "?", auth.get("session") or "?",
+                 age(auth.get("at")), (auth.get("detail") or "")[:76]))
+    if any(a.get("session") == "ssh" for _, a in rows):
+        print("%sasked over ssh, so these answer for that session: an agent whose "
+              "credential is in the login" % pad)
+        print("%skeychain cannot authenticate there at all, and the person at that "
+              "keyboard may be signed in" % pad)
+
+
 def show_capabilities(caps, pad=""):
-    """What the machine can take, and which checks said so. Nothing a check
-    already said is repeated: the ids in FROM are where a `no` leads back to."""
+    """What the machine can take, which checks said so, and when.
+
+    Every capability is a row, a `no` included: the day somebody signs into
+    Xcode, three failures clear at once, and a list that printed only the
+    `yes` rows could not say that it happened. Nothing a check already said is
+    repeated; the ids in FROM are where a `no` leads back to.
+    """
     if not caps:
         return
     print("")
-    print("%s%-14s %-8s %s" % (pad, "CAPABILITY", "CAN", "FROM"))
+    print("%s%-14s %-8s %-9s %s" % (pad, "CAPABILITY", "CAN", "PROVEN", "FROM"))
     for c in caps:
-        print("%s%-14s %-8s %s" % (pad, c["id"], c["can"],
-                                   ", ".join(c.get("from") or [])))
+        print("%s%-14s %-8s %-9s %s" % (pad, c["id"], c["can"], age(c.get("at")),
+                                        ", ".join(c.get("from") or [])))
 
 
 def show_human(checks, pad="", where="that machine"):
@@ -3391,6 +3674,7 @@ def cmd_setup(args):
                 print("           %-22s proof: %s" % ("", c["proof"]))
             if c["state"] != "ok" and c.get("fix"):
                 print("           %-22s fix: %s" % ("", c["fix"]))
+        show_auth(with_setup[mid].get("agents"))
         show_capabilities(with_setup[mid].get("capabilities"))
         show_human(checks, "", mid)
         print("")

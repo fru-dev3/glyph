@@ -142,16 +142,37 @@ removes, because a revoked certificate is invisible to `security find-identity`
 on some machines and visible to `spctl` on all of them. Nothing in the block
 installs, grants, links, deletes or points `DEVELOPER_DIR`.
 
+Each installed agent carries an `auth` object beside its version, and that one
+is a probe rather than a read. `AUTH_PROBES` holds the cheapest catalogue call
+per agent, `agy models` today, and `auth_verdict` reads what came back before
+it looks at the exit code, because `agy models` has printed `Please sign in to
+view available models` and exited 0 while doing it. An agent with no probe is
+`unknown`, Claude Code and Codex included: both write down which account
+signed in and the report already carries it, but a record of a sign-in is not
+proof the token still works. A probe answers for the session it ran in and
+says which, since agy's credential is in the login keychain and an ssh session
+cannot open that at all, so a `no` collected over ssh is that session's answer
+and not the machine's. A positive is kept against the binary for ten minutes
+the way `repo.access` keeps a listing; a negative and an unknown are never
+kept, and the probe is on the ordinary budget rather than SLOW, because
+something paid on every run does not belong on the long clock. None of it
+reaches `setup.ready`: a report collected over ssh would otherwise call every
+machine not ready for good.
+
 `capabilities` is the other side of that block: what the machine can do rather
 than what is broken on it. It is derived and never probed, worked out after
 the readers finish from the `setup` checks and the `spaces` block they already
 produced, which is why it costs microseconds and cannot disagree with the
-check it came from. `CAPABILITIES` is the whole of the table, four entries,
-each naming the check ids it rests on; a new one is a line there and no new
-reader. The two rules the block keeps hold here too: `from` names the checks
-that decided a verdict, so a `no` leads back to something with a proof on it
-rather than being an opinion of its own, and `unknown` is never `yes`, since a
-machine that might be able to build is not one you hand a build to. A root of
+check it came from. `CAPABILITIES` is the whole of the table, four entries
+plus one per agent with a probe, each naming the check ids it rests on; a new
+one is a line there and no new reader. The two rules the block keeps hold here
+too: `from` names the checks that decided a verdict, so a `no` leads back to
+something with a proof on it rather than being an opinion of its own, and
+`unknown` is never `yes`, since a machine that might be able to build is not
+one you hand a build to. Every capability is a row whatever it says, a `no`
+included, with `at` saying when it was last proven: no machine here can sign
+an iOS build, and dropping `iphone-sim` for being irrelevant would leave the
+next person to find that out the long way. A root of
 the spaces map is shaped as a check by `root_check` for that reason, so a
 capability resting on a root is traceable the same way as one resting on the
 block.

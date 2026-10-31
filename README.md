@@ -439,7 +439,8 @@ glyph fleet setup     # what a machine still needs before it can do the work
 `report` asks this Mac what it is: its model, chip, cores split performance and
 efficiency, memory and swap, every mounted volume including the externals and
 the network shares, which agents are installed and at which version, which
-login each one is signed into, what is running right now, local inference
+login each one is signed into and whether that login can actually be used
+right now, what is running right now, local inference
 models, everything installed from Homebrew or sitting in `/Applications`, and a
 flat map of versions, MCP servers, skills and loaded services for comparing
 against another machine. It writes one file per machine and appends a line of
@@ -475,7 +476,9 @@ laptop           dev   yes  just now  Apple M2 Pro 6+4    5G of 17G   61% of 494
 studio           hub   yes  4m        Apple M4     4+6    1G of 17G   97% of 245G  9     4 bad
 bens-phone       -     yes  none      iOS          -      -           -            -     -
 air              demo  no   21d       Apple M1     4+4    -           -            -     unknown
-can      laptop           vault swift-build mac-screen iphone-sim
+auth     laptop           agy yes, claude unknown, codex unknown  (asked in a login session)
+auth     studio           agy no, claude unknown, codex unknown  (asked over ssh)
+can      laptop           vault swift-build mac-screen iphone-sim agy-session
 can      studio           vault swift-build
 reach    studio           roster says offline; it wrote a reading 4m ago
 setup    studio           tcc.screen-recording   missing
@@ -635,6 +638,79 @@ Everything in the block reads. Nothing installs, grants, links, deletes,
 points `DEVELOPER_DIR` or touches a keychain: `glyph fleet` says what a
 machine is missing, and `glyph rig` is what does something about it.
 
+### Installed is not usable
+
+`installed` says a binary is on the machine. It does not say you can use it.
+An agent that is installed and signed out takes no work, and an afternoon
+went here on three sessions believing a machine could sign an iOS build that
+no machine in the fleet can sign. So every installed agent carries an `auth`
+object, and what is in it was proven by running something:
+
+```json
+{ "id": "agy", "installed": true, "version": "1.4.12",
+  "auth": { "state": "no",
+            "detail": "asked over ssh, agy models says: Error: Please sign in to view available models",
+            "proof": "agy models",
+            "session": "ssh",
+            "at": "2026-10-31T15:16:29-05:00" } }
+```
+
+| Field | |
+|---|---|
+| `state` | `yes`, `no` or `unknown`, and `unknown` is never `yes` |
+| `detail` | what was asked, and what came back, in plain words |
+| `proof` | the command, so you can run it by hand and see the same thing |
+| `session` | which session the answer is about, `login` or `ssh` |
+| `at` | when it was last proven |
+
+Four rules, and the first two are why this is a probe and not a file read:
+
+- **The output is the answer, never the exit code.** `agy models` prints
+  `Please sign in to view available models` and has exited 0 while doing it,
+  which is the lesson `gh auth status` already taught by naming the right
+  account while its token answered 401. The text is read first. A non-zero
+  exit with nothing to say about signing in is `unknown` and not `no`, because
+  a network that was down proves nothing about a credential.
+- **A catalogue call only.** Listing models is a lookup. Asking a model to
+  answer a prompt spends inference tokens, so no probe here sends one.
+- **An answer names the session it is about.** agy keeps its credential in the
+  login keychain, which an ssh session cannot open at all. So `no` read off an
+  ssh run says that ssh session cannot drive agy, and says nothing about the
+  person sitting at that Mac. `ASKED` is a column for that reason, the same
+  way the three permissions name the asker rather than the machine.
+- **A negative is never cached.** A `yes` is kept for ten minutes, the bargain
+  `repo.access` already makes, because these are network calls. A machine that
+  cannot be used has to say so on every run, not once and then out of a cache.
+
+Claude Code and Codex have no probe and read `unknown` on purpose. Both write
+down which account signed in, and the report already carries it, but a record
+of a sign-in is not proof the token still works: that is the trap again rather
+than an answer to it. When either grows a catalogue call it is one line in
+`AUTH_PROBES` and nothing else.
+
+```
+AGENT          AUTH     ASKED  PROVEN    DETAIL
+agy            no       ssh    just now  asked over ssh, agy models says: Error: Please sign
+claude         unknown  ssh    just now  a record of a sign-in, not proof: the account block
+codex          unknown  ssh    just now  a record of a sign-in, not proof: the account block
+```
+
+`glyph fleet status` prints one line per machine, `glyph fleet setup` prints
+that table, and `glyph fleet status --machine <id>` carries `AUTH` beside
+`ACCOUNT` in the agent table, where the two say different things: the account
+is the login that is configured, and `AUTH` is whether it can be used now.
+
+A signed-out agent costs its probe on every run, which measured about a
+quarter of a second on these machines: a report that took 0.3 seconds takes
+0.6. A signed-in one costs that once per ten minutes and nothing in between.
+The probe is on the ordinary budget rather than the long one, so
+`GLYPH_FLEET_TIMEOUT` moves it, and a probe that runs out of time is
+`unknown`.
+
+None of it reaches `setup.ready`. A machine is not badly set up because nobody
+is signed into an agent in an ssh session, and a fleet collected over ssh
+would otherwise call every Mac not ready for good.
+
 ### What it can therefore do
 
 The checks say what is broken on a machine. They do not say what work it
@@ -644,11 +720,16 @@ needs a Swift build, which machines can have it. So the report carries a short
 
 ```json
 "capabilities": [
-  { "id": "vault",       "can": "yes",     "from": ["spaces.root.vault"] },
-  { "id": "swift-build", "can": "no",      "from": ["xcode.developer-dir"] },
-  { "id": "mac-screen",  "can": "unknown", "from": ["tcc.screen-recording"] },
-  { "id": "iphone-sim",  "can": "yes",     "from": ["xcode.devicesupport",
-                                                    "xcode.appleid"] }
+  { "id": "vault",       "can": "yes",     "from": ["spaces.root.vault"],
+    "at": "2026-10-31T15:16:29-05:00" },
+  { "id": "swift-build", "can": "no",      "from": ["xcode.developer-dir"],
+    "at": "2026-10-31T15:16:29-05:00" },
+  { "id": "mac-screen",  "can": "unknown", "from": ["tcc.screen-recording"],
+    "at": "2026-10-31T15:16:29-05:00" },
+  { "id": "iphone-sim",  "can": "no",      "from": ["xcode.appleid"],
+    "at": "2026-10-31T15:16:29-05:00" },
+  { "id": "agy-session", "can": "no",      "from": ["auth.agy"],
+    "at": "2026-10-31T15:16:29-05:00" }
 ]
 ```
 
@@ -658,25 +739,47 @@ needs a Swift build, which machines can have it. So the report carries a short
 | `swift-build` | `xcode.developer-dir` names a full Xcode and `build.scratch` has room on the volume it writes to |
 | `mac-screen` | `tcc.screen-recording` is granted, so a screen check can pass |
 | `iphone-sim` | `xcode.devicesupport` has a version, and an Apple ID or an App Store Connect key is on disk |
+| `<agent>-session` | that agent is installed and its `auth` says `yes`, so a session here can actually run |
 
-Nothing is probed for these. Each one is read off checks that already ran in
-the same report, so a capability costs nothing, cannot disagree with the check
-it came from, and says nothing twice. `from` names the checks that decided it:
-the ones that are not ok for a `no`, so a no leads back to a check with a
-proof on it, and the ones that could not answer for an `unknown`. And
+One row per agent with a probe, generated from `AUTH_PROBES` rather than
+listed, so wiring a probe wires the capability and the two cannot drift apart.
+
+Nothing is probed for the rest. Each one is read off checks that already ran
+in the same report, so a capability costs nothing, cannot disagree with the
+check it came from, and says nothing twice. `from` names the checks that
+decided it: the ones that are not ok for a `no`, so a no leads back to a check
+with a proof on it, and the ones that could not answer for an `unknown`. And
 `unknown` is never `yes`, the same rule the checks keep, because a machine
 that might be able to build is not one you hand a build to.
 
+**A `no` is a row, not an absence.** No machine here can sign an iOS build
+today, so the temptation is to drop `iphone-sim` as irrelevant. Dropping it
+would leave the next person to work that out again, and the day somebody signs
+into Xcode three failures clear at once: provisioning, the iPhone install, and
+a Mac app that dies about 14 ms after launch with no crash report. So every
+capability is a row whatever it says, it names the checks that decided it, and
+`at` says when that was last proven. A capability nobody could test is
+`unknown` and still there.
+
+`at` is the report's own time for everything bar one case: a capability
+leaning on an authentication that was kept from a run minutes ago is only as
+new as the thing it leans on, so it carries that older time instead. That is
+the difference between a verdict tested this morning and one nobody has tested
+since last week.
+
 `glyph fleet status` prints a `can` line per machine, naming what it can do
-with a `?` on what is not known; what it cannot do is the absence.
-`glyph fleet setup` prints the table, with the checks each verdict came from:
+with a `?` on what is not known; what it cannot do is the absence there, and
+the `setup` lines under it name the checks behind it. `glyph fleet setup`
+prints the whole table, every row, with the checks each verdict came from and
+when it was last proven:
 
 ```
-CAPABILITY     CAN      FROM
-vault          yes      spaces.root.vault
-swift-build    yes      xcode.developer-dir, build.scratch
-mac-screen     no       tcc.screen-recording
-iphone-sim     no       xcode.appleid
+CAPABILITY     CAN      PROVEN    FROM
+vault          yes      just now  spaces.root.vault
+swift-build    yes      just now  xcode.developer-dir, build.scratch
+mac-screen     no       just now  tcc.screen-recording
+iphone-sim     no       just now  xcode.appleid
+agy-session    no       just now  auth.agy
 ```
 
 Every reader stands on its own. One that cannot answer adds a line to `errors`
