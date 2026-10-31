@@ -3,7 +3,9 @@
 
 `report` collects this machine and writes it where every machine can read it;
 `report --json` prints it and writes nothing, which is what the app and an ssh
-probe use. `status`, `diff` and `setup` read what each machine wrote.
+probe use. `status`, `diff` and `setup` read what each machine wrote. `rig
+plan` and `rig apply` are the other half: setup says what a machine is
+missing, rig does the part of that which needs nobody at the keyboard.
 
 An executable file, not a shell function, so `ssh laptop glyph-fleet report
 --json` works non-interactively. install.sh links it into ~/.local/bin.
@@ -14,7 +16,7 @@ import argparse, os, sys
 # ~/.local/bin, and the package is found from where the script actually lives.
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 
-from glyph_spaces import fleet
+from glyph_spaces import fleet, rig
 from glyph_spaces.core import MapMissing
 
 
@@ -39,6 +41,20 @@ def main():
     u = sub.add_parser("setup", help="what a machine still needs before it can work")
     u.add_argument("--machine", help="one machine instead of all of them")
     u.set_defaults(func=fleet.cmd_setup)
+    # The other half: setup says what is missing, rig does the part of it that
+    # can be done without a person at the keyboard. Dry run is the default, so
+    # `apply` without --yes prints the plan and changes nothing.
+    g = sub.add_parser("rig", help="make this machine able to do the work")
+    g.set_defaults(func=lambda a: g.print_help())
+    gsub = g.add_subparsers(dest="rigcmd")
+    gp = gsub.add_parser("plan", help="what would change, and what only a person can do")
+    gp.add_argument("--machine", help="another machine, from the reading it wrote")
+    gp.set_defaults(func=rig.cmd_plan)
+    ga = gsub.add_parser("apply", help="do the automatable part of the plan")
+    ga.add_argument("--yes", action="store_true",
+                    help="actually change this machine; without it, the plan is printed")
+    ga.add_argument("--machine", help="refused for any machine but this one")
+    ga.set_defaults(func=rig.cmd_apply)
     args = ap.parse_args()
     if not getattr(args, "func", None):
         ap.print_help()

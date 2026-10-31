@@ -262,11 +262,34 @@ STUB
   out=$(glyph fleet setup --machine studio)
   assert_eq "$out" 'collector: setup --machine studio' \
     'glyph fleet setup reaches the collector'
+  # glyph rig is the other half, and reaches the same file. The front door is
+  # `glyph rig`, not `glyph fleet rig`, so both spellings are checked: the
+  # dispatch here, and the collector's own subcommand behind it.
+  out=$(glyph rig plan)
+  assert_eq "$out" 'collector: rig plan' 'glyph rig plan reaches the collector'
+  out=$(glyph rig plan --machine studio)
+  assert_eq "$out" 'collector: rig plan --machine studio' \
+    'glyph rig plan --machine reaches the collector'
+  out=$(glyph rig apply --yes)
+  assert_eq "$out" 'collector: rig apply --yes' \
+    'glyph rig apply reaches the collector with its confirmation flag'
+  # And the real collector refuses an apply that was not confirmed, with the
+  # plan printed and nothing changed. Run against a home folder of its own, so
+  # the suite cannot touch the machine it runs on.
+  rc=0
+  out=$(HOME=$test_dir/rig-home GLYPH_SPACES=$map GLYPH_SPACES_MACHINE=laptop \
+        GLYPH_RIG=$test_dir/rig-home/rig \
+        python3 "$repo/spaces/glyph-fleet" rig apply) || rc=$?
+  assert_eq "$rc" 2 'apply with no --yes refuses'
+  [[ $out == *'apply needs --yes'* && $out == *'Nothing was changed'* ]] \
+    || { print -ru2 -- "FAIL: a refused apply must print the plan: $out"; exit 1; }
+  [[ ! -e $test_dir/rig-home/.zshenv ]] \
+    || { print -ru2 -- 'FAIL: a refused apply wrote to the home folder'; exit 1; }
   print -r -- 'solo = claude' > "$test_dir/fleet-solo.conf"
   out=$(GLYPH_DRYRUN=1 GLYPH_FLEET_CONF="$test_dir/fleet-solo.conf" glyph fleet solo)
   [[ $out == *'pane 1  claude on local'* ]] \
     || { print -ru2 -- "FAIL: a preset still launches: $out"; exit 1; }
-  print -r -- 'PASS: fleet report, status, diff and setup reach the collector, presets still launch'
+  print -r -- 'PASS: fleet report, status, diff and setup and rig plan and apply reach the collector, an unconfirmed apply refuses, presets still launch'
 fi
 print -r -- 'PASS: one-command fleet init, custom config path, existing definitions, repeat runs and dry run'
 print -r -- 'PASS: AGY labels, prompts, print mode, management commands and opt-in flags'
