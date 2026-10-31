@@ -198,6 +198,9 @@ glyph mark x    # name a session that is already open
 glyph agents    # what is installed, and each one's auto-approve flag
 glyph name x    # print the mark this directory would produce
 glyph fleet ci  # a preset of agents, each in its own marked pane
+glyph fleet report  # what this machine is: disks, memory, agents, accounts
+glyph fleet status  # every machine side by side, with who is online
+glyph fleet diff    # what is on one machine and not another
 ```
 
 ## Agents
@@ -393,6 +396,82 @@ shape, and [spaces/README.md](spaces/README.md) the details. Spaces is Python
 and runs from a clone: `install.sh` links `glyph-spaces` into `~/.local/bin`.
 Herdr is the only backend today.
 
+## Fleet
+
+A preset launches agents. The three commands below answer the other question:
+what each of your machines actually is, and which one is free to take work.
+
+```sh
+glyph fleet report    # collect this machine and write it down
+glyph fleet status    # every machine, side by side
+glyph fleet diff      # the configuration that is not the same everywhere
+```
+
+`report` asks this Mac what it is: its model, chip, cores split performance and
+efficiency, memory and swap, every mounted volume including the externals and
+the network shares, which agents are installed and at which version, which
+login each one is signed into, what is running right now, local inference
+models, and a flat map of versions, MCP servers, skills and loaded services for
+comparing against another machine. It writes one file per machine and appends a
+line of history, so a trend exists later:
+
+```
+~/.config/glyph/rig/machines/<machine>.json
+~/.config/glyph/rig/history/<YYYY-MM>.<machine>.jsonl
+```
+
+Point `GLYPH_RIG` at a synced folder, or link `~/.config/glyph/rig` to one, and
+every machine's last reading is readable from any of them with no network call.
+
+```sh
+glyph fleet report --json    # print it instead, and write nothing
+```
+
+That form is what one machine runs on another: `ssh laptop
+'~/.local/bin/glyph-fleet report --json'`. The path is spelled out because
+`~/.local/bin` is not on a non-interactive PATH, and the collector is a file
+rather than a shell function so that ssh can reach it at all. For the same
+reason it looks for each agent in the folders agents install into, and does not
+believe `command -v`.
+
+`status` joins those readings to Tailscale, which is the only honest answer to
+whether a machine is even on. A phone appears as a row with what Tailscale
+knows and nothing more. `--machine <id>` prints one machine in full, every
+volume and session included, and `--live` asks every reachable machine over ssh
+first instead of reading the last file.
+
+```
+MACHINE          ROLE  UP   READING   CHIP         CORES  FREE MEM    BOOT DISK    LIVE
+laptop           dev   yes  just now  Apple M2 Pro 6+4    5G of 17G   61% of 494G  3
+studio           hub   yes  4m        Apple M4     4+6    1G of 17G   97% of 245G  9
+bens-phone       -     yes  none      iOS          -      -           -            -
+air              demo  no   21d       Apple M1     4+4    -           -            -
+warning  studio           / is 97 percent full
+offline  air              last seen 21d ago
+```
+
+`diff` prints only the keys that are not identical everywhere, with the odd
+machine named, so a tool installed here and missing there is one glance:
+
+```
+KEY                                    laptop              studio
+tool.uv                                0.8.5               0.8.8
+tool.pi                                0.79.9              -                     only laptop
+launchd.homebrew.mxcl.ollama           -                   loaded                only studio
+```
+
+Every reader stands on its own. One that cannot answer adds a line to `errors`
+and the rest of the report still comes out, because losing a machine over one
+unreadable fact is worse than saying what is missing. They all run at once, so
+the slowest one is roughly how long the command takes: half a second on an idle
+Mac, longer on one in the middle of a build. `GLYPH_FLEET_TIMEOUT=1` trades
+detail for speed. Nothing is written outside the report folder, and an answer
+that cannot change, a version or a model name, is kept in
+`~/.local/state/glyph` rather than asked for again.
+
+Fleet is Python beside Spaces, from the same clone: `install.sh` links
+`glyph-fleet` into `~/.local/bin`.
+
 <details>
 <summary><b>Configuration</b></summary>
 
@@ -403,7 +482,7 @@ Herdr is the only backend today.
 | `GLYPH_FMT` | `date(1)` format for the stamp (default `%Y-%m-%d·%H%M`) |
 | `GLYPH_SEP` | Separator (default `·`) |
 | `GLYPH_ORDER` | Field order (default `label project agent machine stamp`); naming fewer leaves the rest out, and naming `account` adds the login |
-| `GLYPH_ME` | Your first name, for splitting an address like `samwork4` (default: the computer's account name) |
+| `GLYPH_ME` | Your first name, for splitting an address like `benwork4` (default: the computer's account name) |
 | `GLYPH_ACCOUNTS` | Account tags that overrule the worked-out one (default `~/.config/glyph/accounts.tsv`) |
 | `GLYPH_MACHINE` | Machine tag, when the hostname does not map well |
 | `GLYPH_AGENT` | Agent for the mark, when Glyph cannot tell which one owns the shell |
@@ -417,6 +496,8 @@ Herdr is the only backend today.
 | `GLYPH_WAKE_GRACE` | Seconds Claude Code gets to continue by itself first (default 120) |
 | `GLYPH_SPACES` | Folder holding your spaces layout (default `~/.config/glyph/spaces`) |
 | `GLYPH_SPACES_MACHINE` | Which machine in that layout this is, when the computer name does not match |
+| `GLYPH_RIG` | Folder holding the fleet reports (default `~/.config/glyph/rig`) |
+| `GLYPH_FLEET_TIMEOUT` | Seconds any one reader of `glyph fleet report` gets (default 2) |
 
 **Machine tags** come from the system computer name when available. On macOS,
 Glyph reads `scutil --get ComputerName`; Windows/WSL and Linux use the system
@@ -448,11 +529,11 @@ digits.
 
 | Signed in as | Tag |
 |---|---|
-| `sam.lee4@example.com` | `sl4` |
-| `samwork4@example.com` | `sw4` |
-| `sam.lee@example.com` | `sl` |
+| `ben.carter4@example.com` | `bc4` |
+| `benwork4@example.com` | `bw4` |
+| `ben.carter@example.com` | `bc` |
 
-`samwork4` has no dot to split on. When an address opens with your own first
+`benwork4` has no dot to split on. When an address opens with your own first
 name, as the computer has it, that name counts as the first word. Set
 `GLYPH_ME` if the computer has it wrong, and `glyph account` prints the tag for
 the current login. For an address the rule still gets wrong, one tab-separated

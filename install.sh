@@ -39,10 +39,15 @@ _glyph_install() {
   fi
   echo "installed $_gi_dest/glyph.zsh"
 
-  # glyph spaces is Python and stays in this clone; a link puts it on PATH.
-  if [ -x "$_gi_dir/spaces/glyph-spaces" ] && command -v python3 >/dev/null 2>&1; then
-    mkdir -p "$HOME/.local/bin" && ln -sf "$_gi_dir/spaces/glyph-spaces" "$HOME/.local/bin/glyph-spaces" \
-      && echo "linked ~/.local/bin/glyph-spaces (keep this clone where it is)"
+  # glyph spaces and glyph fleet are Python and stay in this clone; a link puts
+  # each on PATH. glyph-fleet has to be a file ssh can run, not a shell
+  # function, since that is how one machine asks another for its report.
+  if command -v python3 >/dev/null 2>&1; then
+    for _gi_cmd in glyph-spaces glyph-fleet; do
+      [ -x "$_gi_dir/spaces/$_gi_cmd" ] || continue
+      mkdir -p "$HOME/.local/bin" && ln -sf "$_gi_dir/spaces/$_gi_cmd" "$HOME/.local/bin/$_gi_cmd" \
+        && echo "linked ~/.local/bin/$_gi_cmd (keep this clone where it is)"
+    done
   fi
 
   if grep -qF 'glyph.zsh' "$HOME/.zshrc" 2>/dev/null; then
@@ -87,5 +92,5 @@ _glyph_install() {
 _glyph_install
 _gi_rc=$?
 unset -f _glyph_install 2>/dev/null
-unset _gi_sourced _gi_self _gi_dir _gi_src _gi_dest _gi_line _gi_target 2>/dev/null
+unset _gi_sourced _gi_self _gi_dir _gi_src _gi_dest _gi_line _gi_target _gi_cmd 2>/dev/null
 ( exit $_gi_rc )

@@ -12,7 +12,7 @@ included. Commit nothing about any one person's setup:
   `~/.config/glyph/spaces/`, never here
 
 The same goes for commit messages. Examples use made-up names: `acme-api`,
-`laptop`, `studio`, `mini`, `sam.lee4@example.com`.
+`laptop`, `studio`, `mini`, `ben.carter4@example.com`.
 
 A maintainer's own setup stays outside the repo and is linked in locally.
 `.soul/` (project notes) is git-ignored for that reason; read it if it is
