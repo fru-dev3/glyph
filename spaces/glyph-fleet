@@ -3,7 +3,7 @@
 
 `report` collects this machine and writes it where every machine can read it;
 `report --json` prints it and writes nothing, which is what the app and an ssh
-probe use. `status` and `diff` read what each machine wrote.
+probe use. `status`, `diff` and `setup` read what each machine wrote.
 
 An executable file, not a shell function, so `ssh laptop glyph-fleet report
 --json` works non-interactively. install.sh links it into ~/.local/bin.
@@ -36,6 +36,9 @@ def main():
     s.set_defaults(func=fleet.cmd_status)
     d = sub.add_parser("diff", help="the configuration that is not the same everywhere")
     d.set_defaults(func=fleet.cmd_diff)
+    u = sub.add_parser("setup", help="what a machine still needs before it can work")
+    u.add_argument("--machine", help="one machine instead of all of them")
+    u.set_defaults(func=fleet.cmd_setup)
     args = ap.parse_args()
     if not getattr(args, "func", None):
         ap.print_help()

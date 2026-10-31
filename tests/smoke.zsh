@@ -259,11 +259,14 @@ STUB
   assert_eq "$out" 'collector: status --live' 'glyph fleet status reaches the collector'
   out=$(glyph fleet diff)
   assert_eq "$out" 'collector: diff' 'glyph fleet diff reaches the collector'
+  out=$(glyph fleet setup --machine studio)
+  assert_eq "$out" 'collector: setup --machine studio' \
+    'glyph fleet setup reaches the collector'
   print -r -- 'solo = claude' > "$test_dir/fleet-solo.conf"
   out=$(GLYPH_DRYRUN=1 GLYPH_FLEET_CONF="$test_dir/fleet-solo.conf" glyph fleet solo)
   [[ $out == *'pane 1  claude on local'* ]] \
     || { print -ru2 -- "FAIL: a preset still launches: $out"; exit 1; }
-  print -r -- 'PASS: fleet report, status and diff reach the collector, presets still launch'
+  print -r -- 'PASS: fleet report, status, diff and setup reach the collector, presets still launch'
 fi
 print -r -- 'PASS: one-command fleet init, custom config path, existing definitions, repeat runs and dry run'
 print -r -- 'PASS: AGY labels, prompts, print mode, management commands and opt-in flags'

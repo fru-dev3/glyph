@@ -398,13 +398,15 @@ Herdr is the only backend today.
 
 ## Fleet
 
-A preset launches agents. The three commands below answer the other question:
-what each of your machines actually is, and which one is free to take work.
+A preset launches agents. The commands below answer the other question: what
+each of your machines actually is, which one is free to take work, and which
+one is switched on but cannot build anything.
 
 ```sh
 glyph fleet report    # collect this machine and write it down
 glyph fleet status    # every machine, side by side
 glyph fleet diff      # the configuration that is not the same everywhere
+glyph fleet setup     # what a machine still needs before it can do the work
 ```
 
 `report` asks this Mac what it is: its model, chip, cores split performance and
@@ -441,11 +443,13 @@ volume and session included, and `--live` asks every reachable machine over ssh
 first instead of reading the last file.
 
 ```
-MACHINE          ROLE  UP   READING   CHIP         CORES  FREE MEM    BOOT DISK    LIVE
-laptop           dev   yes  just now  Apple M2 Pro 6+4    5G of 17G   61% of 494G  3
-studio           hub   yes  4m        Apple M4     4+6    1G of 17G   97% of 245G  9
-bens-phone       -     yes  none      iOS          -      -           -            -
-air              demo  no   21d       Apple M1     4+4    -           -            -
+MACHINE          ROLE  UP   READING   CHIP         CORES  FREE MEM    BOOT DISK    LIVE  SETUP
+laptop           dev   yes  just now  Apple M2 Pro 6+4    5G of 17G   61% of 494G  3     ok
+studio           hub   yes  4m        Apple M4     4+6    1G of 17G   97% of 245G  9     4 bad
+bens-phone       -     yes  none      iOS          -      -           -            -     -
+air              demo  no   21d       Apple M1     4+4    -           -            -     -
+setup    studio           tcc.screen-recording   missing
+setup    studio           signing.identity       broken
 warning  studio           / is 97 percent full
 offline  air              last seen 21d ago
 ```
@@ -459,6 +463,64 @@ tool.uv                                0.8.5               0.8.8
 tool.pi                                0.79.9              -                     only laptop
 launchd.homebrew.mxcl.ollama           -                   loaded                only studio
 ```
+
+### Can it actually do the work
+
+Online and useless is a real state. A Mac with 101 MB free, no Apple ID in
+Xcode and a revoked signing certificate answers every question above and
+cannot build a thing, and `UP yes` cannot tell it from one that can. So the
+report carries a `setup` block: one named check per thing that has quietly
+broken a build, each `ok`, `missing`, `broken` or `unknown`.
+
+```sh
+glyph fleet setup                    every machine, worst first
+glyph fleet setup --machine studio   one of them
+```
+
+```json
+"setup": {
+  "ready": false,
+  "checks": [
+    { "id": "tcc.screen-recording", "state": "missing",
+      "detail": "Screen Recording is not granted for the terminal, so a Mac screen check cannot pass",
+      "proof": "CGPreflightScreenCaptureAccess() returns not granted",
+      "human": "System Settings, Privacy and Security, Screen Recording, turn on the terminal",
+      "fix": null }
+  ]
+}
+```
+
+The thirteen checks, worst first: `tcc.microphone`, `tcc.speech` and
+`tcc.screen-recording`; `signing.identity`; `xcode.appleid`,
+`xcode.devicesupport` and `xcode.developer-dir`; `disk.boot-free` and
+`build.scratch`; `path.noninteractive`; `engine.version`; `locks`; and
+`submodule.glyphcore`.
+
+Three rules hold them up, and all three were paid for:
+
+- **A check without a proof is not a check.** Every one carries the command
+  whose failure it is reporting, so you can run it by hand and see the same
+  thing. The signing check is why: `security find-identity -v` printed three
+  valid identities on a Mac whose freshly built apps were being moved to the
+  Trash, because macOS treats a revoked signature as malware and the error
+  never says certificate. So that check signs a throwaway in a folder it makes
+  and removes, runs `spctl -a -vvv -t exec` on it and reads the result for
+  `CSSMERR_TP_CERT_REVOKED`. It is the only thing in the block that writes
+  anything, and it does not run at all on a machine with no room.
+- **`unknown` is never `ok`.** A check that cannot run, runs out of time or
+  hits a permission wall says so and says why, and `ready` is false while any
+  check is unknown. A held lock with no holder file is reported as unknown
+  rather than assumed stale.
+- **`human` and `fix` are different fields.** `human` is the clicks only a
+  person can do, at that machine's own keyboard, and the three permissions are
+  all of that: they cannot be granted from a shell at all, so each one names
+  the exact System Settings path and offers no fix. `fix` is what could be
+  automated later. Naming the clicks is the feature; implying they were
+  handled would be the worst thing this could do.
+
+Everything in the block reads. Nothing installs, grants, links, deletes,
+points `DEVELOPER_DIR` or touches a keychain: `glyph fleet` says what a
+machine is missing, and a person decides what to do about it.
 
 Every reader stands on its own. One that cannot answer adds a line to `errors`
 and the rest of the report still comes out, because losing a machine over one
@@ -498,6 +560,10 @@ Fleet is Python beside Spaces, from the same clone: `install.sh` links
 | `GLYPH_SPACES_MACHINE` | Which machine in that layout this is, when the computer name does not match |
 | `GLYPH_RIG` | Folder holding the fleet reports (default `~/.config/glyph/rig`) |
 | `GLYPH_FLEET_TIMEOUT` | Seconds any one reader of `glyph fleet report` gets (default 2) |
+| `GLYPH_FLEET_DISK_FLOOR_GB` | Free space below which a build is reported broken (default 5) |
+| `GLYPH_SIGN_IDENTITY` | The codesigning identity `signing.identity` verifies, by hash or name |
+| `GLYPH_ENGINE` | Where the Glyph engine is (default `~/.local/lib/glyph/prevail`) |
+| `GLYPH_GLYPHCORE` | Extra `Packages/GlyphCore` paths to check, colon separated |
 
 **Machine tags** come from the system computer name when available. On macOS,
 Glyph reads `scutil --get ComputerName`; Windows/WSL and Linux use the system
