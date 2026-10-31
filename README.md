@@ -691,6 +691,21 @@ that cannot change, a version or a model name, is kept in
 Fleet is Python beside Spaces, from the same clone: `install.sh` links
 `glyph-fleet` into `~/.local/bin`.
 
+### The one sign-in that clears three symptoms
+
+No Apple ID in Xcode looks like three unrelated faults, and the third is the
+one that wastes a day:
+
+- `-allowProvisioningUpdates` has nothing to register a device with.
+- An iPhone install cannot be signed.
+- **A Mac app built on that machine dies about 14 ms after launch, with no
+  crash report.** It reads as the app being broken. It is the signature.
+
+The workaround while it is missing is to build ad-hoc, `SIGN_IDENTITY=-`. The
+fix is one action at the keyboard: Xcode, Settings, Accounts, add the Apple ID.
+`xcode.appleid` names it, and names your team when `GLYPH_TEAM` or a `team` in
+the map says which one.
+
 ### Which account a machine can clone as
 
 Two checks, because a status is not a capability. `gh auth status` has named

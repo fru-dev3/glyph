@@ -1523,6 +1523,22 @@ def asc_keys():
     return out
 
 
+def expected_team():
+    """The Apple Developer team a machine should be signed in to, if told.
+
+    Never hardcoded: a team id names somebody, and this repo is public.
+    `GLYPH_TEAM`, else a `team` beside the `git` block in the map.
+    """
+    t = os.environ.get("GLYPH_TEAM")
+    if t:
+        return t
+    try:
+        with open(os.path.join(core.map_root(), "machines.json")) as f:
+            return json.load(f).get("team")
+    except Exception:
+        return None
+
+
 def appleid_check():
     out = run(["defaults", "read", "com.apple.dt.Xcode",
                "DVTDeveloperAccountManagerAppleIDLists"], timeout=1.5)
@@ -1539,11 +1555,15 @@ def appleid_check():
                     "no Apple ID in Xcode, but an App Store Connect key is at %s, "
                     "which is what -authenticationKeyPath needs and wants no "
                     "interactive sign-in" % tilde(keys[0]))]
+    team = expected_team()
     return [chk("xcode.appleid", "missing",
                 "no Apple ID signed into Xcode and no App Store Connect key on "
                 "disk, so -allowProvisioningUpdates has nothing to register a "
-                "device with and an iPhone install cannot be signed",
-                human="Xcode, Settings, Accounts, add the Apple ID",
+                "device with, an iPhone install cannot be signed, and a Mac app "
+                "built here dies about 14 ms after launch with no crash report, "
+                "which reads as the app being broken rather than unsigned",
+                human="Xcode, Settings, Accounts, add the Apple ID%s"
+                      % (", team %s" % team if team else ""),
                 fix="put an App Store Connect key in ~/.appstoreconnect/private_keys "
                     "and pass -authenticationKeyPath, -authenticationKeyID and "
                     "-authenticationKeyIssuerID, which needs no sign-in")]
