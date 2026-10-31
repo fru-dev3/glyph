@@ -72,6 +72,48 @@ def wants(machine, space):
     return any(p in space.get("profiles", []) for p in profiles(machine))
 
 
+def space_names(space):
+    """Every name `--space` may call a space by: its id, and the workspace it
+    builds. Both, because the id is what the space file is called and the
+    workspace name is what you see in the terminal, and they differ."""
+    return [x for x in (space.get("id"), space.get("space")) if x]
+
+
+def narrowed(args, mid, machine, spaces):
+    """The spaces to work on: all of this machine's, or the ones --space names.
+
+    None, with the reason printed, when a name selects nothing. A refusal
+    rather than a silent no-op, because narrowing is the direction that does
+    damage quietly: a `--space` that matched nothing prints what a machine
+    with nothing left to build prints, and the difference between those two is
+    a workspace nobody made.
+    """
+    want = list(getattr(args, "space", None) or [])
+    mine = [s for s in spaces if wants(machine, s)]
+    if not want:
+        return mine
+    out = []
+    for name in want:
+        hit = [s for s in mine if name in space_names(s)]
+        if hit:
+            out += [s for s in hit if s not in out]
+            continue
+        other = next((s for s in spaces if name in space_names(s)), None)
+        if other:
+            print("%s does not take %s: that space is in profile %s, and this "
+                  "machine takes %s"
+                  % (mid, name, ",".join(other.get("profiles") or []) or "none",
+                     ",".join(profiles(machine))))
+        else:
+            print("%s: no space named %s in %s" % (mid, name, map_root()))
+        print("")
+        print("%-18s %s" % ("SPACE", "WORKSPACE"))
+        for s in sorted(mine, key=lambda s: s["id"]):
+            print("%-18s %s" % (s["id"], space_label(machine, s)))
+        return None
+    return out
+
+
 def space_label(machine, space):
     """The workspace label on this machine: its tag, then the space, st-work.
 
@@ -274,6 +316,10 @@ def cmd_check(args):
     mid, m, spaces = this_machine(args)
     if not mid:
         return 2
+    mine = narrowed(args, mid, m, spaces)
+    if mine is None:
+        return 2
+    only = set(s["id"] for s in mine)
     roots = m["roots"]
     _, backend = backend_for(m)
     print("machine  %s  (tag %s, role %s, profiles %s, backend %s %s)"
@@ -287,7 +333,7 @@ def cmd_check(args):
     ok = bad = skipped = untrusted = 0
     trust = trust_table()
     for sp in spaces:
-        if not wants(m, sp):
+        if sp["id"] not in only:
             skipped += len(sp.get("tabs", []))
             continue
         print("%s  [%s]" % (space_label(m, sp), sp["id"]))
@@ -316,7 +362,10 @@ def cmd_check(args):
                 print("  %-18s ok       %s%s" % (tab["label"], p, note))
                 ok += 1
         print("")
-    print("%d ok, %d missing, %d tabs in other profiles" % (ok, bad, skipped))
+    print("%d ok, %d missing, %d tabs in %s"
+          % (ok, bad, skipped,
+             "spaces this run did not name" if getattr(args, "space", None)
+             else "other profiles"))
     if untrusted:
         print("%d would stop on Claude Code's trust prompt before starting" % untrusted)
     return 1 if bad else 0
@@ -331,9 +380,12 @@ def cmd_names(args):
     mid, m, spaces = this_machine(args)
     if not mid:
         return 2
+    mine = narrowed(args, mid, m, spaces)
+    if mine is None:
+        return 2
     seen = {}
     print("%-14s %-18s %s" % ("SPACE", "TAB", "SESSION NAME"))
-    for sp, tab, path in tabs_for(m, spaces):
+    for sp, tab, path in tabs_for(m, mine):
         name = session_name(m, tab)
         seen.setdefault(name, []).append("%s/%s" % (sp["space"], tab["label"]))
         note = "" if tab.get("agent") else "  (no agent)"

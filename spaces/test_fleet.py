@@ -9,7 +9,7 @@ command, which is the whole promise worth checking. A reader that cannot read
 has to become a line in `errors` rather than a traceback, because a caller
 losing a whole machine over one unreadable fact is the failure that matters.
 """
-import os, shutil, sys, tempfile
+import contextlib, io, os, shutil, sys, tempfile, time
 
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 
@@ -321,6 +321,207 @@ def test_a_folder_reachable_down_two_roots_is_counted_once():
         # a link to the same real folder is still the same checkout
         os.symlink(os.path.join(d, "code", "wt"), os.path.join(d, "wt-link"))
         assert len(fleet.found_under(roots, "Packages/GlyphCore")) == 1
+
+
+# --- capabilities: what a machine can therefore do ---------------------------
+# Derived from the checks above, so what is checked here is the derivation: a
+# `no` has to lead back to the check that caused it, and a check that could
+# not answer must never come out the other side as a machine you can hand a
+# build to.
+
+
+def capability(cid, states, spaces=None):
+    """One capability, from states invented for the checks it rests on."""
+    checks = [fleet.chk(k, v, "made up") for k, v in states.items()]
+    return dict((c["id"], c) for c in fleet.capabilities(checks, spaces))[cid]
+
+
+def test_a_capability_is_yes_only_when_every_check_it_needs_is_ok():
+    got = capability("swift-build", {"xcode.developer-dir": "ok",
+                                     "build.scratch": "ok"})
+    assert got["can"] == "yes", got
+    assert got["from"] == ["xcode.developer-dir", "build.scratch"], got
+
+
+def test_an_unknown_check_makes_a_capability_unknown_not_yes():
+    """The one that matters most here, and the same rule the block keeps. A
+    machine that might be able to build is not a machine you give a build to,
+    and a capability is read by something choosing where work goes."""
+    for state in ("unknown",):
+        got = capability("swift-build", {"xcode.developer-dir": "ok",
+                                         "build.scratch": state})
+        assert got["can"] == "unknown", got
+        assert got["from"] == ["build.scratch"], "name the one that could not answer"
+    # A check that is simply not in the block at all is the same thing: a
+    # missing row must not read as nothing to report.
+    got = capability("mac-screen", {})
+    assert got["can"] == "unknown", got
+    got = capability("iphone-sim", {"xcode.devicesupport": "ok"})
+    assert got["can"] == "unknown", got
+
+
+def test_a_capability_no_names_the_check_that_caused_it():
+    """A no is traceable: it names the checks that are not ok, and those
+    carry the proof. It never names the ones that were fine."""
+    got = capability("iphone-sim", {"xcode.devicesupport": "ok",
+                                    "xcode.appleid": "missing"})
+    assert got["can"] == "no", got
+    assert got["from"] == ["xcode.appleid"], got
+    got = capability("swift-build", {"xcode.developer-dir": "broken",
+                                     "build.scratch": "broken"})
+    assert got["can"] == "no", got
+    assert got["from"] == ["xcode.developer-dir", "build.scratch"], got
+    # A broken check beside one that could not answer is still a no: broken is
+    # the definite half, and the no is what a caller can act on.
+    got = capability("swift-build", {"xcode.developer-dir": "broken",
+                                     "build.scratch": "unknown"})
+    assert got["can"] == "no", got
+    assert got["from"] == ["xcode.developer-dir"], got
+
+
+def test_the_vault_root_is_read_off_the_block_and_not_the_disk():
+    """It rests on the spaces block the collector already built, so a machine
+    that is not in the map is unknown rather than assumed to have no vault."""
+    caps = {"vault": {"xcode.appleid": "ok"}}
+    assert capability("vault", caps["vault"], None)["can"] == "unknown"
+    assert capability("vault", {}, {"presets": []})["can"] == "unknown", \
+        "no roots in the block is not the same as no vault root"
+    assert capability("vault", {}, {"roots": {"home": "~"}})["can"] == "no"
+    assert capability("vault", {}, {"roots": {"vault": "~/v"},
+                                    "missing_roots": ["vault"]})["can"] == "no"
+    got = capability("vault", {}, {"roots": {"vault": "~/v"}, "missing_roots": []})
+    assert got["can"] == "yes", got
+    assert fleet.root_check({"roots": {"vault": "~/v"}}, "vault")["proof"], \
+        "a check without a proof is not a check, root or not"
+
+
+def test_the_one_line_form_says_what_a_machine_can_do():
+    caps = [{"id": "vault", "can": "yes", "from": []},
+            {"id": "swift-build", "can": "no", "from": []},
+            {"id": "mac-screen", "can": "unknown", "from": []}]
+    assert fleet.can_line(caps) == "vault mac-screen?"
+    assert fleet.can_line([{"id": "vault", "can": "no", "from": []}]) == "none"
+    assert fleet.can_line(None) is None, "a report written before this gets no line"
+
+
+# --- reachable is not a flag -------------------------------------------------
+# `tailscale status --json` reported the hub Online false while an ssh session
+# to its tailnet address was open, it had just written a full report and nine
+# agents were running on it. A roster flag is the weakest evidence there is.
+
+
+def test_a_machine_that_answered_is_up_whatever_the_roster_says():
+    stale = {"online": False, "last_seen": "2026-10-31T09:00:00-05:00"}
+    fresh = {"taken": fleet.stamp(time.time())}
+    up, why = fleet.up_verdict(fresh, stale, answered=True)
+    assert up is True and "answered this run" in why, (up, why)
+    up, why = fleet.up_verdict(fresh, stale)
+    assert up is True, "a reading a moment old outweighs the flag"
+    assert "wrote a reading" in why and "ago" not in why, why
+    up, why = fleet.up_verdict(None, {"online": False, "self": True})
+    assert up is True and "machine asking" in why, (up, why)
+
+
+def test_the_roster_is_believed_where_there_is_nothing_better():
+    old = {"taken": "2026-10-01T09:00:00-05:00"}
+    assert fleet.up_verdict(old, {"online": False}) == (False, None)
+    assert fleet.up_verdict(None, {"online": False}) == (False, None)
+    assert fleet.up_verdict(None, {"online": True}) == (True, None)
+    assert fleet.up_verdict(None, None) == (False, None)
+    # Agreement is never explained: a why on every row would be noise, and the
+    # column is the conclusion.
+    assert fleet.up_verdict({"taken": fleet.stamp(time.time())},
+                            {"online": True})[1] is None
+
+
+def test_a_mac_that_never_reported_is_unknown_not_blank():
+    """Blank is for a row that is not a Mac at all. The two read the same in
+    the column and they are different things."""
+    assert fleet.setup_mark(None, {"os": "macOS"}) == "unknown"
+    assert fleet.setup_mark(None, {}) == "unknown", "a machine only in the map"
+    assert fleet.setup_mark(None, {"os": "iOS"}) == "-"
+    assert fleet.setup_mark({"setup": {"ready": True, "checks": []}}) == "ok"
+    assert fleet.setup_mark({"setup": {"ready": False, "checks": [
+        fleet.chk("locks", "broken", "")]}}) == "1 bad"
+
+
+def test_a_colliding_tailnet_id_is_the_same_on_every_run():
+    """Two nodes can normalise to one id. Which one takes the suffix is
+    decided by the node's own stable id, never by the order the peers came
+    out of the status object: an id that moves between runs splits one
+    machine's history across two files. An earlier version kept neither, it
+    overwrote, and one of the two machines left the roster altogether."""
+    a = {"HostName": "Ben Air", "DNSName": "", "ID": "n2", "TailscaleIPs": ["100.0.0.2"]}
+    b = {"HostName": "Ben-Air", "DNSName": "", "ID": "n1", "TailscaleIPs": ["100.0.0.1"]}
+    me = {"HostName": "Ben Air", "DNSName": "", "ID": "n9"}
+    try:
+        for peers in ({"1": a, "2": b}, {"1": b, "2": a}):
+            fleet._TS["d"] = {"Self": me, "Peer": peers}
+            got = fleet.tailnet()
+            assert sorted(got) == ["ben-air", "ben-air-1", "ben-air-2"], got
+            assert got["ben-air"]["self"] is True, "self keeps the bare id"
+            assert got["ben-air-1"]["ip"] == "100.0.0.1", got
+            assert got["ben-air-2"]["ip"] == "100.0.0.2", got
+        assert fleet.node_key({"PublicKey": "k"}) == "k"
+        assert fleet.node_key({}) == ""
+    finally:
+        fleet._TS.clear()
+
+
+# --- narrowing a run to one space --------------------------------------------
+# `--space` is the one flag that makes the run smaller, which is the direction
+# that does damage quietly: a name that selects nothing prints what a machine
+# with nothing left to build prints.
+
+LAPTOP = {"role": "dev", "tag": "lt", "profiles": ["work"],
+          "roots": {"home": "~", "code": "~/code"}}
+LAYOUT = [{"id": "work", "space": "work", "profiles": ["work"], "tabs": []},
+          {"id": "site-and-notes", "space": "site", "profiles": ["work"], "tabs": []},
+          {"id": "ops", "space": "ops", "profiles": ["hub"], "tabs": []}]
+
+
+def narrow(*names):
+    """(the spaces selected, what it printed). The refusal is half of what
+    this flag does, so the text it prints is part of what is checked."""
+    class Args(object):
+        space = list(names) or None
+    said = io.StringIO()
+    with contextlib.redirect_stdout(said):
+        got = core.narrowed(Args(), "laptop", LAPTOP, LAYOUT)
+    return got, said.getvalue()
+
+
+def test_no_space_flag_is_every_space_this_machine_takes():
+    got, said = narrow()
+    assert [s["id"] for s in got] == ["work", "site-and-notes"]
+    assert said == "", "the ordinary run says nothing extra"
+
+
+def test_a_space_is_named_by_its_id_or_by_its_workspace():
+    ids = lambda *n: [s["id"] for s in narrow(*n)[0]]
+    assert ids("site-and-notes") == ["site-and-notes"]
+    assert ids("site") == ["site-and-notes"]
+    assert ids("work", "site") == ["work", "site-and-notes"]
+    assert ids("work", "work") == ["work"], "named twice is once"
+
+
+def test_a_space_this_machine_does_not_take_is_refused():
+    """Not a silent no-op. `apply --space ops` on a machine whose profiles do
+    not select ops would otherwise print nothing to do, which is exactly what
+    a machine with everything already built prints."""
+    got, said = narrow("ops")
+    assert got is None
+    assert "does not take ops" in said and "profile hub" in said, said
+    assert narrow("work", "ops")[0] is None, "one bad name refuses the whole run"
+
+
+def test_a_space_that_does_not_exist_lists_the_ones_that_do():
+    got, said = narrow("nothing-of-the-kind")
+    assert got is None
+    assert "no space named nothing-of-the-kind" in said, said
+    for line in ("SPACE", "work", "site-and-notes", "lt-work", "lt-site"):
+        assert line in said, (line, said)
+    assert "ops" not in said, "a space this machine does not take is not on offer"
 
 
 def main():

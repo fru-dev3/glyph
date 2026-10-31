@@ -243,6 +243,63 @@ if command -v python3 >/dev/null 2>&1; then
   [[ $out == *'lt-work-api'* ]] || { print -ru2 -- 'FAIL: glyph spaces dispatch'; exit 1; }
   print -r -- 'PASS: spaces check, names, a missing map, and the glyph spaces front door'
 
+  # --space: one space built and the others left alone. Against a Herdr of our
+  # own making, which logs every call, so what was touched is a fact rather
+  # than a claim. It answers with one workspace no space file describes, the
+  # orphan this flag exists to leave exactly where it is.
+  mkdir -p $test_dir/code/acme-site $test_dir/spaces-bin
+  print -r -- '{"id":"site-and-notes","space":"site","profiles":["work"],"tabs":[{"label":"site","mark":"site-web","path":"{code}/acme-site"}]}' > $map/spaces/site.json
+  # Its own bin and its own log, so the wake tests keep the herdr they built.
+  cat > "$test_dir/spaces-bin/herdr" <<'STUB'
+#!/bin/zsh
+print -r -- "${(j: :)@}" >> "$GLYPH_TEST_HERDR_LOG"
+case "$1 $2" in
+  "workspace list") print -r -- '{"result":{"workspaces":[{"workspace_id":"w-orphan","label":"lt-orphan"}]}}' ;;
+  "workspace create") print -r -- '{"result":{"workspace":{"workspace_id":"w-new"}}}' ;;
+  "tab list") print -r -- '{"result":{"tabs":[]}}' ;;
+  "tab create") print -r -- '{"result":{"tab":{"tab_id":"t-new"}}}' ;;
+  "pane list") print -r -- '{"result":{"panes":[]}}' ;;
+  *) print -r -- '{"result":{}}' ;;
+esac
+STUB
+  chmod +x "$test_dir/spaces-bin/herdr"
+  spacelog=$test_dir/spaces-herdr.log
+  sp() { PATH="$test_dir/spaces-bin:$PATH" GLYPH_TEST_HERDR_LOG=$spacelog \
+         GLYPH_SPACES=$map GLYPH_SPACES_MACHINE=laptop ZDOTDIR=$test_dir/zdot \
+         python3 "$repo/spaces/glyph-spaces" "$@" }
+  : > $spacelog
+  out=$(sp apply --space site --no-agents)
+  [[ $out == *'lt-site'*'built with 1 tabs'* ]] \
+    || { print -ru2 -- "FAIL: --space did not build the space it named: $out"; exit 1; }
+  log=$(<$spacelog)
+  [[ $log == *'--label lt-site'* ]] || { print -ru2 -- "FAIL: --space built nothing: $log"; exit 1; }
+  [[ $log != *'lt-work'* ]] \
+    || { print -ru2 -- "FAIL: --space touched another space: $log"; exit 1; }
+  # The orphan: named by `workspace list` and never closed, renamed or written
+  # to. Six agent sessions were living in one of these when this was written.
+  [[ $log != *'workspace close'* && $log != *'workspace rename'* && $log != *orphan* ]] \
+    || { print -ru2 -- "FAIL: --space moved an orphan workspace: $log"; exit 1; }
+  # A name this machine's profiles do not select, and a name that is not there
+  # at all. Both refuse, and both say what this machine does take: a narrowed
+  # run that quietly matches nothing prints what a finished machine prints.
+  rc=0; out=$(sp apply --space ops) || rc=$?
+  assert_eq "$rc" 2 '--space refuses a space outside this machine profiles'
+  [[ $out == *'does not take ops'* && $out == *'profile hub'* && $out == *'lt-site'* ]] \
+    || { print -ru2 -- "FAIL: the refusal must name the profile: $out"; exit 1; }
+  rc=0; out=$(sp start --space no-such-space) || rc=$?
+  assert_eq "$rc" 2 '--space refuses a space that does not exist'
+  [[ $out == *'no space named no-such-space'* && $out == *'site-and-notes'* && $out == *'work'* ]] \
+    || { print -ru2 -- "FAIL: a name that does not exist must list the real ones: $out"; exit 1; }
+  rc=0; out=$(sp apply --space site --prune) || rc=$?
+  assert_eq "$rc" 2 '--prune is refused with --space'
+  [[ $out == *'--prune is refused with --space'* ]] \
+    || { print -ru2 -- "FAIL: --space with --prune: $out"; exit 1; }
+  out=$(sp check --space site)
+  [[ $out == *'lt-site  [site-and-notes]'* && $out != *'lt-work'* ]] \
+    || { print -ru2 -- "FAIL: check --space: $out"; exit 1; }
+  command rm -f $map/spaces/site.json
+  print -r -- 'PASS: --space builds one space, refuses a name it does not take or does not have, refuses --prune, and leaves an orphan workspace alone'
+
   # glyph fleet: report, status and diff go to the collector, a file ssh can
   # run, and the preset launcher keeps the same name. Both have to work, and
   # the function must not call itself.
@@ -285,6 +342,31 @@ STUB
     || { print -ru2 -- "FAIL: a refused apply must print the plan: $out"; exit 1; }
   [[ ! -e $test_dir/rig-home/.zshenv ]] \
     || { print -ru2 -- 'FAIL: a refused apply wrote to the home folder'; exit 1; }
+  # Capabilities: the report says what a machine can do, not only what is
+  # broken on it, and `status` and `setup` both show it. Against a reading
+  # written here, not this machine's own, so the states are the ones under test.
+  mkdir -p $test_dir/caps-rig/machines
+  print -r -- '{"schema":1,"taken":"2026-01-01T00:00:00-05:00","machine":{"id":"laptop","role":"dev"},
+   "capabilities":[{"id":"vault","can":"yes","from":["spaces.root.vault"]},
+     {"id":"swift-build","can":"no","from":["xcode.developer-dir"]},
+     {"id":"mac-screen","can":"unknown","from":["tcc.screen-recording"]},
+     {"id":"iphone-sim","can":"yes","from":["xcode.devicesupport","xcode.appleid"]}],
+   "setup":{"ready":false,"checks":[{"id":"xcode.developer-dir","state":"broken","detail":"made up"},
+     {"id":"tcc.screen-recording","state":"unknown","detail":"made up"}]}}' \
+   > $test_dir/caps-rig/machines/laptop.json
+  caps() { GLYPH_RIG=$test_dir/caps-rig GLYPH_TAILSCALE=$test_dir/bin/no-tailscale \
+           python3 "$repo/spaces/glyph-fleet" "$@" }
+  out=$(caps status)
+  [[ $out == *'can      laptop'*'vault iphone-sim mac-screen?'* ]] \
+    || { print -ru2 -- "FAIL: status must say what a machine can do: $out"; exit 1; }
+  [[ $out != *'swift-build'* ]] \
+    || { print -ru2 -- "FAIL: what it cannot do is the absence: $out"; exit 1; }
+  rc=0; out=$(caps setup) || rc=$?
+  [[ $out == *'CAPABILITY'*'CAN'*'FROM'* && $out == *'swift-build    no       xcode.developer-dir'* \
+     && $out == *'mac-screen     unknown  tcc.screen-recording'* ]] \
+    || { print -ru2 -- "FAIL: setup must name the check behind each one: $out"; exit 1; }
+  print -r -- 'PASS: capabilities in the report, one line in status and the deciding checks in setup'
+
   print -r -- 'solo = claude' > "$test_dir/fleet-solo.conf"
   out=$(GLYPH_DRYRUN=1 GLYPH_FLEET_CONF="$test_dir/fleet-solo.conf" glyph fleet solo)
   [[ $out == *'pane 1  claude on local'* ]] \
