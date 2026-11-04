@@ -1365,7 +1365,7 @@ _glyph_fleet_backend() {
 
 _glyph_fleet_herdr() {
   local preset=$1 mark=$2; shift 2
-  command -v herdr >/dev/null 2>&1 || { print -ru2 -- 'glyph: Herdr backend needs herdr'; return 1; }
+  [[ -n ${GLYPH_DRYRUN:-} ]] || command -v herdr >/dev/null 2>&1 || { print -ru2 -- 'glyph: Herdr backend needs herdr'; return 1; }
   local slot agent machine label tab_output tab_id pane_id command_text plist entry
   for slot in "$@"; do
     agent=${slot%%:*}; machine=${slot#*:}
@@ -1402,7 +1402,7 @@ _glyph_fleet_herdr() {
 
 _glyph_fleet_cmux() {
   local preset=$1 mark=$2; shift 2
-  command -v cmux >/dev/null 2>&1 || { print -ru2 -- 'glyph: cmux backend needs cmux'; return 1; }
+  [[ -n ${GLYPH_DRYRUN:-} ]] || command -v cmux >/dev/null 2>&1 || { print -ru2 -- 'glyph: cmux backend needs cmux'; return 1; }
   local slot agent machine label command_text
   for slot in "$@"; do
     agent=${slot%%:*}; machine=${slot#*:}
