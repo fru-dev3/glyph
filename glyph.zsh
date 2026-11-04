@@ -934,10 +934,20 @@ glyph() {
       elif [[ $onfile == $GLYPH_VERSION ]]; then _gd ok "version: $GLYPH_VERSION, shell matches disk"
       else _gd warn "version: shell has $GLYPH_VERSION, disk has $onfile. run: exec zsh"; fi
       # the source line
-      if command grep -qF 'glyph.zsh' "$HOME/.zshrc" 2>/dev/null; then
-        _gd ok "~/.zshrc sources it"
+      # A startup file may source glyph through a wrapper of its own rather than naming
+      # glyph.zsh, so look for the word in any of them, and believe a shell that already has
+      # the function over a string match. Grepping ~/.zshrc for the literal "glyph.zsh" called
+      # a perfectly good install broken, which is worse than not checking at all.
+      local startup=("$HOME/.zshrc" "$HOME/.zshenv" "$HOME/.zprofile" "$HOME/.zlogin") f sourced=""
+      for f in $startup; do
+        command grep -qi 'glyph' "$f" 2>/dev/null && { sourced=${f:t}; break; }
+      done
+      if [[ -n $sourced ]]; then
+        _gd ok "~/$sourced loads it"
+      elif [[ $(whence -w glyph 2>/dev/null) == *function ]]; then
+        _gd ok "loaded in this shell, though no startup file names it"
       else
-        _gd FAIL "~/.zshrc has no source line, new shells will not load glyph"
+        _gd FAIL "no startup file loads glyph, so new shells will not have it"
       fi
       # wrappers actually defined
       local w defined=() missing=()
