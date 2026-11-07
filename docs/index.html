@@ -35,11 +35,14 @@
 {"@context":"https://schema.org","@graph":[
  {"@type":"Organization","@id":"https://fru.dev/#org","name":"fru.dev","legalName":"Inspired Nation, LLC","url":"https://fru.dev","logo":"https://fru.dev/icon-512.png","sameAs":["https://github.com/fru-dev3"]},
  {"@type":"WebSite","@id":"https://glyph.fru.dev/#website","name":"Glyph","url":"https://glyph.fru.dev/","publisher":{"@id":"https://fru.dev/#org"}},
- {"@type":"ItemList","name":"The four layers of Glyph","itemListElement":[
+ {"@type":"ItemList","name":"The Glyph apps","itemListElement":[
   {"@type":"ListItem","position":1,"url":"https://glyph.fru.dev/studio","name":"Glyph Studio"},
   {"@type":"ListItem","position":2,"url":"https://glyph.fru.dev/jot","name":"Glyph Jot"},
   {"@type":"ListItem","position":3,"url":"https://glyph.fru.dev/ibis","name":"Glyph Ibis"},
-  {"@type":"ListItem","position":4,"url":"https://glyph.fru.dev/rig","name":"Glyph Rig"}]}
+  {"@type":"ListItem","position":4,"url":"https://glyph.fru.dev/rig","name":"Glyph Rig"},
+  {"@type":"ListItem","position":5,"url":"https://glyph.fru.dev/arena","name":"Glyph Arena"},
+  {"@type":"ListItem","position":6,"url":"https://glyph.fru.dev/cast","name":"Glyph Cast"},
+  {"@type":"ListItem","position":7,"url":"https://glyph.fru.dev/time","name":"Glyph Time"}]}
 ]}
 </script>
 <style>
@@ -59,12 +62,16 @@
 @keyframes wv{0%,100%{height:5px}50%{height:clamp(14px,2.4vh,22px)}}
 .cap{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;font-size:clamp(15px,1.9vh,17px);color:var(--soft)}
 .cap a{font-weight:700;text-decoration:none;white-space:nowrap}.cap a:hover{text-decoration:underline}
-.tabs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(6px,.7vw,12px);width:100%}
+/* every app on the board: four layers over three tools, each row edge to edge on twelve tracks */
+.tabs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:clamp(6px,.7vw,12px);width:100%}
+.tab{grid-column:span 3}
+.tab.tool{grid-column:span 4}
 .tab{position:relative;overflow:hidden;width:100%;display:flex;flex-direction:column;align-items:center;gap:6px;padding:clamp(8px,1.4vh,14px) 6px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
 .tab img{width:clamp(34px,5.4vh,52px);height:auto;border-radius:22%}
 .tab b{font:800 clamp(15px,2vh,19px)/1 "Bricolage Grotesque",sans-serif}
 .tab .st{display:block;font-size:12px;line-height:1.25;font-weight:600;color:var(--soft);text-align:center;text-wrap:balance}
 .tab .st i{font-style:normal;font-weight:800;color:var(--green);margin-right:5px}
+.tab.tool img{width:clamp(28px,4.4vh,42px)}
 .tab[aria-selected=true]{border-color:var(--tint-line);background:var(--tint)}
 .tab[aria-selected=true]::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--green);transform-origin:left;animation:fill var(--dur,7s) linear forwards}
 .tabs.hold .tab::after{animation-play-state:paused}
@@ -79,18 +86,7 @@
   .left .top{order:1}.left .cta{order:3}
 }
 @media (max-width:520px){.tab{padding:8px 2px;border-radius:12px}.tab .st{display:none}.tab b{font-size:13px}}
-/* the three companion tools: smaller, one row under the layers */
-.comps{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 10px;width:100%}
-.comps .plus{font-size:13px;font-weight:700;color:var(--dim)}
-.comp{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 7px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;font-size:14px}
-a.comp:hover{border-color:var(--green)}
-.comp img{width:28px;height:28px;border-radius:22%}
-.comp b{font-weight:700}.comp small{margin-left:6px;color:var(--dim);font-size:12.5px}
-@media (max-width:1499px){.comp small{display:none}}
-@media (max-width:520px){.comps .plus{flex-basis:100%;text-align:center}}
-.comp em{font-style:normal;font-size:11.5px;font-weight:700;color:var(--dim);border:1px dashed var(--line);border-radius:999px;padding:1px 7px}
-.comp.soon{background:transparent;border-style:dashed}
-@media (min-width:960px) and (min-height:560px){.left{justify-content:center;gap:clamp(28px,6vh,64px)}.lede{font-size:clamp(20px,2.8vh,30px)}.right{gap:clamp(10px,1.8vh,18px)}.stage{width:min(100%,calc((100svh - 44px - 10vh - 310px) * 1.6))}}
+@media (min-width:960px) and (min-height:560px){.left{justify-content:center;gap:clamp(28px,6vh,64px)}.lede{font-size:clamp(20px,2.8vh,30px)}.right{gap:clamp(10px,1.8vh,18px)}.stage{width:min(100%,calc((100svh - 44px - 10vh - 366px) * 1.6))}}
 @media (max-width:1280px){.formac{display:none}}
 /* how they fit: the four layers, then the three tools */
 .layers{list-style:none;margin:0;padding:18px 24px 4px;display:grid;gap:8px}
@@ -148,20 +144,19 @@ a.comp:hover{border-color:var(--green)}
       <div class="slide" data-k="jot"><img src="/jot/mac-recording-summary.webp" width="1600" height="1000" alt="Glyph Jot on the Mac: a meeting filed under Sam Lee, Acme and its tags, with the summary and decisions" loading="lazy"><img class="panel left" src="/jot/recorder-jotting.webp" width="720" height="270" alt="The recorder while you jot: Jotting. Kept out of this recording" loading="lazy"><img class="ph over" src="/jot/iphone-rec.webp" width="506" height="1100" alt="Glyph Jot on iPhone, the words appearing as you talk" loading="lazy"></div>
       <div class="slide" data-k="knowledge"><img src="/ibis/today.webp" width="1600" height="1000" alt="Glyph Ibis at context.fru.dev: today's brief and every story ranked, from 50+ context sources" loading="lazy"></div>
       <div class="slide" data-k="rig"><img src="/rig/terminal.webp" width="1158" height="906" alt="Glyph Rig: two named agent sessions side by side, Claude Code and Codex on the same change" loading="lazy"></div>
+      <div class="slide" data-k="arena"><img src="/arena/policy.webp" width="1600" height="1000" alt="Glyph Arena's routing policy: each kind of task sent to the recipe that won it" loading="lazy"></div>
+      <div class="slide" data-k="cast"><img src="/cast/framed.webp" width="1600" height="1000" alt="An export from Glyph Cast: the screen framed on a green wave wallpaper, rounded and shadowed" loading="lazy"></div>
+      <div class="slide" data-k="time"><img src="/time/running.webp" width="1400" height="900" alt="Glyph Time: the clock open on the right edge of the screen, counting a session up" loading="lazy"></div>
     </div>
     <div class="cap"><span id="capline">The environment your agents work in: one harness that builds and runs them.</span><a id="capgo" href="/studio">Open Glyph Studio</a></div>
-    <div class="tabs" role="tablist" aria-label="The four layers of Glyph">
+    <div class="tabs" role="tablist" aria-label="Every Glyph app">
       <button class="tab" role="tab" aria-selected="true" data-k="studio" data-href="/studio" data-name="Glyph Studio" data-line="The environment your agents work in: one harness that builds and runs them."><img src="/family/studio-tile.svg" alt=""><b>Studio</b><span class="st"><i>1</i>The environment</span></button>
       <button class="tab" role="tab" aria-selected="false" data-k="jot" data-href="/jot" data-name="Glyph Jot" data-line="What you know: capture notes, ideas, decisions and meetings as your personal context."><img src="/family/jot-tile.svg" alt=""><b>Jot</b><span class="st"><i>2</i>What you know</span></button>
       <button class="tab" role="tab" aria-selected="false" data-k="knowledge" data-href="/ibis" data-name="Glyph Ibis" data-line="What the world knows: live data and outside knowledge for your agents, from 50+ context sources."><img src="/family/knowledge-tile.svg" alt=""><b>Ibis</b><span class="st"><i>3</i>What the world knows</span></button>
       <button class="tab" role="tab" aria-selected="false" data-k="rig" data-href="/rig" data-name="Glyph Rig" data-line="Where your agents run: one Rig that names, connects and manages every harness across your Macs."><img src="/family/rig-tile.svg" alt=""><b>Rig</b><span class="st"><i>4</i>Where agents run</span></button>
-    </div>
-    <!-- The companion tools, outside the four layers. When a tool's page is live, make its <div class="comp soon"> an <a class="comp" href="/<tool>"> and drop the Soon mark. -->
-    <div class="comps" aria-label="Plus three tools">
-      <span class="plus">Plus three tools</span>
-      <a class="comp" href="/arena" data-k="arena" title="Glyph Arena: Studio's lab: finds the best model and recipe for each task, tested on your own work."><img src="/family/arena-tile.svg" alt=""><span><b>Arena</b><small>Studio's lab</small></span></a>
-      <a class="comp" href="/cast" data-k="cast" title="Glyph Cast: record your screen, get a clean video."><img src="/family/cast-tile.svg" alt=""><span><b>Cast</b><small>Screen recorder</small></span></a>
-      <a class="comp" href="/time" data-k="time" title="Glyph Time: see where your hours go."><img src="/family/time-tile.svg" alt=""><span><b>Time</b><small>Time tracker</small></span></a>
+      <button class="tab tool" role="tab" aria-selected="false" data-k="arena" data-href="/arena" data-name="Glyph Arena" data-line="Studio's lab: finds the best model and recipe for each task, tested on your own work."><img src="/family/arena-tile.svg" alt=""><b>Arena</b><span class="st">Studio's lab</span></button>
+      <button class="tab tool" role="tab" aria-selected="false" data-k="cast" data-href="/cast" data-name="Glyph Cast" data-line="Record your screen, get a clean video: the voice cleaned, the ums cut, framed and zoomed."><img src="/family/cast-tile.svg" alt=""><b>Cast</b><span class="st">Screen recorder</span></button>
+      <button class="tab tool" role="tab" aria-selected="false" data-k="time" data-href="/time" data-name="Glyph Time" data-line="See where your hours go: a quiet count-up on the edge of your screen, every session saved to your vault."><img src="/family/time-tile.svg" alt=""><b>Time</b><span class="st">Time tracker</span></button>
     </div>
   </div>
 </main>
