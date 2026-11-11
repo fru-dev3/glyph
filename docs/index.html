@@ -59,13 +59,20 @@
 .slide .pill{position:absolute;left:50%;bottom:5%;transform:translateX(-50%);display:flex;align-items:center;gap:3px;height:clamp(34px,5vh,50px);padding:0 clamp(16px,2vh,24px);border-radius:999px;background:#0B0F0C;color:#fff;font:600 clamp(13px,1.8vh,17px) -apple-system,sans-serif;white-space:nowrap;box-shadow:0 12px 30px rgba(0,0,0,.3)}
 .slide .pill i{display:block;width:4px;height:6px;border-radius:2px;background:#fff;animation:wv 1s ease-in-out infinite;animation-delay:calc(var(--k) * -.12s)}
 .slide .pill b{margin-left:10px}
+/* Glyph Native's slide: the five apps it installs, as their own tiles */
+.slide.inst{flex-direction:column;gap:8%}
+.slide.inst p{margin:0;font:800 clamp(22px,4.2vh,44px)/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.035em;color:var(--ink)}
+.slide.inst em{font-style:normal;color:var(--green)}
+.slide.inst ul{list-style:none;margin:0;padding:0;display:flex;justify-content:center;gap:4%;width:100%}
+.slide.inst li{display:flex;flex-direction:column;align-items:center;gap:10px;width:13%;font:700 clamp(12px,1.7vh,16px)/1 "Bricolage Grotesque",sans-serif;color:var(--ink)}
+.slide.inst li img{width:100%;height:auto;border-radius:24%;box-shadow:0 10px 22px var(--shadow)}
 @keyframes wv{0%,100%{height:5px}50%{height:clamp(14px,2.4vh,22px)}}
 .cap{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;font-size:clamp(15px,1.9vh,17px);color:var(--soft)}
 .cap a{font-weight:700;text-decoration:none;white-space:nowrap}.cap a:hover{text-decoration:underline}
 /* every app on the board: four layers over three tools, each row edge to edge on twelve tracks */
 .tabs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:clamp(6px,.7vw,12px);width:100%}
 .tab{grid-column:span 3}
-.tab.tool{grid-column:span 4}
+.tab.tool{grid-column:span 3}
 .tab{position:relative;overflow:hidden;width:100%;display:flex;flex-direction:column;align-items:center;gap:6px;padding:clamp(8px,1.4vh,14px) 6px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
 .tab img{width:clamp(34px,5.4vh,52px);height:auto;border-radius:22%}
 .tab b{font:800 clamp(15px,2vh,19px)/1 "Bricolage Grotesque",sans-serif}
@@ -117,7 +124,7 @@
       <p class="lede" id="copy-sub">Context compounds.</p>
     </div>
     <div class="cta loved">
-      <a class="btn go" id="dl" href="https://github.com/fru-dev3/glyph-studio/releases/latest/download/Prevail-mac-arm64.dmg" data-track="file_download" title="Glyph Studio for Mac"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Download <span class="formac">Glyph </span>Studio</span><span class="dlc" data-downloads="fru-dev3/glyph-studio,fru-dev3/glyph-jot,fru-dev3/glyph-record,fru-dev3/glyph,fru-dev3/glyph-engine" data-match="(\.(dmg|exe|msi)|^(prevail|aireadyu)-v[0-9.]+-[a-z0-9-]+\.tar\.gz)$" data-floor="589" data-label="downloads across Glyph: every installer of Studio, Jot, Record and the engine, not counting auto-updates" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v12m0 0l-5-5m5 5l5-5"/></svg><b class="n"></b></span></a>
+      <a class="btn go" id="dl" href="https://github.com/fru-dev3/glyph-native/releases/latest/download/Glyph-Native.dmg" data-track="file_download" title="Glyph Native for Mac: one install for every Glyph app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span id="dlt">Install <span class="formac">Glyph </span>Native</span><span class="dlc" data-downloads="fru-dev3/glyph-native,fru-dev3/glyph-studio,fru-dev3/glyph-jot,fru-dev3/glyph-record,fru-dev3/glyph,fru-dev3/glyph-engine" data-match="(\.(dmg|exe|msi)|^(prevail|aireadyu)-v[0-9.]+-[a-z0-9-]+\.tar\.gz)$" data-floor="589" data-label="downloads across Glyph: every installer of Native, Studio, Jot, Record and the engine, not counting auto-updates" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v12m0 0l-5-5m5 5l5-5"/></svg><b class="n"></b></span></a>
       <a class="btn star" href="https://github.com/fru-dev3/glyph-studio" data-track="star_on_github" aria-label="Star Glyph Studio on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg><span class="lbl">Star</span><span class="count" data-stars="fru-dev3/glyph-studio" data-floor="37" hidden></span><span class="love" aria-hidden="true"><svg class="arrow" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M52 6C51 28 32 44 8 54"/><path d="M44 14l8-10 7 10"/></svg><span class="say">show some love<svg class="heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></span></span></a>
     </div>
     <div class="alt agents" aria-label="Instead of an always-on personal agent (OpenAI Dots, Meta Muse, Anthropic Claude, Google Gemini, xAI Grok Bot, Instinct or Hermes Agent), Glyph Studio is free on GitHub, with your memory in your own files">
@@ -133,7 +140,7 @@
       <span class="or">or</span>
       <a class="ours" href="https://github.com/fru-dev3/glyph-studio"><img src="/family/studio-tile.svg" width="48" height="48" alt=""><b>Free</b><small>on GitHub</small></a>
     </div>
-    <p class="note famnote">Always-on personal agents. Logos belong to their owners. Not affiliated.</p>
+    <p class="note famnote">Always-on personal agents. Logos belong to their owners. Not affiliated.<span id="macnote"> Glyph Native needs macOS 26 on Apple silicon.</span></p>
   </div>
   <div class="right">
     <!-- stargazers -->
@@ -147,6 +154,7 @@
       <div class="slide" data-k="arena"><img src="/arena/policy.webp" width="1600" height="1000" alt="Glyph Arena's routing policy: each kind of task sent to the recipe that won it" loading="lazy"></div>
       <div class="slide" data-k="cast"><img src="/cast/framed.webp" width="1600" height="1000" alt="An export from Glyph Cast: the screen framed on a green wave wallpaper, rounded and shadowed" loading="lazy"></div>
       <div class="slide" data-k="time"><img src="/time/running.webp" width="1400" height="900" alt="Glyph Time: the clock open on the right edge of the screen, counting a session up" loading="lazy"></div>
+      <div class="slide inst" data-k="native"><p><b>One install.</b> <em>Every app.</em></p><ul><li><img src="/family/studio-tile.svg" alt=""><span>Studio</span></li><li><img src="/family/jot-tile.svg" alt=""><span>Jot</span></li><li><img src="/family/arena-tile.svg" alt=""><span>Arena</span></li><li><img src="/family/cast-tile.svg" alt=""><span>Cast</span></li><li><img src="/family/time-tile.svg" alt=""><span>Time</span></li></ul></div>
     </div>
     <div class="cap"><span id="capline">The environment your agents work in: one harness that builds and runs them.</span><a id="capgo" href="/studio">Open Glyph Studio</a></div>
     <div class="tabs" role="tablist" aria-label="Every Glyph app">
@@ -157,6 +165,7 @@
       <button class="tab tool" role="tab" aria-selected="false" data-k="arena" data-href="/arena" data-name="Glyph Arena" data-line="Studio's lab: finds the best model and recipe for each task, tested on your own work."><img src="/family/arena-tile.svg" alt=""><b>Arena</b><span class="st">Studio's lab</span></button>
       <button class="tab tool" role="tab" aria-selected="false" data-k="cast" data-href="/cast" data-name="Glyph Cast" data-line="Record your screen, get a clean video: the voice cleaned, the ums cut, framed and zoomed."><img src="/family/cast-tile.svg" alt=""><b>Cast</b><span class="st">Screen recorder</span></button>
       <button class="tab tool" role="tab" aria-selected="false" data-k="time" data-href="/time" data-name="Glyph Time" data-line="See where your hours go: a quiet count-up on the edge of your screen, every session saved to your vault."><img src="/family/time-tile.svg" alt=""><b>Time</b><span class="st">Time tracker</span></button>
+      <button class="tab tool" role="tab" aria-selected="false" data-k="native" data-href="https://github.com/fru-dev3/glyph-native/releases/latest/download/Glyph-Native.dmg" data-go="Install Glyph Native" data-name="Glyph Native" data-line="One install for every Glyph app: Studio, Jot, Arena, Cast and Time, installed and kept up to date."><img src="/family/glyph-tile.svg" alt=""><b>Native</b><span class="st">Install them all</span></button>
     </div>
   </div>
 </main>
@@ -198,14 +207,15 @@
 </footer>
 <script src="/site.js"></script>
 <script>
-// Windows visitors get the Windows installer.
-if(/win/i.test(navigator.userAgent+" "+navigator.platform)&&!/mac/i.test(navigator.platform)){document.getElementById("dl").href="https://github.com/fru-dev3/glyph-studio/releases/latest/download/Prevail-windows-x64-setup.exe";document.getElementById("dl").title="Glyph Studio for Windows"}
+// The main button installs Glyph Native, the one install for every app on a Mac. Glyph Native is Mac only, so a
+// Windows visitor keeps Glyph Studio and its Windows installer.
+if(/win/i.test(navigator.userAgent+" "+navigator.platform)&&!/mac/i.test(navigator.platform)){const d=document.getElementById("dl");d.href="https://github.com/fru-dev3/glyph-studio/releases/latest/download/Prevail-windows-x64-setup.exe";d.title="Glyph Studio for Windows";document.getElementById("dlt").innerHTML='Download <span class="formac">Glyph </span>Studio';document.getElementById("macnote").hidden=true}
 // The stage: each app at work for seven seconds (Studio plays its clip through), a tap picks one, hovering holds it.
 const tabs=document.querySelector(".tabs"),bs=[...tabs.querySelectorAll("button.tab")],sl=[...document.querySelectorAll(".slide")];
 const v=document.querySelector(".slide video"),capline=document.getElementById("capline"),capgo=document.getElementById("capgo");
 let i=0,timer,held=false;
 function show(n){i=n;const b=bs[n];bs.forEach(x=>x.setAttribute("aria-selected",x===b));sl.forEach(s=>s.classList.toggle("on",s.dataset.k===b.dataset.k));
-  capline.textContent=b.dataset.line;capgo.textContent="Open "+b.dataset.name;capgo.href=b.dataset.href;
+  capline.textContent=b.dataset.line;capgo.textContent=b.dataset.go||"Open "+b.dataset.name;capgo.href=b.dataset.href;
   bs.forEach(x=>x.style.removeProperty("--dur"));
   if(b.dataset.k==="studio"){const sfx="-light";v.poster=`/studio/demos/council${sfx}-start.webp`;if(!v.src.includes("council"+sfx+".mp4"))v.src=`/studio/demos/council${sfx}.mp4`;v.currentTime=.8;if(!still)v.play().catch(()=>{})}else v.pause();
   clearTimeout(timer);if(still||held)return;
