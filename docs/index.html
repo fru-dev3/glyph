@@ -131,10 +131,10 @@
 @media (prefers-reduced-motion:reduce){.brand .lab path{animation:none;stroke-dashoffset:0}}
 .lede b{display:block;color:var(--ink);font-weight:700}
 /* what it runs on, in one quiet line under the install button: a Windows visitor should not have to guess */
-.cta .plat{position:absolute;left:2px;top:calc(100% + 10px);margin:0;display:flex;align-items:center;gap:14px;font-size:12.5px;font-weight:600;color:var(--dim);white-space:nowrap}
-.cta .plat span{display:inline-flex;align-items:center;gap:5px}.cta .plat b{color:var(--ink);font-weight:700}
+.cta .plat{position:absolute;left:0;top:calc(100% + 10px);margin:0;display:flex;align-items:center;justify-content:center;gap:18px;font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap}
+.cta .plat span{display:inline-flex;align-items:center;gap:6px}
 .cta .plat svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.cta .plat span:first-child svg{stroke:var(--green)}
+.cta .plat svg{stroke:var(--green)}
 @media (max-width:420px){.cta .plat{gap:9px;font-size:11.5px}}
 .top{position:relative}
 .hn{display:none;position:absolute;align-items:center;gap:8px;font:700 clamp(20px,3vh,30px)/1 "Caveat",cursive;color:var(--green);white-space:nowrap;transform:rotate(-4deg);transform-origin:left center;pointer-events:none}
@@ -180,7 +180,7 @@
     <div class="cta loved">
       <a class="btn go" id="dl" href="https://github.com/fru-dev3/glyph-native/releases/latest/download/Glyph-Native.dmg" data-track="file_download" title="Glyph Native for Mac: one install for every Glyph app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span id="dlt">Install <span class="formac">Glyph </span>Native</span><span class="dlc" data-downloads="fru-dev3/glyph-native,fru-dev3/glyph-studio,fru-dev3/glyph-jot,fru-dev3/glyph-record,fru-dev3/glyph,fru-dev3/glyph-engine" data-match="(\.(dmg|exe|msi)|^(prevail|aireadyu)-v[0-9.]+-[a-z0-9-]+\.tar\.gz)$" data-floor="589" data-label="downloads across Glyph: every installer of Native, Studio, Jot, Record and the engine, not counting auto-updates" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v12m0 0l-5-5m5 5l5-5"/></svg><b class="n"></b></span></a>
       <a class="btn star" href="https://github.com/fru-dev3/glyph-studio" data-track="star_on_github" aria-label="Star Glyph Studio on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg><span class="lbl">Star</span><span class="count" data-stars="fru-dev3/glyph-studio" data-floor="37" hidden></span><span class="love" aria-hidden="true"><svg class="arrow" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M52 6C51 28 32 44 8 54"/><path d="M44 14l8-10 7 10"/></svg><span class="say">show some love<svg class="heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></span></span></a>
-      <p class="plat" aria-label="Runs on Mac. iPhone apps are coming. On Windows, Glyph Studio."><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6.5A1.500 1.500 0 0 1 6.500 5h11A1.500 1.500 0 0 1 19 6.500V15H5zM3 18h18"/></svg><b>Mac</b></span><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7.500" y="3" width="9" height="18" rx="2.200"/><path d="M11 18h2"/></svg>iPhone, coming</span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h7v6.500H4zM13 5h7v6.500h-7zM4 13.500h7V20H4zM13 13.500h7V20h-7z"/></svg>Windows: Studio</span></p>
+      <p class="plat" aria-label="For Mac and iPhone"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6.5A1.500 1.500 0 0 1 6.500 5h11A1.500 1.500 0 0 1 19 6.500V15H5zM3 18h18"/></svg>Mac</span><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7.500" y="3" width="9" height="18" rx="2.200"/><path d="M11 18h2"/></svg>iPhone</span></p>
     </div>
     <div class="alt agents" aria-label="Instead of an always-on personal agent (OpenAI Dots, Meta Muse, Anthropic Claude, Google Gemini, xAI Grok Bot, Instinct or Hermes Agent), Glyph Studio is free on GitHub, with your memory in your own files">
       <div class="paid">
@@ -273,6 +273,8 @@ let i=0,timer,held=false;
 function fitcap(){capline.style.fontSize="";capline.style.whiteSpace="";let s=parseFloat(getComputedStyle(capline).fontSize);while(s>13&&capline.scrollWidth>capline.clientWidth){s-=.5;capline.style.fontSize=s+"px"}
   if(capline.scrollWidth>capline.clientWidth)capline.style.whiteSpace="normal"} // a small window: two lines beat type too small to read
 addEventListener("resize",fitcap);
+// The platform line is centred under the install button itself, whatever width the button takes.
+const plat=document.querySelector(".cta .plat"),dlb=document.getElementById("dl");function placePlat(){plat.style.width=dlb.offsetWidth+"px"}addEventListener("resize",placePlat);placePlat();document.fonts&&document.fonts.ready.then(placePlat);
 // The hand-written note sits just right of the green line, level with it; with no room for it in the column it stays hidden.
 const hn=document.getElementById("hn"),saidEl=document.getElementById("said"),topEl=document.querySelector(".top");
 function placeNote(){hn.style.display="none";if(narrow.matches)return;const s=saidEl.getBoundingClientRect(),t=topEl.getBoundingClientRect();hn.style.display="flex";
