@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pair your iPhone | Glyph Labs</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F7FBF5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<style>
+.pair{display:block;height:auto;min-height:0;text-align:center;max-width:420px;margin:0 auto;padding:clamp(48px,12vh,120px) 16px 120px}
+.pair h1{font:800 clamp(34px,9vw,48px)/1.05 "Bricolage Grotesque",sans-serif;margin:0 0 14px;letter-spacing:-.01em;overflow-wrap:anywhere}
+.pair p{margin:0 0 14px;color:var(--soft)}
+.pair .btn{justify-content:center;width:100%;box-sizing:border-box}
+.pair .btn.alt{background:#fff;color:var(--green);border:1.5px solid var(--green)}
+.pair .coming{margin-top:40px;padding-top:28px;border-top:1px solid rgba(0,0,0,.08)}
+.pair .coming b{display:block;color:var(--ink);margin-bottom:4px}
+.pair .quiet{font-size:14px;color:var(--dim)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body data-page="pair">
+<main class="pair">
+<h1 id="h">Pair your iPhone</h1>
+<div id="with" hidden>
+<a class="btn go" id="open" href="#">Open in Glyph Native</a>
+</div>
+<p id="without">Open Glyph Native on your Mac, choose Vault, then Add my iPhone.</p>
+<p class="quiet" id="desk" hidden>Open this on your iPhone.</p>
+<div class="coming">
+<b>No Glyph Native on this iPhone yet?</b>
+<p>Glyph Native for iPhone is coming.</p>
+<a class="btn alt" href="mailto:hello@fru.dev?subject=Glyph%20Native%20for%20iPhone">Tell me when it's out</a>
+</div>
+</main>
+<footer>
+  <div class="bar">
+    <nav aria-label="Footer">
+      <a class="home" href="https://fru.dev"><img src="/fru-dev.png" width="16" height="16" alt="">fru.dev</a>
+      <a href="/">Glyph</a>
+    </nav>
+    <a class="legal-link" href="/legal">&copy; 2026 fru.dev</a>
+  </div>
+</footer>
+<script>
+// The values live in the fragment: the browser never sends it. Read only here; never printed (name only), stored or logged.
+(function () {
+  var p = new URLSearchParams(location.hash.replace(/^#/, "")), url = (p.get("url") || "").trim(), name = (p.get("name") || "").trim() || "your Mac", ok = false;
+  try { var u = new URL(url); ok = (u.protocol === "http:" || u.protocol === "https:") && !!u.hostname; } catch (e) {}
+  if (!/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById("desk").hidden = false;
+  if (!ok) return;
+  var link = "glyph-native://pair?url=" + encodeURIComponent(url) + "&name=" + encodeURIComponent(name);
+  document.getElementById("h").textContent = "Connect to " + name;
+  document.getElementById("open").href = link;
+  document.getElementById("with").hidden = false;
+  document.getElementById("without").hidden = true;
+  location.href = link;
+})();
+</script>
+</body>
+</html>
