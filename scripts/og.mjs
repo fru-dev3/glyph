@@ -27,7 +27,7 @@ h1{margin:0;font:800 64px/1.02 "Bricolage Grotesque";letter-spacing:-.035em;text
 .r .sep{align-self:center;width:2px;height:90px;background:rgba(11,26,16,.12);margin:0 6px}
 .r .t img{width:64px;opacity:.95}.r .t{font-size:18px;color:#3E5446}
 </style></head><body>
-<div class="b"><img src="${icon("glyph")}"><b>Glyph</b></div>
+<div class="b"><img src="${icon("glyph")}"><b>Glyph Labs</b></div>
 <h1>${copy.headline} <span style="color:#008000">${copy.green}</span></h1><h2>${copy.sub}</h2>
 <div class="r">${layers.map((a) => `<div><img src="${icon(a.icon)}">${a.short}</div>`).join("")}<span class="sep"></span>${tools.map((a) => `<div class="t"><img src="${icon(a.icon)}">${a.short}</div>`).join("")}</div>
 </body></html>`;

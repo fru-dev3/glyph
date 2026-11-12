@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Glyph | Everything your AI agents need to work</title>
-<meta name="description" content="Glyph: everything your AI agents need to work. Four layers: Glyph Studio, the environment your agents work in; Glyph Jot, what you know; Glyph Ibis, what the world knows; Glyph Rig, where your agents run. Plus three tools, Glyph Arena, Glyph Cast and Glyph Time. By fru.dev.">
+<title>Glyph Labs | Apps made for one life. Yours.</title>
+<meta name="description" content="Glyph Labs: apps made for one life, yours. Free, open source and agent ready, and everything stays in files you own. Four layers: Glyph Studio, the environment your agents work in; Glyph Jot, what you know; Glyph Ibis, what the world knows; Glyph Rig, where your agents run. Plus Glyph Arena, Glyph Cast, Glyph Time and Glyph Native, the one install for all of them. By fru.dev.">
 <link rel="icon" href="/family/glyph-small.svg" type="image/svg+xml">
 <link rel="icon" href="/family/glyph-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/family/glyph-180.png">
@@ -15,8 +15,8 @@
 <meta name="theme-color" content="#F7FBF5">
 <meta property="og:site_name" content="Glyph by fru.dev">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Glyph | Everything your AI agents need to work">
-<meta property="og:description" content="Glyph: everything your AI agents need to work. Four layers: Glyph Studio, the environment your agents work in; Glyph Jot, what you know; Glyph Ibis, what the world knows; Glyph Rig, where your agents run. Plus three tools, Glyph Arena, Glyph Cast and Glyph Time. By fru.dev.">
+<meta property="og:title" content="Glyph Labs | Apps made for one life. Yours.">
+<meta property="og:description" content="Glyph Labs: apps made for one life, yours. Free, open source and agent ready, and everything stays in files you own. Four layers: Glyph Studio, the environment your agents work in; Glyph Jot, what you know; Glyph Ibis, what the world knows; Glyph Rig, where your agents run. Plus Glyph Arena, Glyph Cast, Glyph Time and Glyph Native, the one install for all of them. By fru.dev.">
 <meta property="og:url" content="https://glyph.fru.dev/">
 <meta property="og:image" content="https://glyph.fru.dev/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -24,8 +24,8 @@
 <meta property="og:image:alt" content="Glyph: everything your AI agents need to work. Studio, Jot, Ibis and Rig, plus Arena, Cast and Time">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@fru">
-<meta name="twitter:title" content="Glyph | Everything your AI agents need to work">
-<meta name="twitter:description" content="Glyph: everything your AI agents need to work. Four layers: Glyph Studio, the environment your agents work in; Glyph Jot, what you know; Glyph Ibis, what the world knows; Glyph Rig, where your agents run. Plus three tools, Glyph Arena, Glyph Cast and Glyph Time. By fru.dev.">
+<meta name="twitter:title" content="Glyph Labs | Apps made for one life. Yours.">
+<meta name="twitter:description" content="Glyph Labs: apps made for one life, yours. Free, open source and agent ready, and everything stays in files you own. Four layers: Glyph Studio, the environment your agents work in; Glyph Jot, what you know; Glyph Ibis, what the world knows; Glyph Rig, where your agents run. Plus Glyph Arena, Glyph Cast, Glyph Time and Glyph Native, the one install for all of them. By fru.dev.">
 <meta name="twitter:image" content="https://glyph.fru.dev/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -68,7 +68,15 @@
 .slide.inst li img{width:100%;height:auto;border-radius:24%;box-shadow:0 10px 22px var(--shadow)}
 @keyframes wv{0%,100%{height:5px}50%{height:clamp(14px,2.4vh,22px)}}
 .cap{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;font-size:clamp(15px,1.9vh,17px);color:var(--soft)}
-.cap a{font-weight:700;text-decoration:none;white-space:nowrap}.cap a:hover{text-decoration:underline}
+.cap a{font-weight:700;text-decoration:none;white-space:nowrap}
+/* The way into the app is a button, not a line of green words: it sits on the stage's lower edge, and what the app
+   is runs under it on one line (the script below shrinks the line to fit, never wraps it). */
+.cap{flex-direction:column;justify-content:flex-start;gap:clamp(6px,1.2vh,12px);position:relative;z-index:2}
+.cap #capgo{order:-1;display:inline-flex;align-items:center;gap:10px;height:clamp(40px,5.4vh,48px);padding:0 clamp(18px,1.8vw,26px);margin-top:calc(-1 * clamp(10px,1.8vh,18px) - clamp(20px,2.7vh,24px));border-radius:999px;background:var(--green);color:var(--on-green);font-size:clamp(15px,2vh,17px);box-shadow:0 12px 24px rgba(0,128,0,.35),0 0 0 4px var(--bg);transition:transform .2s cubic-bezier(.16,1,.3,1),background .2s,box-shadow .2s}
+.cap #capgo::after{content:"\2192";font-weight:800;transition:transform .2s}
+.cap #capgo:hover{background:var(--green-h);transform:translateY(-2px);box-shadow:0 16px 28px rgba(0,128,0,.4),0 0 0 4px var(--bg)}
+.cap #capgo:hover::after{transform:translateX(4px)}
+#capline{display:block;width:100%;text-align:center;white-space:nowrap;overflow:hidden}
 /* every app on the board: four layers over three tools, each row edge to edge on twelve tracks */
 .tabs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:clamp(6px,.7vw,12px);width:100%}
 .tab{grid-column:span 3}
@@ -80,6 +88,24 @@
 .tab .st i{font-style:normal;font-weight:800;color:var(--green);margin-right:5px}
 .tab.tool img{width:clamp(28px,4.4vh,42px)}
 .tab[aria-selected=true]{border-color:var(--tint-line);background:var(--tint)}
+/* Glyph Native is the one that installs the rest, so its tile alone is filled green */
+.tab[data-k=native],.tab[data-k=native][aria-selected=true]{background:var(--green);border-color:var(--green);color:var(--on-green);box-shadow:0 12px 24px -10px rgba(0,128,0,.6)}
+.tab[data-k=native] .st{color:rgba(255,255,255,.88)}
+.tab[data-k=native] img{box-shadow:0 0 0 2px rgba(255,255,255,.85)}
+.tab[data-k=native][aria-selected=true]::after{background:#fff}
+/* a tile answers the pointer: it rises with a green edge and a green shadow, its icon grows and its name turns green */
+.tab{transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s,border-color .25s,background .25s}
+.tab img{transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s}.tab b{transition:color .2s}
+@media (hover:hover){
+  .tab:hover,.tab:focus-visible{transform:translateY(-5px);border-color:var(--green);background:#fff;box-shadow:0 18px 30px -14px rgba(0,128,0,.55),0 0 0 3px rgba(0,128,0,.1)}
+  .tab:hover img,.tab:focus-visible img{transform:translateY(-2px) scale(1.07) rotate(-4deg);box-shadow:0 10px 18px -8px rgba(0,100,0,.6)}
+  .tab:hover b,.tab:focus-visible b{color:var(--green)}
+  .tab[data-k=native]:hover,.tab[data-k=native]:focus-visible{background:var(--green-h);border-color:var(--green-h)}
+  .tab[data-k=native]:hover b,.tab[data-k=native]:focus-visible b{color:#fff}
+  .tab[data-k=native]:hover img,.tab[data-k=native]:focus-visible img{box-shadow:0 0 0 2px #fff,0 10px 18px -8px rgba(0,40,0,.6)}
+  .tab:active{transform:translateY(-1px)}
+}
+@media (prefers-reduced-motion:reduce){.tab,.tab img{transition:none}.tab:hover,.tab:hover img{transform:none}}
 .tab[aria-selected=true]::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--green);transform-origin:left;animation:fill var(--dur,7s) linear forwards}
 .tabs.hold .tab::after{animation-play-state:paused}
 @keyframes fill{from{transform:scaleX(0)}}
@@ -93,7 +119,22 @@
   .left .top{order:1}.left .cta{order:3}
 }
 @media (max-width:520px){.tab{padding:8px 2px;border-radius:12px}.tab .st{display:none}.tab b{font-size:13px}}
-@media (min-width:960px) and (min-height:560px){.left{justify-content:center;gap:clamp(28px,6vh,64px)}.lede{font-size:clamp(20px,2.8vh,30px)}.right{gap:clamp(10px,1.8vh,18px)}.stage{width:min(100%,calc((100svh - 44px - 10vh - 366px) * 1.6))}}
+/* The hero: the mark, the name and "by fru.dev"
+   on one line; the headline stacked in three big lines; a hand-written note beside the green one (placed by the
+   script below, and hidden where there is no room for it); the line under it in two tones. */
+.brand>div{display:flex;align-items:center;gap:14px}.brand span{margin-top:0;padding-left:14px;border-left:1px solid var(--line)}
+.lede b{display:block;color:var(--ink);font-weight:700}
+.top{position:relative}
+.hn{display:none;position:absolute;align-items:center;gap:8px;font:700 clamp(20px,3vh,30px)/1 "Caveat",cursive;color:var(--green);white-space:nowrap;transform:rotate(-4deg);transform-origin:left center;pointer-events:none}
+.hn svg{width:2.1em;height:1.2em;flex:none}
+@media (min-width:960px) and (min-height:560px){.icon{width:clamp(44px,6.4vh,60px)}.brand b{font-size:clamp(26px,4.2vh,38px)}
+  h1{font-size:clamp(40px,min(10.4vh,7.6vw),150px);line-height:.95;letter-spacing:-.035em}}
+/* a short window: the three lines come down so the left half stays as tall as the right */
+@media (min-width:960px) and (min-height:560px) and (max-height:720px){h1{font-size:clamp(34px,min(7.4vh,7.6vw),150px)}.left .cta.loved{margin-bottom:clamp(40px,6vh,56px)}}
+/* a phone or a tablet: two lines, as before */
+@media not ((min-width:960px) and (min-height:560px)){#copy-h1 br{display:none}}
+/* the two halves share one height: the row is as tall as the right half, and the left spreads from its top to its bottom */
+@media (min-width:960px) and (min-height:560px){main{grid-template-rows:auto;align-content:center}.right{align-self:stretch}.left{justify-content:flex-start;gap:clamp(14px,3vh,32px)}.left .cta,.left .alt{margin-top:auto}.lede{font-size:clamp(20px,2.8vh,30px)}.right{gap:clamp(10px,1.8vh,18px)}.stage{width:min(100%,calc((100svh - 44px - 10vh - 366px) * 1.6))}}
 @media (max-width:1280px){.formac{display:none}}
 /* how they fit: the four layers, then the three tools */
 .layers{list-style:none;margin:0;padding:18px 24px 4px;display:grid;gap:8px}
@@ -112,16 +153,17 @@
   .left .agents{order:4;width:min(100%,440px)}.left .famnote{order:4;width:min(100%,440px);text-align:center}
 }
 @media (max-width:440px){.fam{gap:6px;padding:8px 10px}.fam .grp+.grp{padding-left:6px}.fam .paid{gap:5px}.fam figure img,.fam .ours img{width:32px}}
-@media (min-width:960px) and (min-height:560px){.left .cta.loved{margin-bottom:clamp(44px,6vh,72px)}.left .famnote{margin-top:calc(8px - clamp(28px,6vh,64px))}}
+@media (min-width:960px) and (min-height:560px){.left .cta.loved{margin-bottom:clamp(44px,6vh,72px)}.left .famnote{margin-top:calc(8px - clamp(14px,3vh,32px))}}
 </style>
 </head>
 <body data-page="home">
 <main>
   <div class="left">
     <div class="top">
-      <a class="brand" href="/"><img class="icon" src="/family/glyph-tile.svg" width="80" height="80" alt=""><div><b>Glyph</b><span id="copy-label">by fru.dev</span></div></a>
-      <h1 data-lines='["need to work."]' data-fit=".left,.cta"><span id="copy-h1">Everything your AI agents</span> <em><span id="said">need to work.</span></em></h1>
-      <p class="lede" id="copy-sub">Context compounds.</p>
+      <a class="brand" href="/"><img class="icon" src="/family/glyph-tile.svg" width="80" height="80" alt=""><div><b>Glyph Labs</b><span id="copy-label">by fru.dev</span></div></a>
+      <h1 data-lines='["Yours."]' data-fit=".left,.cta"><span id="copy-h1">Apps made<br>for one life.</span> <em><span id="said">Yours.</span></em></h1>
+      <span class="hn" id="hn" aria-hidden="true"><svg viewBox="0 0 70 40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M66 8C48 4 26 10 8 28M8 28l3-13M8 28l13-1"/></svg>shaped around you</span>
+      <p class="lede" id="copy-sub"><b>Free, open source and Agent Ready.</b> Everything stays in files you own.</p>
     </div>
     <div class="cta loved">
       <a class="btn go" id="dl" href="https://github.com/fru-dev3/glyph-native/releases/latest/download/Glyph-Native.dmg" data-track="file_download" title="Glyph Native for Mac: one install for every Glyph app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span id="dlt">Install <span class="formac">Glyph </span>Native</span><span class="dlc" data-downloads="fru-dev3/glyph-native,fru-dev3/glyph-studio,fru-dev3/glyph-jot,fru-dev3/glyph-record,fru-dev3/glyph,fru-dev3/glyph-engine" data-match="(\.(dmg|exe|msi)|^(prevail|aireadyu)-v[0-9.]+-[a-z0-9-]+\.tar\.gz)$" data-floor="589" data-label="downloads across Glyph: every installer of Native, Studio, Jot, Record and the engine, not counting auto-updates" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v12m0 0l-5-5m5 5l5-5"/></svg><b class="n"></b></span></a>
@@ -140,7 +182,7 @@
       <span class="or">or</span>
       <a class="ours" href="https://github.com/fru-dev3/glyph-studio"><img src="/family/studio-tile.svg" width="48" height="48" alt=""><b>Free</b><small>on GitHub</small></a>
     </div>
-    <p class="note famnote">Always-on personal agents. Logos belong to their owners. Not affiliated.<span id="macnote"> Glyph Native needs macOS 26 on Apple silicon.</span></p>
+    <p class="note famnote" id="famnote">Logos belong to their owners. Not affiliated.<span id="macnote"> Glyph Native needs macOS 26 on Apple silicon.</span></p>
   </div>
   <div class="right">
     <!-- stargazers -->
@@ -214,14 +256,28 @@ if(/win/i.test(navigator.userAgent+" "+navigator.platform)&&!/mac/i.test(navigat
 const tabs=document.querySelector(".tabs"),bs=[...tabs.querySelectorAll("button.tab")],sl=[...document.querySelectorAll(".slide")];
 const v=document.querySelector(".slide video"),capline=document.getElementById("capline"),capgo=document.getElementById("capgo");
 let i=0,timer,held=false;
+// The caption stays on one line: its size comes down from the stylesheet's until it fits, to 12px at the least.
+function fitcap(){capline.style.fontSize="";capline.style.whiteSpace="";let s=parseFloat(getComputedStyle(capline).fontSize);while(s>13&&capline.scrollWidth>capline.clientWidth){s-=.5;capline.style.fontSize=s+"px"}
+  if(capline.scrollWidth>capline.clientWidth)capline.style.whiteSpace="normal"} // a small window: two lines beat type too small to read
+addEventListener("resize",fitcap);
+// The hand-written note sits just right of the green line, level with it; with no room for it in the column it stays hidden.
+const hn=document.getElementById("hn"),saidEl=document.getElementById("said"),topEl=document.querySelector(".top");
+function placeNote(){hn.style.display="none";if(narrow.matches)return;const s=saidEl.getBoundingClientRect(),t=topEl.getBoundingClientRect();hn.style.display="flex";
+  hn.style.left=(s.right-t.left+16)+"px";hn.style.top=(s.top-t.top+s.height*.5-hn.offsetHeight*.45)+"px";if(hn.getBoundingClientRect().right>t.right+2)hn.style.display="none"}
+// The small print under the rivals stays on one line where the column is wide enough: down to 11px, then it wraps.
+const famnote=document.getElementById("famnote");
+function fitnote(){famnote.style.fontSize="";famnote.style.whiteSpace="nowrap";let s=parseFloat(getComputedStyle(famnote).fontSize);while(s>11&&famnote.scrollWidth>famnote.clientWidth){s-=.25;famnote.style.fontSize=s+"px"}
+  if(famnote.scrollWidth>famnote.clientWidth){famnote.style.whiteSpace="";famnote.style.fontSize=""}}
+addEventListener("resize",fitnote);fitnote();document.fonts&&document.fonts.ready.then(fitnote);
 function show(n){i=n;const b=bs[n];bs.forEach(x=>x.setAttribute("aria-selected",x===b));sl.forEach(s=>s.classList.toggle("on",s.dataset.k===b.dataset.k));
-  capline.textContent=b.dataset.line;capgo.textContent=b.dataset.go||"Open "+b.dataset.name;capgo.href=b.dataset.href;
+  capline.textContent=b.dataset.line;capgo.textContent=b.dataset.go||"Open "+b.dataset.name;capgo.href=b.dataset.href;fitcap();
   bs.forEach(x=>x.style.removeProperty("--dur"));
   if(b.dataset.k==="studio"){const sfx="-light";v.poster=`/studio/demos/council${sfx}-start.webp`;if(!v.src.includes("council"+sfx+".mp4"))v.src=`/studio/demos/council${sfx}.mp4`;v.currentTime=.8;if(!still)v.play().catch(()=>{})}else v.pause();
   clearTimeout(timer);if(still||held)return;
   const dur=b.dataset.k==="studio"&&v.duration?Math.max(7,v.duration-1):7;b.style.setProperty("--dur",dur+"s");
   b.style.animation="none";b.offsetWidth;b.style.animation="";timer=setTimeout(()=>show((i+1)%bs.length),dur*1000)}
 const narrow=matchMedia("not ((min-width:960px) and (min-height:560px))");
+addEventListener("resize",()=>setTimeout(placeNote,60));addEventListener("load",()=>setTimeout(placeNote,300));document.fonts&&document.fonts.ready.then(()=>setTimeout(placeNote,300));
 bs.forEach((b,n)=>b.addEventListener("click",()=>{if(narrow.matches){location.href=b.dataset.href;return}show(n);try{gtag("event","home_stage",{app:b.dataset.k})}catch{}}));
 const st=document.querySelector(".right");
 st.addEventListener("mouseenter",()=>{held=true;clearTimeout(timer);tabs.classList.add("hold")});
