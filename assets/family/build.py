@@ -12,13 +12,10 @@ from PIL import Image
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, "src")
-NAMES = ["glyph", "studio", "jot", "knowledge", "rig", "cast", "arena", "time",
-         "wealth", "well", "omega", "crm", "connect", "explore", "life"]
+NAMES = ["glyph", "studio", "jot", "knowledge", "rig", "cast", "arena", "time"]
 LABEL = {"glyph": "Glyph", "studio": "Glyph Studio", "jot": "Glyph Jot", "knowledge": "Glyph Ibis",
-         "rig": "Glyph Rig", "cast": "Glyph Cast", "arena": "Glyph Arena", "time": "Glyph Time",
-         "wealth": "Glyph Wealth", "well": "Glyph Well", "omega": "Glyph Omega", "crm": "Glyph CRM",
-         "connect": "Glyph Connect", "explore": "Glyph Explore", "life": "Glyph Life"}
-IOS = ["jot", "studio", "wealth", "well", "omega", "crm", "connect", "explore", "life"]  # apps with an iPhone icon
+         "rig": "Glyph Rig", "cast": "Glyph Cast", "arena": "Glyph Arena", "time": "Glyph Time"}
+IOS = ["jot", "studio"]                    # apps with an iPhone icon
 ICNS = ["studio", "jot", "cast", "arena", "time"]  # Mac apps
 # Old names kept so old links still show the right icon.
 ALIASES = {"dictate": "jot", "record": "jot", "mobile": "jot", "code": "rig"}
