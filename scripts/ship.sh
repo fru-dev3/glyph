@@ -15,6 +15,10 @@ cd "$(dirname "$0")/.."
 # The real stargazers, baked into every page (commit the result).
 node scripts/fetch-stargazers.mjs || true
 
+# The real family download total, baked into every page as the number shown when GitHub
+# rate-limits a visitor (commit the result).
+python3 scripts/bake-downloads.py || true
+
 echo "building"
 vercel build --prod --yes
 
