@@ -36,6 +36,16 @@
   ],
   "redirects": [
     {
+      "source": "/studio",
+      "destination": "/bot",
+      "statusCode": 301
+    },
+    {
+      "source": "/studio/",
+      "destination": "/bot",
+      "statusCode": 301
+    },
+    {
       "source": "/knowledge",
       "destination": "/ibis",
       "statusCode": 301

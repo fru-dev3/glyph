@@ -1295,7 +1295,7 @@ backend is added.
 
 | Layer | | |
 |---|---|---|
-| 1 | [Glyph Studio](https://glyph.fru.dev/studio) | The environment your agents work in: one harness that builds and runs them. |
+| 1 | [Glyph Bot](https://glyph.fru.dev/bot) | The environment your agents work in: one harness that builds and runs them. |
 | 2 | [Glyph Jot](https://glyph.fru.dev/jot) | What you know: capture notes, ideas, decisions and meetings as your personal context. |
 | 3 | [Glyph Ibis](https://glyph.fru.dev/ibis) | What the world knows: live data and outside knowledge for your agents, from 50+ context sources. |
 | 4 | **Glyph Rig** (this repo) | Where your agents run: one Rig that names, connects and manages every harness across your Macs. |

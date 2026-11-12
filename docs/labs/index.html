@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Glyph Labs</title>
+<meta name="description" content="Glyph Labs: apps made for one life, yours. Free, open source and Agent Ready. Everything stays in files you own.">
+<link rel="icon" href="/family/glyph-small.svg" type="image/svg+xml">
+<link rel="icon" href="/family/glyph-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/family/glyph-180.png">
+<link rel="canonical" href="https://glyph.fru.dev/labs/">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F7FBF5">
+<meta property="og:title" content="Glyph Labs">
+<meta property="og:description" content="Apps made for one life. Yours. Free, open source and Agent Ready.">
+<meta property="og:url" content="https://glyph.fru.dev/labs/">
+<meta property="og:image" content="https://glyph.fru.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<style>
+.labs{padding:clamp(20px,4vh,48px) 16px 76px;text-align:center;gap:clamp(12px,2.2vh,22px)}
+.labs .brand{text-align:left}
+.labs .brand .lab{position:relative;font-style:normal;color:var(--green);display:inline-block}
+.labs .brand .lab svg{position:absolute;left:-3%;bottom:-.2em;width:106%;height:.3em;overflow:visible}
+.labs .brand .lab path{stroke-dasharray:130;stroke-dashoffset:130;animation:labdraw .7s .35s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes labdraw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.labs .brand .lab path{animation:none;stroke-dashoffset:0}}
+.labs h1{margin:0;font:800 clamp(34px,min(7vw,9vh),84px)/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.035em;white-space:normal;text-wrap:balance}
+.labs h1 em{font-style:normal;color:var(--green)}
+.labs .lede{text-wrap:balance;margin:0;max-width:640px;color:var(--soft);font:600 clamp(16px,2.4vh,22px)/1.35 -apple-system,BlinkMacSystemFont,sans-serif}
+.labs .lede b{color:var(--ink);font-weight:700}
+.prods{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;width:min(100%,1180px)}
+.prods a{height:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 12px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;transition:transform .25s,border-color .25s,box-shadow .25s}
+.prods img{border-radius:22%}
+.prods b{font:800 19px/1.1 "Bricolage Grotesque",sans-serif}
+.prods span{font-size:13.5px;line-height:1.35;color:var(--soft)}
+.prods a:hover,.prods a:focus-visible{transform:translateY(-4px);border-color:var(--green);box-shadow:0 16px 28px -14px rgba(0,128,0,.5)}
+.prods a:hover b{color:var(--green)}
+.labs .acts{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px 22px}
+.labs .acts .btn.go{flex:none}
+.labs .gh{color:var(--green);font-weight:700;text-decoration:none}
+.labs .gh:hover{text-decoration:underline}
+@media (min-width:960px) and (min-height:560px){.labs{display:flex;flex-direction:column;align-items:center;justify-content:center;height:auto;min-height:100svh;max-width:none;margin:0;padding:3vh 32px calc(44px + 3vh);text-align:center}.labs h1{font-size:clamp(40px,min(6.4vh,5vw),84px)}.labs .icon{width:56px}.labs .brand b{font-size:34px}}
+@media (max-width:1000px){.prods{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.prods{grid-template-columns:1fr}.prods a{flex-direction:row;text-align:left;align-items:center;flex-wrap:wrap;gap:4px 12px}.prods a img{grid-row:span 2}.prods a span{flex-basis:100%}}
+</style>
+</head>
+<body data-page="labs">
+<main class="labs">
+<div class="brand"><img class="icon" src="/family/glyph-tile.svg" width="60" height="60" alt=""><div><b>Glyph <i class="lab">Labs<svg viewBox="0 0 120 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 9C30 3 78 2 117 7" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/></svg></i></b></div></div>
+<h1>Apps made for one life. <em>Yours.</em></h1>
+<p class="lede"><b>Free, open source and Agent Ready.</b> Everything stays in files you own.</p>
+<ul class="prods">
+<li><a href="/bot"><img src="/family/studio-tile.svg" width="52" height="52" alt=""><b>Glyph Bot</b><span>The environment your agents work in: one harness that builds and runs them.</span></a></li>
+<li><a href="/jot"><img src="/family/jot-tile.svg" width="52" height="52" alt=""><b>Glyph Jot</b><span>What you know: capture notes, ideas, decisions and meetings as your personal context.</span></a></li>
+<li><a href="/cast"><img src="/family/cast-tile.svg" width="52" height="52" alt=""><b>Glyph Cast</b><span>Screen videos, cleaned up: record your screen, get a clean MP4 with the voice cleaned, ums cut, framed and zoomed.</span></a></li>
+<li><a href="/time"><img src="/family/time-tile.svg" width="52" height="52" alt=""><b>Glyph Time</b><span>See where your hours go: a quiet count-up on the edge of your screen, a nudge every 30 minutes, every session saved to your vault.</span></a></li>
+<li><a href="/ibis"><img src="/family/knowledge-tile.svg" width="52" height="52" alt=""><b>Glyph Ibis</b><span>What the world knows: live data and outside knowledge for your agents, from 50+ context sources.</span></a></li>
+<li><a href="/rig"><img src="/family/rig-tile.svg" width="52" height="52" alt=""><b>Glyph Rig</b><span>Where your agents run: one Rig that names, connects and manages every harness across your Macs.</span></a></li>
+<li><a href="/arena"><img src="/family/arena-tile.svg" width="52" height="52" alt=""><b>Glyph Arena</b><span>Bot&#x27;s lab: finds the best model and recipe for each task, tested on your own work.</span></a></li>
+<li><a href="https://github.com/fru-dev3/glyph-native"><img src="/family/glyph-tile.svg" width="52" height="52" alt=""><b>Glyph Native</b><span>One install for every Glyph app: Bot, Jot, Arena, Cast and Time, installed and kept up to date.</span></a></li>
+</ul>
+<div class="acts">
+<a class="btn go" href="https://github.com/fru-dev3/glyph-native/releases/latest/download/Glyph-Native.dmg" data-track="file_download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>Install Glyph Native</a>
+<a class="gh" href="https://github.com/fru-dev3">fru.dev on GitHub</a>
+</div>
+</main>
+<footer>
+  <div class="bar">
+    <nav aria-label="Footer">
+      <a class="home" href="https://fru.dev"><img src="/fru-dev.png" width="16" height="16" alt="">fru.dev</a>
+      <a href="/">Glyph</a>
+      <a class="opt" href="https://github.com/fru-dev3" title="fru.dev on GitHub">GitHub</a>
+      <a class="legal-link" href="/legal" title="Disclaimer: provided as is, without warranty">Disclaimer</a>
+    </nav>
+    <a class="legal-link" href="/legal">&copy; 2026 fru.dev</a>
+  </div>
+</footer>
+<script src="/site.js"></script>
+</body>
+</html>

@@ -51,7 +51,7 @@ a.ours:hover small{color:var(--green)}
 .alt{container-type:inline-size}
 @container (max-width:470px){.alt .hide-xs{display:none}.alt .ours b{font-size:20px}}
 .agents{justify-content:space-evenly}
-/* /studio: five always-on agents when the strip is wide, three when it narrows */
+/* /bot: five always-on agents when the strip is wide, three when it narrows */
 @container (max-width:540px){.agents .s5{display:none}}
 @container (max-width:470px){.agents .s4{display:none}}
 @container (max-width:620px){.agents .s3{display:none}}
@@ -208,3 +208,7 @@ footer .built .heart-i{display:inline-block;vertical-align:-2px;margin:0 1px}
 @media (max-width:380px){footer .built .bw{display:none}}
 .brand span i::before{content:" · "}
 @media (max-width:480px){.brand span i{display:block;margin-top:2px}.brand span i::before{content:none}}
+/* the one line under an app page's install button */
+.nat{margin:0;width:100%;text-align:center;font-size:13px;font-weight:600;color:var(--soft)}
+.nat a{color:var(--green);font-weight:700}
+.nat{order:4}
