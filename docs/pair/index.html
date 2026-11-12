@@ -52,11 +52,11 @@
 <script>
 // The values live in the fragment: the browser never sends it. Read only here; never printed (name only), stored or logged.
 (function () {
-  var p = new URLSearchParams(location.hash.replace(/^#/, "")), url = (p.get("url") || "").trim(), name = (p.get("name") || "").trim() || "your Mac", ok = false;
+  var p = new URLSearchParams(location.hash.replace(/^#/, "")), url = (p.get("url") || "").trim(), name = (p.get("name") || "").trim() || "your Mac", code = (p.get("code") || "").trim(), ok = false;
   try { var u = new URL(url); ok = (u.protocol === "http:" || u.protocol === "https:") && !!u.hostname; } catch (e) {}
   if (!/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById("desk").hidden = false;
   if (!ok) return;
-  var link = "glyph-native://pair?url=" + encodeURIComponent(url) + "&name=" + encodeURIComponent(name);
+  var link = "glyph-native://pair?url=" + encodeURIComponent(url) + "&name=" + encodeURIComponent(name) + (code ? "&code=" + encodeURIComponent(code) : "");
   document.getElementById("h").textContent = "Connect to " + name;
   document.getElementById("open").href = link;
   document.getElementById("with").hidden = false;
