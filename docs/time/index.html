@@ -154,9 +154,12 @@
 // The screens take turns every six seconds, the Mac's then the iPhone's; a tap picks one, hovering holds it.
 const seg=document.getElementById("tabs"),sb=[...seg.querySelectorAll("button")],vw=[...document.querySelectorAll(".view")],db=[...document.querySelectorAll(".dev button")];
 let vi=0,vt,vh=false;
-function view(n){vi=n;const d=vw[n].dataset.d;db.forEach(b=>b.setAttribute("aria-selected",b.dataset.d===d));
+const last={};
+// Alternate Mac and iPhone so both show early, each device keeping its own place.
+function nxt(){const o=vw[vi].dataset.d==="mac"?"iphone":"mac",ix=vw.map((v,k)=>k).filter(k=>vw[k].dataset.d===o);return ix.length?ix[(ix.indexOf(last[o]??-1)+1)%ix.length]:(vi+1)%vw.length}
+function view(n){vi=n;const d=vw[n].dataset.d;last[d]=n;db.forEach(b=>b.setAttribute("aria-selected",b.dataset.d===d));
   sb.forEach((b,k)=>{b.hidden=b.dataset.d!==d;b.setAttribute("aria-selected",k===n);b.style.animation="none";b.offsetWidth;b.style.animation=""});vw.forEach((v,k)=>v.classList.toggle("on",k===n));
-  clearTimeout(vt);if(!still&&!vh)vt=setTimeout(()=>view((vi+1)%vw.length),6000)}
+  clearTimeout(vt);if(!still&&!vh)vt=setTimeout(()=>view(nxt()),6000)}
 sb.forEach((b,n)=>b.addEventListener("click",()=>{view(n);track("time_view",{view:b.dataset.k})}));
 db.forEach(b=>b.addEventListener("click",()=>{view(vw.findIndex(v=>v.dataset.d===b.dataset.d));track("time_device",{device:b.dataset.d})}));
 const rt=document.querySelector(".right");

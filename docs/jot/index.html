@@ -161,8 +161,10 @@ if(still){tEl.textContent="0:02";wEl.textContent="2 words"}
 // The views take turns every six seconds; a tap picks one, hovering holds it.
 const seg=document.querySelector(".seg"),sb=[...seg.querySelectorAll("button")],vw=[...document.querySelectorAll(".view")];
 let vi=0,vt,vh=false;
+// Rotation alternates Mac and iPhone: Jot, iPhone, Record, Keyboard.
+const ord=["mac","iphone","record","keyboard"].map(k=>vw.findIndex(v=>v.dataset.k===k)).filter(k=>k>=0);
 function view(n){vi=n;sb.forEach((b,k)=>{b.setAttribute("aria-selected",k===n);b.style.animation="none";b.offsetWidth;b.style.animation=""});vw.forEach((v,k)=>v.classList.toggle("on",k===n));
-  clearTimeout(vt);if(!still&&!vh)vt=setTimeout(()=>view((vi+1)%vw.length),6000)}
+  clearTimeout(vt);if(!still&&!vh)vt=setTimeout(()=>view(ord[(ord.indexOf(vi)+1)%ord.length]),6000)}
 sb.forEach((b,n)=>b.addEventListener("click",()=>{view(n);track("jot_view",{view:b.dataset.k})}));
 const rt=document.querySelector(".right");
 rt.addEventListener("mouseenter",()=>{vh=true;clearTimeout(vt);seg.classList.add("hold")});
