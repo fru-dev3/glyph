@@ -130,7 +130,7 @@
 @keyframes labdraw{to{stroke-dashoffset:0}}
 @media (prefers-reduced-motion:reduce){.brand .lab path{animation:none;stroke-dashoffset:0}}
 .lede b{display:block;color:var(--ink);font-weight:700}
-/* what it runs on, in one quiet line under the install button: a Windows visitor should not have to guess */
+/* what it runs on, in one quiet line under the install button */
 .cta .plat{position:absolute;left:0;top:calc(100% + 10px);margin:0;display:flex;align-items:center;justify-content:center;gap:18px;font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap}
 .cta .plat span{display:inline-flex;align-items:center;gap:6px}
 .cta .plat svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -202,7 +202,7 @@
     <div class="proof"><div class="faces"><a href="https://github.com/digitalhustlerx" target="_blank" rel="noreferrer" title="digitalhustlerx"><img src="/stargazers/digitalhustlerx.png" width="40" height="40" alt="digitalhustlerx" loading="lazy"></a><a href="https://github.com/Albricengwa" target="_blank" rel="noreferrer" title="Albricengwa"><img src="/stargazers/Albricengwa.png" width="40" height="40" alt="Albricengwa" loading="lazy"></a><a href="https://github.com/Wishtrader" target="_blank" rel="noreferrer" title="Wishtrader"><img src="/stargazers/Wishtrader.png" width="40" height="40" alt="Wishtrader" loading="lazy"></a><a href="https://github.com/hamedelbhrawy" target="_blank" rel="noreferrer" title="hamedelbhrawy"><img src="/stargazers/hamedelbhrawy.png" width="40" height="40" alt="hamedelbhrawy" loading="lazy"></a><a href="https://github.com/Nessjk" target="_blank" rel="noreferrer" title="Nessjk"><img src="/stargazers/Nessjk.png" width="40" height="40" alt="Nessjk" loading="lazy"></a><a href="https://github.com/tranngochung0885-pixel" target="_blank" rel="noreferrer" title="tranngochung0885-pixel"><img src="/stargazers/tranngochung0885-pixel.png" width="40" height="40" alt="tranngochung0885-pixel" loading="lazy"></a><a href="https://github.com/MDsniper" target="_blank" rel="noreferrer" title="MDsniper"><img src="/stargazers/MDsniper.png" width="40" height="40" alt="MDsniper" loading="lazy"></a><a href="https://github.com/DFA5" target="_blank" rel="noreferrer" title="DFA5"><img src="/stargazers/DFA5.png" width="40" height="40" alt="DFA5" loading="lazy"></a><a href="https://github.com/TLCSglobal" target="_blank" rel="noreferrer" title="TLCSglobal"><img src="/stargazers/TLCSglobal.png" width="40" height="40" alt="TLCSglobal" loading="lazy"></a><a href="https://github.com/sina-chobak" target="_blank" rel="noreferrer" title="sina-chobak"><img src="/stargazers/sina-chobak.png" width="40" height="40" alt="sina-chobak" loading="lazy"></a><a href="https://github.com/RajaRuling" target="_blank" rel="noreferrer" title="RajaRuling"><img src="/stargazers/RajaRuling.png" width="40" height="40" alt="RajaRuling" loading="lazy"></a><a href="https://github.com/usblsb" target="_blank" rel="noreferrer" title="usblsb"><img src="/stargazers/usblsb.png" width="40" height="40" alt="usblsb" loading="lazy"></a><span class="more">+34</span></div><p><a href="https://github.com/fru-dev3" target="_blank" rel="noreferrer"><b>46</b><span class="dv"> developers</span> starred Glyph<svg class="heart" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></a></p></div>
     <!-- /stargazers -->
     <div class="stage" aria-live="polite">
-      <div class="slide full on" data-k="studio"><video muted playsinline preload="metadata" poster="/studio/demos/council-light-start.webp" aria-label="Glyph Bot: a council of models answers a money question"></video></div>
+      <div class="slide inst on" data-k="studio"><p><b>Chat with your agents.</b> <em>Every reply cites its sources.</em></p></div>
       <div class="slide" data-k="jot"><img src="/jot/mac-recording-summary.webp" width="1600" height="1000" alt="Glyph Jot on the Mac: a meeting filed under Sam Lee, Acme and its tags, with the summary and decisions" loading="lazy"><img class="panel left" src="/jot/recorder-jotting.webp" width="720" height="270" alt="The recorder while you jot: Jotting. Kept out of this recording" loading="lazy"><img class="ph over" src="/jot/iphone-rec.webp" width="506" height="1100" alt="Glyph Jot on iPhone, the words appearing as you talk" loading="lazy"></div>
       <div class="slide" data-k="knowledge"><img src="/ibis/today.webp" width="1600" height="1000" alt="Glyph Ibis at context.fru.dev: today's brief and every story ranked, from 50+ context sources" loading="lazy"></div>
       <div class="slide" data-k="rig"><img src="/rig/terminal.webp" width="1158" height="906" alt="Glyph Rig: two named agent sessions side by side, Claude Code and Codex on the same change" loading="lazy"></div>
@@ -262,12 +262,10 @@
 </footer>
 <script src="/site.js"></script>
 <script>
-// The main button installs Glyph Native, the one install for every app on a Mac. Glyph Native is Mac only, so a
-// Windows visitor keeps Glyph Bot and its Windows installer.
-if(/win/i.test(navigator.userAgent+" "+navigator.platform)&&!/mac/i.test(navigator.platform)){const d=document.getElementById("dl");d.href="https://github.com/fru-dev3/glyph-studio/releases/latest/download/Prevail-windows-x64-setup.exe";d.title="Glyph Bot for Windows";document.getElementById("dlt").innerHTML='Download <span class="formac">Glyph </span>Bot';document.getElementById("macnote").hidden=true}
+// The main button installs Glyph Native, the one install for every app on a Mac.
 // The stage: each app at work for seven seconds (Bot plays its clip through), a tap picks one, hovering holds it.
 const tabs=document.querySelector(".tabs"),bs=[...tabs.querySelectorAll("button.tab")],sl=[...document.querySelectorAll(".slide")];
-const v=document.querySelector(".slide video"),capline=document.getElementById("capline"),capgo=document.getElementById("capgo");
+const capline=document.getElementById("capline"),capgo=document.getElementById("capgo");
 let i=0,timer,held=false;
 // The caption stays on one line: its size comes down from the stylesheet's until it fits, to 12px at the least.
 function fitcap(){capline.style.fontSize="";capline.style.whiteSpace="";let s=parseFloat(getComputedStyle(capline).fontSize);while(s>13&&capline.scrollWidth>capline.clientWidth){s-=.5;capline.style.fontSize=s+"px"}
@@ -287,9 +285,8 @@ addEventListener("resize",fitnote);fitnote();document.fonts&&document.fonts.read
 function show(n){i=n;const b=bs[n];bs.forEach(x=>x.setAttribute("aria-selected",x===b));sl.forEach(s=>s.classList.toggle("on",s.dataset.k===b.dataset.k));
   capline.textContent=b.dataset.line;capgo.textContent=b.dataset.go||"Open "+b.dataset.name;capgo.href=b.dataset.href;fitcap();
   bs.forEach(x=>x.style.removeProperty("--dur"));
-  if(b.dataset.k==="studio"){const sfx="-light";v.poster=`/studio/demos/council${sfx}-start.webp`;if(!v.src.includes("council"+sfx+".mp4"))v.src=`/studio/demos/council${sfx}.mp4`;v.currentTime=.8;if(!still)v.play().catch(()=>{})}else v.pause();
   clearTimeout(timer);if(still||held)return;
-  const dur=b.dataset.k==="studio"&&v.duration?Math.max(7,v.duration-1):7;b.style.setProperty("--dur",dur+"s");
+  const dur=7;b.style.setProperty("--dur",dur+"s");
   b.style.animation="none";b.offsetWidth;b.style.animation="";timer=setTimeout(()=>show((i+1)%bs.length),dur*1000)}
 const narrow=matchMedia("not ((min-width:960px) and (min-height:560px))");
 addEventListener("resize",()=>setTimeout(placeNote,60));addEventListener("load",()=>setTimeout(placeNote,300));document.fonts&&document.fonts.ready.then(()=>setTimeout(placeNote,300));
@@ -297,7 +294,6 @@ bs.forEach((b,n)=>b.addEventListener("click",()=>{if(narrow.matches){location.hr
 const st=document.querySelector(".right");
 st.addEventListener("mouseenter",()=>{held=true;clearTimeout(timer);tabs.classList.add("hold")});
 st.addEventListener("mouseleave",()=>{held=false;tabs.classList.remove("hold");show(i)});
-v.addEventListener("loadedmetadata",()=>{if(bs[i].dataset.k==="studio"&&!held)show(i)},{once:true});
 show(0);
 </script>
 </body>
