@@ -163,3 +163,17 @@ $$("[data-version]").forEach((el) => {
     .catch(() => cachedJson(`https://api.github.com/repos/${repo}/releases/latest`, (d) => d.tag_name))
     .then(show).catch(() => {});
 });
+
+// The version on the Install button (Fru, 2026-11-16: "I don't really know what I'm installing").
+// The latest release's number is shown beside the button, and the link is pointed at the disk image
+// that carries it, so the file in Downloads is Glyph-Native-0.6.5.dmg and not a nameless one. The
+// unversioned link stays until the answer comes, and whenever GitHub does not answer.
+$$("a[data-dmg]").forEach((el) => {
+  const repo = el.dataset.dmg, stem = el.getAttribute("href").split("/").pop().replace(/\.dmg$/, "");
+  cachedJson(`https://api.github.com/repos/${repo}/releases/latest`, (d) => d.tag_name).then((tag) => {
+    const v = (tag || "").match(/\d+(\.\d+)+/);
+    if (!v) return;
+    el.href = window.glyphDmg = `https://github.com/${repo}/releases/download/${tag}/${stem}-${v[0]}.dmg`;
+    $$(".dlv").forEach((n) => { n.textContent = v[0]; n.hidden = false; });
+  }).catch(() => {});
+});
