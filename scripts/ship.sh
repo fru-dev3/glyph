@@ -29,7 +29,10 @@ vdeploy() {
   local stage; stage=$(mktemp -d)
   mkdir "$stage/.vercel"
   cp -R .vercel/project.json .vercel/output "$stage/.vercel/"
-  (cd "$stage" && vercel deploy "$@"); local rc=$?
+  # --scope: the team is named, never left to whichever scope the CLI happens to default to.
+  # On 2026-11-18 that default came back as the personal account and the deploy failed with a
+  # bare "Not authorized" after a clean build, which reads like an expired login and is not one.
+  (cd "$stage" && vercel deploy --scope fru-dev3 "$@"); local rc=$?
   rm -rf "$stage"
   return $rc
 }
