@@ -81,6 +81,16 @@
 .tabs{list-style:none;margin:0;padding:0 2px 6px;display:flex;gap:clamp(6px,.7vw,12px);width:100%;overflow-x:auto;scroll-snap-type:x proximity;scroll-behavior:smooth;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:0 0 18.5%;scroll-snap-align:center}
+/* Native never scrolls away: it is the one install that brings every other app, so it is pinned
+   to the right edge while the rest slide under it (Fru, 2026-11-19). */
+.tab[data-k=native]{position:sticky;right:0;z-index:3}
+.count{display:flex;align-items:baseline;gap:7px;margin:0 2px 8px;font-size:12.5px;font-weight:600;color:var(--soft)}
+.count b{font-size:15px;font-weight:800;color:var(--ink)}
+.count i{font-style:normal;margin-left:auto;opacity:.72}
+.dots{display:flex;gap:6px;justify-content:center;margin-top:10px}
+.dots button{width:7px;height:7px;padding:0;border:0;border-radius:50%;background:var(--line);cursor:pointer;transition:width .25s,background .25s}
+.dots button.on{width:20px;border-radius:4px;background:var(--green)}
+.dots button:hover{background:var(--soft)}
 .tab{position:relative;overflow:hidden;width:100%;display:flex;flex-direction:column;align-items:center;gap:7px;padding:clamp(10px,1.7vh,16px) 8px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
 .tab img{width:clamp(44px,9.5vh,76px);height:auto;border-radius:22%}
 .tab b{font:800 clamp(15px,2vh,19px)/1 "Bricolage Grotesque",sans-serif}
@@ -212,6 +222,7 @@
       <div class="slide inst" data-k="native"><p><b>One install.</b> <em>Every app.</em></p><ul><li><img src="/family/studio-tile.svg" alt=""><span>Bot</span></li><li><img src="/family/jot-tile.svg" alt=""><span>Jot</span></li><li><img src="/family/arena-tile.svg" alt=""><span>Arena</span></li><li><img src="/family/cast-tile.svg" alt=""><span>Cast</span></li><li><img src="/family/time-tile.svg" alt=""><span>Time</span></li></ul></div>
     </div>
     <div class="cap"><span id="capline">One harness that builds, runs and watches your agents, with your whole vault behind them.</span><a id="capgo" href="/bot">Open Glyph Bot</a></div>
+    <div class="count"><b id="appn"></b><span id="appword">apps</span><i>slide for more</i></div>
     <div class="tabs" role="tablist" aria-label="Every Glyph app">
       <button class="tab" role="tab" aria-selected="true" data-k="jot" data-href="/jot" data-name="Glyph Jot" data-line="Dictation that types anywhere on your Mac and iPhone, meetings recorded and transcribed, every word kept in a vault you own. Unlimited, and free."><img src="/family/jot-tile.svg" alt=""><b>Jot</b><span class="st">Capture your ideas locally</span></button>
       <button class="tab" role="tab" aria-selected="false" data-k="studio" data-href="/bot" data-name="Glyph Bot" data-line="One harness that builds, runs and watches your agents, with your whole vault behind them."><img src="/family/studio-tile.svg" alt=""><b>Bot</b><span class="st">Where your agents get to work</span></button>
@@ -222,6 +233,7 @@
       <button class="tab tool" role="tab" aria-selected="false" data-k="time" data-href="/time" data-name="Glyph Time" data-line="A quiet count-up at the edge of the screen, no timer to start, every session saved to your vault as a plain line."><img src="/family/time-tile.svg" alt=""><b>Time</b><span class="st">Time tracking that tracks itself</span></button>
       <button class="tab tool" role="tab" aria-selected="false" data-k="native" data-href="https://github.com/fru-dev3/glyph-native/releases/latest/download/Glyph-Native.dmg" data-go="Install Glyph Native" data-name="Glyph Native" data-line="One install for the whole family, kept up to date, each app wired to the same vault."><img src="/family/glyph-tile.svg" alt=""><b>Native</b><span class="st">Make your Mac agent-ready</span></button>
     </div>
+    <div class="dots" id="dots" role="tablist" aria-label="Which app the stage is showing"></div>
   </div>
 </main>
 
@@ -283,11 +295,20 @@ function fitnote(){famnote.style.fontSize="";famnote.style.whiteSpace="nowrap";l
   if(famnote.scrollWidth>famnote.clientWidth){famnote.style.whiteSpace="";famnote.style.fontSize=""}}
 addEventListener("resize",fitnote);fitnote();document.fonts&&document.fonts.ready.then(fitnote);
 function show(n){i=n;const b=bs[n];bs.forEach(x=>x.setAttribute("aria-selected",x===b));sl.forEach(s=>s.classList.toggle("on",s.dataset.k===b.dataset.k));
-  b.scrollIntoView({block:"nearest",inline:"center"});capline.textContent=b.dataset.line;capgo.textContent=b.dataset.go||"Open "+b.dataset.name;capgo.href=(b.dataset.k==="native"&&window.glyphDmg)||b.dataset.href;fitcap();
+  b.scrollIntoView({block:"nearest",inline:"center"});ds.forEach((d,k)=>d.classList.toggle("on",k===n));capline.textContent=b.dataset.line;capgo.textContent=b.dataset.go||"Open "+b.dataset.name;capgo.href=(b.dataset.k==="native"&&window.glyphDmg)||b.dataset.href;fitcap();
   bs.forEach(x=>x.style.removeProperty("--dur"));
   clearTimeout(timer);if(still||held)return;
   const dur=7;b.style.setProperty("--dur",dur+"s");
   b.style.animation="none";b.offsetWidth;b.style.animation="";timer=setTimeout(()=>show((i+1)%bs.length),dur*1000)}
+// How many apps there are, counted off the strip itself so adding a tile updates the line and
+// nobody has to remember a number in two places (Fru, 2026-11-19).
+const appn=document.getElementById("appn");appn.textContent=bs.length;
+document.getElementById("appword").textContent=bs.length===1?"app":"apps";
+// Dots: that the row slides is not obvious from a cut-off tile alone.
+const dots=document.getElementById("dots");
+bs.forEach((b,n)=>{const d=document.createElement("button");d.type="button";d.setAttribute("role","tab");
+  d.setAttribute("aria-label",b.dataset.name);d.addEventListener("click",()=>show(n));dots.append(d)});
+const ds=[...dots.children];
 const narrow=matchMedia("not ((min-width:960px) and (min-height:560px))");
 addEventListener("resize",()=>setTimeout(placeNote,60));addEventListener("load",()=>setTimeout(placeNote,300));document.fonts&&document.fonts.ready.then(()=>setTimeout(placeNote,300));
 bs.forEach((b,n)=>b.addEventListener("click",()=>{if(narrow.matches){location.href=b.dataset.href;return}show(n);try{gtag("event","home_stage",{app:b.dataset.k})}catch{}}));
