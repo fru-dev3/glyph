@@ -110,8 +110,13 @@
   .tab .st{grid-area:s;align-self:start;font-size:11px;text-align:left}
   .tab .rib{grid-area:r;position:static;transform:none;width:auto;padding:2px 6px;border-radius:999px;font-size:8.5px;letter-spacing:.05em;box-shadow:none;align-self:end;margin-bottom:1px}
   .slide{padding:2.4%}
+  .tab:hover,.tab:focus-visible{transform:translateY(-2px)}
   main{gap:clamp(24px,3vw,60px)}.left{width:clamp(400px,33vw,580px)}
 }
+/* The pill of rivals changes with the app on the stage: it fades in, and keeps one height so nothing under it moves. */
+.left .alt[data-k=knowledge] figure:nth-child(n+6){display:none}
+@media (max-width:1400px){.left .alt:not(.agents):not(.duo) .s4{display:none}}
+.left .alt.swap{animation:altin .35s ease}@keyframes altin{from{opacity:0;transform:translateY(4px)}}
 /* Glyph Native is the one that installs the rest, so its tile alone is filled green */
 .tab[data-k=native],.tab[data-k=native][aria-selected=true]{background:var(--green);border-color:var(--green);color:var(--on-green);box-shadow:0 12px 24px -10px rgba(0,128,0,.6)}
 .tab[data-k=native] .st{color:rgba(255,255,255,.88)}
@@ -267,6 +272,56 @@
   </div>
 </main>
 
+<!-- What each app stands in for, copied from its own page (docs/<app>/index.html, the .alt block): the left pill shows
+     the rivals of the app on the stage. An app with none listed shows Glyph Bot's. -->
+<template data-alt="jot"><div class="alt fam duo" aria-label="Instead of Wispr Flow at 15 dollars a month, Superwhisper at 8.49, Willow at 15 or Aqua Voice at 10 for dictation, and Granola at 14, Otter at 16.99, Fireflies at 18 or Fathom at 20 for meetings, Glyph Jot is free on GitHub">
+      <div class="grp"><div class="paid">
+        <figure><img src="/logos/wispr.webp" width="48" height="48" alt="Wispr Flow" title="Wispr Flow"><s>$15</s></figure>
+        <figure><img src="/logos/superwhisper.webp" width="48" height="48" alt="Superwhisper" title="Superwhisper"><s>$8.49</s></figure>
+        <figure><img src="/logos/willow.webp" width="48" height="48" alt="Willow Voice" title="Willow Voice"><s>$15</s></figure>
+        <figure><img src="/logos/aqua.webp" width="48" height="48" alt="Aqua Voice" title="Aqua Voice"><s>$10</s></figure>
+      </div><span class="gl">dictation</span></div>
+      <div class="grp"><div class="paid">
+        <figure><img src="/logos/granola.webp" width="48" height="48" alt="Granola" title="Granola"><s>$14</s></figure>
+        <figure><img src="/logos/otter.webp" width="48" height="48" alt="Otter" title="Otter"><s>$16.99</s></figure>
+        <figure><img src="/logos/fireflies.webp" width="48" height="48" alt="Fireflies" title="Fireflies"><s>$18</s></figure>
+        <figure><img src="/logos/fathom.webp" width="48" height="48" alt="Fathom" title="Fathom"><s>$20</s></figure>
+      </div><span class="gl">meetings</span></div>
+      <span class="or">or</span>
+      <a class="ours" href="https://github.com/fru-dev3/glyph-jot"><img src="/family/jot-tile.svg" width="48" height="48" alt=""><b>Free</b><small>on GitHub</small></a>
+    </div></template>
+<template data-alt="time"><div class="alt" aria-label="Instead of Timing at 10 dollars a month, Toggl Track at 9 per user, Rize at 9.99 or Clockify at 3.99 per seat, Glyph Time is free on GitHub">
+      <div class="paid">
+        <figure title="Timing: automatic time tracking for Mac, $10 a month"><img src="/logos/timing.webp" width="48" height="48" alt="Timing"><figcaption>Timing</figcaption><s>$10</s></figure>
+        <figure title="Toggl Track: time tracking, $9 per user a month"><img src="/logos/toggl.webp" width="48" height="48" alt="Toggl Track"><figcaption>Toggl Track</figcaption><s>$9</s></figure>
+        <figure class="s3" title="Rize: focus and time tracking, $9.99 a month"><img src="/logos/rize.webp" width="48" height="48" alt="Rize"><figcaption>Rize</figcaption><s>$9.99</s></figure>
+        <figure class="s4" title="Clockify: time tracking, $3.99 per seat a month"><img src="/logos/clockify.webp" width="48" height="48" alt="Clockify"><figcaption>Clockify</figcaption><s>$3.99</s></figure>
+      </div>
+      <span class="or">or</span>
+      <a class="ours" href="https://github.com/fru-dev3/glyph-time"><img src="/family/time-tile.svg" width="48" height="48" alt=""><b>Free</b><small>on GitHub</small></a>
+    </div></template>
+<template data-alt="cast"><div class="alt" aria-label="Instead of Screen Studio at 29 dollars a month, Descript at 24, Loom at 18 or Camtasia at 179.88 a year, Glyph Cast is free on GitHub">
+      <div class="paid">
+        <figure title="Screen Studio: recording with framing and zooms, $29 a month"><img src="/logos/screenstudio.webp" width="48" height="48" alt="Screen Studio"><figcaption>Screen Studio</figcaption><s>$29</s></figure>
+        <figure title="Descript: edit video by its transcript, $24 a month"><img src="/logos/descript.webp" width="48" height="48" alt="Descript"><figcaption>Descript</figcaption><s>$24</s></figure>
+        <figure class="s3" title="Loom: quick screen recordings, $18 a month"><img src="/logos/loom.webp" width="48" height="48" alt="Loom"><figcaption>Loom</figcaption><s>$18</s></figure>
+        <figure class="s4" title="Camtasia: record and edit, $179.88 a year (about $15 a month)"><img src="/logos/camtasia.webp" width="48" height="48" alt="Camtasia"><figcaption>Camtasia</figcaption><s>$15</s></figure>
+      </div>
+      <span class="or">or</span>
+      <a class="ours" href="https://github.com/fru-dev3/glyph-cast"><img src="/family/cast-tile.svg" width="48" height="48" alt=""><b>Free</b><small>on GitHub</small></a>
+    </div></template>
+<template data-alt="knowledge"><div class="alt agents" aria-label="Instead of reading Hacker News, Product Hunt, TechCrunch, The Verge, Feedly or the TLDR newsletter yourself, Glyph Ibis keeps it organized for your agents, free">
+      <div class="paid">
+        <figure title="Hacker News"><img src="/logos/hackernews.webp" width="48" height="48" alt="Hacker News"><span class="lab">forum</span></figure>
+        <figure title="Product Hunt"><img src="/logos/producthunt.webp" width="48" height="48" alt="Product Hunt"><span class="lab">launches</span></figure>
+        <figure title="TechCrunch"><img src="/logos/techcrunch.webp" width="48" height="48" alt="TechCrunch"><span class="lab">news</span></figure>
+        <figure class="s3" title="The Verge"><img src="/logos/theverge.webp" width="48" height="48" alt="The Verge"><span class="lab">news</span></figure>
+        <figure class="s4" title="Feedly"><img src="/logos/feedly.webp" width="48" height="48" alt="Feedly"><span class="lab">feeds</span></figure>
+        <figure class="s5" title="TLDR newsletter"><img src="/logos/tldr.webp" width="48" height="48" alt="TLDR newsletter"><span class="lab">newsletter</span></figure>
+      </div>
+      <span class="or">or</span>
+      <a class="ours" href="https://context.fru.dev"><img src="/family/knowledge-tile.svg" width="48" height="48" alt=""><b>For agents</b><small>not a feed to read</small></a>
+    </div></template>
 <dialog class="sheet" id="features" aria-labelledby="feat-h">
   <div class="fhead"><img src="/family/glyph-tile.svg" width="40" height="40" alt=""><h2 id="feat-h">Four layers, plus three tools</h2><button type="button" class="fclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <ol class="layers" aria-label="The four layers of Glyph">
@@ -324,7 +379,14 @@ const famnote=document.getElementById("famnote");
 function fitnote(){famnote.style.fontSize="";famnote.style.whiteSpace="nowrap";let s=parseFloat(getComputedStyle(famnote).fontSize);while(s>11&&famnote.scrollWidth>famnote.clientWidth){s-=.25;famnote.style.fontSize=s+"px"}
   if(famnote.scrollWidth>famnote.clientWidth){famnote.style.whiteSpace="";famnote.style.fontSize=""}}
 addEventListener("resize",fitnote);fitnote();document.fonts&&document.fonts.ready.then(fitnote);
-function show(n){i=n;const b=bs[n];bs.forEach(x=>x.setAttribute("aria-selected",x===b));sl.forEach(s=>s.classList.toggle("on",s.dataset.k===b.dataset.k));
+const alts={};document.querySelectorAll("template[data-alt]").forEach(t=>alts[t.dataset.alt]=t.innerHTML);alts[""]=document.querySelector(".left .alt").outerHTML;let altNow="";
+let altH=0;
+function putAlt(k){document.querySelector(".left .alt").outerHTML=alts[k];const nu=document.querySelector(".left .alt");nu.dataset.k=k;return nu}
+// The tallest pill sets the height of them all, so the buttons above never move when the app changes.
+function sizeAlts(){altH=0;for(const k in alts){const e=putAlt(k);e.style.minHeight="";altH=Math.max(altH,e.offsetHeight)}putAlt(altNow).style.minHeight=altH+"px"}
+function rivals(k){k=alts[k]?k:"";if(k===altNow)return;altNow=k;const nu=putAlt(k);nu.style.minHeight=altH+"px";nu.classList.add("swap");fitnote()}
+sizeAlts();addEventListener("resize",sizeAlts);document.fonts&&document.fonts.ready.then(sizeAlts);
+function show(n){i=n;const b=bs[n];rivals(b.dataset.k);bs.forEach(x=>x.setAttribute("aria-selected",x===b));sl.forEach(s=>s.classList.toggle("on",s.dataset.k===b.dataset.k));
   b.scrollIntoView({block:"nearest",inline:"center"});ds.forEach((d,k)=>d.classList.toggle("on",k===n));capline.textContent=b.dataset.line;capgo.textContent=b.dataset.go||"Open "+b.dataset.name;capgo.href=(b.dataset.k==="native"&&window.glyphDmg)||b.dataset.href;fitcap();
   bs.forEach(x=>x.style.removeProperty("--dur"));
   clearTimeout(timer);if(still||held)return;
