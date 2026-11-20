@@ -110,6 +110,9 @@ def page(k):
     # the Install button counts the whole family's downloads, Time's among them
     left = [m for m in re.findall(r"[^\n]*(?:glyph-time|Glyph Time|/time[/\"])[^\n]*", s) if "data-downloads" not in m]
     assert not left, "still says Time:\n" + "\n".join(x[:160] for x in left)
+    # Glyph CRM's tile is a PNG: use whichever the family folder has.
+    if not (root / "assets/family" / f"{k}-tile.svg").exists():
+        s = s.replace(f"/family/{k}-tile.svg", f"/family/{k}-tile.png").replace('type="image/svg+xml"', 'type="image/png"', 1)
     (root / "docs" / k).mkdir(exist_ok=True)
     (root / "docs" / k / "index.html").write_text(s)
     print("wrote docs/%s/index.html" % k, len(s))

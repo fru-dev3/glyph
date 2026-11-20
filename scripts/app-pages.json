@@ -348,5 +348,160 @@
         "The same goals on both, through your own hub."
       ]
     ]
+  },
+  "crm": {
+    "name": "Glyph CRM",
+    "tagline": "The people and things you own",
+    "title": "Glyph CRM | Everyone and everything you deal with, as notes in files you own",
+    "description": "Glyph CRM keeps the people, places, organisations and things in your life as plain notes in your vault, linked to each other and filed by area of life, so every other Glyph app knows who you mean. Free for Mac and iPhone.",
+    "category": "BusinessApplication",
+    "lead": "Everyone and everything you deal with.",
+    "lines": [
+      "Kept as notes every Glyph app can read.",
+      "Linked to each other.",
+      "Saved to your vault."
+    ],
+    "badge3": "Free",
+    "note": "Every person, company and note shown is made up for the pictures. Apple silicon, macOS 26 or later.",
+    "views": [
+      {
+        "k": "person",
+        "label": "A person",
+        "icon": "people",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-person.webp",
+            "w": 1400,
+            "h": 897,
+            "alt": "A person's page on the Mac: attributes, links to where they work and live, and dated notes"
+          }
+        ]
+      },
+      {
+        "k": "domain",
+        "label": "A domain",
+        "icon": "list",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-domain.webp",
+            "w": 1400,
+            "h": 897,
+            "alt": "An area of life on the Mac: what was logged, its tasks, its state and its files"
+          }
+        ]
+      },
+      {
+        "k": "org",
+        "label": "An org",
+        "icon": "doc",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-org.webp",
+            "w": 1400,
+            "h": 897,
+            "alt": "An organisation's page on the Mac, with the people linked to it"
+          }
+        ]
+      },
+      {
+        "k": "search",
+        "label": "Search",
+        "icon": "target",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-search.webp",
+            "w": 1400,
+            "h": 897,
+            "alt": "Search on the Mac across people, places, organisations, things and notes"
+          }
+        ]
+      },
+      {
+        "k": "iphone",
+        "label": "People",
+        "icon": "people",
+        "device": "iphone",
+        "imgs": [
+          {
+            "src": "iphone-person.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "People on iPhone, each with the line that says who they are"
+          },
+          {
+            "src": "iphone-org.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Organisations on iPhone, each with who works there"
+          }
+        ]
+      },
+      {
+        "k": "iphone-tags",
+        "label": "Tags",
+        "icon": "tag",
+        "device": "iphone",
+        "imgs": [
+          {
+            "src": "iphone-tags.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Tags on iPhone: the one register every Glyph app reads"
+          },
+          {
+            "src": "iphone-domain-home.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "An area of life on iPhone: log a note or a task, and what is open"
+          }
+        ]
+      }
+    ],
+    "features": [
+      [
+        "People, places, orgs and things",
+        "One page each, with the attributes you care about and nothing you do not."
+      ],
+      [
+        "Linked to each other",
+        "Works at, lives in, friend of, attended. A link is made once and shows on both pages."
+      ],
+      [
+        "Notes with a date",
+        "Say or type what happened. It lands on the right page, dated, in your words."
+      ],
+      [
+        "By area of life",
+        "Health, money, home and the rest, each with what was logged, its tasks and its files."
+      ],
+      [
+        "Yours, and everyone else",
+        "A page you saved is yours. The rest of the register is one tap away and never in the way."
+      ],
+      [
+        "The home of tags",
+        "Tags are kept here, in one register, and every other Glyph app reads the same ones."
+      ],
+      [
+        "Every Glyph app knows who you mean",
+        "Wealth, Well, Life and the others read these pages, so a name said anywhere is the same person."
+      ],
+      [
+        "Suggestions, not surprises",
+        "New people and facts heard in what you say are offered for a yes, never added on their own."
+      ],
+      [
+        "Plain notes in your vault",
+        "One file per page, readable anywhere, the same files your agents read."
+      ],
+      [
+        "Mac and iPhone",
+        "The Mac reads the vault directly; the iPhone reaches it through your own hub."
+      ]
+    ]
   }
 }
