@@ -56,6 +56,10 @@
 /* the alternatives are habits, not products: drawn as plain tiles */
 .alt .tile.k{display:grid;place-items:center;background:#fff;color:var(--soft)}
 .alt .tile.k svg{width:52%;height:52%}
+/* four rivals with long names: with the card under about 500 wide "Free on GitHub" ran past the card's edge (600 to 1200 wide), so the names give way to the logos, as they already do on a phone, which keeps its own sizes */
+@container (min-width:340px) and (max-width:470px){.alt figcaption{display:none}.alt figure img,.alt .ours img{width:40px}.alt .ours{column-gap:7px}.alt .ours b{font-size:20px}}
+/* the line under the name is the longest in the family: on a phone it shrinks to stay on one line (at 360 wide it ran 7 past the edge and the page scrolled sideways) */
+@media (max-width:440px){.brand span{font-size:min(3.7vw,17px)}}
 </style>
 </head>
 <body data-page="cast">
