@@ -658,5 +658,174 @@
         "The Mac reads the vault; the iPhone reads it through your own hub."
       ]
     ]
+  },
+  "well": {
+    "name": "Glyph Well",
+    "tagline": "Wellness, fitness and health",
+    "title": "Glyph Well | Say how you slept, ate and felt, and see what tends to come before your worse days",
+    "description": "Glyph Well is a health log you talk to. Say how you slept, ate and felt, and it shows what often came before your worse days, holds your lab results and gets a visit summary ready. It shows patterns and does not diagnose. Free for Mac and iPhone.",
+    "category": "HealthApplication",
+    "lead": "Say how you slept, ate and felt.",
+    "lines": [
+      "See what often came before a bad day.",
+      "Your lab results beside it.",
+      "Kept as plain files in your vault."
+    ],
+    "badge3": "Free",
+    "note": "The log shown is made up for the pictures. Glyph Well shows patterns in what you log; it does not diagnose and is not medical advice. Apple silicon, macOS 26 or later.",
+    "views": [
+      {
+        "k": "today",
+        "label": "Today",
+        "icon": "heart",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-today.webp",
+            "w": 1400,
+            "h": 973,
+            "alt": "Today on the Mac: last night's sleep, heart rate and steps, a box to say how you feel, and one tap for a bowel movement"
+          }
+        ]
+      },
+      {
+        "k": "insights",
+        "label": "Insights",
+        "icon": "chart",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-insights.webp",
+            "w": 1400,
+            "h": 973,
+            "alt": "Insights on the Mac: the worst symptom of each day over sixty days, and what often came before the worse days"
+          }
+        ]
+      },
+      {
+        "k": "food",
+        "label": "Food",
+        "icon": "list",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-food.webp",
+            "w": 1400,
+            "h": 973,
+            "alt": "Food on the Mac: the foods you suspect, and how often symptoms followed each one"
+          }
+        ]
+      },
+      {
+        "k": "labs",
+        "label": "Labs",
+        "icon": "target",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-labs.webp",
+            "w": 1400,
+            "h": 973,
+            "alt": "Labs on the Mac: each marker drawn against its range over time"
+          }
+        ]
+      },
+      {
+        "k": "summary",
+        "label": "Visit summary",
+        "icon": "doc",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-summary.webp",
+            "w": 1400,
+            "h": 973,
+            "alt": "A visit summary on the Mac: days logged, symptoms, bowel movements and medicines for the last thirty days"
+          }
+        ]
+      },
+      {
+        "k": "iphone",
+        "label": "Your log",
+        "icon": "list",
+        "device": "iphone",
+        "imgs": [
+          {
+            "src": "iphone-day.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Glyph Well on iPhone: one day in the log, each entry under its tag"
+          },
+          {
+            "src": "iphone-insights.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Insights on iPhone: symptoms over sixty days and what often came before them"
+          }
+        ]
+      },
+      {
+        "k": "iphone-food",
+        "label": "Food",
+        "icon": "chart",
+        "device": "iphone",
+        "imgs": [
+          {
+            "src": "iphone-food.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Food on iPhone: your suspects and what followed them"
+          },
+          {
+            "src": "iphone-tags.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Tags on iPhone, the same tags as the rest of the family"
+          }
+        ]
+      }
+    ],
+    "features": [
+      [
+        "Say it",
+        "Talk or type a sentence and it becomes entries: the meal, the symptom, the sleep, each on the day it happened."
+      ],
+      [
+        "Saved as you say it",
+        "Nothing waits behind a Save button. Undo takes back what one sentence became."
+      ],
+      [
+        "What often came before",
+        "Counts of your own days: how often a symptom followed a food, a short night or a hard workout. Never a cause."
+      ],
+      [
+        "Bowel movements in one tap",
+        "The seven Bristol types as plain shapes, with colour, urgency and the rest when you want them."
+      ],
+      [
+        "Lab results against their range",
+        "Each marker over time, by marker or by the place that ran it."
+      ],
+      [
+        "A summary for the visit",
+        "Days logged, symptoms, medicines and results for the period, as one page or a PDF."
+      ],
+      [
+        "Questions for the appointment",
+        "Say them as they occur to you and tick them off in the room."
+      ],
+      [
+        "Your wearable beside your words",
+        "Sleep, heart rate, steps and workouts from Garmin and Apple Health, next to what you said."
+      ],
+      [
+        "Research from your own files",
+        "Ask about your own entries and results. It does not search the internet and gives no advice."
+      ],
+      [
+        "Plain files, your vault",
+        "Every entry is a line in a file you own. fru.dev does not collect it and cannot read it."
+      ]
+    ]
   }
 }
