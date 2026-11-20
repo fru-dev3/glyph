@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Glyph Connect | Every app and tool your agents can reach, and what each may do</title>
+<meta name="description" content="Glyph Connect shows every app and tool your agents can reach, which ones need you, and what each may read and write. Cut one tool or switch a whole app off. Free for Mac and iPhone.">
+<link rel="icon" href="/family/connect-tile.svg" type="image/svg+xml">
+<link rel="canonical" href="https://glyph.fru.dev/connect">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="author" content="fru.dev">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F7FBF5">
+<meta property="og:site_name" content="Glyph Labs">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Glyph Connect | Every app and tool your agents can reach, and what each may do">
+<meta property="og:description" content="Glyph Connect shows every app and tool your agents can reach, which ones need you, and what each may read and write. Cut one tool or switch a whole app off. Free for Mac and iPhone.">
+<meta property="og:url" content="https://glyph.fru.dev/connect">
+<meta property="og:image" content="https://glyph.fru.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Glyph family of app icons in office green">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@fru">
+<meta name="twitter:image" content="https://glyph.fru.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Organization",
+   "@id": "https://fru.dev/#org",
+   "name": "fru.dev",
+   "legalName": "Inspired Nation, LLC",
+   "url": "https://fru.dev",
+   "logo": "https://fru.dev/icon-512.png",
+   "sameAs": [
+    "https://github.com/fru-dev3"
+   ]
+  },
+  {
+   "@type": "SoftwareApplication",
+   "@id": "https://glyph.fru.dev/connect#app",
+   "name": "Glyph Connect",
+   "applicationCategory": "UtilitiesApplication",
+   "operatingSystem": "macOS 26 or later (Apple silicon)",
+   "url": "https://glyph.fru.dev/connect",
+   "isAccessibleForFree": true,
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+   },
+   "publisher": {
+    "@id": "https://fru.dev/#org"
+   },
+   "description": "Glyph Connect shows every app and tool your agents can reach, which ones need you, and what each may read and write. Cut one tool or switch a whole app off. Free for Mac and iPhone."
+  }
+ ]
+}
+</script>
+<style>
+/* four screens take turns, like Jot's views */
+.views{position:relative}
+.view{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .6s,transform .6s,visibility 0s .6s}
+.view.on{opacity:1;visibility:visible;transform:none;transition:opacity .6s,transform .6s}
+.view{gap:5%}
+.phone{height:100%;width:auto;border-radius:clamp(22px,4vh,40px);border:clamp(5px,.8vh,8px) solid #0B0F0C;background:#0B0F0C;box-shadow:0 30px 60px var(--shadow)}
+.view .phone:nth-child(2){height:93%}
+.view .shot{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:14px;box-shadow:0 26px 60px var(--shadow),0 0 0 1px rgba(0,0,0,.06)}
+.seg{display:inline-flex;gap:4px;padding:5px;border-radius:999px;background:var(--card);border:1px solid var(--line)}
+.seg button{position:relative;overflow:hidden;border:0;background:transparent;border-radius:999px;padding:8px 18px;font:600 15px -apple-system,BlinkMacSystemFont,sans-serif;color:var(--soft);cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.seg button svg{width:17px;height:17px}
+.seg button[aria-selected=true]{background:var(--tint);color:var(--green)}
+.seg button[aria-selected=true]::after{content:"";position:absolute;left:14px;right:14px;bottom:3px;height:2px;border-radius:2px;background:var(--green);transform-origin:left;animation:fill 6s linear forwards}
+.seg.hold button::after{animation-play-state:paused}
+@keyframes fill{from{transform:scaleX(0)}}
+/* Mac or iPhone: the switch picks which screens the tabs offer */
+.seg.dev button{padding:8px 14px}
+.seg button small{font-size:12px;font-weight:700;color:var(--dim)}
+.seg.dev button[aria-selected=true]::after{display:none}
+.seg button[hidden]{display:none}
+</style>
+</head>
+<body data-page="connect">
+<main>
+  <div class="left">
+    <div class="top">
+      <a class="brand" href="/connect"><img class="icon" src="/family/connect-tile.svg" width="72" height="72" alt=""><div><b>Glyph Connect</b><span>What your agents can actually reach</span></div></a>
+      <h1 data-lines='["And what each one may read and write.", "Cut one tool, or a whole app.", "Read from your vault."]'>Every app and tool your agents can reach. <em><span id="said">And what each one may read and write.</span><i class="caret" aria-hidden="true"></i></em></h1>
+    </div>
+    <div class="cta loved">
+      <a class="btn go" id="dl" href="https://github.com/fru-dev3/glyph-native/releases/latest/download/Glyph-Native.dmg" data-dmg="fru-dev3/glyph-native" data-track="file_download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Install <span class="formac">Glyph </span>Native</span><span class="dlc" data-downloads="fru-dev3/glyph-native,fru-dev3/glyph-studio,fru-dev3/glyph-jot,fru-dev3/glyph-record,fru-dev3/glyph-time,fru-dev3/glyph-arena,fru-dev3/glyph-cast,fru-dev3/glyph,fru-dev3/glyph-engine" data-match="." data-floor="2318" data-label="downloads across Glyph: every download of Native, the apps it installs and the engine, updates included" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v12m0 0l-5-5m5 5l5-5"/></svg><b class="n"></b></span></a>
+      <a class="btn star" href="https://github.com/fru-dev3/glyph-studio" data-track="star_on_github" aria-label="Star Glyph Bot on GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg><span class="lbl">Star</span><span class="count" data-stars="fru-dev3/glyph-studio" data-floor="37" hidden></span><span class="love" aria-hidden="true"><svg class="arrow" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M52 6C51 28 32 44 8 54"/><path d="M44 14l8-10 7 10"/></svg><span class="say">show some love<svg class="heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></span></span></a>
+    </div>
+    <p class="nat">Glyph Native installs Glyph Connect and keeps it up to date.</p>
+    <ul class="badges">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 00-1 1v16a1 1 0 001 1h12a1 1 0 001-1V8zM14 3v5h5"/></svg>Plain files</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5zM8 11V7a4 4 0 018 0v4"/></svg>Private</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>Free</li>
+    </ul>
+    <p class="note">The connections shown are made up for the pictures. Apple silicon, macOS 26 or later.</p>
+  </div>
+  <div class="right">
+    <!-- stargazers -->
+    <div class="proof"><div class="faces"><a href="https://github.com/pratofeitoo" target="_blank" rel="noreferrer" title="pratofeitoo"><img src="/stargazers/pratofeitoo.png" width="40" height="40" alt="pratofeitoo" loading="lazy"></a><a href="https://github.com/digitalhustlerx" target="_blank" rel="noreferrer" title="digitalhustlerx"><img src="/stargazers/digitalhustlerx.png" width="40" height="40" alt="digitalhustlerx" loading="lazy"></a><a href="https://github.com/Albricengwa" target="_blank" rel="noreferrer" title="Albricengwa"><img src="/stargazers/Albricengwa.png" width="40" height="40" alt="Albricengwa" loading="lazy"></a><a href="https://github.com/Wishtrader" target="_blank" rel="noreferrer" title="Wishtrader"><img src="/stargazers/Wishtrader.png" width="40" height="40" alt="Wishtrader" loading="lazy"></a><a href="https://github.com/hamedelbhrawy" target="_blank" rel="noreferrer" title="hamedelbhrawy"><img src="/stargazers/hamedelbhrawy.png" width="40" height="40" alt="hamedelbhrawy" loading="lazy"></a><a href="https://github.com/Nessjk" target="_blank" rel="noreferrer" title="Nessjk"><img src="/stargazers/Nessjk.png" width="40" height="40" alt="Nessjk" loading="lazy"></a><a href="https://github.com/tranngochung0885-pixel" target="_blank" rel="noreferrer" title="tranngochung0885-pixel"><img src="/stargazers/tranngochung0885-pixel.png" width="40" height="40" alt="tranngochung0885-pixel" loading="lazy"></a><a href="https://github.com/MDsniper" target="_blank" rel="noreferrer" title="MDsniper"><img src="/stargazers/MDsniper.png" width="40" height="40" alt="MDsniper" loading="lazy"></a><a href="https://github.com/DFA5" target="_blank" rel="noreferrer" title="DFA5"><img src="/stargazers/DFA5.png" width="40" height="40" alt="DFA5" loading="lazy"></a><a href="https://github.com/TLCSglobal" target="_blank" rel="noreferrer" title="TLCSglobal"><img src="/stargazers/TLCSglobal.png" width="40" height="40" alt="TLCSglobal" loading="lazy"></a><a href="https://github.com/sina-chobak" target="_blank" rel="noreferrer" title="sina-chobak"><img src="/stargazers/sina-chobak.png" width="40" height="40" alt="sina-chobak" loading="lazy"></a><a href="https://github.com/RajaRuling" target="_blank" rel="noreferrer" title="RajaRuling"><img src="/stargazers/RajaRuling.png" width="40" height="40" alt="RajaRuling" loading="lazy"></a><span class="more">+35</span></div><p><a href="https://github.com/fru-dev3" target="_blank" rel="noreferrer"><b>47</b><span class="dv"> developers</span> starred Glyph<svg class="heart" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg></a></p></div>
+    <!-- /stargazers -->
+    <div class="seg dev" role="group" aria-label="Device"><button type="button" aria-selected="true" data-d="mac"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M1 20h22"/></svg>Mac</button><button type="button" aria-selected="false" data-d="iphone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>iPhone</button></div>
+    <div class="views fill" data-ar="1.556" aria-live="polite">
+      <figure class="view on" data-k="reach" data-d="mac" style="margin:0"><img class="shot" src="/connect/mac-reach.webp" width="1400" height="926" alt="Reach on the Mac: how many apps your agents can reach, which need you, and what is open" fetchpriority="high"></figure>
+      <figure class="view" data-k="connections" data-d="mac" style="margin:0"><img class="shot" src="/connect/mac-connections.webp" width="1400" height="926" alt="Connections on the Mac: every app, filtered by state, kind and area of life" loading="lazy"></figure>
+      <figure class="view" data-k="app" data-d="mac" style="margin:0"><img class="shot" src="/connect/mac-app.webp" width="1400" height="926" alt="One app&#x27;s page on the Mac: a switch for the whole app, and each tool&#x27;s sync and chat switches" loading="lazy"></figure>
+      <figure class="view" data-k="tools" data-d="mac" style="margin:0"><img class="shot" src="/connect/mac-tools.webp" width="1400" height="926" alt="Every tool across every app on the Mac, with what each may do" loading="lazy"></figure>
+      <figure class="view" data-k="iphone" data-d="iphone" style="margin:0"><img class="phone" src="/connect/iphone-reach.webp" width="506" height="1100" alt="Glyph Connect on iPhone: what your agents can reach" loading="lazy"><img class="phone" src="/connect/iphone-connections.webp" width="506" height="1100" alt="Connections on iPhone, with filters across state, kind and area of life" loading="lazy"></figure>
+      <figure class="view" data-k="iphone-chat" data-d="iphone" style="margin:0"><img class="phone" src="/connect/iphone-chat.webp" width="506" height="1100" alt="Chat on iPhone: ask what can be reached, or cut something off" loading="lazy"><img class="phone" src="/connect/iphone-tags.webp" width="506" height="1100" alt="Tags on iPhone, the same tags as the rest of the family" loading="lazy"></figure>
+    </div>
+    <div class="seg" id="tabs" role="tablist" aria-label="Glyph Connect on screen">
+      <button type="button" role="tab" aria-selected="true" data-k="reach" data-d="mac"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 100 18 9 9 0 000-18zM12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>Reach</button>
+      <button type="button" role="tab" aria-selected="false" data-k="connections" data-d="mac"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Connections</button>
+      <button type="button" role="tab" aria-selected="false" data-k="app" data-d="mac"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M16 4v4M10 10v4M18 16v4"/></svg>One app</button>
+      <button type="button" role="tab" aria-selected="false" data-k="tools" data-d="mac"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 00-1 1v16a1 1 0 001 1h12a1 1 0 001-1V8zM14 3v5h5"/></svg>Tools</button>
+      <button type="button" role="tab" aria-selected="false" data-k="iphone" data-d="iphone" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 100 18 9 9 0 000-18zM12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>Reach</button>
+      <button type="button" role="tab" aria-selected="false" data-k="iphone-chat" data-d="iphone" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 19v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1M9.5 10a3.5 3.5 0 100-7 3.5 3.5 0 000 7M21 19v-1a4 4 0 00-3-3.8"/></svg>Chat</button>
+    </div>
+  </div>
+</main>
+
+<dialog class="sheet" id="features" aria-labelledby="feat-h">
+  <div class="fhead"><img src="/family/connect-tile.svg" width="40" height="40" alt=""><h2 id="feat-h">Everything Glyph Connect does</h2><button type="button" class="fclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="flist">
+    <div class="fq"><h3>One number first</h3><p>How many of your apps your agents can reach right now, and which ones need you.</p></div>
+    <div class="fq"><h3>Needs you</h3><p>A sign-in that lapsed or a key that is missing is named, with the step that fixes it.</p></div>
+    <div class="fq"><h3>Every connection</h3><p>Open, off, failing or not connected, filtered by kind and by area of life.</p></div>
+    <div class="fq"><h3>What each tool may do</h3><p>Reads and writes are listed apart. A write changes something outside your vault and says so.</p></div>
+    <div class="fq"><h3>Cut one tool</h3><p>Switch a single tool off in chat or in sync and leave the rest of the app working.</p></div>
+    <div class="fq"><h3>Or the whole app</h3><p>One switch says whether agents may reach an app at all. It is instant and it is reversible.</p></div>
+    <div class="fq"><h3>No write runs unattended by accident</h3><p>One click clears every write tool from sync, and one puts them back.</p></div>
+    <div class="fq"><h3>Ask it</h3><p>Ask what can be reached, or say what to cut off, and it does it with an Undo.</p></div>
+    <div class="fq"><h3>Your registry, not a new one</h3><p>It reads the app registry already in your vault and changes only the keys it owns.</p></div>
+    <div class="fq"><h3>Mac and iPhone</h3><p>The Mac reads the vault; the iPhone reads it through your own hub.</p></div>
+  </div>
+</dialog>
+
+<footer>
+  <div class="bar">
+    <nav aria-label="Footer">
+      <a class="home" href="/"><img src="/family/glyph-small.svg" width="16" height="16" alt="">Glyph</a>
+      <a class="feat" href="#features"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Features</a>
+      <a class="opt" href="/bot" title="Where your agents read it">Bot</a>
+      <a class="opt" href="https://github.com/fru-dev3/glyph-native/releases" title="Every release">Releases</a>
+      <a class="opt" href="https://github.com/fru-dev3/glyph/issues" title="Contact: open an issue">Contact</a>
+      <a class="opt" href="https://fru.dev"><img src="/fru-dev.png" width="16" height="16" alt="">fru.dev</a>
+      <a class="legal-link" href="/legal" title="Disclaimer: provided as is, without warranty">Disclaimer</a>
+    </nav>
+    <a class="built" href="https://github.com/fru-dev3/glyph"><span><span class="bw">Built with </span><svg class="heart-i" width="14" height="14" viewBox="0 0 24 24" fill="#E0465B" aria-label="love"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg> + AI<span class="opt"> · easy to make your own on GitHub</span></span></a>
+  </div>
+</footer>
+<script src="/site.js"></script>
+<script>
+// The screens take turns every six seconds, the Mac's then the iPhone's; a tap picks one, hovering holds it.
+const seg=document.getElementById("tabs"),sb=[...seg.querySelectorAll("button")],vw=[...document.querySelectorAll(".view")],db=[...document.querySelectorAll(".dev button")];
+let vi=0,vt,vh=false;
+const last={};
+// Alternate Mac and iPhone so both show early, each device keeping its own place.
+function nxt(){const o=vw[vi].dataset.d==="mac"?"iphone":"mac",ix=vw.map((v,k)=>k).filter(k=>vw[k].dataset.d===o);return ix.length?ix[(ix.indexOf(last[o]??-1)+1)%ix.length]:(vi+1)%vw.length}
+function view(n){vi=n;const d=vw[n].dataset.d;last[d]=n;db.forEach(b=>b.setAttribute("aria-selected",b.dataset.d===d));
+  sb.forEach((b,k)=>{b.hidden=b.dataset.d!==d;b.setAttribute("aria-selected",k===n);b.style.animation="none";b.offsetWidth;b.style.animation=""});vw.forEach((v,k)=>v.classList.toggle("on",k===n));
+  clearTimeout(vt);if(!still&&!vh)vt=setTimeout(()=>view(nxt()),6000)}
+sb.forEach((b,n)=>b.addEventListener("click",()=>{view(n);track("connect_view",{view:b.dataset.k})}));
+db.forEach(b=>b.addEventListener("click",()=>{view(vw.findIndex(v=>v.dataset.d===b.dataset.d));track("connect_device",{device:b.dataset.d})}));
+const rt=document.querySelector(".right");
+rt.addEventListener("mouseenter",()=>{vh=true;clearTimeout(vt);seg.classList.add("hold")});
+rt.addEventListener("mouseleave",()=>{vh=false;seg.classList.remove("hold");view(vi)});
+view(0);
+</script>
+</body>
+</html>

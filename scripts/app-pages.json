@@ -503,5 +503,160 @@
         "The Mac reads the vault directly; the iPhone reaches it through your own hub."
       ]
     ]
+  },
+  "connect": {
+    "name": "Glyph Connect",
+    "tagline": "What your agents can actually reach",
+    "title": "Glyph Connect | Every app and tool your agents can reach, and what each may do",
+    "description": "Glyph Connect shows every app and tool your agents can reach, which ones need you, and what each may read and write. Cut one tool or switch a whole app off. Free for Mac and iPhone.",
+    "category": "UtilitiesApplication",
+    "lead": "Every app and tool your agents can reach.",
+    "lines": [
+      "And what each one may read and write.",
+      "Cut one tool, or a whole app.",
+      "Read from your vault."
+    ],
+    "badge3": "Free",
+    "note": "The connections shown are made up for the pictures. Apple silicon, macOS 26 or later.",
+    "views": [
+      {
+        "k": "reach",
+        "label": "Reach",
+        "icon": "target",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-reach.webp",
+            "w": 1400,
+            "h": 926,
+            "alt": "Reach on the Mac: how many apps your agents can reach, which need you, and what is open"
+          }
+        ]
+      },
+      {
+        "k": "connections",
+        "label": "Connections",
+        "icon": "list",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-connections.webp",
+            "w": 1400,
+            "h": 926,
+            "alt": "Connections on the Mac: every app, filtered by state, kind and area of life"
+          }
+        ]
+      },
+      {
+        "k": "app",
+        "label": "One app",
+        "icon": "gear",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-app.webp",
+            "w": 1400,
+            "h": 926,
+            "alt": "One app's page on the Mac: a switch for the whole app, and each tool's sync and chat switches"
+          }
+        ]
+      },
+      {
+        "k": "tools",
+        "label": "Tools",
+        "icon": "doc",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-tools.webp",
+            "w": 1400,
+            "h": 926,
+            "alt": "Every tool across every app on the Mac, with what each may do"
+          }
+        ]
+      },
+      {
+        "k": "iphone",
+        "label": "Reach",
+        "icon": "target",
+        "device": "iphone",
+        "imgs": [
+          {
+            "src": "iphone-reach.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Glyph Connect on iPhone: what your agents can reach"
+          },
+          {
+            "src": "iphone-connections.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Connections on iPhone, with filters across state, kind and area of life"
+          }
+        ]
+      },
+      {
+        "k": "iphone-chat",
+        "label": "Chat",
+        "icon": "people",
+        "device": "iphone",
+        "imgs": [
+          {
+            "src": "iphone-chat.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Chat on iPhone: ask what can be reached, or cut something off"
+          },
+          {
+            "src": "iphone-tags.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Tags on iPhone, the same tags as the rest of the family"
+          }
+        ]
+      }
+    ],
+    "features": [
+      [
+        "One number first",
+        "How many of your apps your agents can reach right now, and which ones need you."
+      ],
+      [
+        "Needs you",
+        "A sign-in that lapsed or a key that is missing is named, with the step that fixes it."
+      ],
+      [
+        "Every connection",
+        "Open, off, failing or not connected, filtered by kind and by area of life."
+      ],
+      [
+        "What each tool may do",
+        "Reads and writes are listed apart. A write changes something outside your vault and says so."
+      ],
+      [
+        "Cut one tool",
+        "Switch a single tool off in chat or in sync and leave the rest of the app working."
+      ],
+      [
+        "Or the whole app",
+        "One switch says whether agents may reach an app at all. It is instant and it is reversible."
+      ],
+      [
+        "No write runs unattended by accident",
+        "One click clears every write tool from sync, and one puts them back."
+      ],
+      [
+        "Ask it",
+        "Ask what can be reached, or say what to cut off, and it does it with an Undo."
+      ],
+      [
+        "Your registry, not a new one",
+        "It reads the app registry already in your vault and changes only the keys it owns."
+      ],
+      [
+        "Mac and iPhone",
+        "The Mac reads the vault; the iPhone reads it through your own hub."
+      ]
+    ]
   }
 }
