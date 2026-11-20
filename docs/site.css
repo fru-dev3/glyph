@@ -205,7 +205,7 @@ footer .built:hover{color:var(--green)}
 footer .built .heart-i{display:inline-block;vertical-align:-2px;margin:0 1px}
 @media (max-width:620px){footer .opt{display:none}}
 @media (max-width:420px){footer nav a{padding:6px 5px}footer a.feat svg{display:none}footer .bar{gap:6px}}
-@media (max-width:380px){footer .built .bw{display:none}}
+@media (max-width:440px){footer .built .bw{display:none}}
 .brand span i::before{content:" · "}
 @media (max-width:480px){.brand span i{display:block;margin-top:2px}.brand span i::before{content:none}}
 /* the one line under an app page's install button */

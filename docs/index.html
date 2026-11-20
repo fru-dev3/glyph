@@ -126,7 +126,7 @@
 @media not ((min-width:960px) and (min-height:560px)){
   .left .top{order:1}.left .cta{order:3}
 }
-@media (max-width:860px){.tab{flex:0 0 38%}}
+@media (max-width:860px){.tab{flex:0 0 calc((100% - 2*clamp(6px,.7vw,12px))/3);scroll-snap-align:start}}
 @media (max-width:520px){.tab{padding:8px 2px;border-radius:12px}.tab .st{display:none}.tab b{font-size:13px}}
 /* The hero: the mark, the name and "by fru.dev"
    on one line; the headline stacked in three big lines; a hand-written note beside the green one (placed by the
@@ -182,7 +182,7 @@
   <div class="left">
     <div class="top">
       <a class="brand" href="/labs/"><img class="icon" src="/family/glyph-tile.svg" width="80" height="80" alt=""><div><b>Glyph <i class="lab">Labs<svg viewBox="0 0 120 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 9C30 3 78 2 117 7" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/></svg></i></b><span id="copy-label"></span></div></a>
-      <h1 data-lines='["Yours."]' data-fit=".left,.cta"><span id="copy-h1">Apps made<br>for one life.</span> <em><span id="said">Yours.</span></em></h1>
+      <h1 data-lines='["Yours."]' data-fit=".left,.cta"><span id="copy-h1">Apps made <br>for one life.</span> <em><span id="said">Yours.</span></em></h1>
       <span class="hn" id="hn" aria-hidden="true"><svg viewBox="0 0 70 40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M66 8C48 4 26 10 8 28M8 28l3-13M8 28l13-1"/></svg>shaped around you</span>
       <p class="lede" id="copy-sub"><b>Free, open source and Agent Ready.</b> Everything stays in files you own.</p>
     </div>
