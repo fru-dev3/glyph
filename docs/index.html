@@ -96,6 +96,7 @@
 .tab .st{display:block;font-size:12px;line-height:1.3;font-weight:600;color:var(--soft);text-align:center;text-wrap:balance}
 .tab .st i{font-style:normal;font-weight:800;color:var(--green);margin-right:5px}
 .tab[aria-selected=true]{border-color:var(--tint-line);background:var(--tint)}
+.tab .rib{position:absolute;top:11px;right:-31px;width:112px;padding:3px 0;transform:rotate(45deg);background:#d1242f;color:#fff;font:800 10.5px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.06em;text-transform:uppercase;text-align:center;box-shadow:0 2px 6px -2px rgba(120,0,0,.55);pointer-events:none}
 /* Glyph Native is the one that installs the rest, so its tile alone is filled green */
 .tab[data-k=native],.tab[data-k=native][aria-selected=true]{background:var(--green);border-color:var(--green);color:var(--on-green);box-shadow:0 12px 24px -10px rgba(0,128,0,.6)}
 .tab[data-k=native] .st{color:rgba(255,255,255,.88)}
@@ -228,7 +229,7 @@
     </div>
     <div class="cap"><span id="capline">One harness that builds, runs and watches your agents, with your whole vault behind them.</span><a id="capgo" href="/bot">Open Glyph Bot</a></div>
     <div class="tabs" role="tablist" aria-label="Every Glyph app">
-      <button class="tab" role="tab" aria-selected="true" data-k="jot" data-href="/jot" data-name="Glyph Jot" data-line="Dictation that types anywhere, meetings transcribed, every word kept in your vault."><img src="/family/jot-tile.svg" alt=""><b>Jot</b><span class="st">Capture your ideas locally</span></button>
+      <button class="tab" role="tab" aria-selected="true" data-k="jot" data-href="/jot" data-name="Glyph Jot" data-line="Dictation that types anywhere, meetings transcribed, every word kept in your vault."><img src="/family/jot-tile.svg" alt=""><b>Jot</b><span class="st">Capture your ideas locally</span><span class="rib">Popular</span></button>
       <button class="tab" role="tab" aria-selected="false" data-k="studio" data-href="/bot" data-name="Glyph Bot" data-line="One harness that builds, runs and watches your agents, with your whole vault behind them."><img src="/family/studio-tile.svg" alt=""><b>Bot</b><span class="st">Where your agents get to work</span></button>
       <button class="tab tool" role="tab" aria-selected="false" data-k="time" data-href="/time" data-name="Glyph Time" data-line="A quiet count-up at the edge of your screen, every session saved to your vault."><img src="/family/time-tile.svg" alt=""><b>Time</b><span class="st">Time tracking that tracks itself</span></button>
       <button class="tab tool" role="tab" aria-selected="false" data-k="arena" data-href="/arena" data-name="Glyph Arena" data-line="Runs the same job across every model, scored on your work, and says which one won."><img src="/family/arena-tile.svg" alt=""><b>Arena</b><span class="st">Stop guessing which model</span></button>
