@@ -1,0 +1,179 @@
+{
+  "wealth": {
+    "name": "Glyph Wealth",
+    "tagline": "Know where your money stands",
+    "title": "Glyph Wealth | Net worth, spending and holdings in files you own",
+    "description": "Glyph Wealth keeps accounts, spending, holdings and net worth as plain lines in your vault. Say a balance or bring in a statement. No bank login, and it never invents a number. Free for Mac and iPhone.",
+    "category": "FinanceApplication",
+    "lead": "Accounts, spending, holdings and net worth.",
+    "lines": [
+      "It never invents a number.",
+      "No bank login.",
+      "Saved to your vault."
+    ],
+    "note": "Every figure shown is made up for the pictures. Arithmetic on the numbers you give it, not financial advice. Apple silicon, macOS 26 or later.",
+    "views": [
+      {
+        "k": "today",
+        "label": "Today",
+        "icon": "chart",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-today.webp",
+            "w": 1400,
+            "h": 1003,
+            "alt": "Today on the Mac: net worth counted, what is liquid and owed, an estimate left out of the figure, eighteen months of history and how long the money lasts"
+          }
+        ]
+      },
+      {
+        "k": "accounts",
+        "label": "Accounts",
+        "icon": "list",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-accounts.webp",
+            "w": 1400,
+            "h": 1003,
+            "alt": "Accounts on the Mac, grouped as cash, investments, retirement, property and cards, each with when it was last read"
+          }
+        ]
+      },
+      {
+        "k": "cashflow",
+        "label": "Cash flow",
+        "icon": "clock",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-cashflow.webp",
+            "w": 1400,
+            "h": 1003,
+            "alt": "Cash flow on the Mac: what a month costs, how much was kept, each month in, out and kept, and where the month went"
+          }
+        ]
+      },
+      {
+        "k": "portfolio",
+        "label": "Portfolio",
+        "icon": "target",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-portfolio.webp",
+            "w": 1400,
+            "h": 1003,
+            "alt": "Portfolio on the Mac: what is invested, the fees a year, and each holding's share"
+          }
+        ]
+      },
+      {
+        "k": "scenarios",
+        "label": "Scenarios",
+        "icon": "doc",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-scenarios.webp",
+            "w": 1400,
+            "h": 1003,
+            "alt": "Scenarios on the Mac: months of runway if work stopped, the number to reach and the year it is reached under a poor, a normal and a good run"
+          }
+        ]
+      },
+      {
+        "k": "iphone",
+        "label": "Today",
+        "icon": "chart",
+        "device": "iphone",
+        "imgs": [
+          {
+            "src": "iphone-today.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Glyph Wealth on iPhone: today's net worth with history and runway"
+          },
+          {
+            "src": "iphone-accounts.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Accounts on iPhone, grouped, each with its balance and when it was read"
+          }
+        ]
+      },
+      {
+        "k": "iphone-flow",
+        "label": "Cash flow",
+        "icon": "clock",
+        "device": "iphone",
+        "imgs": [
+          {
+            "src": "iphone-cashflow.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Cash flow on iPhone: a month's cost and each month in, out and kept"
+          },
+          {
+            "src": "iphone-portfolio.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Portfolio on iPhone: invested, fees a year and each holding's share"
+          }
+        ]
+      }
+    ],
+    "features": [
+      [
+        "It never invents a number",
+        "Every figure traces to a line you said or a file you brought in. What is not known says so, and is never shown as a zero."
+      ],
+      [
+        "Three kinds of certainty",
+        "Read from a statement, sourced from a note, or claimed. Totals add only the first two; an estimate is shown beside them, outside the figure."
+      ],
+      [
+        "Say it",
+        "Say a balance, a spend or a transfer in plain words. It reads the amount, the account and the date, and keeps your words beside what it understood."
+      ],
+      [
+        "Bring in a statement",
+        "CSV, OFX and QFX files. It shows the rows it read, the ones it already had and the ones it skipped, and says so when a file cannot be read."
+      ],
+      [
+        "No bank login",
+        "Nothing here holds a password to your bank. Numbers arrive by voice, by a file, or by confirming what a note in your vault already says."
+      ],
+      [
+        "Cash flow",
+        "What a month costs, how much of it does not stop, what was kept, and the charges that come back."
+      ],
+      [
+        "Portfolio",
+        "What is invested, the fees it costs each year and over ten, and when more than a fifth sits in one holding."
+      ],
+      [
+        "Scenarios",
+        "How many months the money lasts if work stopped, the number you are aiming at, and the year it is reached on a poor, a normal and a good run."
+      ],
+      [
+        "Papers and dates",
+        "The documents a tax year usually needs, ticked off as they arrive, and the dates that do not move."
+      ],
+      [
+        "Plain lines in your vault",
+        "Whole cents, one line per fact, append only. Each device writes its own file, so a synced folder never conflicts."
+      ],
+      [
+        "Tags",
+        "The same tags as the rest of the Glyph family, read from one register in your vault."
+      ],
+      [
+        "Mac and iPhone",
+        "The same screens on both, saved to the same vault."
+      ]
+    ],
+    "badge3": "No bank login"
+  }
+}
