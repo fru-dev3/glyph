@@ -11,6 +11,15 @@ rm -rf "$out"; mkdir -p "$out"
 for a in glyph studio jot dictate record cast code rig knowledge arena time; do
   cp "$src/$a-tile.svg" "$src/$a-small.svg" "$src/$a-512.png" "$src/$a-192.png" "$src/$a-180.png" "$out/"
 done
+# The six apps split out of the apps repo on 2026-11-13 are not in build.py's family: their
+# masters live in each app's own repo, and these are the copies taken from them. The strip on the
+# home page uses the tile alone, so that is all that is copied. Glyph CRM is the one with no SVG
+# master, so its tile is a PNG. Without these lines the rm -rf above deletes them on every deploy.
+for a in well wealth omega connect life; do
+  cp "$src/$a-tile.svg" "$out/"
+done
+cp "$src/crm-tile.png" "$out/"
+
 cp "$src/glyph-small.svg" docs/favicon.svg
 cp "$src/glyph-512.png" docs/icon-512.png
 cp "$src/glyph-192.png" docs/icon-192.png
