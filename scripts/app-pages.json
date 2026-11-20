@@ -175,5 +175,178 @@
       ]
     ],
     "badge3": "No bank login"
+  },
+  "omega": {
+    "name": "Glyph Omega",
+    "tagline": "From your mission to today's move",
+    "title": "Glyph Omega | Your mission, your goals and the next move, in files you own",
+    "description": "Glyph Omega keeps your mission, vision, values and goals as plain files in your vault, and breaks each goal down until what is left is the thing to do next. Talk through your day and review once a week. Free for Mac and iPhone.",
+    "category": "ProductivityApplication",
+    "lead": "Your mission and goals, broken down.",
+    "lines": [
+      "Until what is left is the next move.",
+      "Reviewed once a week.",
+      "Saved to your vault."
+    ],
+    "badge3": "Free",
+    "note": "The goals shown are made up for the pictures. Apple silicon, macOS 26 or later.",
+    "views": [
+      {
+        "k": "goals",
+        "label": "Goals",
+        "icon": "list",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-goals.webp",
+            "w": 1400,
+            "h": 926,
+            "alt": "Goals on the Mac, grouped by area of life, each with its next action, due date and progress"
+          }
+        ]
+      },
+      {
+        "k": "today",
+        "label": "Today",
+        "icon": "target",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-today.webp",
+            "w": 1400,
+            "h": 926,
+            "alt": "Today on the Mac: the north star in large type, the direction, and one next move"
+          }
+        ]
+      },
+      {
+        "k": "mission",
+        "label": "Mission",
+        "icon": "doc",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-mission.webp",
+            "w": 1400,
+            "h": 926,
+            "alt": "Mission on the Mac: vision, values in order, ambitions and objectives"
+          }
+        ]
+      },
+      {
+        "k": "goal",
+        "label": "A goal",
+        "icon": "chart",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-goal.webp",
+            "w": 1400,
+            "h": 926,
+            "alt": "One goal open beside the list: status, progress, due date, why it matters and its next actions"
+          }
+        ]
+      },
+      {
+        "k": "review",
+        "label": "Review",
+        "icon": "clock",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-review.webp",
+            "w": 1400,
+            "h": 926,
+            "alt": "The weekly review: one goal at a time, its progress, how it is going and its next action"
+          }
+        ]
+      },
+      {
+        "k": "iphone",
+        "label": "Today",
+        "icon": "target",
+        "device": "iphone",
+        "imgs": [
+          {
+            "src": "iphone-today.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Glyph Omega on iPhone: the north star and what you said"
+          },
+          {
+            "src": "iphone-vision.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Mission on iPhone: the north star, the mission and the vision"
+          }
+        ]
+      },
+      {
+        "k": "iphone-goals",
+        "label": "Goals",
+        "icon": "list",
+        "device": "iphone",
+        "imgs": [
+          {
+            "src": "iphone-goals.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Goals on iPhone by area of life, and ambitions"
+          },
+          {
+            "src": "iphone-tags.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Tags on iPhone, the same tags as the rest of the family"
+          }
+        ]
+      }
+    ],
+    "features": [
+      [
+        "One north star",
+        "Your purpose in a sentence, at the top of Today and above everything else."
+      ],
+      [
+        "Mission, vision and values",
+        "Written once, in your words, with the values in the order you would keep them."
+      ],
+      [
+        "Goals by area of life",
+        "Health, money, learning and the rest, each goal with a due date, a measure and its progress."
+      ],
+      [
+        "Broken down to the next move",
+        "A goal is not finished being written until it has a next action. One that has none says so."
+      ],
+      [
+        "Talk through your day",
+        "Say where things stand. It proposes what changed on which goal and you confirm before anything is saved."
+      ],
+      [
+        "A review once a week",
+        "One goal at a time: move the progress, say how it is going, make sure there is a next action."
+      ],
+      [
+        "Your words are kept",
+        "What you said is saved first, word for word, before anything reads it."
+      ],
+      [
+        "Plain files in your vault",
+        "The same files your agents read. Nothing is stored anywhere else."
+      ],
+      [
+        "When the vault is away",
+        "It shows the last copy it read, says when that was, and writes nothing until the vault is back."
+      ],
+      [
+        "Tags",
+        "The same tags as the rest of the Glyph family, read from one register in your vault."
+      ],
+      [
+        "Mac and iPhone",
+        "The same goals on both, through your own hub."
+      ]
+    ]
   }
 }
