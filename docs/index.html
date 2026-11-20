@@ -176,6 +176,8 @@
 }
 @media (max-width:440px){.fam{gap:6px;padding:8px 10px}.fam .grp+.grp{padding-left:6px}.fam .paid{gap:5px}.fam figure img,.fam .ours img{width:32px}}
 @media (min-width:960px) and (min-height:560px){.left .cta.loved{margin-bottom:clamp(44px,6vh,72px)}.left .famnote{margin-top:calc(8px - clamp(14px,3vh,32px))}}
+/* The hand-written note needs its whole height, or it lies across the logos below. */
+@media (min-width:960px) and (min-height:720px){.left .cta.loved{margin-bottom:calc(clamp(54px,7vh,72px) + clamp(22px,3.1vh,29px) + 6px)}}
 </style>
 </head>
 <body data-page="home">

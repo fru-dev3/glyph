@@ -827,5 +827,160 @@
         "Every entry is a line in a file you own. fru.dev does not collect it and cannot read it."
       ]
     ]
+  },
+  "life": {
+    "name": "Glyph Life",
+    "tagline": "The paperwork of everyday life",
+    "title": "Glyph Life | What is due, what charges, what lapses, and the jobs that keep it in order",
+    "description": "Glyph Life shows what is due this week, the subscriptions about to charge, the cover about to lapse, your filed documents and the recurring jobs that watch them. Read from your vault. Free for Mac and iPhone.",
+    "category": "LifestyleApplication",
+    "lead": "What is due, what charges, what lapses.",
+    "lines": [
+      "Keep it or cancel it, before it charges.",
+      "Your documents, filed and dated.",
+      "Read from your vault."
+    ],
+    "badge3": "Free",
+    "note": "The bills, policies and documents shown are made up for the pictures. Apple silicon, macOS 26 or later.",
+    "views": [
+      {
+        "k": "due",
+        "label": "Due",
+        "icon": "clock",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-due.webp",
+            "w": 1400,
+            "h": 949,
+            "alt": "Due on the Mac: three subscriptions charging this week with Keep it and Cancel it, and one policy lapsing"
+          }
+        ]
+      },
+      {
+        "k": "documents",
+        "label": "Documents",
+        "icon": "doc",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-documents.webp",
+            "w": 1400,
+            "h": 949,
+            "alt": "Documents on the Mac: two waiting for a yes, and the filed ones with their expiry dates"
+          }
+        ]
+      },
+      {
+        "k": "money",
+        "label": "Money out",
+        "icon": "chart",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-money.webp",
+            "w": 1400,
+            "h": 949,
+            "alt": "Money out on the Mac: what leaves each month and each year, one line per subscription"
+          }
+        ]
+      },
+      {
+        "k": "workflows",
+        "label": "Workflows",
+        "icon": "list",
+        "device": "mac",
+        "imgs": [
+          {
+            "src": "mac-workflows.webp",
+            "w": 1400,
+            "h": 949,
+            "alt": "Workflows on the Mac: a renewal watch opened to its steps, with what it watches for and when it is done"
+          }
+        ]
+      },
+      {
+        "k": "iphone",
+        "label": "Due",
+        "icon": "clock",
+        "device": "iphone",
+        "imgs": [
+          {
+            "src": "iphone-due.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Glyph Life on iPhone: three charges this week, each with Keep it and Cancel it"
+          },
+          {
+            "src": "iphone-lists.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "The lists on iPhone: documents, money out, cover and workflows"
+          }
+        ]
+      },
+      {
+        "k": "iphone-chat",
+        "label": "Chat",
+        "icon": "people",
+        "device": "iphone",
+        "imgs": [
+          {
+            "src": "iphone-chat.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Chat on iPhone: ask what is due this week, or say what to cancel"
+          },
+          {
+            "src": "iphone-workflows.webp",
+            "w": 506,
+            "h": 1100,
+            "alt": "Workflows on iPhone: one due now, one active, one staged"
+          }
+        ]
+      }
+    ],
+    "features": [
+      [
+        "What is due, first",
+        "The charges and lapses of the coming days, counted in one line at the top."
+      ],
+      [
+        "Keep it or cancel it",
+        "Each charge asks for a decision before its date, and remembers the one you gave."
+      ],
+      [
+        "Money out",
+        "What your subscriptions cost a month and a year, and the ones with no price yet said as such."
+      ],
+      [
+        "Documents",
+        "What has been filed, by kind, with the date each one expires."
+      ],
+      [
+        "Waiting for you",
+        "A document the filer could not place asks for a yes, and each yes teaches it a rule."
+      ],
+      [
+        "Cover",
+        "Your policies and the day each one ends, so none lapses unnoticed."
+      ],
+      [
+        "Workflows",
+        "The recurring jobs, what each watches for, and when it last ran."
+      ],
+      [
+        "Ask it",
+        "Ask what is due this week, or say what to cancel."
+      ],
+      [
+        "No new store",
+        "It reads what is already in your vault and writes only your decisions."
+      ],
+      [
+        "Mac and iPhone",
+        "The Mac reads the vault; the iPhone reads it through your own hub."
+      ]
+    ]
   }
 }
