@@ -55,6 +55,8 @@
 .seg button[aria-selected=true]{background:var(--tint);color:var(--green)}
 .seg button[aria-selected=true]::after{content:"";position:absolute;left:14px;right:14px;bottom:3px;height:2px;border-radius:2px;background:var(--green);transform-origin:left;animation:fill 6s linear forwards}
 .seg.hold button::after{animation-play-state:paused}
+/* Two columns at their narrowest: five tabs at full size are 602px in a column of about 510, and the page scrolled sideways from 960 to 1060 (measured 2026-11-20). */
+@media (min-width:960px) and (max-width:1100px){#tabs{gap:2px}#tabs button{padding:8px 9px;font-size:14px;gap:5px}#tabs button svg{width:15px;height:15px}}
 @keyframes fill{from{transform:scaleX(0)}}
 /* Mac or iPhone: the switch picks which screens the tabs offer */
 .seg.dev button{padding:8px 14px}

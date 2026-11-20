@@ -203,7 +203,10 @@ footer a:focus:not(:focus-visible){outline:none}
 footer .built{display:inline-flex;align-items:center;gap:6px;color:var(--soft);text-decoration:none;font-weight:600;white-space:nowrap}
 footer .built:hover{color:var(--green)}
 footer .built .heart-i{display:inline-block;vertical-align:-2px;margin:0 1px}
-@media (max-width:620px){footer .opt{display:none}}
+@media (max-width:664px){footer .opt{display:none}}
+/* Between 621 and 900 the seven links and the whole "Built with" line do not both fit: the
+   line sat on top of Disclaimer (pictured at 820, 2026-11-20). Its tail goes first. */
+@media (max-width:900px){footer .built .opt{display:none}}
 @media (max-width:420px){footer nav a{padding:6px 5px}footer a.feat svg{display:none}footer .bar{gap:6px}}
 @media (max-width:440px){footer .built .bw{display:none}}
 .brand span i::before{content:" · "}
