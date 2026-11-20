@@ -215,6 +215,9 @@ footer .built .heart-i{display:inline-block;vertical-align:-2px;margin:0 1px}
 .nat{margin:0;width:100%;text-align:center;font-size:13px;font-weight:600;color:var(--soft)}
 .nat a{color:var(--green);font-weight:700}
 .nat{order:4}
+/* That order is the one-column page's (it shares 4 with the button it explains). On the two-column
+   page nothing else is ordered, so it sank under the fine print, centred in a left-aligned column. */
+@media (min-width:960px) and (min-height:560px){.nat{order:0;text-align:left}}
 /* The version the Install button will download, small and quiet beside the platform line. */
 .dlv{margin-left:7px;padding:1px 6px;border-radius:999px;background:var(--card,rgba(0,0,0,.05));border:1px solid var(--line,rgba(0,0,0,.08));font-size:.78em;font-weight:700;font-variant-numeric:tabular-nums;color:var(--soft,#667)}
 .dlv::before{content:"v"}

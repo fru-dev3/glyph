@@ -11,7 +11,9 @@ const OWNER = "fru-dev3";
 const FAMILY = ["glyph-studio", "glyph-engine", "glyph-jot", "glyph", "glyph-arena", "glyph-cast", "glyph-time"];
 const PAGES = [
   { file: "index.html", repos: FAMILY, label: "Glyph" },
-  { file: "studio/index.html", repos: ["glyph-studio"], label: "Glyph Studio" },
+  // The page moved to /bot when Glyph Studio became Glyph Bot (2026-11-12); studio/ is a redirect
+  // with no markers, so this entry wrote nowhere and /bot kept a face whose picture was pruned.
+  { file: "bot/index.html", repos: ["glyph-studio"], label: "Glyph Bot" },
   // Glyph Record folded into Glyph Jot (2026-10-25); its repo (0 stars) is archived
   { file: "jot/index.html", repos: ["glyph-jot"], label: "Glyph Jot" },
   { file: "rig/index.html", repos: ["glyph"], label: "Glyph Rig" },
