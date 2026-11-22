@@ -191,6 +191,11 @@ if (panels.length) {
     if (p) { p.scrollTop = 0; track("ribbon_open", { tab: id }); opened(p); }
   };
   addEventListener("hashchange", route); route();
+  // The way back: the close button, Esc, and the Overview tab all return to the one bright screen without a reload.
+  const home = () => { history.pushState(null, "", location.pathname + location.search); route(); };
+  $$(".pclose, .ribbon a[data-tab='']").forEach((a) => a.addEventListener("click", (ev) => { if (location.hash) { ev.preventDefault(); home(); } }));
+  addEventListener("keydown", (ev) => { if (ev.key === "Escape" && document.body.classList.contains("paneled") && !$("dialog[open]")) home(); });
+  addEventListener("popstate", route);
   // Compare: one rival at a time; the head-to-head and the rows rise in again.
   $$(".rivals button").forEach((b) => b.addEventListener("click", () => {
     $$(".rivals button").forEach((x) => x.setAttribute("aria-selected", x === b));
@@ -236,6 +241,8 @@ if (calc) {
   const total = () => {
     const to = $$("input:checked", calc).reduce((t, i) => t + +i.value, 0), from = shown, t0 = performance.now();
     shown = to; yr.textContent = "$" + Math.round(to * 12).toLocaleString("en-US");
+    const list = $("[data-drop]", calc);
+    if (list) { list.textContent = ""; $$("input:checked", calc).forEach((i) => { const img = i.nextElementSibling, c = document.createElement("span"); c.append(img.cloneNode(), img.dataset.n); list.append(c); }); }
     const f = (t) => { const k = still ? 1 : Math.min(1, (t - t0) / 500); sum.textContent = "$" + (from + (to - from) * (1 - Math.pow(1 - k, 3))).toFixed(2).replace(/\.00$/, ""); if (k < 1) requestAnimationFrame(f); };
     requestAnimationFrame(f);
   };

@@ -125,7 +125,7 @@ def ribbon(k, here="", base="", tabs=None):
         cur = ' aria-current="page"' if t == here else ""
         out.append(f'<a href="{href}" data-tab="{t}"{cur}>{label}</a>')
     # Every page but the home starts with the way home (Fru, 2026-11-22: "how i get back to the main page").
-    home = '' if k == "home" else ('<a class="home" href="/" aria-label="Glyph home" title="Glyph home">'
+    home = ('<a class="home" href="/" aria-label="Glyph home" title="Glyph home">'
                                    '<img src="/family/glyph-tile.svg" width="22" height="22" alt=""></a>')
     return f'<nav class="ribbon" aria-label="Sections">{home}{"".join(out)}</nav>'
 
@@ -221,6 +221,12 @@ def stats(a=None):
     return out
 
 
+def close(k):
+    href = "/" if k == "home" else f"/{k}"
+    return (f'<a class="pclose" href="{href}" aria-label="Close, back to the overview" title="Close (Esc)">'
+            f'{svg("M6 6l12 12M18 6L6 18")}</a>')
+
+
 def cta(back_k=None, back_name=None):
     back = f'<a class="btn ghost" href="/{back_k}">Back to {e(back_name)}</a>' if back_k else ""
     return (f'<p class="row-btns"><a class="btn go" href="{INSTALL}" data-dmg="fru-dev3/glyph-native" data-track="file_download">'
@@ -269,21 +275,21 @@ def panels(k):
   {f'<div><h3>Your data stays yours</h3><p class="pl sm">{e(a["ours"]["storage"])}. Nothing is sent to fru.dev.</p></div>' if a["ours"].get("storage") else ""}</div>'''
     return f'''<!-- ribbon -->
 {ribbon(k)}
-<section class="panel" id="how" hidden aria-labelledby="how-h"><div class="pin">
+<section class="panel" id="how" hidden aria-labelledby="how-h">{close(k)}<div class="pin">
   <h2 id="how-h">How it works</h2><p class="pl">{e(a["how_lede"])}</p>
   <div class="stepper"><ol class="steplist" role="tablist">{steps}</ol><div class="shots">{shots}</div></div>
   {cta(k, a["name"])}
 </div></section>
-<section class="panel" id="compare" hidden aria-labelledby="cmp-h"><div class="pin">
+<section class="panel" id="compare" hidden aria-labelledby="cmp-h">{close(k)}<div class="pin">
   <h2 id="cmp-h">{e(a["name"])} side by side</h2><p class="pl">Pick an app. Every fact about it links to its own site, as of {asof(a)}.</p>
   <div class="rivals" role="tablist" aria-label="Compare with">{groups}</div>
   {"".join(cards)}
   <p class="fine">Logos and names belong to their owners. {e(a["name"])} is not affiliated with them. Prices and policies change; the linked pages are the authority.</p>
 </div></section>
-<section class="panel" id="open" hidden aria-labelledby="open-h"><div class="pin">
+<section class="panel" id="open" hidden aria-labelledby="open-h">{close(k)}<div class="pin">
   {open_body}
 </div></section>
-<section class="panel" id="faq" hidden aria-labelledby="faq-h"><div class="pin">
+<section class="panel" id="faq" hidden aria-labelledby="faq-h">{close(k)}<div class="pin">
   <h2 id="faq-h">Questions</h2>
   <div class="faq">{faq}</div>
   {cta(k, a["name"])}
@@ -294,57 +300,56 @@ def panels(k):
 def monthly(cell):
     """A rival's cheapest paid plan as dollars a month, or None. Yearly-only plans are divided by 12."""
     t = cell[0] if isinstance(cell, list) else cell
-    m = re.search(r"\$([\d,.]+)\s*(?:a |per |/)\s*(?:user |seat )?(?:a )?(month|mo)\b", t)
+    m = re.search(r"\$([\d,.]+)\s*(?:a |per |/)\s*(?:user |seat |member )?(?:a )?(month|mo)\b", t)
     if m:
         return float(m.group(1).replace(",", "").rstrip("."))
-    m = re.search(r"\$([\d,.]+)\s*(?:a |per |/)\s*(?:user |seat )?(?:a )?(year|yr)\b", t)
+    m = re.search(r"\$([\d,.]+)\s*(?:a |per |/)\s*(?:user |seat |member )?(?:a )?(year|yr)\b", t)
     return round(float(m.group(1).replace(",", "").rstrip(".")) / 12, 2) if m else None
 
 
 def home_panels():
     """The home: the family as a map, a calculator of what it replaces, the proof, questions."""
     h = data["home"]
+    k = "home"
+    # Fru, 2026-11-22: "uneven and full of text wall". The family as a home screen: even icons, a name, nothing else.
     core, tools = h["layers"][:4], h["layers"][4]
-    cards = "".join(f'<a class="core" href="/{keys[0]}" style="--i:{n}"><img src="{icon_url(keys[0])}" width="80" height="80" alt=""><span class="role">{e(sub)}</span>'
-                    f'<b>{e(APPS[keys[0]]["name"])}</b><span class="tg">{e(data[keys[0]]["tag"])}</span><span class="go">{svg("M5 12h14M13 6l6 6-6 6", "arr")}</span></a>'
-                    for n, (title, sub, keys) in enumerate(core))
-    tiles = "".join(f'<a class="ft" href="/{p}" style="--i:{n}"><img src="{icon_url(p)}" width="52" height="52" alt=""><b>{e(APPS[p]["name"])}</b><span>{e(data[p]["tag"])}</span></a>'
-                    for n, p in enumerate(tools[2]))
-    layers = [f'<div class="cores">{cards}</div><h3>{e(tools[0])}: {e(tools[1].lower())}</h3><div class="fts">{tiles}</div>']
+    icon = lambda p, n, sub=None: (f'<a class="ai" href="/{p}" style="--i:{n}" title="{e(data[p]["tag"])}"><img src="{icon_url(p)}" width="112" height="112" alt="">'
+                                   f'<b>{e(APPS[p]["short"] if "short" in APPS[p] else APPS[p]["name"])}</b>{f"<span>{e(sub)}</span>" if sub else ""}</a>')
+    layers = [f'<div class="grid core4">{"".join(icon(keys[0], n, sub) for n, (title, sub, keys) in enumerate(core))}</div>'
+              f'<div class="grid tools9">{"".join(icon(p, n + 4) for n, p in enumerate(tools[2]))}</div>']
     # The calculator: the cheapest paid plan of each rival with a monthly price, ticked by default for one per app.
-    groups = []
+    rows_ = []
     for p in h["calc"]:
         a = app(p)
-        items = []
+        tiles = []
         for n, rv in enumerate(a["rivals"]):
             m = h["monthly"][rv["slug"]] if rv["slug"] in h.get("monthly", {}) else monthly(rv["cells"].get("price", ""))
             if m:
-                items.append(f'<label class="pay"><input type="checkbox" value="{m}"{" checked" if n == 0 else ""}>'
-                             f'<img src="{e(rv["logo"])}" width="28" height="28" alt="">{e(rv["name"])}<s>${m:g}</s></label>')
-        if items:
-            groups.append(f'<div class="cg"><a class="cgh" href="/{p}#compare"><img src="{icon_url(p)}" width="34" height="34" alt="">{e(a["name"])}<b>Free</b></a>{"".join(items)}</div>')
+                tiles.append(f'<label class="pt" title="{e(rv["name"])}, ${m:g} a month"><input type="checkbox" value="{m}"{" checked" if n == 0 else ""}>'
+                             f'<img src="{e(rv["logo"])}" width="44" height="44" alt="{e(rv["name"])}" data-n="{e(rv["name"])}"><s>${m:g}</s></label>')
+        if tiles:
+            rows_.append(f'<div class="prow"><a class="pa" href="/{p}#compare" title="{e(a["name"])} side by side"><img src="{icon_url(p)}" width="48" height="48" alt="">'
+                         f'<b>{e(a["short"])}</b><span>Free</span></a><div class="pts">{"".join(tiles)}</div></div>')
     faq = "".join(f'<details><summary>{e(q)}</summary><p>{e(ans)}</p></details>' for q, ans in h["faq"])
     return f'''<!-- ribbon -->
 {ribbon("home")}
-<section class="panel" id="apps" hidden aria-labelledby="apps-h"><div class="pin wide">
-  <h2 id="apps-h">The Glyph family</h2><p class="pl">{e(h["apps_lede"])}</p>
+<section class="panel" id="apps" hidden aria-labelledby="apps-h">{close("home")}<div class="pin wide">
+  <h2 id="apps-h">The Glyph family</h2>
   {"".join(layers)}
-  {cta()}
 </div></section>
-<section class="panel" id="compare" hidden aria-labelledby="cmp-h"><div class="pin wide">
-  <h2 id="cmp-h">What Glyph replaces</h2><p class="pl">Tick what you pay for today. Glyph's answer to each is free.</p>
-  <div class="calc"><div class="cgs">{"".join(groups)}</div>
-  <aside class="total"><span>You would stop paying</span><b class="sum" data-sum>$0</b><span>a month, or <b data-year>$0</b> a year</span>
-  <span class="glyph">Glyph: <b>$0</b></span>{cta()}</aside></div>
-  <p class="fine">Each price is the cheapest paid plan's list price, billed monthly where the vendor offers it, from their own pages as of {asof(h)}. Open an app's Compare tab for the sources. Logos and names belong to their owners; Glyph is not affiliated with them.</p>
+<section class="panel" id="compare" hidden aria-labelledby="cmp-h">{close("home")}<div class="pin wide">
+  <h2 id="cmp-h">What Glyph replaces</h2><p class="pl">Tap what you pay for today. Glyph's answer to each is free.</p>
+  <div class="calc"><div class="prows">{"".join(rows_)}</div>
+  <aside class="total"><span>You would stop paying</span><b class="sum" data-sum>$0</b><span>a month, or <b data-year>$0</b> a year</span><div class="drop" data-drop aria-live="polite"></div>
+  <span class="glyph">Glyph: <b>$0</b></span><p class="fine">Each price is the cheapest paid plan's list price, billed monthly where the vendor offers it, from their own pages as of {asof(h)}. Open an app's Compare tab for the sources. Logos and names belong to their owners; Glyph is not affiliated with them.</p></aside></div>
 </div></section>
-<section class="panel" id="open" hidden aria-labelledby="open-h"><div class="pin wide">
+<section class="panel" id="open" hidden aria-labelledby="open-h">{close("home")}<div class="pin wide">
   <h2 id="open-h">Built in the open</h2><p class="pl">Stars, downloads and releases, read from GitHub.</p>
   <div class="stats">{"".join(stats())}<a class="stat" href="https://github.com/fru-dev3" target="_blank" rel="noreferrer"><b data-count="{len(APPS)}">{len(APPS)}</b><span>apps in the family</span></a></div>
   <h3>People who starred Glyph</h3><div class="faces big" data-faces></div>
   <p class="row-btns"><a class="btn go" href="https://github.com/fru-dev3">{svg("M8 6l-6 6 6 6M16 6l6 6-6 6")}Read the code</a></p>
 </div></section>
-<section class="panel" id="faq" hidden aria-labelledby="faq-h"><div class="pin">
+<section class="panel" id="faq" hidden aria-labelledby="faq-h">{close(k)}<div class="pin">
   <h2 id="faq-h">Questions</h2>
   <div class="faq">{faq}</div>
   {cta()}
