@@ -77,6 +77,13 @@
 .cap #capgo:hover{background:var(--green-h);transform:translateY(-2px);box-shadow:0 16px 28px rgba(0,128,0,.4),0 0 0 4px var(--bg)}
 .cap #capgo:hover::after{transform:translateX(4px)}
 .cap #capgo{display:none}
+/* The shown card reveals its way out on hover: the subtitle gives way to "See the site". */
+.tab .sgo{display:none;font-size:clamp(11px,.7vw,12.5px);line-height:1.3;font-weight:800;color:var(--green);white-space:nowrap}
+.tab[aria-selected=true]:hover .st,.tab[aria-selected=true]:focus-visible .st{display:none}
+.tab[aria-selected=true]:hover .sgo,.tab[aria-selected=true]:focus-visible .sgo{display:block;animation:rise .25s both}
+.tab[data-k=native][aria-selected=true]:hover .sgo{color:var(--on-green)}
+@media not ((min-width:960px) and (min-height:560px)){.tab .sgo{grid-area:s}}
+@keyframes rise{from{opacity:0;transform:translateY(4px)}}
 #capline{display:block;width:100%;text-align:center;white-space:nowrap;overflow:hidden}
 /* every app on the board: four layers over three tools, each row edge to edge on twelve tracks */
 .tabs{list-style:none;margin:0;padding:0 2px 6px;display:flex;gap:clamp(6px,.7vw,12px);width:100%}
@@ -423,7 +430,11 @@ bs.forEach((b,n)=>{const d=document.createElement("button");d.type="button";d.se
 const ds=[...dots.children];
 const narrow=matchMedia("not ((min-width:960px) and (min-height:560px))");
 addEventListener("resize",()=>setTimeout(placeNote,60));addEventListener("load",()=>setTimeout(placeNote,300));document.fonts&&document.fonts.ready.then(()=>setTimeout(placeNote,300));
-bs.forEach((b,n)=>b.addEventListener("click",()=>{if(narrow.matches){location.href=b.dataset.k==="native"?"https://github.com/fru-dev3/glyph-native/releases/latest":b.dataset.href;return}show(n);try{gtag("event","home_stage",{app:b.dataset.k})}catch{}}));
+// Progressive reveal (Fru, 2026-11-22: "if I wanted to see the site, I can see the site"): the first click shows the app here;
+// hovering the shown card says "See the site", and a second click on it opens the app's own page.
+const goHref = (b) => b.dataset.k === "native" ? "https://github.com/fru-dev3/glyph-native/releases/latest" : b.dataset.href;
+bs.forEach((b) => { const st = b.querySelector(".st"); if (st) { const g = document.createElement("span"); g.className = "sgo"; g.textContent = b.dataset.k === "native" ? "Download \u2192" : "See the site \u2192"; st.after(g); } });
+bs.forEach((b,n)=>b.addEventListener("click",()=>{if(narrow.matches||b.getAttribute("aria-selected")==="true"){try{gtag("event","home_open_site",{app:b.dataset.k})}catch{}location.href=goHref(b);return}show(n);try{gtag("event","home_stage",{app:b.dataset.k})}catch{}}));
 const st=document.querySelector(".right");
 st.addEventListener("mouseenter",()=>{held=true;clearTimeout(timer);tabs.classList.add("hold")});
 st.addEventListener("mouseleave",()=>{held=false;tabs.classList.remove("hold");show(i)});
