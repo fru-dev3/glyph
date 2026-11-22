@@ -125,8 +125,9 @@ def ribbon(k, here="", base="", tabs=None):
         cur = ' aria-current="page"' if t == here else ""
         out.append(f'<a href="{href}" data-tab="{t}"{cur}>{label}</a>')
     # Every page but the home starts with the way home (Fru, 2026-11-22: "how i get back to the main page").
-    home = ('<a class="home" href="/" aria-label="Glyph home" title="Glyph home">'
-                                   '<img src="/family/glyph-tile.svg" width="22" height="22" alt=""></a>')
+    # Fru, 2026-11-22: "make it more prominent that somebody knows that's something you can click on to get back to the home".
+    home = ('<a class="home" href="/" title="glyph.fru.dev">'
+            '<img src="/family/glyph-tile.svg" width="22" height="22" alt="">Home</a>')
     return f'<nav class="ribbon" aria-label="Sections">{home}{"".join(out)}</nav>'
 
 
@@ -284,7 +285,6 @@ def panels(k):
   <h2 id="cmp-h">{e(a["name"])} side by side</h2><p class="pl">Pick an app. Every fact about it links to its own site, as of {asof(a)}.</p>
   <div class="rivals" role="tablist" aria-label="Compare with">{groups}</div>
   {"".join(cards)}
-  <p class="fine">Logos and names belong to their owners. {e(a["name"])} is not affiliated with them. Prices and policies change; the linked pages are the authority.</p>
 </div></section>
 <section class="panel" id="open" hidden aria-labelledby="open-h">{close(k)}<div class="pin">
   {open_body}
@@ -329,9 +329,11 @@ def home_panels():
                              f'<img src="{e(rv["logo"])}" width="44" height="44" alt="{e(rv["name"])}" data-n="{e(rv["name"])}"><s>${m:g}</s></label>')
         if tiles:
             # Fru, 2026-11-22: the paid apps and Glyph must not look alike. Paid on the left, quiet; an arrow; Glyph on the right, solid green.
+            # Fru, 2026-11-22: the green block installs ("make it as easy as possible to install"); Glyph Native installs every app.
+            pop = '<i class="pop">Popular</i>' if p in h.get("popular", []) else ""
             rows_.append(f'<div class="prow"><div class="pts">{"".join(tiles)}</div><span class="parr" aria-hidden="true">{svg("M5 12h14M13 6l6 6-6 6")}</span>'
-                         f'<a class="pa" href="/{p}#compare" title="{e(a["name"])} side by side"><img src="{icon_url(p)}" width="40" height="40" alt="">'
-                         f'<b>{e(a["name"])}</b><span>Free</span></a></div>')
+                         f'<a class="pa" href="{INSTALL}" data-dmg="fru-dev3/glyph-native" data-track="file_download" data-app="{p}" title="Install {e(a["name"])} with Glyph Native">'
+                         f'<img src="{icon_url(p)}" width="40" height="40" alt=""><b>{e(a["short"])}</b><span>{svg("M12 3v12m0 0l-5-5m5 5l5-5M5 21h14")}Install</span>{pop}</a></div>')
     faq = "".join(f'<details><summary>{e(q)}</summary><p>{e(ans)}</p></details>' for q, ans in h["faq"])
     return f'''<!-- ribbon -->
 {ribbon("home")}
@@ -340,10 +342,10 @@ def home_panels():
   {"".join(layers)}
 </div></section>
 <section class="panel" id="compare" hidden aria-labelledby="cmp-h">{close("home")}<div class="pin wide">
-  <h2 id="cmp-h">What Glyph replaces</h2><p class="pl">Tap what you pay for today. Glyph's answer to each is free.</p>
-  <div class="calc"><div class="prows"><div class="phead"><span>What you pay for today</span><span>Glyph instead</span></div>{"".join(rows_)}</div>
+  <div class="calc"><div class="cleft"><h2 id="cmp-h">What Glyph replaces</h2><p class="pl">Tap what you pay for today. Glyph's answer to each is free.</p>
+  <div class="prows"><div class="phead"><span>What you pay for today</span><span>Glyph instead</span></div>{"".join(rows_)}</div></div>
   <aside class="total"><span>You would stop paying</span><b class="sum" data-sum>$0</b><span>a month, or <b data-year>$0</b> a year</span><div class="drop" data-drop aria-live="polite"></div>
-  <span class="glyph">Glyph: <b>$0</b></span><p class="fine">Each price is the cheapest paid plan's list price, billed monthly where the vendor offers it, from their own pages as of {asof(h)}. Open an app's Compare tab for the sources. Logos and names belong to their owners; Glyph is not affiliated with them.</p></aside></div>
+  <span class="glyph">Glyph: <b>$0</b></span></aside></div>
 </div></section>
 <section class="panel" id="open" hidden aria-labelledby="open-h">{close("home")}<div class="pin wide">
   <h2 id="open-h">Built in the open</h2><p class="pl">Stars, downloads and releases, read from GitHub.</p>
@@ -404,7 +406,6 @@ def vs_page(k, a, rv):
   {cta(k, a["name"])}
   <h2>Also compared</h2><div class="others">{others}</div>
   <h2>Sources</h2><ol class="srcs">{srcs}</ol>
-  <p class="fine">Logos and names belong to their owners. {e(a["name"])} is not affiliated with {e(rv["name"])}. Prices and policies change; the linked pages are the authority.</p>
 </div></main>
 <footer><div class="bar"><nav aria-label="Footer"><a class="home" href="/"><img src="/family/glyph-small.svg" width="16" height="16" alt="">Glyph</a><a href="/{k}">{e(a["name"])}</a><a class="legal-link" href="/legal">Disclaimer</a></nav></div></footer>
 <script src="/site.js"></script>

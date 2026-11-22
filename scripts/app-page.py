@@ -78,7 +78,7 @@ def page(k):
     '''
     s = between(s, '<div class="top">', '<div class="cta loved">', top)
     s = re.sub(r'<p class="nat">.*?</p>', f'<p class="nat">Glyph Native installs {e(name)} and keeps it up to date.</p>', s, count=1)
-    s = re.sub(r'<p class="note">.*?</p>', f'<p class="note">{e(p["note"])}</p>', s, count=1)
+    s = re.sub(r'\s*<p class="note">.*?</p>', '', s, count=1)  # the small print lives on /legal (Fru, 2026-11-22)
     # "Open source" is true of Time and not of an app whose source is private.
     s = s.replace("Open source</li>", e(p.get("badge3", "Free")) + "</li>")
     views, tabs, first = [], [], True

@@ -15,7 +15,7 @@ if (location.hostname === "glyph.fru.dev") addEventListener("load", () => (windo
   gtag("config", "G-1TQYNT93J1", { site_name: "glyph", content_group: "glyph-" + (document.body.dataset.page || "home") });
 }));
 const track = (name, params) => { try { gtag("event", name, params); } catch {} };
-$$("a[data-track]").forEach((a) => a.addEventListener("click", () => track(a.dataset.track, { link_url: a.href })));
+$$("a[data-track]").forEach((a) => a.addEventListener("click", () => track(a.dataset.track, { link_url: a.href, app: a.dataset.app || document.body.dataset.page || "home", from: location.hash.slice(1) || "overview" })));
 
 // The sheet behind the footer link: #features opens it; Esc, the X or a click outside close it.
 const sheet = $("dialog.sheet");

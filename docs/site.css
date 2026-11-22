@@ -34,7 +34,8 @@ h1 em{font-style:normal;color:var(--green);white-space:nowrap;display:block}
 .paid{display:flex;gap:clamp(8px,.8vw,12px)}
 .alt figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:4px}
 .alt figure img,.tile{width:clamp(38px,5.4vh,50px);height:auto;aspect-ratio:1;border-radius:24%;box-shadow:0 4px 10px rgba(0,0,0,.12)}
-.paid img{filter:saturate(.6);opacity:.85}
+.paid img{filter:grayscale(.55);opacity:.72;transition:filter .25s,opacity .25s}
+.paid figure:hover img{filter:none;opacity:1}
 .tile{display:grid;place-items:center;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.10),inset 0 0 0 1px rgba(11,26,16,.06)}
 .tile svg,.tile img{width:62%;height:62%;object-fit:contain;box-shadow:none;border-radius:0;filter:none;opacity:1}
 .alt s{font:700 13px -apple-system,sans-serif;color:var(--strike);text-decoration-color:currentColor;text-decoration-thickness:1.5px}
@@ -42,8 +43,8 @@ h1 em{font-style:normal;color:var(--green);white-space:nowrap;display:block}
 .or{font:800 clamp(16px,2.2vh,20px) "Bricolage Grotesque",sans-serif;color:var(--dim)}
 svg.or{width:20px;height:20px;flex:none}
 .ours{display:grid;grid-template-columns:auto auto;column-gap:10px;align-items:center;text-align:left;text-decoration:none;color:var(--ink)}
-.ours img{grid-row:1/3;width:clamp(38px,5.4vh,50px);height:auto;border-radius:24%;box-shadow:0 6px 14px rgba(0,128,0,.3)}
-.ours b{font:800 clamp(19px,2.7vh,25px)/1.05 "Bricolage Grotesque",sans-serif;color:var(--green);white-space:nowrap}
+.ours img{grid-row:1/3;width:clamp(58px,8.6vh,84px);height:auto;border-radius:24%;box-shadow:0 6px 14px rgba(0,128,0,.3)}
+.ours b{font:800 clamp(22px,3.3vh,32px)/1.05 "Bricolage Grotesque",sans-serif;color:var(--green);white-space:nowrap}
 .ours small{font-size:13px;font-weight:600;color:var(--soft);white-space:nowrap}
 a.ours:hover small{color:var(--green)}
 
@@ -60,7 +61,7 @@ a.ours:hover small{color:var(--green)}
 .fam .grp{display:flex;flex-direction:column;align-items:center;gap:5px}
 .fam .grp+.grp{padding-left:10px;border-left:1px solid var(--line)}
 .fam .paid{gap:8px}
-.fam figure img,.fam .ours img{width:clamp(34px,4.4vh,44px)}
+.fam figure img{width:clamp(34px,4.4vh,44px)}.fam .ours img{width:clamp(52px,7.4vh,72px)}
 .fam .gl{display:inline-flex;align-items:center;gap:5px;font:700 12px -apple-system,sans-serif;color:var(--green);text-decoration:none;white-space:nowrap}
 .fam .gl img{width:16px;height:16px;border-radius:24%}
 .fam figcaption{font:600 12.5px -apple-system,BlinkMacSystemFont,sans-serif}
@@ -148,10 +149,10 @@ img.shot,video.shot{background:#0B0F0C}
 @media (max-width:1180px){.proof .dv{display:none}}
 @media (max-width:440px){.faces a:nth-child(n+5){display:none}}
 @media (max-width:520px){.faces a:nth-child(n+7),.faces .more{display:none}.proof .dv{display:none}.proof{gap:10px;padding:5px 16px 5px 6px}}
-@media (max-width:440px){.alt figcaption{display:none}.alt{gap:6px;padding:10px 10px}.paid{gap:8px}.alt figure img,.tile,.ours img{width:36px}.ours{column-gap:7px}.ours b{font-size:18px}.ours small{font-size:12px}.alt s{font-size:12px}.alt figcaption{font-size:12px}}
+@media (max-width:440px){.alt figcaption{display:none}.alt{gap:6px;padding:10px 10px}.paid{gap:8px}.alt figure img,.tile{width:36px}.ours img{width:50px}.ours{column-gap:7px}.ours b{font-size:18px}.ours small{font-size:12px}.alt s{font-size:12px}.alt figcaption{font-size:12px}}
 @media (max-width:480px){.formac{display:none}}
 @media (max-width:400px){.star .lbl{display:none}.btn.star{padding:0 14px}.btn.go{padding:0 16px}.hide-xs{display:none}}
-@media (max-width:370px){.alt figure img,.tile,.ours img{width:32px}.paid{gap:8px}.alt{padding:9px 8px}}
+@media (max-width:370px){.alt figure img,.tile{width:32px}.ours img{width:44px}.paid{gap:8px}.alt{padding:9px 8px}}
 
 /* wide screens: two halves; the left column fills the height, the right group centres on it */
 @media (min-width:960px) and (min-height:560px){
@@ -235,7 +236,7 @@ footer .built .heart-i{display:inline-block;vertical-align:-2px;margin:0 1px}
 .ribbon::-webkit-scrollbar{display:none}
 .ribbon a{position:relative;flex:none;padding:7px 15px;border-radius:999px;font:600 14px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:var(--soft);text-decoration:none;white-space:nowrap;transition:background .25s,color .25s}
 .ribbon a:hover{color:var(--ink);background:var(--tint)}
-.ribbon a.home{padding:4px 8px 4px 5px;display:flex;align-items:center;border-right:1px solid var(--line);border-radius:999px 0 0 999px;margin-right:4px}.ribbon a.home img{display:block;border-radius:24%}
+.ribbon a.home{display:flex;align-items:center;gap:7px;padding:5px 13px 5px 5px;margin-right:6px;border-radius:999px;background:var(--ink);color:#fff;font-weight:700}.ribbon a.home img{display:block;border-radius:24%}.ribbon a.home:hover{background:var(--green);color:#fff}
 .ribbon a[aria-current=page]{background:var(--green);color:var(--on-green);box-shadow:0 4px 14px rgba(0,128,0,.3)}
 body:has(.ribbon) main:not(.doc){padding-top:calc(clamp(16px,3vh,40px) + 46px)}
 @media (max-width:520px){.ribbon a{padding:6px 11px;font-size:13px}}
@@ -395,6 +396,7 @@ main.doc{display:block;min-height:0;padding:80px clamp(16px,4vw,64px) calc(90px 
 @media (max-width:1100px){.tools9{grid-template-columns:repeat(5,minmax(0,110px))}}
 @media (max-width:620px){.core4{grid-template-columns:repeat(2,minmax(0,150px))}.tools9{grid-template-columns:repeat(3,minmax(0,100px))}}
 .calc{display:grid;grid-template-columns:1fr minmax(270px,320px);gap:clamp(18px,2.4vw,36px);align-items:start}
+.calc .total{margin-top:8px}
 /* One row per Glyph app: its icon, then its paid rivals as logo tiles. Tap one: it lights up and its price is struck. */
 #compare .pin.wide h2{font-size:clamp(36px,4.6vw,64px)}
 .prows{display:flex;flex-direction:column;gap:clamp(5px,.8vh,8px)}
@@ -407,6 +409,9 @@ main.doc{display:block;min-height:0;padding:80px clamp(16px,4vw,64px) calc(90px 
 .pa:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(0,110,0,.36)}
 .pa img{width:clamp(26px,3.4vh,32px);height:auto;border-radius:24%;box-shadow:0 0 0 2px rgba(255,255,255,.35)}
 .pa b{font:800 clamp(15px,1.25vw,17px)/1.1 "Bricolage Grotesque",sans-serif;white-space:nowrap}
+.pa{position:relative}
+.pa span{display:inline-flex;align-items:center;gap:4px}.pa span svg{width:13px;height:13px;stroke-width:3}
+.pa .pop{position:absolute;top:-8px;left:12px;padding:2px 8px;border-radius:999px;background:#E5142B;color:#fff;font:900 10px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;font-style:normal;letter-spacing:.07em;text-transform:uppercase;box-shadow:0 4px 10px rgba(229,20,43,.35)}
 .pa span{font:800 13px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:5px 9px;border-radius:999px;background:#fff;color:var(--green)}
 .pts{display:flex;flex-wrap:nowrap;gap:2px;overflow-x:auto;scrollbar-width:none;padding:2px}
 .pts::-webkit-scrollbar{display:none}
@@ -423,7 +428,7 @@ main.doc{display:block;min-height:0;padding:80px clamp(16px,4vw,64px) calc(90px 
 .pt:focus-within{outline:2px solid var(--green);outline-offset:2px}
 .total{position:sticky;top:0;display:flex;flex-direction:column;gap:6px;padding:26px;border-radius:26px;color:#fff;background:linear-gradient(160deg,#0B3D12,#0B1A10);box-shadow:0 26px 50px rgba(11,26,16,.3)}
 .total>span{opacity:.8;font-weight:600}
-.total .sum{font:800 clamp(52px,6vw,80px)/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.total .sum{font:800 clamp(48px,5vw,72px)/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 .total .glyph{margin-top:10px;font-size:18px;opacity:1}.total .glyph b{color:#7CFF7C}
 .drop{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;min-height:30px}
 .drop span{display:inline-flex;align-items:center;gap:6px;padding:3px 10px 3px 3px;border-radius:999px;background:rgba(255,255,255,.12);font-size:13px;font-weight:600;animation:pop .3s both}

@@ -2024,6 +2024,10 @@
     "What do I need?",
     "An Apple silicon Mac; most apps need macOS 26 or later. iPhone apps are in testing."
    ]
+  ],
+  "popular": [
+   "jot",
+   "time"
   ]
  }
 }
