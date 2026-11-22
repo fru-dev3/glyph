@@ -1,0 +1,183 @@
+{
+  "app": "connect",
+  "group_label": "MCP hubs",
+  "rows": [
+    {
+      "k": "price",
+      "label": "Price"
+    },
+    {
+      "k": "platforms",
+      "label": "Platforms"
+    },
+    {
+      "k": "account",
+      "label": "Account"
+    },
+    {
+      "k": "runs",
+      "label": "Where it runs"
+    },
+    {
+      "k": "perms",
+      "label": "Per-tool on and off"
+    },
+    {
+      "k": "writes",
+      "label": "Read vs write shown"
+    },
+    {
+      "k": "source",
+      "label": "Source code"
+    }
+  ],
+  "rivals": [
+    {
+      "slug": "composio",
+      "name": "Composio",
+      "domain": "composio.dev",
+      "logo_url": "https://composio.dev/apple-touch-icon.png",
+      "alt_title": "A free, local Composio alternative",
+      "thesis": "Composio is a hosted service that connects agents to apps through its SDKs and MCP, with sign-in handled on its side. Glyph Connect is a Mac and iPhone app that shows the tools your agents can already reach, from the app registry in your own vault.",
+      "short": [
+        "Composio is a developer platform with an API key; Glyph Connect is an app with no account.",
+        "Composio runs your tool calls on its servers; Glyph Connect reads what is on your machine.",
+        "Both can limit single tools and mark read-only ones."
+      ],
+      "pick": "Pick Composio if you are building an agent product and want hundreds of app connections and sign-in handled for you.",
+      "cells": {
+        "price": [
+          "Free: $2 one-time credit, 10,000 tool calls a month. Standard $18 a seat a month, coming soon",
+          1
+        ],
+        "platforms": [
+          "Web dashboard, Python and TypeScript SDKs, MCP",
+          2
+        ],
+        "account": [
+          "Yes, an API key from the dashboard",
+          3
+        ],
+        "runs": [
+          "Composio's hosted service",
+          2
+        ],
+        "perms": [
+          "Yes, allow or block tools by name per session",
+          4
+        ],
+        "writes": [
+          "Yes, read-only and destructive tags, assigned best effort",
+          5
+        ],
+        "source": [
+          "SDKs open source (MIT)",
+          3
+        ]
+      },
+      "sources": [
+        "https://composio.dev/pricing",
+        "https://docs.composio.dev/docs",
+        "https://github.com/ComposioHQ/composio",
+        "https://docs.composio.dev/kb/guide/platform-session-tool-policies",
+        "https://docs.composio.dev/docs/governance/tool-hints"
+      ],
+      "group": "MCP hubs"
+    },
+    {
+      "slug": "zapier-mcp",
+      "name": "Zapier MCP",
+      "domain": "zapier.com",
+      "logo_url": "https://zapier.com/favicon.ico",
+      "alt_title": "A free, local Zapier MCP alternative",
+      "thesis": "Zapier MCP lets an agent run actions in the apps you have connected to Zapier, with each call billed against your task quota. Glyph Connect does not run actions; it shows every tool your agents can reach and lets you switch them off.",
+      "short": [
+        "Zapier MCP uses two tasks per tool call; Glyph Connect is free.",
+        "Zapier MCP runs on Zapier's side; Glyph Connect reads your own vault.",
+        "Both separate read actions from write actions."
+      ],
+      "pick": "Pick Zapier MCP if you want an agent to act in thousands of apps you already connect through Zapier.",
+      "cells": {
+        "price": [
+          "In every Zapier plan; each tool call uses 2 tasks. Free 100 tasks a month, Pro from $19.99 a month billed yearly",
+          1
+        ],
+        "platforms": [
+          "Web setup; Claude, ChatGPT, Cursor and other MCP clients",
+          1
+        ],
+        "account": [
+          "Yes, a Zapier account",
+          1
+        ],
+        "runs": [
+          "Hosted by Zapier, set up at mcp.zapier.com",
+          2
+        ],
+        "perms": [
+          "Yes, you pick the actions in managed mode",
+          2
+        ],
+        "writes": [
+          "Yes, separate read and write action tools",
+          2
+        ],
+        "source": "Not stated"
+      },
+      "sources": [
+        "https://zapier.com/mcp",
+        "https://docs.zapier.com/mcp/overview/how-tools-work",
+        "https://zapier.com/pricing"
+      ],
+      "note": "Price figures: the task quota comes from zapier.com/pricing (source 3); the two-tasks-per-call rule from source 1.",
+      "group": "MCP hubs"
+    },
+    {
+      "slug": "docker-mcp-toolkit",
+      "name": "Docker MCP Toolkit",
+      "domain": "docker.com",
+      "logo_url": "https://www.docker.com/app/uploads/brand/icon/docker-favicon-180x180.png",
+      "alt_title": "A free Docker MCP Toolkit alternative, no Docker needed",
+      "thesis": "Docker MCP Toolkit runs MCP servers on your machine, each in its own container, inside Docker Desktop. Glyph Connect runs no servers; it shows the tools your agents already reach, which need you, and what each may read or write.",
+      "short": [
+        "Docker's Toolkit needs Docker Desktop; Glyph Connect is a plain Mac and iPhone app.",
+        "Both run on your own machine.",
+        "Docker switches single tools off from the command line; Glyph Connect does it with one tap."
+      ],
+      "pick": "Pick Docker MCP Toolkit if you want to install and run MCP servers in isolated containers from a catalog of 300+ verified servers.",
+      "cells": {
+        "price": [
+          "Docker Personal $0. Paid plan needed in firms over 250 staff or $10M revenue",
+          1
+        ],
+        "platforms": [
+          "Docker Desktop on Mac, Windows, Linux",
+          2
+        ],
+        "account": "Not stated",
+        "runs": [
+          "On your machine, each server in a container",
+          3
+        ],
+        "perms": [
+          "Yes, enable or disable single tools from the CLI",
+          4
+        ],
+        "writes": "Not stated",
+        "source": [
+          "Gateway open source (MIT)",
+          5
+        ]
+      },
+      "sources": [
+        "https://www.docker.com/pricing/",
+        "https://docs.docker.com/desktop/",
+        "https://docs.docker.com/ai/mcp-catalog-and-toolkit/toolkit/",
+        "https://docs.docker.com/reference/cli/docker/mcp/profile/tools/",
+        "https://raw.githubusercontent.com/docker/mcp-gateway/main/README.md"
+      ],
+      "note": "The paid-plan threshold for larger companies is on https://docs.docker.com/desktop/setup/install/mac-install/. The Toolkit is a beta feature turned on in Docker Desktop settings.",
+      "group": "MCP hubs"
+    }
+  ]
+}

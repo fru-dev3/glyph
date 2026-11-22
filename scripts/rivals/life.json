@@ -1,0 +1,172 @@
+{
+  "app": "life",
+  "group_label": "life admin apps",
+  "rows": [
+    {
+      "k": "price",
+      "label": "Price"
+    },
+    {
+      "k": "platforms",
+      "label": "Platforms"
+    },
+    {
+      "k": "bank",
+      "label": "Bank login"
+    },
+    {
+      "k": "account",
+      "label": "Account"
+    },
+    {
+      "k": "storage",
+      "label": "Where your data is kept"
+    },
+    {
+      "k": "cancels",
+      "label": "Cancels for you"
+    },
+    {
+      "k": "export",
+      "label": "Export"
+    }
+  ],
+  "rivals": [
+    {
+      "slug": "rocket-money",
+      "name": "Rocket Money",
+      "domain": "rocketmoney.com",
+      "logo_url": "https://www.rocketmoney.com/apple-touch-icon.png",
+      "group": "life admin apps",
+      "alt_title": "A free, private Rocket Money alternative",
+      "thesis": "Rocket Money links your bank accounts through Plaid to find subscriptions, and on Premium its team cancels them for you. Glyph Life is free, reads your own vault, needs no bank login, and leaves the keep or cancel call and the cancelling to you.",
+      "short": [
+        "Rocket Money finds subscriptions from bank data. Glyph Life reads what is in your vault.",
+        "Rocket Money cancels for you on Premium. Glyph Life does not cancel anything.",
+        "Rocket Money needs an account. Glyph Life does not."
+      ],
+      "pick": "Pick Rocket Money if you want someone to cancel subscriptions and negotiate bills on your behalf.",
+      "cells": {
+        "price": [
+          "Free plan. Premium $7 to $14 a month, you pick. Premium+ $15 a month",
+          1
+        ],
+        "platforms": [
+          "iPhone, Android. Web on Premium",
+          1
+        ],
+        "bank": [
+          "Yes, through Plaid",
+          2
+        ],
+        "account": [
+          "Yes, a Rocket Money account",
+          2
+        ],
+        "storage": [
+          "Rocket Money's service, AES-256 encrypted",
+          2
+        ],
+        "cancels": [
+          "Yes, on Premium their team cancels for you",
+          3
+        ],
+        "export": [
+          "CSV of transactions, sent by email",
+          4
+        ]
+      },
+      "sources": [
+        "https://www.rocketmoney.com/learn/personal-finance/how-much-does-rocket-money-cost",
+        "https://www.rocketmoney.com/faq",
+        "https://help.rocketmoney.com/en/articles/934402-how-do-i-cancel-a-subscription-on-rocket-money",
+        "https://help.rocketmoney.com/en/articles/10296106-exporting-transactions"
+      ],
+      "note": "Prices are pay-what-you-think-is-fair and subject to change."
+    },
+    {
+      "slug": "bobby",
+      "name": "Bobby",
+      "domain": "bobbyapp.co",
+      "logo_url": "https://bobbyapp.co/favicons/apple-touch-icon.png",
+      "group": "life admin apps",
+      "alt_title": "A free, private Bobby alternative",
+      "thesis": "Bobby is an iPhone subscription tracker where you add each subscription by hand. Glyph Life covers subscriptions plus insurance, documents, expiry dates and recurring jobs, read from your own vault.",
+      "short": [
+        "Bobby tracks subscriptions only. Glyph Life also tracks insurance, documents and jobs.",
+        "Bobby sells in-app packs. Glyph Life is free.",
+        "Both skip the bank login."
+      ],
+      "pick": "Pick Bobby if you only want a small, simple list of subscriptions and their next charge on your iPhone.",
+      "cells": {
+        "price": [
+          "Free, with in-app packs from $0.99 to $2.99",
+          1
+        ],
+        "platforms": [
+          "iPhone. Runs on Apple silicon Macs as an iPhone app",
+          1
+        ],
+        "bank": [
+          "No link described. Subscriptions are added by hand",
+          1
+        ],
+        "account": "Not stated",
+        "storage": [
+          "iCloud sync, per release notes",
+          1
+        ],
+        "cancels": "Not stated",
+        "export": "Not stated"
+      },
+      "sources": [
+        "https://apps.apple.com/us/app/bobby-track-subscriptions/id1059152023"
+      ],
+      "note": "bobbyapp.co shows only a title, so the App Store listing is the source. Last update 3.10.4 on 12/09/2025, so Bobby is still active."
+    },
+    {
+      "slug": "trustworthy",
+      "name": "Trustworthy",
+      "domain": "trustworthy.com",
+      "logo_url": "https://framerusercontent.com/images/ICbgb86g5zFA3nmK9E7mkZnOggs.svg",
+      "group": "life admin apps",
+      "alt_title": "A free, private Trustworthy alternative",
+      "thesis": "Trustworthy is a family document organizer that stores passports, wills and policies in its encrypted cloud and can pull documents from your email. Glyph Life reads documents already filed in your own vault and needs no account.",
+      "short": [
+        "Trustworthy keeps documents in its cloud. Glyph Life reads files you own.",
+        "Trustworthy paid plans run $10 to $40 a month. Glyph Life is free.",
+        "Trustworthy needs an account. Glyph Life does not."
+      ],
+      "pick": "Pick Trustworthy if you want a shared family vault with email import and concierge help on the top plan.",
+      "cells": {
+        "price": [
+          "Free plan. Silver $10, Gold $20, Platinum $40 a month, billed yearly",
+          1
+        ],
+        "platforms": [
+          "iPhone and Android apps",
+          1
+        ],
+        "bank": "Not stated",
+        "account": [
+          "Yes, create an account",
+          1
+        ],
+        "storage": [
+          "Partners' cloud, AES-256 encrypted",
+          2
+        ],
+        "cancels": "Not stated",
+        "export": [
+          "Download your information, on all plans",
+          1
+        ]
+      },
+      "sources": [
+        "https://www.trustworthy.com/pricing",
+        "https://www.trustworthy.com/security"
+      ],
+      "note": "Security page says Trustworthy does not train AI models on customer data."
+    }
+  ]
+}

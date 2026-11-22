@@ -1,0 +1,171 @@
+{
+  "app": "ibis",
+  "group_label": "news and search",
+  "rows": [
+    {
+      "k": "price",
+      "label": "Price"
+    },
+    {
+      "k": "account",
+      "label": "Account"
+    },
+    {
+      "k": "what",
+      "label": "What you get"
+    },
+    {
+      "k": "agents",
+      "label": "For AI agents"
+    },
+    {
+      "k": "sources",
+      "label": "Links its sources"
+    },
+    {
+      "k": "coverage",
+      "label": "Coverage"
+    }
+  ],
+  "rivals": [
+    {
+      "slug": "feedly",
+      "name": "Feedly",
+      "domain": "feedly.com",
+      "logo_url": "https://feedly.com/apple-touch-icon.png",
+      "alt_title": "A free Feedly alternative for AI and tech news",
+      "thesis": "Feedly is a reader for the feeds you choose to follow, with AI feeds on its paid plans. Glyph Ibis is a set of 50+ ready-made context sources on AI, data and tech, each kept current by its own agent, free to read.",
+      "short": [
+        "Feedly shows what you subscribe to; Glyph Ibis comes already filled.",
+        "Feedly's API is Enterprise only; Glyph Ibis has llms.txt, MCP and OpenAPI for anyone.",
+        "Feedly needs a login; Glyph Ibis needs none to read."
+      ],
+      "pick": "Pick Feedly if you want to choose your own sources across any topic, from blogs and newsletters to YouTube.",
+      "cells": {
+        "price": [
+          "Free plan. Pro $72 a year, Pro+ $144 a year",
+          1
+        ],
+        "account": [
+          "Yes, a Feedly login",
+          3
+        ],
+        "what": [
+          "A reader for feeds you follow; AI feeds on Pro+",
+          2
+        ],
+        "agents": [
+          "MCP server for Threat Intelligence only; API is Enterprise only",
+          1
+        ],
+        "sources": "Not stated",
+        "coverage": [
+          "The sites, newsletters and feeds you follow",
+          4
+        ]
+      },
+      "sources": [
+        "https://docs.feedly.com/article/863-feedly-pro-support-knowledge-private",
+        "https://docs.feedly.com/article/140-what-is-the-difference-between-feedly-basic-pro-and-teams",
+        "https://docs.feedly.com/article/46-how-can-i-change-my-login-information",
+        "https://docs.feedly.com/article/288-how-to-follow-a-feed-in-your-feedly-account"
+      ],
+      "note": "feedly.com/i/pro did not load for an automated fetch, so prices come from Feedly's own support article.",
+      "group": "news and search"
+    },
+    {
+      "slug": "perplexity",
+      "name": "Perplexity",
+      "domain": "perplexity.ai",
+      "logo_url": "https://www.perplexity.ai/apple-touch-icon.png",
+      "alt_title": "A free Perplexity alternative for AI and tech news",
+      "thesis": "Perplexity answers questions from the web with cited sources and has a Discover page of top stories. Glyph Ibis keeps standing datasets on AI, data and tech, such as funding, releases and lawsuits, with each entry linked to its public sources.",
+      "short": [
+        "Perplexity answers what you ask; Glyph Ibis keeps lists current without a question.",
+        "Perplexity's API is paid per request; Glyph Ibis is free to read.",
+        "Both link the sources behind what they show."
+      ],
+      "pick": "Pick Perplexity if you want answers to any question on any topic, with citations, as you ask them.",
+      "cells": {
+        "price": [
+          "Free plan. Pro $20 a month or $200 a year. Max $200 a month",
+          1
+        ],
+        "account": [
+          "Not needed for some features; sign in for Pro Search and saved sessions",
+          2
+        ],
+        "what": [
+          "Answers with citations, plus a Discover news page",
+          3
+        ],
+        "agents": [
+          "API and MCP server with search, ask and research tools; Search API $5 per 1,000 requests",
+          4
+        ],
+        "sources": [
+          "Numbered citations linking to the original sources",
+          3
+        ],
+        "coverage": [
+          "The open web; Discover covers tech, finance, sports, entertainment",
+          5
+        ]
+      },
+      "sources": [
+        "https://www.perplexity.ai/help-center/en/articles/12167980-using-the-connector-for-slack",
+        "https://www.perplexity.ai/help-center/en/articles/10352998-account-management-and-security",
+        "https://www.perplexity.ai/help-center/en/articles/10352895-how-does-perplexity-work",
+        "https://docs.perplexity.ai/docs/getting-started/integrations/mcp-server",
+        "https://www.perplexity.ai/changelog/what-we-shipped-july-18th"
+      ],
+      "note": "The Max price ($200 a month, $2,000 a year) is on https://www.perplexity.ai/help-center/en/articles/11680686-perplexity-max. Search API price is on https://docs.perplexity.ai/getting-started/pricing.",
+      "group": "news and search"
+    },
+    {
+      "slug": "exa",
+      "name": "Exa",
+      "domain": "exa.ai",
+      "logo_url": "https://exa.ai/images/favicon-32x32.png",
+      "alt_title": "A free Exa alternative for AI and tech context",
+      "thesis": "Exa is a paid web search API for AI apps that returns ranked pages and their text. Glyph Ibis gives agents curated, current datasets on AI, data and tech through llms.txt, MCP and OpenAPI, free to read.",
+      "short": [
+        "Exa searches the whole web on request; Glyph Ibis keeps 50+ curated sources current.",
+        "Exa needs an account and API key; Glyph Ibis needs none to read.",
+        "Both offer an MCP server for agents."
+      ],
+      "pick": "Pick Exa if your agent needs to search the open web on any topic, at scale, with page text returned.",
+      "cells": {
+        "price": [
+          "$10 free credits a month, then pay per use. Search from $4 per 1,000 requests",
+          1
+        ],
+        "account": [
+          "Yes, an account and API key",
+          1
+        ],
+        "what": [
+          "A web search API: results, page text, answers, research",
+          1
+        ],
+        "agents": [
+          "Search API and hosted MCP server",
+          1
+        ],
+        "sources": [
+          "Every result is a URL; Answer and Deep Search return citations",
+          1
+        ],
+        "coverage": [
+          "Public web index, crawling billions of documents a day",
+          2
+        ]
+      },
+      "sources": [
+        "https://exa.ai/pricing",
+        "https://exa.ai/"
+      ],
+      "group": "news and search"
+    }
+  ]
+}

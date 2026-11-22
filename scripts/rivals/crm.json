@@ -1,0 +1,227 @@
+{
+  "app": "crm",
+  "group_label": "personal CRMs",
+  "rows": [
+    {
+      "k": "price",
+      "label": "Price"
+    },
+    {
+      "k": "platforms",
+      "label": "Platforms"
+    },
+    {
+      "k": "account",
+      "label": "Account"
+    },
+    {
+      "k": "input",
+      "label": "How people get in"
+    },
+    {
+      "k": "storage",
+      "label": "Where your data is kept"
+    },
+    {
+      "k": "source",
+      "label": "Source code"
+    },
+    {
+      "k": "export",
+      "label": "Export"
+    }
+  ],
+  "rivals": [
+    {
+      "slug": "dex",
+      "name": "Dex",
+      "domain": "getdex.com",
+      "logo_url": "https://getdex.com/favicon.png",
+      "alt_title": "A free, private Dex alternative",
+      "thesis": "Dex is a paid cloud CRM that syncs contacts from LinkedIn, email, calendar and messaging into one record per person. Glyph CRM keeps each person, place and organisation as a plain note in your own vault, with no account.",
+      "short": [
+        "Dex has no free plan; Glyph CRM is free.",
+        "Dex keeps your contacts on its servers in the US; Glyph CRM keeps them as files in your vault.",
+        "Dex pulls people in automatically; Glyph CRM suggests new people and waits for your yes."
+      ],
+      "pick": "Pick Dex if you want LinkedIn and inbox sync, Android or Windows apps, and reminders built from your real message history.",
+      "cells": {
+        "price": [
+          "No free plan. Premium $12 a month billed yearly, $20 monthly. 7-day trial",
+          1
+        ],
+        "platforms": [
+          "Web, iOS, Android, Mac, Windows, Chrome extension",
+          2
+        ],
+        "account": [
+          "Yes",
+          1
+        ],
+        "input": [
+          "Syncs LinkedIn, email, calendar, WhatsApp and 15+ other sources",
+          1
+        ],
+        "storage": [
+          "Dex's servers on Google Cloud, processed in the US",
+          3
+        ],
+        "source": "Not stated",
+        "export": [
+          "CSV of contacts, notes and LinkedIn updates",
+          4
+        ]
+      },
+      "sources": [
+        "https://getdex.com/pricing",
+        "https://getdex.com/",
+        "https://getdex.com/privacy",
+        "https://getdex.com/docs/workflows/export"
+      ],
+      "group": "personal CRMs"
+    },
+    {
+      "slug": "mesh",
+      "name": "Mesh",
+      "domain": "me.sh",
+      "logo_url": "https://me.sh/apple-touch-icon.png",
+      "alt_title": "A free, private Mesh alternative",
+      "thesis": "Mesh, formerly Clay, is a cloud contact app that gathers people from your email, calendar and social accounts and keeps their details current. Glyph CRM keeps people as plain notes in your own vault and adds no one without your yes.",
+      "short": [
+        "Mesh is free up to 1,000 contacts with a card on file; Glyph CRM is free with no account.",
+        "Mesh fills itself from your accounts; Glyph CRM suggests people and you decide.",
+        "Mesh keeps data on its servers; Glyph CRM keeps it as files you own."
+      ],
+      "pick": "Pick Mesh if you want contacts filled in and kept current for you from email, calendar and social accounts, on Windows and Android too.",
+      "cells": {
+        "price": [
+          "Free up to 1,000 contacts, card required. Pro $10 a month billed yearly",
+          1
+        ],
+        "platforms": [
+          "Mac, Windows, web, Android, iOS",
+          2
+        ],
+        "account": [
+          "Yes, with a card on file even for the free plan",
+          1
+        ],
+        "input": [
+          "Syncs email, calendar, LinkedIn, X, Facebook, iMessage",
+          1
+        ],
+        "storage": [
+          "Mesh's servers, encrypted at rest; location not given",
+          3
+        ],
+        "source": "Not stated",
+        "export": "Not stated"
+      },
+      "sources": [
+        "https://me.sh/pricing",
+        "https://me.sh/",
+        "https://library.me.sh/hc/en-us/articles/7485741581339-Security-and-Privacy"
+      ],
+      "note": "Clay was renamed Mesh: clay.earth now redirects to me.sh, and the site no longer uses the Clay name.",
+      "group": "personal CRMs"
+    },
+    {
+      "slug": "folk",
+      "name": "Folk",
+      "domain": "folk.app",
+      "logo_url": "https://cdn.prod.website-files.com/626be00c396339c5a816353b/6a16a47cc6dbf48bc20b20d7_logo.png",
+      "alt_title": "A free, private Folk alternative",
+      "thesis": "Folk is a paid cloud CRM for teams, filled from a Chrome extension, email and calendar sync and CSV imports. Glyph CRM is a free personal CRM that keeps each page as a plain note in your own vault.",
+      "short": [
+        "Folk starts at $24 a user a month; Glyph CRM is free.",
+        "Folk is built for teams and sales; Glyph CRM is for one person's life.",
+        "Folk stores data on AWS in Ireland; Glyph CRM stores it in your vault."
+      ],
+      "pick": "Pick Folk if a team shares the contacts, or you need pipelines, email sequences and a REST API.",
+      "cells": {
+        "price": [
+          "Standard $24 a user a month billed yearly, Premium $48. 14-day trial",
+          1
+        ],
+        "platforms": [
+          "Web, iOS, Android, desktop app, Chrome extension",
+          1
+        ],
+        "account": [
+          "Yes, blocked after the trial unless you pay",
+          1
+        ],
+        "input": [
+          "Chrome extension, Gmail and Outlook sync, CSV import, card scans",
+          1
+        ],
+        "storage": [
+          "AWS servers in Ireland",
+          2
+        ],
+        "source": "Not stated",
+        "export": [
+          "CSV of any view; API on Premium",
+          1
+        ]
+      },
+      "sources": [
+        "https://www.folk.app/pricing",
+        "https://help.folk.app/en/articles/5007534-security-privacy"
+      ],
+      "group": "personal CRMs"
+    },
+    {
+      "slug": "monica",
+      "name": "Monica",
+      "domain": "monicahq.com",
+      "logo_url": "https://www.monicahq.com/favicon.svg",
+      "alt_title": "A free, private Monica alternative with native apps",
+      "thesis": "Monica is an open source personal CRM that runs in a browser, on your own server or on its paid hosted service. Glyph CRM is a native Mac and iPhone app that keeps people as plain notes in your own vault, with notes by voice.",
+      "short": [
+        "Monica is free to self-host and $9 a month hosted; Glyph CRM is free.",
+        "Monica runs in a browser; Glyph CRM is a native Mac and iPhone app.",
+        "Monica's source is open (AGPL-3.0); Glyph CRM's is private."
+      ],
+      "pick": "Pick Monica if you want open source code you can read and change, and you are happy to run your own server.",
+      "cells": {
+        "price": [
+          "Free to self-host. Hosted $9 a month or $90 a year",
+          1
+        ],
+        "platforms": [
+          "Web app, also in a phone browser. Native apps planned",
+          2
+        ],
+        "account": [
+          "Hosted needs one, and new sign-ups are closed. Self-hosted: none with Monica",
+          3
+        ],
+        "input": [
+          "Import vCard or CSV files",
+          2
+        ],
+        "storage": [
+          "Your own server, or Laravel Cloud when hosted",
+          3
+        ],
+        "source": [
+          "Open source, AGPL-3.0",
+          4
+        ],
+        "export": [
+          "Export all your data at any time",
+          2
+        ]
+      },
+      "sources": [
+        "https://www.monicahq.com/en/pricing/",
+        "https://www.monicahq.com/",
+        "https://www.monicahq.com/en/privacy/",
+        "https://github.com/monicahq/monica"
+      ],
+      "note": "As of November 2026 the pricing page says registration for the hosted version is closed.",
+      "group": "personal CRMs"
+    }
+  ]
+}

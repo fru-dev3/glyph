@@ -227,3 +227,184 @@ footer .built .heart-i{display:inline-block;vertical-align:-2px;margin:0 1px}
 /* The version the Install button will download, small and quiet beside the platform line. */
 .dlv{margin-left:7px;padding:1px 6px;border-radius:999px;background:var(--card,rgba(0,0,0,.05));border:1px solid var(--line,rgba(0,0,0,.08));font-size:.78em;font-weight:700;font-variant-numeric:tabular-nums;color:var(--soft,#667)}
 .dlv::before{content:"v"}
+
+/* ---------- the ribbon: Overview, How it works, Compare, In the open, FAQ (scripts/ribbon.py) ---------- */
+.ribbon{position:fixed;top:max(10px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:40;display:flex;gap:2px;padding:4px;
+  max-width:calc(100% - 20px);overflow-x:auto;scrollbar-width:none;border-radius:999px;background:var(--foot);border:1px solid var(--line);
+  box-shadow:0 8px 24px rgba(11,26,16,.08);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.ribbon::-webkit-scrollbar{display:none}
+.ribbon a{position:relative;flex:none;padding:7px 15px;border-radius:999px;font:600 14px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:var(--soft);text-decoration:none;white-space:nowrap;transition:background .25s,color .25s}
+.ribbon a:hover{color:var(--ink);background:var(--tint)}
+.ribbon a[aria-current=page]{background:var(--green);color:var(--on-green);box-shadow:0 4px 14px rgba(0,128,0,.3)}
+body:has(.ribbon) main:not(.doc){padding-top:calc(clamp(16px,3vh,40px) + 46px)}
+@media (max-width:520px){.ribbon a{padding:6px 11px;font-size:13px}}
+@media (max-width:430px){.ribbon{gap:0;padding:3px}.ribbon a{padding:6px 8px;font-size:12.5px;letter-spacing:-.01em}}
+@media (max-width:385px){.ribbon a{padding:6px 6px;font-size:12px}}
+@media (max-width:340px){.ribbon a[data-tab=""]{display:none}}
+/* the home on a phone: smaller app cards make room for the ribbon; the dots give way (the Apps tab shows every app) */
+@media not ((min-width:960px) and (min-height:560px)){
+  body[data-page=home]:has(.ribbon) .tab img{width:clamp(40px,7vh,60px)}
+  body[data-page=home]:has(.ribbon) .tab{padding-top:10px;padding-bottom:10px}
+  body[data-page=home]:has(.ribbon) .dots{display:none}
+}
+/* short phones: the ribbon's How it works says what the two hints said, so they give way and the page stays one screen */
+@media not ((min-width:960px) and (min-height:560px)){@media (max-height:700px){body:has(.ribbon) .badges{display:none}}}
+
+/* A panel fills the screen, on the same bright ground as the page, and rises in. */
+.panel{position:fixed;inset:0;z-index:35;overflow-y:auto;overscroll-behavior:contain;padding:76px clamp(16px,4vw,64px) calc(90px + env(safe-area-inset-bottom));
+  background:radial-gradient(45% 40% at 10% 12%,var(--b1) 0,transparent 70%),radial-gradient(40% 45% at 95% 8%,var(--b2) 0,transparent 70%),
+  radial-gradient(45% 45% at 88% 96%,var(--b3) 0,transparent 70%),radial-gradient(40% 40% at 4% 98%,var(--b4) 0,transparent 70%),var(--bg)}
+.panel[hidden]{display:none}
+body.paneled{overflow:hidden}
+.pin{max-width:1200px;margin:0 auto;text-align:left}
+.panel .pin>*{animation:rise .55s cubic-bezier(.2,.7,.2,1) both}
+.panel .pin>:nth-child(2){animation-delay:.05s}.panel .pin>:nth-child(3){animation-delay:.1s}.panel .pin>:nth-child(4){animation-delay:.15s}.panel .pin>:nth-child(n+5){animation-delay:.2s}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}}
+.panel h2,.doc h1{margin:0 0 8px;font:800 clamp(38px,6vw,76px)/.98 "Bricolage Grotesque",sans-serif;letter-spacing:-.03em}
+.doc h2,.panel h3{margin:40px 0 14px;font:800 clamp(22px,2.6vw,30px)/1.1 "Bricolage Grotesque",sans-serif;letter-spacing:-.015em}
+.pl{margin:0 0 30px;font-size:clamp(18px,2vw,23px);color:var(--soft);max-width:62ch;line-height:1.45}
+.pl.sm{font-size:17px}
+.fine{font-size:13px;color:var(--dim);margin-top:26px}
+.crumb{margin:0 0 6px}.crumb a{font-weight:700;text-decoration:none}
+main.doc{display:block;min-height:0;padding:80px clamp(16px,4vw,64px) calc(90px + env(safe-area-inset-bottom));text-align:left}
+.doc .pin{max-width:1100px}
+.doc h1{font-size:clamp(32px,8vw,76px);white-space:normal;overflow-wrap:break-word}
+.panel h2{white-space:normal}
+
+/* How it works: the steps take turns, the picture follows. */
+.stepper{display:grid;grid-template-columns:minmax(260px,5fr) 8fr;gap:clamp(20px,3vw,48px);align-items:center}
+.steplist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.steplist button{position:relative;overflow:hidden;width:100%;text-align:left;display:grid;grid-template-columns:auto 1fr;column-gap:14px;align-items:baseline;
+  padding:18px 20px;border-radius:18px;border:1px solid transparent;background:transparent;font:inherit;color:var(--soft);cursor:pointer;transition:background .3s,border-color .3s,color .3s,transform .3s}
+.steplist button:hover{background:var(--card)}
+.steplist .no{font:800 15px "Bricolage Grotesque",sans-serif;color:var(--dim)}
+.steplist b{font:800 clamp(20px,2vw,25px)/1.15 "Bricolage Grotesque",sans-serif;color:var(--soft)}
+.steplist .p{grid-column:2;max-height:0;opacity:0;overflow:hidden;font-size:16px;line-height:1.5;transition:max-height .45s,opacity .45s,margin .45s}
+.steplist [aria-selected=true]{background:var(--card);border-color:var(--line);box-shadow:0 14px 34px rgba(11,26,16,.08);color:var(--ink)}
+.steplist [aria-selected=true] .no{color:var(--green)}
+.steplist [aria-selected=true] b{color:var(--ink)}
+.steplist [aria-selected=true] .p{max-height:9em;opacity:1;margin-top:6px}
+.steplist .bar{position:absolute;left:20px;right:20px;bottom:8px;height:3px;border-radius:3px;background:var(--green);transform:scaleX(0);transform-origin:left}
+.steplist [aria-selected=true] .bar{animation:fill 5.5s linear forwards}
+.stepper.hold .bar{animation-play-state:paused!important}
+.shots{position:relative;aspect-ratio:16/10}
+.shots img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transform:scale(.97) translateY(10px);transition:opacity .6s,transform .6s;filter:drop-shadow(0 30px 60px var(--shadow))}
+.shots img.on{opacity:1;transform:none}
+@media (max-width:860px){.stepper{grid-template-columns:1fr}.shots{order:-1}}
+
+/* Compare: pick a rival, see the head-to-head, then each row. */
+.rivals{display:flex;flex-wrap:wrap;gap:14px 28px;margin-bottom:26px}
+.rivals .grp>span{display:block;margin-bottom:8px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--dim)}
+.rivals .chips{display:flex;flex-wrap:wrap;gap:8px}
+.rivals button{display:inline-flex;align-items:center;gap:10px;padding:6px 16px 6px 6px;border-radius:999px;border:1px solid var(--line);background:var(--card);
+  font:650 15px -apple-system,BlinkMacSystemFont,sans-serif;color:var(--soft);cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s,background .2s}
+.rivals button:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(11,26,16,.08)}
+.rivals button img{border-radius:9px;background:#fff;object-fit:contain}
+.rivals button[aria-selected=true]{border-color:var(--green);background:var(--tint);color:var(--green);box-shadow:0 8px 20px rgba(0,128,0,.15)}
+.rv:not([hidden])>*{animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
+.duel{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(10px,2vw,28px);margin:6px 0 22px}
+.duel .side{display:flex;flex-direction:column;align-items:center;gap:8px;padding:clamp(18px,3vw,30px);border-radius:24px;background:var(--card);border:1px solid var(--line);text-align:center}
+.duel .side.us{background:linear-gradient(160deg,rgba(0,128,0,.13),rgba(0,128,0,.04));border-color:var(--tint-line)}
+.duel img{width:clamp(52px,7vw,76px);height:auto;border-radius:22%;background:#fff;box-shadow:0 12px 26px rgba(11,26,16,.16);object-fit:contain}
+.duel b{font:800 clamp(17px,2vw,22px) "Bricolage Grotesque",sans-serif}
+.duel .big{font:800 clamp(34px,5vw,60px)/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.03em;color:var(--green)}
+.duel .big.them{color:var(--ink)}
+.duel .big s{text-decoration-color:var(--strike);text-decoration-thickness:4px;color:var(--soft)}
+.duel .vs{width:clamp(44px,5vw,60px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:#fff;font:800 clamp(15px,1.6vw,19px) "Bricolage Grotesque",sans-serif;box-shadow:0 10px 24px rgba(0,0,0,.25)}
+.thesis{font-size:clamp(17px,1.8vw,20px);font-weight:600;margin:0 0 18px;max-width:70ch}
+.cmp{display:grid;border-radius:22px;overflow:hidden;background:var(--card);border:1px solid var(--line);box-shadow:0 18px 40px rgba(11,26,16,.06)}
+.cr{display:grid;grid-template-columns:minmax(150px,22%) 1fr 1fr;border-top:1px solid var(--line);animation:rise .4s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0)*35ms)}
+.cr.hd{border-top:0;background:var(--head);font:800 18px "Bricolage Grotesque",sans-serif}
+.cr>div{padding:14px 18px;display:flex;align-items:flex-start;gap:10px;font-size:15.5px;line-height:1.45}
+.cr.hd img{border-radius:7px;background:#fff;object-fit:contain;flex:none}
+.cr .lab{color:var(--dim);font-weight:700}
+.cr .lab .ic{width:19px;height:19px;flex:none;color:var(--green);margin-top:1px}
+.cr .c.us{background:rgba(0,128,0,.05);color:var(--ink);font-weight:650}
+.cr .ok{width:18px;height:18px;flex:none;color:var(--green);margin-top:2px;stroke-width:3}
+.cite{display:inline-grid;place-items:center;min-width:18px;height:18px;margin-left:6px;padding:0 4px;border-radius:6px;background:var(--tint);color:var(--green);font-size:11px;font-weight:800;text-decoration:none;vertical-align:2px;transition:background .2s,color .2s}
+.cite:hover{background:var(--green);color:#fff}
+@media (max-width:700px){.cr{grid-template-columns:1fr 1fr}.cr .lab{grid-column:1/-1;padding-bottom:0}.cr.hd .lab{display:none}.cr>div{padding:10px 12px;font-size:14px}.duel .side{padding:14px 8px}}
+.picks{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin:20px 0}
+.picks>div{padding:22px 24px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
+.picks .us{border-color:var(--tint-line);background:linear-gradient(160deg,rgba(0,128,0,.13),rgba(0,128,0,.04))}
+.picks h3{margin:0 0 6px;font:800 20px "Bricolage Grotesque",sans-serif}.picks p{margin:0;color:var(--soft)}
+.more a{display:inline-flex;align-items:center;gap:8px;font-weight:700;text-decoration:none}
+.more .arr{width:18px;height:18px;transition:transform .2s}.more a:hover .arr{transform:translateX(4px)}
+.short{list-style:none;padding:0;display:grid;gap:10px;font-size:clamp(17px,1.8vw,20px)}
+.short li{display:flex;gap:12px;align-items:flex-start;padding:14px 18px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+.short .ok{width:22px;height:22px;flex:none;color:var(--green);stroke-width:3;margin-top:2px}
+.others{display:flex;flex-wrap:wrap;gap:8px}
+.others a{display:inline-flex;align-items:center;gap:9px;padding:6px 14px 6px 6px;border-radius:999px;border:1px solid var(--line);background:var(--card);text-decoration:none;color:var(--ink);font-weight:600}
+.others img{border-radius:8px;background:#fff;object-fit:contain}
+.srcs{font-size:14px;color:var(--dim);overflow-wrap:anywhere}
+
+/* In the open: numbers that count up, every release on a line of time. */
+.stats{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.stat{display:flex;flex-direction:column;gap:4px;padding:24px;border-radius:22px;background:var(--card);border:1px solid var(--line);text-decoration:none;color:var(--soft);transition:transform .2s,box-shadow .2s}
+.stat:hover{transform:translateY(-3px);box-shadow:0 16px 32px rgba(11,26,16,.08)}
+.stat b{font:800 clamp(40px,5vw,64px)/1 "Bricolage Grotesque",sans-serif;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.stat .ic.big{width:52px;height:52px;color:var(--green)}
+.tl{margin:26px 0 0;padding:22px 24px 16px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
+.tl .track{position:relative;height:40px;margin:0 8px}
+.tl .track::before{content:"";position:absolute;left:0;right:0;top:50%;height:3px;margin-top:-1.5px;border-radius:3px;background:linear-gradient(90deg,var(--tint-line),var(--line))}
+.tl i{position:absolute;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px #fff,0 4px 10px rgba(0,128,0,.3);animation:pop .5s cubic-bezier(.3,1.6,.5,1) both;animation-delay:calc(var(--i)*40ms)}
+.tl i:hover{transform:scale(1.4)}
+@keyframes pop{from{transform:scale(0)}}
+.tl figcaption{display:flex;justify-content:space-between;font-size:13px;color:var(--dim)}.tl figcaption b{color:var(--ink)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:0 40px}
+.rels{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.rels li{display:flex;gap:12px;align-items:baseline;padding:12px 16px;border-radius:14px;background:var(--card);border:1px solid var(--line);animation:rise .4s both;animation-delay:calc(var(--i,0)*50ms)}
+.rels li b{font-variant-numeric:tabular-nums}.rels li a{text-decoration:none;font-weight:600}.rels li span{color:var(--dim);font-size:14px;margin-left:auto;white-space:nowrap}
+.faces.big{flex-wrap:wrap;padding-left:12px;row-gap:10px}.faces.big img{width:48px;height:48px}
+.row-btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.row-btns .btn.go{flex:0 1 auto}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--green);color:var(--green)}
+
+/* Questions: two columns on a wide screen. */
+.faq{columns:2 380px;column-gap:40px}
+.faq details{break-inside:avoid;border-bottom:1px solid var(--line);padding:4px 0}
+.faq summary{cursor:pointer;padding:14px 0;font:700 18px/1.35 -apple-system,BlinkMacSystemFont,sans-serif;list-style:none;display:flex;justify-content:space-between;gap:12px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--tint);color:var(--green);font-weight:800;transition:transform .3s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{margin:0 0 16px;color:var(--soft);max-width:68ch;animation:rise .35s both}
+
+/* The home: the family as layers of tiles, and the calculator. */
+.pin.wide{max-width:1320px}
+.cores{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.core{position:relative;display:flex;flex-direction:column;gap:6px;padding:26px 24px 24px;border-radius:26px;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);
+  transition:transform .3s,box-shadow .3s,border-color .3s;animation:rise .5s both;animation-delay:calc(var(--i,0)*70ms);overflow:hidden}
+.core::before{content:"";position:absolute;inset:auto -30% -60% auto;width:220px;height:220px;border-radius:50%;background:radial-gradient(var(--tint),transparent 70%);transition:transform .5s}
+.core:hover{transform:translateY(-6px);box-shadow:0 26px 50px rgba(11,26,16,.14);border-color:var(--tint-line)}
+.core:hover::before{transform:scale(1.4)}
+.core img{width:80px;height:80px;border-radius:22%;box-shadow:0 14px 28px rgba(0,100,0,.28);margin-bottom:10px}
+.core .role{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--green)}
+.core b{font:800 clamp(24px,2.4vw,30px)/1.05 "Bricolage Grotesque",sans-serif;letter-spacing:-.02em}
+.core .tg{color:var(--soft);font-size:15.5px;line-height:1.4}
+.core .go{margin-top:auto;padding-top:10px;color:var(--green)}.core .arr{width:22px;height:22px;transition:transform .25s}.core:hover .arr{transform:translateX(5px)}
+.fts{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.ft{display:grid;grid-template-columns:auto 1fr;column-gap:14px;align-items:center;padding:14px;border-radius:20px;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);
+  transition:transform .25s,box-shadow .25s,border-color .25s;animation:rise .45s both;animation-delay:calc(var(--i,0)*45ms + .2s)}
+.ft:hover{transform:translateY(-4px);box-shadow:0 18px 34px rgba(11,26,16,.12);border-color:var(--tint-line)}
+.ft img{grid-row:span 2;border-radius:22%;box-shadow:0 8px 18px rgba(0,100,0,.22)}
+.ft b{font:800 18px "Bricolage Grotesque",sans-serif}.ft span{font-size:13.5px;color:var(--soft);line-height:1.35}
+@media (max-width:1000px){.cores{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.cores{grid-template-columns:1fr}.core{flex-direction:row;flex-wrap:wrap;align-items:center}.core img{width:56px;height:56px;margin:0}}
+.calc{display:grid;grid-template-columns:1fr minmax(260px,330px);gap:24px;align-items:start}
+.cgs{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.cg{padding:16px;border-radius:22px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.cgh{display:flex;align-items:center;gap:10px;font:800 18px "Bricolage Grotesque",sans-serif;color:var(--ink);text-decoration:none;margin-bottom:4px}
+.cgh img{border-radius:22%}.cgh b{margin-left:auto;font-size:15px;color:var(--green);background:var(--tint);padding:3px 10px;border-radius:999px}
+.pay{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;cursor:pointer;font-weight:600;color:var(--soft);transition:background .2s,color .2s}
+.pay:hover{background:var(--tint)}
+.pay input{width:18px;height:18px;accent-color:var(--green);flex:none}
+.pay img{border-radius:7px;background:#fff;object-fit:contain}
+.pay s{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--dim);text-decoration-color:var(--strike);text-decoration-thickness:2px}
+.pay:has(input:checked){color:var(--ink);background:rgba(0,128,0,.06)}.pay:has(input:checked) s{color:var(--strike)}
+.total{position:sticky;top:20px;display:flex;flex-direction:column;gap:6px;padding:26px;border-radius:26px;color:#fff;background:linear-gradient(160deg,#0B3D12,#0B1A10);box-shadow:0 26px 50px rgba(11,26,16,.3)}
+.total>span{opacity:.8;font-weight:600}
+.total .sum{font:800 clamp(52px,6vw,80px)/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.total .glyph{margin-top:10px;font-size:18px;opacity:1}.total .glyph b{color:#7CFF7C}
+.total .row-btns{margin-top:14px}.total .btn.go{width:100%;justify-content:center}
+@media (max-width:860px){.calc{grid-template-columns:1fr}.total{position:static;order:-1}}

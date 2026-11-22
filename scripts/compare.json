@@ -1,0 +1,2027 @@
+{
+ "jot": {
+  "name": "Glyph Jot",
+  "short": "Jot",
+  "repo": "fru-dev3/glyph-jot",
+  "as_of": "2026-11-22",
+  "how_lede": "Two keys and one button. Everything stays on your Mac.",
+  "how": [
+   {
+    "title": "Hold Fn and talk",
+    "text": "Let go and the words are typed where your cursor is, in any app. Fn + Shift saves a note instead.",
+    "img": "/jot/mac-dictations.webp",
+    "w": 1600,
+    "h": 1000,
+    "alt": "The day's dictations in Glyph Jot, typed into Mail, Terminal, Slack, Safari and Notes"
+   },
+   {
+    "title": "Click Record for meetings",
+    "text": "Zoom, Meet, FaceTime or a talk in the room. No bot joins. The transcript, summary and action items are written on your Mac.",
+    "img": "/jot/mac-transcript-with-jots.webp",
+    "w": 1600,
+    "h": 1000,
+    "alt": "A meeting's transcript in Glyph Jot, with a note linked at the moment it was jotted"
+   },
+   {
+    "title": "Find it later",
+    "text": "Notes, dictations and recordings in one library, filed by people, accounts and tags. Ask what you said and it answers from your own notes.",
+    "img": "/jot/mac-notes.webp",
+    "w": 1600,
+    "h": 1000,
+    "alt": "Notes in Glyph Jot's library, filed with their tags"
+   }
+  ],
+  "faq": [
+   [
+    "Is Glyph Jot really free?",
+    "Yes. There is no paid tier, no subscription and no word or minute limit. The code is open on GitHub under the MIT license."
+   ],
+   [
+    "Does my voice leave my Mac?",
+    "No. Speech is turned into text by Apple's on-device model, and summaries and clean-up use Apple Intelligence on the Mac. Glyph Jot makes no network requests."
+   ],
+   [
+    "Does a bot join my calls?",
+    "No. Click Record and it records your microphone and the Mac's sound. Nobody in the call sees a notetaker join."
+   ],
+   [
+    "Should I tell people I am recording?",
+    "Yes. Follow the consent rules where you and the other people are. Glyph Jot records what your Mac hears; asking first is up to you."
+   ],
+   [
+    "Does it work offline?",
+    "Yes. Dictation, recording, transcripts and summaries all run on the Mac, with or without a connection."
+   ],
+   [
+    "Where are my notes kept?",
+    "In a folder on your Mac that you choose, an Obsidian vault too. Notes are Markdown files, dictations are lines of JSON, and recordings are plain folders with an .m4a file."
+   ],
+   [
+    "What do I need?",
+    "An Apple silicon Mac on macOS 26 or later. Summaries, Command Mode and asking your history need Apple Intelligence; plain dictation and recording do not."
+   ],
+   [
+    "Is there an iPhone app?",
+    "The Glyph app and the Glyph keyboard are in TestFlight testing, not on the App Store yet."
+   ],
+   [
+    "How is it different from Wispr Flow or Granola?",
+    "They work in their cloud and need an account. Glyph Jot does dictation and meetings in one app, on your Mac, with no account. See Compare for each app side by side, with sources."
+   ]
+  ],
+  "pick": {
+   "dictation": "You are on a Mac and want dictation that never leaves it, free, with the code open.",
+   "meetings": "You are on a Mac and want meetings recorded, transcribed and summarized with no bot and no cloud, for free.",
+   "default": "You are on a Mac and want it private and free."
+  },
+  "rows": [
+   {
+    "k": "price",
+    "label": "Price"
+   },
+   {
+    "k": "platforms",
+    "label": "Platforms"
+   },
+   {
+    "k": "processing",
+    "label": "Where speech and AI run"
+   },
+   {
+    "k": "capture",
+    "label": "Meeting bot",
+    "only": "meetings"
+   },
+   {
+    "k": "account",
+    "label": "Account"
+   },
+   {
+    "k": "source",
+    "label": "Source code"
+   },
+   {
+    "k": "storage",
+    "label": "Where it is kept"
+   },
+   {
+    "k": "training",
+    "label": "Trains AI on your data"
+   },
+   {
+    "k": "offline",
+    "label": "Works offline"
+   },
+   {
+    "k": "export",
+    "label": "Export"
+   }
+  ],
+  "ours": {
+   "price": "Free, with no word or minute limits",
+   "platforms": "Mac (Apple silicon, macOS 26 or later). iPhone in testing",
+   "processing": "On your Mac: Apple's on-device speech model and Apple Intelligence",
+   "capture": "None. Records the mic and the Mac's sound",
+   "account": "None",
+   "source": "Open, MIT license on GitHub",
+   "storage": "A folder on your Mac that you choose",
+   "training": "No. Nothing leaves your Mac",
+   "offline": "Yes",
+   "export": "No need: Markdown notes and plain recording folders"
+  },
+  "rivals": [
+   {
+    "slug": "wispr-flow",
+    "name": "Wispr Flow",
+    "logo": "/logos/wispr.webp",
+    "group": "dictation",
+    "alt_title": "A free, private Wispr Flow alternative",
+    "thesis": "Wispr Flow turns speech into text in its cloud and needs an account. Glyph Jot does it on your Mac, free, with no account.",
+    "short": [
+     "Glyph Jot is free. Wispr Flow Pro is $15 a month.",
+     "Jot's speech never leaves your Mac. Flow transcribes in its cloud and needs the internet.",
+     "Flow also runs on Windows, iPhone and Android. Jot is Mac only, iPhone in testing."
+    ],
+    "pick": "You want dictation on Windows or Android too, with emails and documents polished for you.",
+    "cells": {
+     "price": [
+      "Free up to about 2,000 words a week. Pro $15 a month, or $144 a year",
+      1
+     ],
+     "platforms": [
+      "Mac, Windows, iPhone, Android",
+      2
+     ],
+     "processing": [
+      "In their cloud",
+      3
+     ],
+     "account": [
+      "Required",
+      2
+     ],
+     "source": "No public code found",
+     "storage": [
+      "Their servers by default (cloud storage can be turned off)",
+      4
+     ],
+     "training": [
+      "Yes by default on Free and Pro; can be turned off",
+      3
+     ],
+     "offline": [
+      "No, it needs an internet connection",
+      5
+     ],
+     "export": [
+      "Download your data: history, notes and settings",
+      3
+     ]
+    },
+    "sources": [
+     "https://docs.wisprflow.ai/articles/9559327591-flow-plans-and-what-s-included",
+     "https://docs.wisprflow.ai/articles/2772472373-what-is-flow",
+     "https://docs.wisprflow.ai/articles/3467817258-security-and-compliance-faq",
+     "https://docs.wisprflow.ai/articles/9609615338-private-cloud-sync-and-data-sharing-preferences-in-wispr-flow",
+     "https://wisprflow.ai/android"
+    ]
+   },
+   {
+    "slug": "superwhisper",
+    "name": "Superwhisper",
+    "logo": "/logos/superwhisper.webp",
+    "group": "dictation",
+    "alt_title": "A free, open-source Superwhisper alternative",
+    "thesis": "Both can turn speech into text on your device. Glyph Jot has no paid tier, and its code is open on GitHub.",
+    "short": [
+     "Superwhisper Pro is $8.49 a month or $249.99 once. Glyph Jot is free.",
+     "Both can keep your speech on your device and work offline.",
+     "Superwhisper also runs on Windows, iPhone and Android. Jot is Mac only, iPhone in testing."
+    ],
+    "pick": "You want local dictation on Windows or Android as well, or a choice of cloud models.",
+    "cells": {
+     "price": [
+      "Free with local models. Pro $8.49 a month, $84.99 a year or $249.99 once",
+      1
+     ],
+     "platforms": [
+      "Mac, Windows, iPhone, Android",
+      1
+     ],
+     "processing": [
+      "Your choice: local models, or their cloud on Pro",
+      2
+     ],
+     "account": [
+      "Not needed for offline use",
+      3
+     ],
+     "source": "No public code found",
+     "storage": [
+      "On your device until you delete it",
+      2
+     ],
+     "training": [
+      "No",
+      2
+     ],
+     "offline": [
+      "Yes",
+      3
+     ],
+     "export": [
+      "JSONL or Markdown, from its command-line tool",
+      4
+     ]
+    },
+    "sources": [
+     "https://superwhisper.com/docs/billing/plans",
+     "https://superwhisper.com/privacy",
+     "https://superwhisper.com/offline-transcription",
+     "https://superwhisper.com/docs/get-started/cli"
+    ]
+   },
+   {
+    "slug": "willow",
+    "name": "Willow",
+    "logo": "/logos/willow.webp",
+    "group": "dictation",
+    "alt_title": "A free, on-device Willow alternative",
+    "thesis": "Willow dictates through its cloud by default. Glyph Jot never sends your voice anywhere, and is free.",
+    "short": [
+     "Willow Pro is $15 a month. Glyph Jot is free.",
+     "Willow uses its cloud by default, with an offline mode on Mac and iOS. Jot is on-device only.",
+     "Willow also runs on Windows and iPhone. Jot is Mac only, iPhone in testing."
+    ],
+    "pick": "You want fast dictation on Windows or iPhone, with privacy settings on by default.",
+    "cells": {
+     "price": [
+      "Free with a smaller model. Pro $15 a month, $12 a month billed yearly",
+      1
+     ],
+     "platforms": [
+      "Mac, Windows, iPhone",
+      2
+     ],
+     "processing": [
+      "Their cloud by default; offline mode on Mac and iOS",
+      3
+     ],
+     "account": "Not stated",
+     "source": "No public code found",
+     "storage": [
+      "History on your device; nothing kept on their side by default",
+      4
+     ],
+     "training": [
+      "No by default; text only if you opt in",
+      4
+     ],
+     "offline": [
+      "Yes on Mac and iOS",
+      5
+     ],
+     "export": "Not stated"
+    },
+    "sources": [
+     "https://willowvoice.com/pricing",
+     "https://willowvoice.com",
+     "https://willowvoice.com/security",
+     "https://willowvoice.com/privacy-policy",
+     "https://willowvoice.com/features/dictation"
+    ]
+   },
+   {
+    "slug": "aqua-voice",
+    "name": "Aqua Voice",
+    "logo": "/logos/aqua.webp",
+    "group": "dictation",
+    "alt_title": "A free, offline Aqua Voice alternative",
+    "thesis": "Aqua Voice runs its model in the cloud and has no offline mode. Glyph Jot runs on your Mac, offline, for free.",
+    "short": [
+     "Aqua Pro is $12 a month. Glyph Jot is free.",
+     "Aqua needs the internet. Jot works offline.",
+     "Aqua also runs on Windows, iPhone and Android. Jot is Mac only, iPhone in testing."
+    ],
+    "pick": "You dictate code, names and commands all day and want a model trained on technical speech.",
+    "cells": {
+     "price": [
+      "Free for 2,000 words. Pro $12 a month, $10 a month billed yearly",
+      1
+     ],
+     "platforms": [
+      "Mac, Windows, iPhone, Android",
+      2
+     ],
+     "processing": [
+      "Their cloud",
+      2
+     ],
+     "account": [
+      "Required, the same one on each device",
+      2
+     ],
+     "source": "No public code found",
+     "storage": [
+      "Their servers, unless Privacy Mode is on",
+      3
+     ],
+     "training": [
+      "Used to improve the service unless Privacy Mode is on",
+      3
+     ],
+     "offline": [
+      "No",
+      2
+     ],
+     "export": "Not stated"
+    },
+    "sources": [
+     "https://aquavoice.com/pricing",
+     "https://aquavoice.com/download",
+     "https://aquavoice.com/info/privacy"
+    ]
+   },
+   {
+    "slug": "granola",
+    "name": "Granola",
+    "logo": "/logos/granola.webp",
+    "group": "meetings",
+    "alt_title": "A free, local Granola alternative",
+    "thesis": "Granola has no bot either, but sends the audio to cloud services and needs an account. Glyph Jot keeps the whole meeting on your Mac.",
+    "short": [
+     "Granola Business is $14 a user a month, and its free plan shows 30 days of history. Glyph Jot is free and keeps everything.",
+     "Neither one sends a bot into the call.",
+     "Granola transcribes in the cloud. Jot transcribes and summarizes on your Mac."
+    ],
+    "pick": "Your team shares meeting notes and wants them in the cloud, on Windows and phones too.",
+    "cells": {
+     "price": [
+      "Free with 30 days of history. Business $14 a user a month",
+      1
+     ],
+     "platforms": [
+      "Mac, Windows, iPhone, Android",
+      2
+     ],
+     "processing": [
+      "Their cloud, with third-party transcription and AI",
+      3
+     ],
+     "capture": [
+      "None. Records your computer's audio",
+      3
+     ],
+     "account": [
+      "Required: Google, Microsoft or SSO",
+      4
+     ],
+     "source": "No public code found",
+     "storage": [
+      "Their cloud (AWS, US). No audio kept",
+      4
+     ],
+     "training": [
+      "Anonymized data may train their models; opt out in Settings",
+      4
+     ],
+     "offline": [
+      "Notes open offline; transcription streams live",
+      4
+     ],
+     "export": [
+      "CSV, by email",
+      5
+     ]
+    },
+    "sources": [
+     "https://www.granola.ai/pricing",
+     "https://docs.granola.ai/help-center/taking-notes/transcription",
+     "https://www.granola.ai/security",
+     "https://docs.granola.ai/help-center/consent-security-privacy/security-privacy-data-faqs",
+     "https://docs.granola.ai/help-center/sharing/exporting-notes"
+    ]
+   },
+   {
+    "slug": "otter",
+    "name": "Otter",
+    "logo": "/logos/otter.webp",
+    "group": "meetings",
+    "alt_title": "A free, private Otter alternative",
+    "thesis": "Otter transcribes in its cloud and can send a bot into your calls. Glyph Jot records with no bot and keeps it all on your Mac.",
+    "short": [
+     "Otter Pro is $16.99 a month. Glyph Jot is free.",
+     "Otter trains on de-identified audio unless you turn it off. Jot sends nothing anywhere.",
+     "Otter also runs on Windows, the web and phones. Jot is Mac only, iPhone in testing."
+    ],
+    "pick": "You want searchable transcripts of every meeting across a team, in the browser and on phones.",
+    "cells": {
+     "price": [
+      "Free for 300 minutes. Pro $16.99 a month, $8.33 a month billed yearly",
+      1
+     ],
+     "platforms": [
+      "Mac, Windows, iPhone, Android, web",
+      1
+     ],
+     "processing": [
+      "Their cloud",
+      4
+     ],
+     "capture": [
+      "A bot joins Zoom, Meet and Teams, or the desktop app records without one",
+      3
+     ],
+     "account": [
+      "Required",
+      2
+     ],
+     "source": "No public code found",
+     "storage": [
+      "Their cloud (AWS, US)",
+      5
+     ],
+     "training": [
+      "Yes, on de-identified audio; can be turned off",
+      5
+     ],
+     "offline": [
+      "Records offline, transcribes after reconnecting",
+      4
+     ],
+     "export": [
+      "TXT, DOCX, PDF, SRT, MP3 (TXT only on free)",
+      6
+     ]
+    },
+    "sources": [
+     "https://otter.ai/pricing",
+     "https://help.otter.ai/hc/en-us/articles/35973988280215",
+     "https://help.otter.ai/hc/en-us/articles/4425393298327",
+     "https://help.otter.ai/hc/en-us/articles/44008744581271",
+     "https://otter.ai/privacy-policy",
+     "https://help.otter.ai/hc/en-us/articles/360047733634"
+    ]
+   },
+   {
+    "slug": "fireflies",
+    "name": "Fireflies",
+    "logo": "/logos/fireflies.webp",
+    "group": "meetings",
+    "alt_title": "A free, private Fireflies alternative",
+    "thesis": "Fireflies records through a bot or system audio and works in its cloud. Glyph Jot records with no bot, offline, on your Mac.",
+    "short": [
+     "Fireflies Pro is $18 a month. Glyph Jot is free.",
+     "Fireflies keeps meetings on its servers. Jot keeps them on your Mac.",
+     "Fireflies connects to 240+ apps. Jot keeps plain files any app can read."
+    ],
+    "pick": "Your meetings should flow straight into your CRM and other team tools.",
+    "cells": {
+     "price": [
+      "Free with 400 minutes of storage. Pro $18 a month, $10 a seat a month billed yearly",
+      1
+     ],
+     "platforms": [
+      "Mac, Windows, iPhone, Android, web",
+      2
+     ],
+     "processing": [
+      "Their cloud (US servers)",
+      3
+     ],
+     "capture": [
+      "A bot (Fred) joins by invite, or the desktop app captures system audio",
+      2
+     ],
+     "account": "Required",
+     "source": "No public code found",
+     "storage": [
+      "Their servers, in the US and other countries",
+      3
+     ],
+     "training": [
+      "No",
+      4
+     ],
+     "offline": "Not stated",
+     "export": "Several formats on paid plans"
+    },
+    "sources": [
+     "https://fireflies.ai/blog/fireflies-pricing-which-plan-is-right-for-you",
+     "https://fireflies.ai/desktop",
+     "https://fireflies.ai/privacy",
+     "https://fireflies.ai/security"
+    ]
+   },
+   {
+    "slug": "fathom",
+    "name": "Fathom",
+    "logo": "/logos/fathom.webp",
+    "group": "meetings",
+    "alt_title": "A free, private Fathom alternative",
+    "thesis": "Fathom usually sends a bot into the call and works in its cloud. Glyph Jot records with no bot and never uploads anything.",
+    "short": [
+     "Fathom Premium is $20 a month. Glyph Jot is free.",
+     "Fathom's bot joins your calls (bot-free capture is in beta). Jot never joins a call.",
+     "Fathom keeps meetings in its cloud. Jot keeps them on your Mac as plain files."
+    ],
+    "pick": "You want a generous free plan for call summaries in Zoom, Meet and Teams.",
+    "cells": {
+     "price": [
+      "Free, with advanced summaries for 5 calls a month. Premium $20 a month, $16 billed yearly",
+      1
+     ],
+     "platforms": [
+      "Mac, Windows, iPhone",
+      2
+     ],
+     "processing": [
+      "Their cloud (US)",
+      4
+     ],
+     "capture": [
+      "A bot joins the call; bot-free capture is in beta on Mac",
+      3
+     ],
+     "account": [
+      "Required",
+      5
+     ],
+     "source": "No public code found",
+     "storage": [
+      "Their cloud (US), unlimited",
+      4
+     ],
+     "training": [
+      "De-identified data trains their models; opt out in settings",
+      4
+     ],
+     "offline": "Not stated",
+     "export": [
+      "Transcripts by copy and paste; video download",
+      6
+     ]
+    },
+    "sources": [
+     "https://www.fathom.ai/pricing",
+     "https://help.fathom.video/en/articles/296576",
+     "https://www.fathom.ai/features/bot-free-capture",
+     "https://www.fathom.ai/privacy",
+     "https://help.fathom.video/en/articles/449472",
+     "https://help.fathom.video/en/articles/296000"
+    ]
+   }
+  ],
+  "tag": "Talk and it types. Click Record for meetings."
+ },
+ "time": {
+  "name": "Glyph Time",
+  "short": "Time",
+  "repo": "fru-dev3/glyph-time",
+  "as_of": "2026-11-22",
+  "tag": "A quiet count-up on the edge of your screen.",
+  "how_lede": "Start it, forget it, see where the hours went.",
+  "how": [
+   {
+    "title": "Start from anywhere",
+    "text": "From the clock on the screen's edge, the menu bar or Control-Option-T. The project is guessed from the app in front.",
+    "img": "/time/running.webp",
+    "w": 1400,
+    "h": 900,
+    "alt": "A session on acme-api: the clock open on the right edge of the screen"
+   },
+   {
+    "title": "A nudge every 30 minutes",
+    "text": "The clock slides out with how long you have been on it, and two answers: Keep going or Stop.",
+    "img": "/time/nudge.webp",
+    "w": 1400,
+    "h": 900,
+    "alt": "The half-hour nudge with Keep going and Stop"
+   },
+   {
+    "title": "Count down when you want to",
+    "text": "15, 25, 50 or 90 minutes. At zero it says so and keeps counting the time over.",
+    "img": "/time/countdown.webp",
+    "w": 1400,
+    "h": 900,
+    "alt": "A countdown at zero, counting the time over"
+   }
+  ],
+  "faq": [
+   [
+    "Is Glyph Time free?",
+    "Yes, free and open source under the MIT license."
+   ],
+   [
+    "Does it watch everything I do?",
+    "No. A session keeps only the project name and the app in front, never a window title, a URL or anything you typed. Tracking apps and tabs is a separate switch you turn on."
+   ],
+   [
+    "Where is my time kept?",
+    "As plain lines in a folder you choose. Each Mac writes its own file, so a synced folder never conflicts."
+   ],
+   [
+    "What if I walk away?",
+    "Five minutes without a key or the pointer, a locked screen or a sleeping Mac pause the clock."
+   ],
+   [
+    "Can I export it?",
+    "Yes, a period as CSV or Markdown, beside the session files."
+   ],
+   [
+    "Is there an iPhone app?",
+    "Glyph Time on iPhone is in testing, not on the App Store yet."
+   ],
+   [
+    "What do I need?",
+    "An Apple silicon Mac on macOS 26 or later."
+   ]
+  ],
+  "pick": {
+   "default": "You want a free, private timer on your Mac that keeps its records in plain files."
+  },
+  "rows": [
+   {
+    "k": "price",
+    "label": "Price"
+   },
+   {
+    "k": "platforms",
+    "label": "Platforms"
+   },
+   {
+    "k": "tracking",
+    "label": "How it tracks"
+   },
+   {
+    "k": "account",
+    "label": "Account"
+   },
+   {
+    "k": "source",
+    "label": "Source code"
+   },
+   {
+    "k": "storage",
+    "label": "Where it is kept"
+   },
+   {
+    "k": "training",
+    "label": "Trains AI on your data"
+   },
+   {
+    "k": "offline",
+    "label": "Works offline"
+   },
+   {
+    "k": "export",
+    "label": "Export"
+   }
+  ],
+  "ours": {
+   "price": "Free",
+   "platforms": "Mac (Apple silicon, macOS 26 or later). iPhone in testing",
+   "tracking": "A count-up you start, the project guessed; apps and tabs only if you turn it on",
+   "account": "None",
+   "source": "Open, MIT license on GitHub",
+   "storage": "Plain files in a folder you choose",
+   "training": "No",
+   "offline": "Yes",
+   "export": "CSV or Markdown, and the files are plain lines"
+  },
+  "rivals": [
+   {
+    "slug": "timing",
+    "name": "Timing",
+    "logo": "/logos/timing.webp",
+    "group": "time trackers",
+    "alt_title": "A free, open-source Timing alternative",
+    "thesis": "Timing tracks every app, document and website automatically, for a monthly fee. Glyph Time is a count-up you start, free and open source.",
+    "short": [
+     "Timing has no free plan. Glyph Time is free.",
+     "Timing records apps, documents and sites on its own. Time keeps only the project and the app in front.",
+     "Both keep your time on your device by default."
+    ],
+    "pick": "You want every app, document and website tracked automatically, on a Mac or a Windows PC.",
+    "cells": {
+     "price": [
+      "No free plan, 30-day trial. Professional $10 a month",
+      1
+     ],
+     "platforms": [
+      "Mac and Windows; a web app for other devices",
+      3
+     ],
+     "tracking": [
+      "Automatic: every app, document and website",
+      2
+     ],
+     "account": [
+      "Not needed to track; needed for sync and AI features",
+      5
+     ],
+     "source": "No public code found",
+     "storage": [
+      "On your device; optional sync to their cloud",
+      2
+     ],
+     "training": [
+      "No, unless you opt in",
+      4
+     ],
+     "offline": "Not stated",
+     "export": [
+      "PDF, XLSX, CSV, HTML",
+      2
+     ]
+    },
+    "sources": [
+     "https://timingapp.com/pricing",
+     "https://timingapp.com/features?lang=en",
+     "https://timingapp.com/help/windows/system-requirements",
+     "https://timingapp.com/privacy",
+     "https://timingapp.com/help/sync"
+    ]
+   },
+   {
+    "slug": "toggl-track",
+    "name": "Toggl Track",
+    "logo": "/logos/toggl.webp",
+    "group": "time trackers",
+    "alt_title": "A free, private Toggl Track alternative",
+    "thesis": "Toggl Track keeps your time in its cloud, behind an account. Glyph Time keeps it in plain files on your Mac.",
+    "short": [
+     "Toggl Starter is $12 a user a month. Glyph Time is free.",
+     "Toggl needs an account and keeps your time in its cloud. Time needs neither.",
+     "Toggl runs on every platform. Time is Mac only, iPhone in testing."
+    ],
+    "pick": "A team needs one timer on every device, with a free plan for up to three people.",
+    "cells": {
+     "price": [
+      "Free for up to 3 users. Starter $12 a user a month, $9 billed yearly",
+      1
+     ],
+     "platforms": [
+      "Mac, Windows, iPhone, Android, web",
+      2
+     ],
+     "tracking": [
+      "A timer, plus a Timeline of apps and sites on desktop",
+      3
+     ],
+     "account": [
+      "Required",
+      4
+     ],
+     "source": "No public code found",
+     "storage": [
+      "Their cloud",
+      4
+     ],
+     "training": "Not stated",
+     "offline": [
+      "Only the timer works offline",
+      5
+     ],
+     "export": [
+      "PDF on free; CSV and XLSX on paid plans",
+      6
+     ]
+    },
+    "sources": [
+     "https://toggl.com/track/pricing/",
+     "https://toggl.com/product/time-tracking-anywhere",
+     "https://support.toggl.com/en-us/article/the-timeline-feature-1txzwm1/",
+     "https://toggl.com/legal/privacy/",
+     "https://support.toggl.com/en-us/article/can-toggl-track-work-offline-4r4tcw/",
+     "https://docs.toggl.com/exporting-reports-from-toggl"
+    ]
+   },
+   {
+    "slug": "rize",
+    "name": "Rize",
+    "logo": "/logos/rize.webp",
+    "group": "time trackers",
+    "alt_title": "A free, private Rize alternative",
+    "thesis": "Rize watches your activity and keeps it in its cloud for AI to sort. Glyph Time keeps only the project and the app in front, on your Mac.",
+    "short": [
+     "Rize Basic is $12.99 a month. Glyph Time is free.",
+     "Rize keeps activity in its cloud and trains its own models on de-identified data. Time keeps its files on your Mac.",
+     "Rize sorts work with AI. Time guesses the project from the app in front, and you can rename it."
+    ],
+    "pick": "You want AI to sort your work into clients, projects and tasks with no timer at all.",
+    "cells": {
+     "price": [
+      "No free plan, 7-day trial. Basic $12.99 a month, $9.99 billed yearly",
+      1
+     ],
+     "platforms": [
+      "Mac and Windows, browser extensions, web",
+      2
+     ],
+     "tracking": [
+      "Automatic, sorted by AI",
+      3
+     ],
+     "account": [
+      "Required",
+      4
+     ],
+     "source": "No public code found",
+     "storage": [
+      "Their cloud, in the US",
+      4
+     ],
+     "training": [
+      "De-identified data trains its own models",
+      4
+     ],
+     "offline": "Not stated",
+     "export": [
+      "CSV and PDF",
+      5
+     ]
+    },
+    "sources": [
+     "https://rize.io/pricing",
+     "https://docs.rize.io/getting-started/faq",
+     "https://rize.io/",
+     "https://www.rize.io/privacy-policy",
+     "https://docs.rize.io/projects/project-reports"
+    ]
+   },
+   {
+    "slug": "clockify",
+    "name": "Clockify",
+    "logo": "/logos/clockify.webp",
+    "group": "time trackers",
+    "alt_title": "A free, account-free Clockify alternative",
+    "thesis": "Clockify syncs everything to its cloud and needs an account. Glyph Time needs neither, and has no seat limit.",
+    "short": [
+     "Clockify Basic is $4.99 a seat a month. Glyph Time is free.",
+     "Clockify syncs to its cloud. Time writes plain files on your Mac.",
+     "Clockify runs everywhere, Linux too. Time is Mac only, iPhone in testing."
+    ],
+    "pick": "You need the cheapest paid seat, on every platform including Linux.",
+    "cells": {
+     "price": [
+      "Free for up to 5 users. Basic $4.99 a seat a month, $3.99 billed yearly",
+      1
+     ],
+     "platforms": [
+      "Mac, Windows, Linux, iPhone, Android, web",
+      2
+     ],
+     "tracking": [
+      "A timer, plus an auto tracker on desktop",
+      2
+     ],
+     "account": [
+      "Required",
+      3
+     ],
+     "source": "No public code found",
+     "storage": [
+      "Their cloud, mainly in the US",
+      3
+     ],
+     "training": "Not stated",
+     "offline": [
+      "Yes",
+      2
+     ],
+     "export": [
+      "PDF on free; CSV and Excel on paid plans",
+      4
+     ]
+    },
+    "sources": [
+     "https://clockify.me/pricing",
+     "https://clockify.me/apps",
+     "https://cake.com/privacy",
+     "https://clockify.me/help/getting-started/understand-use-your-reports"
+    ]
+   }
+  ]
+ },
+ "cast": {
+  "name": "Glyph Cast",
+  "short": "Cast",
+  "repo": "fru-dev3/glyph-cast",
+  "as_of": "2026-11-22",
+  "tag": "Record your screen, get a clean MP4 back.",
+  "how_lede": "Record, stop, and it does the cleanup a recorder leaves to you.",
+  "how": [
+   {
+    "title": "Record from anywhere",
+    "text": "Pick the display and the mic and press Option-Command-R. The bar and the red edge stay out of the video.",
+    "img": "/cast/framed.webp",
+    "w": 1600,
+    "h": 1000,
+    "alt": "An export from Glyph Cast, the screen framed on a green wave wallpaper"
+   },
+   {
+    "title": "Cleaned up on its own",
+    "text": "When you stop, the voice is cleaned and leveled, and ums and long pauses are found for one-click removal.",
+    "img": "/cast/wallpapers.webp",
+    "w": 1600,
+    "h": 1000,
+    "alt": "An export on a blue wave wallpaper"
+   },
+   {
+    "title": "Framed and zoomed",
+    "text": "Your screen on a wallpaper, with zooms where you click. Export MP4 up to 4K with an .srt.",
+    "img": "/cast/zoom.webp",
+    "w": 1600,
+    "h": 1000,
+    "alt": "A zoom on a click, with a click ring"
+   }
+  ],
+  "faq": [
+   [
+    "Is Glyph Cast free?",
+    "Yes, free and open source under the MIT license."
+   ],
+   [
+    "Does it upload my recordings?",
+    "No. Transcription and cleanup run on your Mac, and recordings stay in your Movies folder as plain files."
+   ],
+   [
+    "Does it work offline?",
+    "Yes, once the models (about 180 MB) have downloaded on the first recording."
+   ],
+   [
+    "What does it export?",
+    "MP4 at 1080p, 1440p or 4K at 60 fps, with a matching .srt of the words you kept."
+   ],
+   [
+    "Can I edit the words?",
+    "Yes. Click a word to play from there, Option-click to cut it or bring it back."
+   ],
+   [
+    "What do I need?",
+    "An Apple silicon Mac on macOS 15 or later, and two free tools installed once with Homebrew: ffmpeg and whisper-cpp."
+   ]
+  ],
+  "pick": {
+   "default": "You record screen videos on a Mac and want them cleaned up for free, on your own machine."
+  },
+  "rows": [
+   {
+    "k": "price",
+    "label": "Price"
+   },
+   {
+    "k": "platforms",
+    "label": "Platforms"
+   },
+   {
+    "k": "processing",
+    "label": "Where it runs"
+   },
+   {
+    "k": "account",
+    "label": "Account"
+   },
+   {
+    "k": "source",
+    "label": "Source code"
+   },
+   {
+    "k": "storage",
+    "label": "Where recordings are kept"
+   },
+   {
+    "k": "training",
+    "label": "Trains AI on your videos"
+   },
+   {
+    "k": "offline",
+    "label": "Works offline"
+   },
+   {
+    "k": "export",
+    "label": "Export"
+   }
+  ],
+  "ours": {
+   "price": "Free",
+   "platforms": "Mac (Apple silicon, macOS 15 or later)",
+   "processing": "On your Mac: transcription and voice cleanup run locally",
+   "account": "None",
+   "source": "Open, MIT license on GitHub",
+   "storage": "Plain files in your Movies folder",
+   "training": "No. Nothing is uploaded",
+   "offline": "Yes, after the models download once",
+   "export": "MP4 at 1080p, 1440p or 4K, 60 fps, with an .srt"
+  },
+  "rivals": [
+   {
+    "slug": "screen-studio",
+    "name": "Screen Studio",
+    "logo": "/logos/screenstudio.webp",
+    "group": "screen video",
+    "alt_title": "A free, open-source Screen Studio alternative",
+    "thesis": "Both record on your Mac and zoom in where you click. Screen Studio is a subscription; Glyph Cast is free and open source.",
+    "short": [
+     "Screen Studio is $29 a month. Glyph Cast is free.",
+     "Both record and render on your Mac and work offline.",
+     "Cast also cleans the voice, finds ums and pauses, and writes an .srt."
+    ],
+    "pick": "You want the most polished automatic zooms and motion for Mac product demos.",
+    "cells": {
+     "price": [
+      "No free plan. $29 a month, or $9 a month billed yearly",
+      1
+     ],
+     "platforms": [
+      "Mac only",
+      2
+     ],
+     "processing": [
+      "On your Mac; cloud transcripts are optional",
+      3
+     ],
+     "account": [
+      "Sign in with your purchase email",
+      4
+     ],
+     "source": "No public code found",
+     "storage": [
+      "Local files; share links upload to their cloud",
+      3
+     ],
+     "training": "Not stated",
+     "offline": [
+      "Yes",
+      2
+     ],
+     "export": [
+      "MP4 up to 4K at 60 fps, GIF, share links",
+      2
+     ]
+    },
+    "sources": [
+     "https://screen.studio/pricing",
+     "https://screen.studio/",
+     "https://screen.studio/legal/privacy-and-cookie-policy",
+     "https://screen.studio/guide/activating-screen-studio"
+    ]
+   },
+   {
+    "slug": "descript",
+    "name": "Descript",
+    "logo": "/logos/descript.webp",
+    "group": "screen video",
+    "alt_title": "A free, offline Descript alternative",
+    "thesis": "Descript uploads your media to its cloud to transcribe and edit. Glyph Cast transcribes, cleans and cuts on your Mac.",
+    "short": [
+     "Descript Hobbyist is $24 a month, and its free plan adds a watermark. Glyph Cast is free.",
+     "Descript needs the internet and trains its models unless you opt out. Cast works offline.",
+     "Both let you cut words from the transcript."
+    ],
+    "pick": "You edit long videos and podcasts with a team, by editing the transcript.",
+    "cells": {
+     "price": [
+      "Free with a watermark and 60 minutes a month. Hobbyist $24 a month",
+      1
+     ],
+     "platforms": [
+      "Mac, Windows, web",
+      2
+     ],
+     "processing": [
+      "Their cloud: media is uploaded to transcribe",
+      3
+     ],
+     "account": "Not stated",
+     "source": "No public code found",
+     "storage": [
+      "Their cloud",
+      4
+     ],
+     "training": [
+      "Yes, its own models; opt out with Share Data",
+      5
+     ],
+     "offline": [
+      "No",
+      6
+     ],
+     "export": [
+      "MP4 or GIF: 720p free, 4K on Creator",
+      7
+     ]
+    },
+    "sources": [
+     "https://www.descript.com/pricing",
+     "https://help.descript.com/hc/en-us/articles/10503411779213-Descript-system-requirements",
+     "https://help.descript.com/add-and-manage-media/local",
+     "https://help.descript.com/hc/en-us/articles/10164166215309-Project-file-management",
+     "https://www.descript.com/privacy",
+     "https://help.descript.com/hc/en-us/articles/13520561812237-Save-your-work-to-the-cloud",
+     "https://help.descript.com/hc/en-us/articles/10255814959245-Export-a-video-or-GIF-locally"
+    ]
+   },
+   {
+    "slug": "loom",
+    "name": "Loom",
+    "logo": "/logos/loom.webp",
+    "group": "screen video",
+    "alt_title": "A free, local Loom alternative",
+    "thesis": "Loom records straight to its cloud and shares a link. Glyph Cast records to a file on your Mac and cleans it up before you share.",
+    "short": [
+     "Loom Business is $18 a user a month, and its free plan stops at 5 minutes. Glyph Cast is free.",
+     "Loom needs the internet to record. Cast works offline.",
+     "Loom is made for a quick shared link. Cast gives you a finished MP4."
+    ],
+    "pick": "You send quick video messages that teammates watch from a link.",
+    "cells": {
+     "price": [
+      "Free for 25 videos of up to 5 minutes. Business $18 a user a month",
+      1
+     ],
+     "platforms": [
+      "Mac, Windows, iPhone, Android, Chrome",
+      2
+     ],
+     "processing": [
+      "Their cloud",
+      3
+     ],
+     "account": "Not stated",
+     "source": "No public code found",
+     "storage": [
+      "Their cloud",
+      4
+     ],
+     "training": "Not stated",
+     "offline": [
+      "No, it needs upload bandwidth to record",
+      5
+     ],
+     "export": [
+      "MP4 download on paid plans, up to 4K",
+      6
+     ]
+    },
+    "sources": [
+     "https://www.loom.com/pricing",
+     "https://support.atlassian.com/loom/docs/loom-device-compatibility/",
+     "https://support.atlassian.com/loom/docs/loom-ai-features/",
+     "https://support.atlassian.com/loom/docs/loom-starter-free-video-and-screenshot-storage-limit-explained/",
+     "https://support.atlassian.com/loom/kb/quickly-fix-common-recording-errors/",
+     "https://support.atlassian.com/loom/docs/download-your-loom-video/"
+    ]
+   },
+   {
+    "slug": "camtasia",
+    "name": "Camtasia",
+    "logo": "/logos/camtasia.webp",
+    "group": "screen video",
+    "alt_title": "A free, open-source Camtasia alternative",
+    "thesis": "Camtasia is a full desktop editor sold by the year. Glyph Cast does the common cleanup on its own: the voice, the ums, the framing and the zooms.",
+    "short": [
+     "Camtasia Essentials is $179.88 a year. Glyph Cast is free.",
+     "Both work on your computer and keep local files.",
+     "Camtasia is a full timeline editor. Cast cleans the recording up for you when you stop."
+    ],
+    "pick": "You want a full timeline editor for screen videos, on Windows as well as Mac.",
+    "cells": {
+     "price": [
+      "Yearly only. Essentials $179.88 a year without a watermark",
+      1
+     ],
+     "platforms": [
+      "Mac and Windows",
+      1
+     ],
+     "processing": [
+      "On your computer, AI features included",
+      2
+     ],
+     "account": [
+      "Required to activate",
+      3
+     ],
+     "source": "No public code found",
+     "storage": [
+      "Local files",
+      4
+     ],
+     "training": [
+      "No, unless you opt in",
+      5
+     ],
+     "offline": [
+      "Yes, up to 90 days at a time",
+      3
+     ],
+     "export": [
+      "MP4, up to 4K",
+      6
+     ]
+    },
+    "sources": [
+     "https://www.techsmith.com/store/camtasia",
+     "https://support.techsmith.com/hc/en-us/articles/46075159178253-How-can-I-disable-AI-features-in-Snagit-and-Camtasia",
+     "https://support.techsmith.com/hc/en-us/articles/31352888759053-Do-I-Need-an-Internet-Connection-to-Access-My-Snagit-or-Camtasia-Subscription",
+     "https://www.techsmith.com/camtasia/",
+     "https://www.techsmith.com/trust-center/ai-policy/",
+     "https://support.techsmith.com/hc/en-us/articles/115006136228-Guidelines-for-Working-With-4K-Content-In-Camtasia-Editor"
+    ]
+   }
+  ]
+ },
+ "bot": {
+  "name": "Glyph Bot",
+  "short": "Bot",
+  "repo": "fru-dev3/glyph-studio",
+  "as_of": "2026-11-22",
+  "tag": "Chat with your agents, with your vault behind them.",
+  "how_lede": "Ask. It reads what fits, answers, and cites what it read.",
+  "how": [
+   {
+    "title": "Ask your agents",
+    "text": "Talk to your chief of staff, or to one agent per area of your life.",
+    "img": "/bot/chat-sources.webp",
+    "w": 1600,
+    "h": 982,
+    "alt": "Glyph Bot on the Mac: an agent answers and lists the sources it read"
+   },
+   {
+    "title": "It reads before it answers",
+    "text": "The sources that fit your question are read first, and the reply cites them.",
+    "img": "/bot/chat-sources.webp",
+    "w": 1600,
+    "h": 982,
+    "alt": "A reply in Glyph Bot with its numbered sources"
+   },
+   {
+    "title": "Nothing saved until you say so",
+    "text": "When an agent wants to remember something, it asks. Save or Skip.",
+    "img": "/bot/chat-sources.webp",
+    "w": 1600,
+    "h": 982,
+    "alt": "Glyph Bot on the Mac"
+   }
+  ],
+  "faq": [
+   [
+    "Is Glyph Bot free?",
+    "Yes, free and open source under the MIT license."
+   ],
+   [
+    "Which AI does it use?",
+    "The AI tools you already use, such as Claude Code, Codex, Gemini, or local models. Their own terms and prices apply."
+   ],
+   [
+    "Where are my chats kept?",
+    "As plain files in your own vault. fru.dev runs no server for Glyph Bot."
+   ],
+   [
+    "Can I control what agents read?",
+    "Yes. Each source, from your vault to each Glyph app's files, has its own switch."
+   ],
+   [
+    "What do I need?",
+    "An Apple silicon Mac on macOS 26 or later."
+   ],
+   [
+    "What was it called before?",
+    "Glyph Studio, and before that Prevail."
+   ]
+  ],
+  "pick": {
+   "default": "You want your agents to work from your own files, cite them, and keep your chats in a vault you own."
+  },
+  "ours": {
+   "price": "Free app; you bring the AI tools you already pay for",
+   "platforms": "Mac (Apple silicon, macOS 26 or later)",
+   "account": "None",
+   "models": "The AI tools you already use: Claude Code, Codex, Gemini or local models",
+   "sources": "Yes: every reply cites the files it read",
+   "storage": "Plain files in your own vault",
+   "source": "Open, MIT license on GitHub",
+   "training": "Glyph has no server to train on; your AI tool's own terms apply"
+  },
+  "duel_big": "Free app",
+  "no_strike": true
+ },
+ "rig": {
+  "name": "Glyph Rig",
+  "short": "Rig",
+  "repo": "fru-dev3/glyph",
+  "as_of": "2026-11-22",
+  "tag": "Names, connects and runs your agents across your Macs.",
+  "how_lede": "Keep typing claude or codex. The Rig names, launches and keeps track.",
+  "how": [
+   {
+    "title": "Every session named",
+    "text": "One word is your label; the Rig adds the project, the agent, the machine and the time.",
+    "img": "/rig/terminal.webp",
+    "w": 1158,
+    "h": 906,
+    "alt": "Glyph Rig in a terminal, with named agent sessions"
+   },
+   {
+    "title": "Fleets in one command",
+    "text": "One preset opens several agents at once, each in its own pane, on this Mac or another over SSH.",
+    "img": "/fleet-terminal.png",
+    "w": 1200,
+    "h": 560,
+    "alt": "A fleet of agents in panes"
+   },
+   {
+    "title": "Usage and wake",
+    "text": "See quota across agents, and continue sessions a usage limit stopped when it resets.",
+    "img": "/rig/terminal.webp",
+    "w": 1158,
+    "h": 906,
+    "alt": "Glyph Rig in a terminal"
+   }
+  ],
+  "faq": [
+   [
+    "Is Glyph Rig free?",
+    "Yes, free and open source under the MIT license."
+   ],
+   [
+    "Which agents does it run?",
+    "Claude Code, Codex, AGY, Cursor, Crush, Cortex, OpenCode and pi, and any other command-line agent you add in one line."
+   ],
+   [
+    "Does it phone home?",
+    "No network requests except glyph update, glyph usage --live and the GitHub star you agree to."
+   ],
+   [
+    "Where does it work?",
+    "In zsh, with tmux, Herdr, Zellij, WezTerm or a bare shell."
+   ],
+   [
+    "How do I install it?",
+    "Clone the repo and source install.sh: one file into ~/.config/glyph and one line into ~/.zshrc. glyph update fetches the latest."
+   ],
+   [
+    "What was it called before?",
+    "Glyph Code, until October 2026. Same tool and same glyph command."
+   ]
+  ],
+  "pick": {
+   "default": "You run several command-line agents across more than one Mac and want each session named and easy to find."
+  },
+  "ours": {
+   "price": "Free",
+   "platforms": "macOS, in zsh",
+   "account": "None",
+   "agents": "Claude Code, Codex, Gemini, Cursor, OpenCode and any CLI",
+   "machines": "Yes: sessions on your other Macs over SSH",
+   "source": "Open, MIT license on GitHub",
+   "network": "None, except update, live usage and an optional star"
+  }
+ },
+ "arena": {
+  "name": "Glyph Arena",
+  "short": "Arena",
+  "repo": "fru-dev3/glyph-arena",
+  "as_of": "2026-11-22",
+  "tag": "Which AI is best for your own work.",
+  "how_lede": "Your own tasks, replayed on two recipes at a time, judged by checkers and by you.",
+  "how": [
+   {
+    "title": "Replay your own tasks",
+    "text": "The prompts you actually gave your AI tools, replayed on two recipes at a time.",
+    "img": "/arena/leagues.webp",
+    "w": 1600,
+    "h": 1000,
+    "alt": "Leagues: each domain and kind of task, with the leading recipe"
+   },
+   {
+    "title": "Checkers, then blind picks",
+    "text": "Checkers settle what they can. Where answers differ, pick one blind in two seconds.",
+    "img": "/arena/picks.webp",
+    "w": 1600,
+    "h": 1000,
+    "alt": "A blind pick between two answers"
+   },
+   {
+    "title": "A routing policy with reasons",
+    "text": "Each kind of task goes to the recipe that won, or the cheaper of two even ones.",
+    "img": "/arena/policy.webp",
+    "w": 1600,
+    "h": 1000,
+    "alt": "Glyph Arena's routing policy"
+   }
+  ],
+  "faq": [
+   [
+    "Is Glyph Arena free?",
+    "Yes, free and open source under the MIT license. Cloud model calls are billed by their providers, under a monthly cap you set."
+   ],
+   [
+    "What is a recipe?",
+    "A model plus how it is asked: the prompt style, the context it gets and its tools."
+   ],
+   [
+    "Are health and money questions sent to the cloud?",
+    "No. The Home Only league runs them on local models only, refused before any call."
+   ],
+   [
+    "What happens when a model gets it badly wrong?",
+    "Flag it. One severe event, or two major ones in 30 days, suspends that model in that domain."
+   ],
+   [
+    "How does Glyph Bot use the result?",
+    "Bot's Auto setting follows the routing policy and says routed by Arena."
+   ]
+  ],
+  "pick": {
+   "default": "You want to know which model and prompt work best on your own tasks, not on a public benchmark."
+  },
+  "ours": {
+   "price": "Free; cloud model calls billed by their providers, under your cap",
+   "account": "None",
+   "tasks": "Your own past tasks, replayed",
+   "judging": "Checkers first, then your two-second blind picks",
+   "local": "Yes: health and money run on local models only",
+   "output": "A routing policy for your own work, with reasons",
+   "source": "Open, MIT license on GitHub"
+  },
+  "no_strike": true
+ },
+ "ibis": {
+  "name": "Glyph Ibis",
+  "short": "Ibis",
+  "as_of": "2026-11-22",
+  "tag": "What the world knows, kept current for your agents.",
+  "open_lede": "Glyph Ibis is a website: read it at context.fru.dev. Its code is private for now; the family's numbers are public on GitHub.",
+  "open_link": [
+   "https://context.fru.dev",
+   "Open context.fru.dev"
+  ],
+  "how_lede": "Fifty sources, each kept current by its own agent, gathered in one place.",
+  "how": [
+   {
+    "title": "Read today",
+    "text": "A short brief for the day, what is coming up, and every story ranked by priority.",
+    "img": "/ibis/today.webp",
+    "w": 1600,
+    "h": 1000,
+    "alt": "context.fru.dev, Today"
+   },
+   {
+    "title": "50+ context sources",
+    "text": "Funding, releases, leaders, lawsuits, breaches, earnings, regulations and more, each its own small site.",
+    "img": "/ibis/sources.webp",
+    "w": 1600,
+    "h": 1000,
+    "alt": "context.fru.dev, Sources"
+   },
+   {
+    "title": "Give it to your agents",
+    "text": "Point an agent at context.fru.dev/llms.txt once, or use the MCP server.",
+    "img": "/ibis/today.webp",
+    "w": 1600,
+    "h": 1000,
+    "alt": "context.fru.dev"
+   }
+  ],
+  "faq": [
+   [
+    "Is Glyph Ibis free?",
+    "Yes, free to read at context.fru.dev, with no account."
+   ],
+   [
+    "How do my agents use it?",
+    "Through llms.txt, an MCP server or the OpenAPI description. The agent finds the right source and links what it used."
+   ],
+   [
+    "Where does the data come from?",
+    "Public sources, and every entry links to them, so you and your agents can check it."
+   ],
+   [
+    "How fresh is it?",
+    "Each source is kept current by its own agent, on its own schedule."
+   ],
+   [
+    "Why the name?",
+    "The ibis is the bird of Thoth, the Egyptian god of knowledge and of writing: the glyphs the family is named for."
+   ]
+  ],
+  "pick": {
+   "default": "You want live, sourced context on AI, data and tech that your agents can read for free."
+  },
+  "ours": {
+   "price": "Free to read",
+   "account": "None to read",
+   "what": "50+ live context sources and a daily brief",
+   "agents": "llms.txt, an MCP server and OpenAPI",
+   "sources": "Yes: every entry links its public sources",
+   "coverage": "AI, data and tech: funding, releases, leaders, lawsuits, breaches, earnings, regulations"
+  },
+  "open_tab": "Numbers"
+ },
+ "wealth": {
+  "name": "Glyph Wealth",
+  "short": "Wealth",
+  "as_of": "2026-11-22",
+  "tag": "Where your money stands, and it never invents a number.",
+  "how_lede": "Say it or bring a statement. Every figure traces back to its source.",
+  "how": [
+   {
+    "title": "Say it",
+    "text": "Say a balance, a spend or a transfer in plain words. It keeps your words beside what it understood.",
+    "img": "/wealth/mac-today.webp",
+    "w": 1400,
+    "h": 1003,
+    "alt": "Today on the Mac: net worth, what is liquid and owed"
+   },
+   {
+    "title": "Bring in a statement",
+    "text": "CSV, OFX and QFX. It shows the rows it read, the ones it had and the ones it skipped.",
+    "img": "/wealth/mac-cashflow.webp",
+    "w": 1400,
+    "h": 1003,
+    "alt": "Cash flow on the Mac"
+   },
+   {
+    "title": "See where it stands",
+    "text": "Net worth, cash flow, holdings and scenarios, with what is not known shown as not known.",
+    "img": "/wealth/mac-scenarios.webp",
+    "w": 1400,
+    "h": 1003,
+    "alt": "Scenarios on the Mac"
+   }
+  ],
+  "faq": [
+   [
+    "Is Glyph Wealth free?",
+    "Yes."
+   ],
+   [
+    "Does it need my bank login?",
+    "No. Nothing here holds a password to your bank. Numbers arrive by voice, by a statement file or by confirming a note."
+   ],
+   [
+    "Where is my data kept?",
+    "As plain lines in whole cents in your own vault. fru.dev does not collect it."
+   ],
+   [
+    "What does it never invents a number mean?",
+    "Every figure traces to a line you said or a file you brought in. What is not known says so and is never shown as a zero."
+   ],
+   [
+    "Is it financial advice?",
+    "No. It does arithmetic on the numbers you give it."
+   ],
+   [
+    "What do I need?",
+    "An Apple silicon Mac on macOS 26 or later; the iPhone app reaches your vault through your own hub. Glyph Native installs it and keeps it up to date, signed and notarized by Apple."
+   ]
+  ],
+  "pick": {
+   "default": "You want to see where your money stands without giving any app your bank login."
+  },
+  "ours": {
+   "price": "Free",
+   "platforms": "Mac and iPhone",
+   "bank": "None. Say a balance or bring a statement",
+   "account": "None",
+   "storage": "Plain lines in your own vault",
+   "training": "No. fru.dev never sees your data",
+   "export": "Nothing to export: plain files you own"
+  }
+ },
+ "well": {
+  "name": "Glyph Well",
+  "short": "Well",
+  "as_of": "2026-11-22",
+  "tag": "A health log you talk to.",
+  "how_lede": "Say how the day went. It counts what often came before your worse days.",
+  "how": [
+   {
+    "title": "Say it",
+    "text": "Talk or type a sentence: the meal, the symptom, the sleep, each on the day it happened.",
+    "img": "/well/mac-today.webp",
+    "w": 1400,
+    "h": 973,
+    "alt": "Today on the Mac in Glyph Well"
+   },
+   {
+    "title": "See what often came before",
+    "text": "Counts of your own days: how often a symptom followed a food or a short night. Never a cause.",
+    "img": "/well/mac-insights.webp",
+    "w": 1400,
+    "h": 973,
+    "alt": "Insights on the Mac"
+   },
+   {
+    "title": "Ready for the visit",
+    "text": "Labs against their range, and a summary of the period as a page or a PDF.",
+    "img": "/well/mac-summary.webp",
+    "w": 1400,
+    "h": 973,
+    "alt": "A visit summary on the Mac"
+   }
+  ],
+  "faq": [
+   [
+    "Is Glyph Well free?",
+    "Yes."
+   ],
+   [
+    "Does it diagnose?",
+    "No. It shows patterns in your own entries and gives no advice."
+   ],
+   [
+    "Where is my health data kept?",
+    "Every entry is a line in a file in your own vault. fru.dev does not collect it and cannot read it."
+   ],
+   [
+    "Does it read my wearable?",
+    "Sleep, heart rate, steps and workouts from Garmin and Apple Health, next to what you said."
+   ],
+   [
+    "Does it search the internet?",
+    "No. It answers from your own entries and results."
+   ],
+   [
+    "What do I need?",
+    "An Apple silicon Mac on macOS 26 or later; the iPhone app reaches your vault through your own hub. Glyph Native installs it and keeps it up to date, signed and notarized by Apple."
+   ]
+  ],
+  "pick": {
+   "default": "You want to log health by talking, see your own patterns, and keep it all in files you own."
+  },
+  "ours": {
+   "price": "Free",
+   "platforms": "Mac and iPhone",
+   "input": "Say it or type it, in a sentence",
+   "patterns": "Counts of what often came before your worse days, never a cause",
+   "account": "None",
+   "storage": "Plain lines in your own vault",
+   "training": "No. fru.dev cannot read it",
+   "export": "A visit summary as a page or PDF; plain files you own"
+  }
+ },
+ "life": {
+  "name": "Glyph Life",
+  "short": "Life",
+  "as_of": "2026-11-22",
+  "tag": "What is due, what charges, what lapses.",
+  "how_lede": "Everything that renews or expires, watched, so nothing surprises you.",
+  "how": [
+   {
+    "title": "What is due, first",
+    "text": "The charges and lapses of the coming days, with Keep it or Cancel it for each.",
+    "img": "/life/mac-due.webp",
+    "w": 1400,
+    "h": 949,
+    "alt": "Due on the Mac"
+   },
+   {
+    "title": "Money out",
+    "text": "What your subscriptions cost a month and a year, one line each.",
+    "img": "/life/mac-money.webp",
+    "w": 1400,
+    "h": 949,
+    "alt": "Money out on the Mac"
+   },
+   {
+    "title": "Documents and cover",
+    "text": "What has been filed, the date each one expires, and the policies about to end.",
+    "img": "/life/mac-documents.webp",
+    "w": 1400,
+    "h": 949,
+    "alt": "Documents on the Mac"
+   }
+  ],
+  "faq": [
+   [
+    "Is Glyph Life free?",
+    "Yes."
+   ],
+   [
+    "Does it need my bank login?",
+    "No. It reads what is already in your vault."
+   ],
+   [
+    "Does it cancel subscriptions for me?",
+    "No. It asks you to keep or cancel before each date and remembers your answer."
+   ],
+   [
+    "Where is my data kept?",
+    "In your own vault. It writes only your decisions."
+   ],
+   [
+    "What do I need?",
+    "An Apple silicon Mac on macOS 26 or later; the iPhone app reaches your vault through your own hub. Glyph Native installs it and keeps it up to date, signed and notarized by Apple."
+   ]
+  ],
+  "pick": {
+   "default": "You want every renewal, charge and expiry in one place, without a bank login."
+  },
+  "ours": {
+   "price": "Free",
+   "platforms": "Mac and iPhone",
+   "bank": "None",
+   "account": "None",
+   "storage": "Reads your own vault",
+   "cancels": "No. It asks keep or cancel, and remembers",
+   "export": "Nothing to export: plain files you own"
+  }
+ },
+ "crm": {
+  "name": "Glyph CRM",
+  "short": "CRM",
+  "as_of": "2026-11-22",
+  "tag": "Everyone you deal with, as notes you own.",
+  "how_lede": "One page per person, place, organisation and thing, linked to each other.",
+  "how": [
+   {
+    "title": "One page each",
+    "text": "People, places, organisations and things, with the attributes you care about.",
+    "img": "/crm/mac-person.webp",
+    "w": 1400,
+    "h": 897,
+    "alt": "A person's page on the Mac"
+   },
+   {
+    "title": "Linked to each other",
+    "text": "Works at, lives in, friend of. A link is made once and shows on both pages.",
+    "img": "/crm/mac-org.webp",
+    "w": 1400,
+    "h": 897,
+    "alt": "An organisation's page on the Mac"
+   },
+   {
+    "title": "Find anyone",
+    "text": "Search across people, places, organisations, things and notes.",
+    "img": "/crm/mac-search.webp",
+    "w": 1400,
+    "h": 897,
+    "alt": "Search on the Mac"
+   }
+  ],
+  "faq": [
+   [
+    "Is Glyph CRM free?",
+    "Yes."
+   ],
+   [
+    "Does it add people on its own?",
+    "No. New people and facts heard in what you say are offered for a yes."
+   ],
+   [
+    "Where are my notes kept?",
+    "One plain file per page in your own vault, the same files your agents read."
+   ],
+   [
+    "How do the other Glyph apps use it?",
+    "Wealth, Well, Life and the others read these pages, so a name said anywhere is the same person."
+   ],
+   [
+    "What do I need?",
+    "An Apple silicon Mac on macOS 26 or later; the iPhone app reaches your vault through your own hub. Glyph Native installs it and keeps it up to date, signed and notarized by Apple."
+   ]
+  ],
+  "pick": {
+   "default": "You want a personal CRM whose pages are plain notes in your own vault."
+  },
+  "ours": {
+   "price": "Free",
+   "platforms": "Mac and iPhone",
+   "account": "None",
+   "input": "Say or type a note; new people suggested for a yes",
+   "storage": "One plain note per page in your own vault",
+   "source": "Private for now",
+   "export": "Nothing to export: plain files you own"
+  }
+ },
+ "omega": {
+  "name": "Glyph Omega",
+  "short": "Omega",
+  "as_of": "2026-11-22",
+  "tag": "Your mission, your goals and the next move.",
+  "how_lede": "From a north star down to the next thing to do.",
+  "how": [
+   {
+    "title": "One north star",
+    "text": "Your purpose in a sentence, at the top of Today, with one next move.",
+    "img": "/omega/mac-today.webp",
+    "w": 1400,
+    "h": 926,
+    "alt": "Today on the Mac in Glyph Omega"
+   },
+   {
+    "title": "Goals by area of life",
+    "text": "Each goal with a due date, a measure, its progress and its next action.",
+    "img": "/omega/mac-goals.webp",
+    "w": 1400,
+    "h": 926,
+    "alt": "Goals on the Mac"
+   },
+   {
+    "title": "A review once a week",
+    "text": "One goal at a time: move the progress, say how it is going, set the next action.",
+    "img": "/omega/mac-review.webp",
+    "w": 1400,
+    "h": 926,
+    "alt": "The weekly review on the Mac"
+   }
+  ],
+  "faq": [
+   [
+    "Is Glyph Omega free?",
+    "Yes."
+   ],
+   [
+    "What if I talk through my day?",
+    "It proposes what changed on which goal, and you confirm before anything is saved."
+   ],
+   [
+    "Where are my goals kept?",
+    "As plain files in your own vault, the same files your agents read."
+   ],
+   [
+    "What if my vault is away?",
+    "It shows the last copy it read, says when that was, and writes nothing until the vault is back."
+   ],
+   [
+    "What do I need?",
+    "An Apple silicon Mac on macOS 26 or later; the iPhone app reaches your vault through your own hub. Glyph Native installs it and keeps it up to date, signed and notarized by Apple."
+   ]
+  ],
+  "pick": {
+   "default": "You want goals broken down to the next action, kept in files you own."
+  },
+  "ours": {
+   "price": "Free",
+   "platforms": "Mac and iPhone",
+   "account": "None",
+   "goals": "Yes: mission down to the next action, and a weekly review",
+   "storage": "Plain files in your own vault",
+   "offline": "Shows the last copy and waits to write",
+   "export": "Nothing to export: plain files you own"
+  }
+ },
+ "connect": {
+  "name": "Glyph Connect",
+  "short": "Connect",
+  "as_of": "2026-11-22",
+  "tag": "Every tool your agents can reach, and what each may do.",
+  "how_lede": "See what your agents can reach, and cut off what they should not.",
+  "how": [
+   {
+    "title": "One number first",
+    "text": "How many of your apps your agents can reach right now, and which need you.",
+    "img": "/connect/mac-reach.webp",
+    "w": 1400,
+    "h": 926,
+    "alt": "Reach on the Mac"
+   },
+   {
+    "title": "What each tool may do",
+    "text": "Reads and writes listed apart; a write changes something outside your vault and says so.",
+    "img": "/connect/mac-tools.webp",
+    "w": 1400,
+    "h": 926,
+    "alt": "Every tool on the Mac"
+   },
+   {
+    "title": "Cut one tool, or the app",
+    "text": "Switch a single tool off, or the whole app. Instant and reversible.",
+    "img": "/connect/mac-app.webp",
+    "w": 1400,
+    "h": 926,
+    "alt": "One app's page on the Mac"
+   }
+  ],
+  "faq": [
+   [
+    "Is Glyph Connect free?",
+    "Yes."
+   ],
+   [
+    "Does it run my tools?",
+    "No. It shows and switches what your agents may reach; your agents run the tools."
+   ],
+   [
+    "Can it stop writes running unattended?",
+    "Yes. One click clears every write tool from sync, and one puts them back."
+   ],
+   [
+    "Where does it keep its settings?",
+    "In the app registry already in your vault. It changes only the keys it owns."
+   ],
+   [
+    "What do I need?",
+    "An Apple silicon Mac on macOS 26 or later; the iPhone app reaches your vault through your own hub. Glyph Native installs it and keeps it up to date, signed and notarized by Apple."
+   ]
+  ],
+  "pick": {
+   "default": "You want to see and switch, per tool, what your agents may read and write."
+  },
+  "ours": {
+   "price": "Free",
+   "platforms": "Mac and iPhone",
+   "account": "None",
+   "runs": "On your Mac, over your vault's app registry",
+   "perms": "Yes, per tool and per app, instantly",
+   "writes": "Yes: reads and writes listed apart",
+   "source": "Private for now"
+  }
+ },
+ "home": {
+  "as_of": "2026-11-22",
+  "apps_lede": "Four layers your agents need, and the tools around them. Every app installs on its own and keeps its data in files you own.",
+  "layers": [
+   [
+    "Glyph Bot",
+    "The environment",
+    [
+     "bot"
+    ]
+   ],
+   [
+    "Glyph Jot",
+    "What you know",
+    [
+     "jot"
+    ]
+   ],
+   [
+    "Glyph Ibis",
+    "What the world knows",
+    [
+     "ibis"
+    ]
+   ],
+   [
+    "Glyph Rig",
+    "Where agents run",
+    [
+     "rig"
+    ]
+   ],
+   [
+    "Tools",
+    "For the rest of your life",
+    [
+     "arena",
+     "cast",
+     "time",
+     "wealth",
+     "well",
+     "life",
+     "crm",
+     "omega",
+     "connect"
+    ]
+   ]
+  ],
+  "calc": [
+   "jot",
+   "time",
+   "cast",
+   "wealth",
+   "well",
+   "omega",
+   "crm",
+   "life"
+  ],
+  "monthly": {
+   "dex": 20,
+   "things-3": null,
+   "empower": null,
+   "sunsama": 22,
+   "todoist": 7
+  },
+  "faq": [
+   [
+    "What is Glyph?",
+    "A family of apps for your agentic life, made by fru.dev: Glyph Bot, Jot, Ibis and Rig, and the tools around them."
+   ],
+   [
+    "Is it free?",
+    "Yes. Every Glyph app is free."
+   ],
+   [
+    "Where is my data?",
+    "In files you own: your Mac, or a vault folder you choose. fru.dev runs no server for the apps."
+   ],
+   [
+    "Is it open source?",
+    "Bot, Jot, Rig, Arena, Cast and Time are open source under the MIT license. The newer apps are private for now."
+   ],
+   [
+    "How do I install the apps?",
+    "Install Glyph Native. It installs each app and keeps it up to date, signed and notarized by Apple."
+   ],
+   [
+    "What do I need?",
+    "An Apple silicon Mac; most apps need macOS 26 or later. iPhone apps are in testing."
+   ]
+  ]
+ }
+}

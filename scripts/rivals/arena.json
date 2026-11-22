@@ -1,0 +1,173 @@
+{
+  "app": "arena",
+  "group_label": "model rankings",
+  "rows": [
+    {
+      "k": "price",
+      "label": "Price"
+    },
+    {
+      "k": "account",
+      "label": "Account"
+    },
+    {
+      "k": "tasks",
+      "label": "Tested on"
+    },
+    {
+      "k": "judging",
+      "label": "How answers are judged"
+    },
+    {
+      "k": "local",
+      "label": "Local models"
+    },
+    {
+      "k": "output",
+      "label": "What you get"
+    },
+    {
+      "k": "source",
+      "label": "Source code"
+    }
+  ],
+  "rivals": [
+    {
+      "slug": "lmarena",
+      "name": "LMArena",
+      "domain": "arena.ai",
+      "logo_url": "https://arena.ai/apple-touch-icon.png",
+      "group": "model rankings",
+      "alt_title": "A free, open-source LMArena alternative for your own tasks",
+      "thesis": "LMArena ranks models from anonymous side-by-side votes on prompts the public types in. Glyph Arena replays your own past tasks on two recipes at a time and writes a routing policy for your work.",
+      "short": [
+        "LMArena ranks models on everyone's prompts. Glyph Arena tests on your own tasks.",
+        "LMArena may share de-identified chats with researchers and model providers. Glyph Arena keeps health and money tasks on local models.",
+        "LMArena gives a public leaderboard. Glyph Arena gives a routing policy."
+      ],
+      "pick": "Pick LMArena for a quick, broad view of how the public rates the newest models, with no setup.",
+      "cells": {
+        "price": [
+          "Sells evaluations to labs and companies. No user price stated",
+          2
+        ],
+        "account": [
+          "Optional Google or email sign-in, saves chats",
+          3
+        ],
+        "tasks": [
+          "Prompts the public types into anonymous battles",
+          2
+        ],
+        "judging": [
+          "Anonymous side-by-side votes, rated with Bradley-Terry",
+          2
+        ],
+        "local": "Not stated",
+        "output": [
+          "Public leaderboards",
+          2
+        ],
+        "source": "Not stated"
+      },
+      "sources": [
+        "https://arena.ai/about",
+        "https://arena.ai/faq",
+        "https://help.arena.ai/articles/7258407731-arena-how-to-create-an-account"
+      ],
+      "note": "LMArena is now called Arena and lmarena.ai redirects to arena.ai. Its FAQ says conversations may go into de-identified public research datasets and private evaluations with model providers."
+    },
+    {
+      "slug": "artificial-analysis",
+      "name": "Artificial Analysis",
+      "domain": "artificialanalysis.ai",
+      "logo_url": "https://artificialanalysis.ai/favicon.ico",
+      "group": "model rankings",
+      "alt_title": "A free, open-source Artificial Analysis alternative",
+      "thesis": "Artificial Analysis runs its own benchmarks on many models and endpoints and publishes intelligence, speed and price results; its paid Optima product builds benchmarks from your tasks. Glyph Arena replays your real past tasks locally and settles them with checkers and your blind picks.",
+      "short": [
+        "Artificial Analysis measures models on its benchmarks. Glyph Arena measures them on your tasks.",
+        "Optima charges token cost plus grading fees. Glyph Arena is free with a spend cap.",
+        "Artificial Analysis also tracks speed and price per provider."
+      ],
+      "pick": "Pick Artificial Analysis for independent numbers on intelligence, speed and price across most models and providers, or Optima for a managed custom benchmark.",
+      "cells": {
+        "price": [
+          "Optima: model token cost plus grading from $0.002 per criterion",
+          2
+        ],
+        "account": [
+          "Account needed for the free API",
+          3
+        ],
+        "tasks": [
+          "Its own benchmarks. Optima runs your tasks or traces",
+          2
+        ],
+        "judging": [
+          "Its own benchmark runs. Optima uses rubric or pairwise judge models",
+          2
+        ],
+        "local": [
+          "Covers open-weights models, measured on hosted endpoints",
+          1
+        ],
+        "output": [
+          "Leaderboards for intelligence, speed and price",
+          1
+        ],
+        "source": "Not stated"
+      },
+      "sources": [
+        "https://artificialanalysis.ai/methodology",
+        "https://artificialanalysis.ai/optima",
+        "https://artificialanalysis.ai/api-reference"
+      ],
+      "note": "The site has no apple-touch-icon; the logo is its 32x32 favicon.ico. A full brand kit is at artificialanalysiscdn.com/brand-kit/aa_brand_kit.zip."
+    },
+    {
+      "slug": "openrouter-rankings",
+      "name": "OpenRouter rankings",
+      "domain": "openrouter.ai",
+      "logo_url": "https://openrouter.ai/apple-touch-icon.png",
+      "group": "model rankings",
+      "alt_title": "A free, open-source alternative to OpenRouter rankings",
+      "thesis": "OpenRouter ranks models by how many tokens apps send through its API, which shows popularity, not answer quality. Glyph Arena judges answers on your own tasks and turns the results into a routing policy.",
+      "short": [
+        "OpenRouter counts tokens. Glyph Arena judges answers.",
+        "OpenRouter reflects everyone's apps. Glyph Arena reflects your tasks.",
+        "OpenRouter routes requests for a 5.5% credit fee. Glyph Arena routes through tools you already have."
+      ],
+      "pick": "Pick OpenRouter rankings to see what developers actually use at scale, by task, language and app, and route through one API.",
+      "cells": {
+        "price": [
+          "Provider prices plus a 5.5% fee on credits",
+          2
+        ],
+        "account": [
+          "Account and credits for the API",
+          2
+        ],
+        "tasks": [
+          "Real token use across apps on its API",
+          1
+        ],
+        "judging": [
+          "By tokens processed, not answer quality",
+          1
+        ],
+        "local": "Not stated",
+        "output": [
+          "Rankings by model, app, task and language",
+          1
+        ],
+        "source": "Not stated"
+      },
+      "sources": [
+        "https://openrouter.ai/rankings",
+        "https://openrouter.ai/docs/faq"
+      ],
+      "note": "Task categories rank by share of spend rather than token volume."
+    }
+  ]
+}

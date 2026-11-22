@@ -1,0 +1,140 @@
+{
+  "app": "well",
+  "group_label": "health trackers",
+  "rows": [
+    {"k": "price", "label": "Price"},
+    {"k": "platforms", "label": "Platforms"},
+    {"k": "input", "label": "How you log"},
+    {"k": "patterns", "label": "Finds patterns"},
+    {"k": "account", "label": "Account"},
+    {"k": "storage", "label": "Where your data is kept"},
+    {"k": "training", "label": "Uses your data for AI or ads"},
+    {"k": "export", "label": "Export"}
+  ],
+  "rivals": [
+    {
+      "slug": "bearable",
+      "name": "Bearable",
+      "domain": "bearable.app",
+      "logo_url": "https://bearable.app/images/favicon-32x32.png",
+      "group": "health trackers",
+      "alt_title": "A free, private Bearable alternative",
+      "thesis": "Bearable is a phone app where you tap to rate symptoms, mood and habits, and it backs your data up to its own servers. Glyph Well lets you say how your day went on a Mac or iPhone and keeps every entry as a line in a file in your own vault.",
+      "short": [
+        "Bearable logs by taps on iOS and Android. Well logs by talking, on Mac and iPhone.",
+        "Bearable backs data up to servers in Frankfurt. Well keeps it in your vault, with no account.",
+        "Bearable puts correlation reports and history past 30 days behind its subscription. Well is free."
+      ],
+      "pick": "Pick Bearable if you want a mature Android or iPhone tracker with 30+ reports, a large community and a sliding-scale program for people who cannot pay.",
+      "cells": {
+        "price": ["Free core tracking. Optional subscription $6.99 a month or $34.99 a year", 1],
+        "platforms": ["iPhone and Android", 3],
+        "input": ["Taps: rate symptoms, mood and habits", 3],
+        "patterns": ["Weekly reports and a correlation graph free, correlation reports paid", 3],
+        "account": ["Email and password, needed for backup", 2],
+        "storage": ["Bearable servers (Firestore, Frankfurt), encrypted", 2],
+        "training": ["Does not sell data. Facebook SDK shares anonymised IDs to measure ads", 2],
+        "export": ["Export and delete everything from the app", 3]
+      },
+      "sources": [
+        "https://bearable.app/pricing",
+        "https://bearable.app/privacy-policy",
+        "https://bearable.app/"
+      ],
+      "note": "The homepage says Garmin, Oura and Samsung Health sync is planned, not available today."
+    },
+    {
+      "slug": "welltory",
+      "name": "Welltory",
+      "domain": "welltory.com",
+      "logo_url": "https://welltory.com/welltory-site/static/favicons/apple-touch-icon.png",
+      "group": "health trackers",
+      "alt_title": "A free, private Welltory alternative",
+      "thesis": "Welltory measures heart rate variability with your phone camera or a smartwatch and turns it into stress and energy scores on its own US servers. Glyph Well records what you say about your day in your own vault and shows how often things followed each other.",
+      "short": [
+        "Welltory centres on heart rate variability. Well centres on your own words, with Garmin and Apple Health beside them.",
+        "Welltory needs an account and stores data mainly in the US. Well has no account.",
+        "Welltory uses anonymized AI chats to improve its own models and shares ad IDs in the US. Well does neither."
+      ],
+      "pick": "Pick Welltory if you want detailed heart rate variability and blood pressure analysis from a camera or smartwatch reading, with guided recommendations.",
+      "cells": {
+        "price": ["Basic features free. Premium $99 a year or $599 lifetime", 1],
+        "platforms": ["iPhone, Android and web", 1],
+        "input": ["Heart readings by phone camera or smartwatch, plus lifelogging", 4],
+        "patterns": ["Reports such as Stress Impact and Sleep", 3],
+        "account": ["Required: email, Google, Apple or Facebook login", 2],
+        "storage": ["Welltory servers, mainly in the United States", 2],
+        "training": ["Anonymized AI chats improve its own models. US ad sharing with Meta, Google, TikTok, opt-out", 2],
+        "export": ["Export from app settings, JSON or CSV", 2]
+      },
+      "sources": [
+        "https://welltory.com/plans",
+        "https://welltory.com/privacy",
+        "https://welltory.com/",
+        "https://help.welltory.com/en/collections/1946670-measuring-heart-rate-variability"
+      ],
+      "note": "The plans page mentions a monthly plan but does not list its price."
+    },
+    {
+      "slug": "guava-health",
+      "name": "Guava Health",
+      "domain": "guavahealth.com",
+      "logo_url": "https://guavahealth.com/apple-touch-icon.png",
+      "group": "health trackers",
+      "alt_title": "A free, private Guava Health alternative",
+      "thesis": "Guava Health is a cloud health record: you log symptoms and medications, pull in patient portal records and share a summary with your doctor. Glyph Well keeps your log and lab results as files in your own vault and makes the visit summary PDF on your device.",
+      "short": [
+        "Guava keeps your records in its HIPAA-compliant cloud. Well keeps them in your vault.",
+        "Guava's AI assistant runs on OpenAI and costs $8 a month. Well is free.",
+        "Guava can import patient portal records. Well takes lab results you add yourself."
+      ],
+      "pick": "Pick Guava Health if you want your patient portal records pulled into one place, on the web as well as phones, and family caregivers on one profile.",
+      "cells": {
+        "price": ["Free plan. Premium $8 a month or $78 a year", 1],
+        "platforms": ["Web, iPhone and Android", 1],
+        "input": ["Record symptoms, medications and lifestyle. Premium AI can enter data", 1],
+        "patterns": ["Trends and correlations free, automatic insights on Premium", 1],
+        "account": ["Email address to manage your account", 3],
+        "storage": ["Guava cloud (AWS, Cloudflare named), encrypted", 3],
+        "training": ["Not used for ads. Processed by OpenAI. AI training not stated", 2],
+        "export": ["Full download on request by email, within 30 days", 3]
+      },
+      "sources": [
+        "https://guavahealth.com/plans",
+        "https://guavahealth.com/privacy-and-security",
+        "https://guavahealth.com/privacy"
+      ]
+    },
+    {
+      "slug": "exist",
+      "name": "Exist",
+      "domain": "exist.io",
+      "logo_url": "https://exist.io/static/img/icons/152.png",
+      "group": "health trackers",
+      "alt_title": "A free, private Exist alternative",
+      "thesis": "Exist pulls data from services like Apple Health, Garmin and Oura into its own servers, adds mood and tags you enter, and finds correlations. Glyph Well reads Garmin and Apple Health beside the words you speak and keeps all of it in your own vault.",
+      "short": [
+        "Exist costs $6.99 a month after a 30-day trial. Well is free.",
+        "Exist logs by scores and tags. Well logs by talking.",
+        "Exist keeps your data on its hosted servers with an account. Well has no account."
+      ],
+      "pick": "Pick Exist if you want many services synced in one place (Garmin, Oura, Withings, Strava, calendar and more), a web app, and experiments to test a hunch.",
+      "cells": {
+        "price": ["$6.99 a month or $62.90 a year, 30-day free trial", 1],
+        "platforms": ["iPhone, Android and web", 1],
+        "input": ["Synced services plus manual scores, tags and mood", 1],
+        "patterns": ["Correlations and experiments", 1],
+        "account": ["Required: name and email", 2],
+        "storage": ["Exist servers hosted outside the United States", 2],
+        "training": ["Never sells data. AI training not stated", 3],
+        "export": ["Export from the account page or the API", 3]
+      },
+      "sources": [
+        "https://exist.io/",
+        "https://exist.io/privacy/",
+        "https://exist.io/about/values/"
+      ],
+      "note": "Exist says it will not add large language models and uses statistical methods."
+    }
+  ]
+}

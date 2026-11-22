@@ -177,3 +177,68 @@ $$("a[data-dmg]").forEach((el) => {
     $$(".dlv").forEach((n) => { n.textContent = v[0]; n.hidden = false; });
   }).catch(() => {});
 });
+
+// The ribbon (scripts/ribbon.py): the address names the panel (#how, #compare, #open, #faq, #apps);
+// no hash is the one bright screen. The panels are already in the HTML, so search engines read them.
+const panels = $$(".panel");
+if (panels.length) {
+  const route = () => {
+    const id = location.hash.slice(1), p = panels.find((x) => x.id === id);
+    panels.forEach((x) => (x.hidden = x !== p));
+    document.body.classList.toggle("paneled", !!p);
+    $$(".ribbon a").forEach((a) => a.setAttribute("aria-current", a.dataset.tab === (p ? id : "") ? "page" : "false"));
+    stepStop();
+    if (p) { p.scrollTop = 0; track("ribbon_open", { tab: id }); opened(p); }
+  };
+  addEventListener("hashchange", route); route();
+  // Compare: one rival at a time; the head-to-head and the rows rise in again.
+  $$(".rivals button").forEach((b) => b.addEventListener("click", () => {
+    $$(".rivals button").forEach((x) => x.setAttribute("aria-selected", x === b));
+    $$(".rv").forEach((x) => (x.hidden = x.dataset.r !== b.dataset.r));
+    track("compare_pick", { rival: b.dataset.r });
+  }));
+}
+// How it works: the steps take turns every 5.5 seconds while the panel is open; a tap picks one, hovering holds.
+var stepT = 0; // var: route() above runs before this line on a page opened at a panel
+function stepStop() { clearTimeout(stepT); }
+function stepGo(st, n) {
+  const bs = $$(".steplist button", st), im = $$(".shots img", st);
+  bs.forEach((b, i) => { b.setAttribute("aria-selected", i === n); const bar = $(".bar", b); bar.style.animation = "none"; bar.offsetWidth; bar.style.animation = ""; });
+  im.forEach((x, i) => x.classList.toggle("on", i === n));
+  stepStop();
+  if (!still && !st.classList.contains("hold")) stepT = setTimeout(() => stepGo(st, (n + 1) % bs.length), 5500);
+  st.dataset.n = n;
+}
+$$(".stepper").forEach((st) => {
+  $$(".steplist button", st).forEach((b, i) => b.addEventListener("click", () => { stepGo(st, i); track("how_step", { step: i + 1 }); }));
+  st.addEventListener("mouseenter", () => { st.classList.add("hold"); stepStop(); });
+  st.addEventListener("mouseleave", () => { st.classList.remove("hold"); stepGo(st, +st.dataset.n || 0); });
+});
+// Numbers count up from zero the first time their panel opens.
+function countUp(el) {
+  const to = +el.dataset.count; if (!to || still) return;
+  const t0 = performance.now(), d = 1100;
+  const f = (t) => { const k = Math.min(1, (t - t0) / d), v = Math.round(to * (1 - Math.pow(1 - k, 3))); el.textContent = v.toLocaleString("en-US"); if (k < 1) requestAnimationFrame(f); };
+  requestAnimationFrame(f);
+}
+function opened(p) {
+  const st = $(".stepper", p); if (st) stepGo(st, 0);
+  if (p.dataset.seen) return; p.dataset.seen = 1;
+  $$("[data-count]", p).forEach(countUp);
+  const f = $("[data-faces]", p), src = $(".proof .faces");
+  if (f && src) f.innerHTML = src.innerHTML.replace(/<span class="more">.*?<\/span>/, "");
+}
+// The home's calculator: tick what you pay for, see the month and the year.
+const calc = $(".calc");
+if (calc) {
+  const sum = $("[data-sum]", calc), yr = $("[data-year]", calc);
+  let shown = 0;
+  const total = () => {
+    const to = $$("input:checked", calc).reduce((t, i) => t + +i.value, 0), from = shown, t0 = performance.now();
+    shown = to; yr.textContent = "$" + Math.round(to * 12).toLocaleString("en-US");
+    const f = (t) => { const k = still ? 1 : Math.min(1, (t - t0) / 500); sum.textContent = "$" + (from + (to - from) * (1 - Math.pow(1 - k, 3))).toFixed(2).replace(/\.00$/, ""); if (k < 1) requestAnimationFrame(f); };
+    requestAnimationFrame(f);
+  };
+  calc.addEventListener("change", (ev) => { total(); track("calc_toggle", { value: ev.target.value }); });
+  total();
+}

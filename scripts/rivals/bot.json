@@ -1,0 +1,272 @@
+{
+  "app": "bot",
+  "group_label": "assistants",
+  "rows": [
+    {
+      "k": "price",
+      "label": "Price"
+    },
+    {
+      "k": "platforms",
+      "label": "Platforms"
+    },
+    {
+      "k": "account",
+      "label": "Account"
+    },
+    {
+      "k": "models",
+      "label": "AI models"
+    },
+    {
+      "k": "sources",
+      "label": "Shows its sources"
+    },
+    {
+      "k": "storage",
+      "label": "Where chats and memory are kept"
+    },
+    {
+      "k": "source",
+      "label": "Source code"
+    },
+    {
+      "k": "training",
+      "label": "Trains on your chats"
+    }
+  ],
+  "rivals": [
+    {
+      "slug": "chatgpt",
+      "name": "ChatGPT",
+      "domain": "chatgpt.com",
+      "logo_url": "https://chatgpt.com/cdn/assets/favicon-180x180.9e0103ce69.png",
+      "group": "assistants",
+      "alt_title": "A free, open-source ChatGPT alternative for Mac",
+      "thesis": "ChatGPT is OpenAI's hosted assistant: your chats live in your OpenAI account and run on OpenAI's models. Glyph Bot runs on the AI tools you already have and keeps chats and memory as plain files in your own vault.",
+      "short": [
+        "ChatGPT keeps chats on OpenAI's systems. Glyph Bot keeps them as files in your vault.",
+        "ChatGPT uses OpenAI's models. Glyph Bot uses Claude Code, Codex, Gemini CLI or local models.",
+        "ChatGPT trains on chats unless you opt out. Glyph Bot sends nothing to fru.dev."
+      ],
+      "pick": "Pick ChatGPT for voice, image generation and polished apps on every platform, with OpenAI's newest models in one subscription.",
+      "cells": {
+        "price": [
+          "Free plan. Plus $20 a month",
+          1
+        ],
+        "platforms": [
+          "Mac (macOS 14 or later) and Windows",
+          2
+        ],
+        "account": [
+          "OpenAI account required",
+          3
+        ],
+        "models": [
+          "OpenAI's GPT models",
+          4
+        ],
+        "sources": [
+          "Web search answers may cite sources",
+          5
+        ],
+        "storage": [
+          "Saved to your account on OpenAI's systems",
+          6
+        ],
+        "source": [
+          "Closed source. Terms bar reverse engineering",
+          3
+        ],
+        "training": [
+          "Yes by default. Opt-out available",
+          4
+        ]
+      },
+      "sources": [
+        "https://help.openai.com/en/articles/6950777-what-is-chatgpt-plus",
+        "https://help.openai.com/en/articles/9275200-using-the-chatgpt-macos-app",
+        "https://openai.com/policies/row-terms-of-use/",
+        "https://chatgpt.com/pricing",
+        "https://help.openai.com/en/articles/9237897-chatgpt-search",
+        "https://help.openai.com/en/articles/8809935-how-to-delete-and-archive-chats-in-chatgpt"
+      ],
+      "note": "The pricing page did not render dollar amounts when fetched; the Plus price comes from the help center. iPhone and Android apps exist (chatgpt.com/download) but are not on the cited Mac page."
+    },
+    {
+      "slug": "claude",
+      "name": "Claude",
+      "domain": "claude.com",
+      "logo_url": "https://claude.com/icon.png",
+      "group": "assistants",
+      "alt_title": "A free, open-source Claude desktop alternative",
+      "thesis": "The Claude app is Anthropic's hosted assistant, with chats stored on Anthropic's systems and only Claude models. Glyph Bot can run on Claude Code too, but also on Codex, Gemini CLI or local models, and keeps everything in your vault.",
+      "short": [
+        "Claude keeps chats on Anthropic's systems. Glyph Bot keeps them as files in your vault.",
+        "Claude runs Claude models only. Glyph Bot runs on several AI tools, local ones included.",
+        "Claude has Mac, Windows, Linux and phone apps. Glyph Bot is a Mac app."
+      ],
+      "pick": "Pick Claude for a supported app on Windows, Linux and iPhone, web search with citations, and Cowork and Claude Code in one plan.",
+      "cells": {
+        "price": [
+          "Free plan. Pro $20 a month, Max from $100",
+          1
+        ],
+        "platforms": [
+          "Mac, Windows, Linux (beta), iPhone, web",
+          2
+        ],
+        "account": [
+          "Claude account on a Free or paid plan",
+          1
+        ],
+        "models": [
+          "Anthropic's Claude models (Opus, Sonnet, Haiku)",
+          1
+        ],
+        "sources": [
+          "Web search answers cite their sources",
+          4
+        ],
+        "storage": [
+          "On Anthropic's systems. Deleted chats purged within 30 days",
+          5
+        ],
+        "source": [
+          "Closed source. Terms bar reverse engineering",
+          3
+        ],
+        "training": [
+          "Opt-out on Free, Pro, Max and Ultra",
+          1
+        ]
+      },
+      "sources": [
+        "https://claude.com/pricing",
+        "https://claude.com/download",
+        "https://www.anthropic.com/legal/consumer-terms",
+        "https://support.claude.com/en/articles/10684626-enabling-and-using-web-search",
+        "https://privacy.claude.com/en/articles/10023548-how-long-do-you-store-my-data"
+      ],
+      "note": "Pricing page lists Pro at $17 a month billed yearly or $20 monthly, plus a new Ultra plan at $200. The download page does not mention Android."
+    },
+    {
+      "slug": "perplexity",
+      "name": "Perplexity",
+      "domain": "perplexity.ai",
+      "logo_url": "https://www.perplexity.ai/apple-touch-icon.png",
+      "group": "assistants",
+      "alt_title": "A free, open-source Perplexity alternative for your own files",
+      "thesis": "Perplexity is a hosted answer engine that searches the web and cites what it finds. Glyph Bot cites too, but its sources are your own vault files and the Glyph apps' files, and the chats stay with you.",
+      "short": [
+        "Perplexity cites the web. Glyph Bot cites your own files.",
+        "Perplexity keeps history on its service. Glyph Bot keeps it in your vault.",
+        "Perplexity uses data for training unless you turn off AI data retention."
+      ],
+      "pick": "Pick Perplexity when the answer is on the open web: current news, research with many citations, and apps on every platform.",
+      "cells": {
+        "price": [
+          "Pro $17 a month, Max $167 a month, billed yearly",
+          1
+        ],
+        "platforms": [
+          "Mac, Windows, Linux, iPhone, Android",
+          3
+        ],
+        "account": [
+          "Perplexity account needed for the desktop app",
+          4
+        ],
+        "models": [
+          "Several vendors: GPT, Claude, Gemini, Grok",
+          5
+        ],
+        "sources": [
+          "Cites sources in answers. Pro adds more citations",
+          5
+        ],
+        "storage": [
+          "Saved with your account. Incognito mode does not save history",
+          8
+        ],
+        "source": [
+          "Closed source. Terms bar reverse engineering",
+          7
+        ],
+        "training": [
+          "Yes by default. Turn off AI data retention to opt out",
+          6
+        ]
+      },
+      "sources": [
+        "https://www.perplexity.ai/enterprise/pricing",
+        "https://www.perplexity.ai/help-center/en/articles/11680686-perplexity-max",
+        "https://www.perplexity.ai/platforms",
+        "https://www.perplexity.ai/help-center/en/articles/19800002-get-started",
+        "https://www.perplexity.ai/help-center/en/articles/10352901-what-is-perplexity-pro",
+        "https://www.perplexity.ai/help-center/en/articles/11564572-data-collection-at-perplexity",
+        "https://www.perplexity.ai/hub/legal/terms-of-service",
+        "https://www.perplexity.ai/hub/legal/privacy-policy"
+      ],
+      "note": "perplexity.ai/pro and /pricing showed no prices when fetched; yearly prices are from the enterprise pricing page. Max is $200 billed monthly (source 2). A free Standard plan exists."
+    },
+    {
+      "slug": "gemini",
+      "name": "Google Gemini",
+      "domain": "gemini.google",
+      "logo_url": "https://www.gstatic.com/lamda/images/gemini_sparkle_4g_512_lt_f94943af3be039176192d.png",
+      "group": "assistants",
+      "alt_title": "A free, open-source Gemini app alternative",
+      "thesis": "The Gemini app is Google's hosted assistant, tied to your Google account, with history on Google's servers. Glyph Bot can run on Gemini CLI, among others, and keeps chats and memory as files in your own vault.",
+      "short": [
+        "Gemini keeps history in your Google account. Glyph Bot keeps it in your vault.",
+        "Gemini trains on chats by default. Glyph Bot sends nothing to fru.dev.",
+        "Gemini runs Google's models. Glyph Bot runs on the AI tools you already have."
+      ],
+      "pick": "Pick Gemini if you live in Google's apps: Gmail, Docs and Drive, a low-cost AI Plus plan, and storage bundled in.",
+      "cells": {
+        "price": [
+          "Free plan. AI Plus $4.99, AI Pro $19.99 a month",
+          1
+        ],
+        "platforms": [
+          "Mac (Apple silicon, macOS 15+), Windows, web, mobile",
+          2
+        ],
+        "account": [
+          "Google account",
+          2
+        ],
+        "models": [
+          "Google's Gemini models",
+          1
+        ],
+        "sources": [
+          "Sources button when available, plus Double-check",
+          3
+        ],
+        "storage": [
+          "Gemini History on Google, deleted after 18 months by default",
+          4
+        ],
+        "source": [
+          "Closed source. Terms bar reverse engineering",
+          5
+        ],
+        "training": [
+          "Yes by default. Can be turned off",
+          4
+        ]
+      },
+      "sources": [
+        "https://gemini.google/subscriptions/",
+        "https://gemini.google/mac/",
+        "https://support.google.com/gemini/answer/14143489",
+        "https://support.google.com/gemini/answer/13594961",
+        "https://policies.google.com/terms"
+      ],
+      "note": "A Black Friday offer of up to 50% off some plans was live on 2026-11-22. Human-reviewed chats are kept up to three years even if deleted."
+    }
+  ]
+}

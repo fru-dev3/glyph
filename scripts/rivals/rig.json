@@ -1,0 +1,185 @@
+{
+  "app": "rig",
+  "group_label": "agent managers",
+  "rows": [
+    {
+      "k": "price",
+      "label": "Price"
+    },
+    {
+      "k": "platforms",
+      "label": "Platforms"
+    },
+    {
+      "k": "account",
+      "label": "Account"
+    },
+    {
+      "k": "agents",
+      "label": "Agents it runs"
+    },
+    {
+      "k": "machines",
+      "label": "Across machines"
+    },
+    {
+      "k": "source",
+      "label": "Source code"
+    },
+    {
+      "k": "network",
+      "label": "Network use"
+    }
+  ],
+  "rivals": [
+    {
+      "slug": "conductor",
+      "name": "Conductor",
+      "domain": "conductor.build",
+      "logo_url": "https://www.conductor.build/apple-icon.png",
+      "group": "agent managers",
+      "alt_title": "A free, open-source Conductor alternative",
+      "thesis": "Conductor is a Mac app that runs coding agents in parallel, each in its own workspace and branch. Glyph Rig is a command-line tool that names and launches agent sessions in terminal panes, on this Mac and on your other Macs over SSH.",
+      "short": [
+        "Conductor is a Mac app with an account. Glyph Rig is a zsh tool with none.",
+        "Conductor works on one Mac. Glyph Rig reaches sessions on your other Macs over SSH.",
+        "Conductor sends app analytics. Glyph Rig makes no network requests except update."
+      ],
+      "pick": "Pick Conductor for a polished app with a built-in diff viewer, checks, isolated workspaces per agent, and iPhone remote control.",
+      "cells": {
+        "price": [
+          "Has a paid Pro tier. Price not listed",
+          3
+        ],
+        "platforms": [
+          "Mac app, iPhone app for remote control",
+          4
+        ],
+        "account": [
+          "Conductor account. API needs Pro",
+          3
+        ],
+        "agents": [
+          "Claude Code, Codex, Cursor, OpenCode",
+          2
+        ],
+        "machines": [
+          "Local workspaces on one Mac, steered from an iPhone",
+          4
+        ],
+        "source": "Not stated",
+        "network": [
+          "Sends app analytics and crash logs",
+          6
+        ]
+      },
+      "sources": [
+        "https://www.conductor.build/",
+        "https://www.conductor.build/docs",
+        "https://www.conductor.build/docs/api",
+        "https://www.conductor.build/changelog/0.92.0-remote-control",
+        "https://www.conductor.build/announcement",
+        "https://www.conductor.build/privacy"
+      ],
+      "note": "Conductor announced it is joining Meta (changelog 0.93.0, 2026-11-04). The app keeps working; Conductor Cloud is shutting down and a new interface is due early 2027. conductor.build/pricing now redirects to the home page, so no price is published."
+    },
+    {
+      "slug": "warp",
+      "name": "Warp",
+      "domain": "warp.dev",
+      "logo_url": "https://www.warp.dev/favicon-196x196.png",
+      "group": "agent managers",
+      "alt_title": "A free, open-source Warp alternative for running agents",
+      "thesis": "Warp is a terminal app with its own agent and support for third-party CLI agents, plus paid cloud agents. Glyph Rig works inside the terminal you already use and only names, launches and tracks the agent sessions.",
+      "short": [
+        "Warp replaces your terminal. Glyph Rig works in tmux, Herdr, Zellij or WezTerm.",
+        "Warp sells its own agent and cloud runs. Glyph Rig runs the agents you already pay for.",
+        "Warp collects analytics by default. Glyph Rig only goes online to update."
+      ],
+      "pick": "Pick Warp for a modern terminal with a built-in agent, code review, cloud agents and support on Windows and Linux.",
+      "cells": {
+        "price": [
+          "Free plan. Build $20, Max $200 a month",
+          1
+        ],
+        "platforms": [
+          "Mac, Windows, Linux",
+          2
+        ],
+        "account": [
+          "Warp account for agent features. Some use works logged out",
+          3
+        ],
+        "agents": [
+          "Warp Agent, Claude Code, Codex, Gemini CLI, OpenCode",
+          4
+        ],
+        "machines": [
+          "Brings its features to Mac and Linux hosts over SSH",
+          5
+        ],
+        "source": [
+          "Client is open source under AGPL v3",
+          3
+        ],
+        "network": [
+          "Analytics and crash reports, can be turned off. AI requests go to model providers",
+          3
+        ]
+      },
+      "sources": [
+        "https://www.warp.dev/pricing",
+        "https://www.warp.dev/download",
+        "https://docs.warp.dev/support-and-community/privacy-and-security/privacy",
+        "https://www.warp.dev/agents",
+        "https://docs.warp.dev/terminal/warpify/ssh"
+      ],
+      "note": "Pricing page shows a second, lower price per plan ($18, $180), likely yearly billing. Warp's privacy page says the client source is public at warpdotdev/warp under AGPL v3; server parts are not stated."
+    },
+    {
+      "slug": "claude-squad",
+      "name": "Claude Squad",
+      "domain": "github.com",
+      "logo_url": "https://avatars.githubusercontent.com/u/203358679?v=4",
+      "group": "agent managers",
+      "alt_title": "A free Claude Squad alternative that works across your Macs",
+      "thesis": "Claude Squad is an open-source terminal app that runs several agents in tmux, each in its own git worktree. Glyph Rig also runs agents in terminal panes, and adds names, sessions on other Macs over SSH, and a usage and quota view.",
+      "short": [
+        "Both are free and run in the terminal.",
+        "Claude Squad gives each task its own git worktree. Glyph Rig names and tracks sessions across Macs.",
+        "Claude Squad is AGPL-3.0. Glyph Rig is MIT."
+      ],
+      "pick": "Pick Claude Squad for git worktree isolation per task, a diff view before you apply changes, and builds for Linux and Windows.",
+      "cells": {
+        "price": [
+          "Free, open source",
+          1
+        ],
+        "platforms": [
+          "Mac, Linux, Windows builds",
+          2
+        ],
+        "account": [
+          "No sign-up described. Needs tmux and the GitHub CLI",
+          1
+        ],
+        "agents": [
+          "Claude Code, Codex, Gemini, Aider, any CLI program",
+          1
+        ],
+        "machines": "Not stated",
+        "source": [
+          "Open source, AGPL-3.0",
+          3
+        ],
+        "network": "Not stated"
+      },
+      "sources": [
+        "https://github.com/smtg-ai/claude-squad",
+        "https://github.com/smtg-ai/claude-squad/releases/latest",
+        "https://github.com/smtg-ai/claude-squad/blob/main/LICENSE.md"
+      ],
+      "note": "Latest release v1.0.20 (2026-08-20); repo still active in November 2026. Logo is the smtg-ai GitHub avatar, as the project has no site of its own beyond GitHub."
+    }
+  ]
+}

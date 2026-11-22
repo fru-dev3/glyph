@@ -1,0 +1,140 @@
+{
+  "app": "omega",
+  "group_label": "planners",
+  "rows": [
+    {"k": "price", "label": "Price"},
+    {"k": "platforms", "label": "Platforms"},
+    {"k": "account", "label": "Account"},
+    {"k": "goals", "label": "Goals and weekly review"},
+    {"k": "storage", "label": "Where your data is kept"},
+    {"k": "offline", "label": "Works offline"},
+    {"k": "export", "label": "Export"}
+  ],
+  "rivals": [
+    {
+      "slug": "sunsama",
+      "name": "Sunsama",
+      "domain": "sunsama.com",
+      "logo_url": "https://pub-f7ae218077e542729e28e6f8f45a9a40.r2.dev/images/62d20083a317715004301f12_logo-icon-256.png",
+      "group": "planners",
+      "alt_title": "A free, private Sunsama alternative",
+      "thesis": "Sunsama is a paid daily planner that pulls tasks from your work tools onto a calendar, with weekly objectives and a guided weekly review, stored in US data centers. Glyph Omega starts from your mission, values and goals by area of life, kept as plain files in your vault.",
+      "short": [
+        "Sunsama has no free plan. Omega is free.",
+        "Sunsama plans the work week from your calendar and tools. Omega plans from goals across every area of life.",
+        "Sunsama stores data on its US servers with an account. Omega keeps files in your vault, with no account."
+      ],
+      "pick": "Pick Sunsama if your day lives in Asana, Jira, Gmail and your calendar and you want them pulled into one timeboxed plan, on Windows and Android too.",
+      "cells": {
+        "price": ["No free plan. $17 a month billed yearly, $22 monthly", 1],
+        "platforms": ["Mac, Windows, Linux, iPhone, iPad, Android", 1],
+        "account": ["Required: email, Google or Microsoft sign-in", 2],
+        "goals": ["Weekly objectives and a guided weekly review", 3],
+        "storage": ["Sunsama servers in US data centers (Google Cloud, AWS)", 2],
+        "offline": "Not stated",
+        "export": ["All data as JSON from the app", 2]
+      },
+      "sources": [
+        "https://www.sunsama.com/pricing",
+        "https://help.sunsama.com/docs/review-and-approval-by-it-and-security",
+        "https://help.sunsama.com/docs/weekly-review"
+      ]
+    },
+    {
+      "slug": "todoist",
+      "name": "Todoist",
+      "domain": "todoist.com",
+      "logo_url": "https://www.todoist.com/static/apple-touch-icon.png",
+      "group": "planners",
+      "alt_title": "A free, private Todoist alternative",
+      "thesis": "Todoist is a cloud task manager on almost every device, with daily and weekly task-count goals and Karma points. Glyph Omega ties each next action to a goal, a value and an area of life, kept as files in your vault.",
+      "short": [
+        "Todoist goals count tasks done. Omega goals are outcomes broken down to a next action.",
+        "Todoist needs an account and stores data on AWS. Omega has no account.",
+        "Todoist runs on Windows, Android and watches. Omega runs on Mac and iPhone."
+      ],
+      "pick": "Pick Todoist if you want a fast, proven task list on every platform, shared projects with other people, and a free plan to start.",
+      "cells": {
+        "price": ["Free plan. Pro $5 a month billed yearly, $7 monthly", 1],
+        "platforms": ["Mac, Windows, Linux, iPhone, iPad, Android, Apple Watch, Wear OS", 2],
+        "account": ["Required: you must log in, even to work offline", 4],
+        "goals": ["Daily and weekly task-count goals, streaks and Karma", 5],
+        "storage": ["Todoist servers on AWS, encrypted at rest", 3],
+        "offline": ["Yes, changes sync when back online", 4],
+        "export": ["CSV per project. Auto backups on Pro", 6]
+      },
+      "sources": [
+        "https://www.todoist.com/pricing",
+        "https://www.todoist.com/downloads",
+        "https://www.todoist.com/security",
+        "https://www.todoist.com/help/articles/use-todoist-while-offline-4rbaZw",
+        "https://www.todoist.com/help/todoist/features/use-the-productivity-view-in-todoist-6S63uAa9",
+        "https://www.todoist.com/help/articles/download-or-restore-backups-in-todoist-ywaJeQbN"
+      ]
+    },
+    {
+      "slug": "notion",
+      "name": "Notion",
+      "domain": "notion.com",
+      "logo_url": "https://www.notion.com/front-static/logo-ios.png",
+      "group": "planners",
+      "alt_title": "A free, private Notion alternative",
+      "thesis": "Notion is a cloud workspace of pages and databases; goals and weekly reviews come from templates you build or install. Glyph Omega has mission, values, goals and the weekly review built in, as plain files in your vault.",
+      "short": [
+        "Notion is a blank workspace you shape. Omega is built for one job: goals down to next actions.",
+        "Notion stores workspaces on AWS, in the US by default. Omega keeps files in your vault.",
+        "Notion offline needs pages downloaded first on the free plan. Omega files are always on your device."
+      ],
+      "pick": "Pick Notion if you want one flexible workspace for notes, docs and databases, shared with a team, and are happy to build or pick a goals template.",
+      "cells": {
+        "price": ["Free plan. Plus $10 a member a month", 1],
+        "platforms": ["Mac, Windows and mobile apps", 2],
+        "account": ["Required: you sign in with an email", 3],
+        "goals": ["Through templates, such as goal trackers and weekly reviews", 4],
+        "storage": ["Notion servers on AWS, US by default", 5],
+        "offline": ["Desktop and mobile. Free plan: pages you choose to download", 1],
+        "export": ["Markdown, CSV and HTML. PDF for single pages", 6]
+      },
+      "sources": [
+        "https://www.notion.com/pricing",
+        "https://www.notion.com/desktop",
+        "https://www.notion.com/help/intro-to-workspaces",
+        "https://www.notion.com/templates/comprehensive-goal-tracker",
+        "https://www.notion.com/help/data-residency",
+        "https://www.notion.com/help/export-your-content"
+      ],
+      "note": "Notion is retiring PDF export for a whole workspace; single pages still export as PDF."
+    },
+    {
+      "slug": "things-3",
+      "name": "Things 3",
+      "domain": "culturedcode.com",
+      "logo_url": "https://culturedcode.com/apple-touch-icon.png",
+      "group": "planners",
+      "alt_title": "A free, private Things 3 alternative",
+      "thesis": "Things 3 is a one-time-purchase task manager for Apple devices, with Areas and Projects and a local database that syncs through Things Cloud. Glyph Omega adds mission, values, goals and a weekly review, and keeps everything as plain files in your vault.",
+      "short": [
+        "Things is a paid app per device. Omega is free.",
+        "Things has Areas and Projects. Omega adds goals and a weekly review.",
+        "Things stores a database file. Omega stores plain files you can read in any editor."
+      ],
+      "pick": "Pick Things 3 if you want a polished task list on Mac, iPhone, iPad, Apple Watch and Vision Pro, paid once, with no subscription.",
+      "cells": {
+        "price": ["One-time purchase per platform, price set on the App Store. 15-day trial", 1],
+        "platforms": ["Mac, iPhone, Apple Watch, iPad, Vision Pro", 1],
+        "account": ["None for one device. Free Things Cloud account to sync", 2],
+        "goals": ["Areas and Projects. Its guide describes no goal or weekly review feature", 3],
+        "storage": ["On your device, synced copy on Things Cloud, encrypted", 2],
+        "offline": ["Yes, full database stored locally", 2],
+        "export": ["Database file (SQLite) or print lists to PDF on Mac", 4]
+      },
+      "sources": [
+        "https://culturedcode.com/things/support/articles/2803552/",
+        "https://culturedcode.com/things/support/articles/2803586/",
+        "https://culturedcode.com/things/guide/",
+        "https://culturedcode.com/things/support/articles/2982272/"
+      ],
+      "note": "Cultured Code's own pages do not list USD prices; they point to the App Store."
+    }
+  ]
+}

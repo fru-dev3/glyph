@@ -1,0 +1,234 @@
+{
+  "app": "wealth",
+  "group_label": "money apps",
+  "rows": [
+    {
+      "k": "price",
+      "label": "Price"
+    },
+    {
+      "k": "platforms",
+      "label": "Platforms"
+    },
+    {
+      "k": "bank",
+      "label": "Bank login"
+    },
+    {
+      "k": "account",
+      "label": "Account"
+    },
+    {
+      "k": "storage",
+      "label": "Where your data is kept"
+    },
+    {
+      "k": "training",
+      "label": "Uses your data for AI or ads"
+    },
+    {
+      "k": "export",
+      "label": "Export"
+    }
+  ],
+  "rivals": [
+    {
+      "slug": "monarch-money",
+      "name": "Monarch Money",
+      "domain": "monarch.com",
+      "logo_url": "https://www.monarch.com/apple-touch-icon.png",
+      "group": "money apps",
+      "alt_title": "A free, private Monarch Money alternative",
+      "thesis": "Monarch is a paid service that links your bank accounts through aggregators and keeps your data in your Monarch account. Glyph Wealth is free, needs no bank login or account, and keeps every number as plain lines in your own vault.",
+      "short": [
+        "Monarch syncs balances from your banks. Glyph Wealth takes numbers by voice, statement file or a confirmed note.",
+        "Monarch costs $99.99 a year. Glyph Wealth is free.",
+        "Monarch needs an account. Glyph Wealth writes files you own."
+      ],
+      "pick": "Pick Monarch if you want balances and transactions to update on their own from every bank, with shared access for a partner.",
+      "cells": {
+        "price": [
+          "No free plan. Core $14.99 a month or $99.99 a year. Plus $199.99 a year",
+          1
+        ],
+        "platforms": [
+          "Web, iPhone, Android",
+          2
+        ],
+        "bank": [
+          "Yes, through Plaid, Finicity, MX and Spinwheel",
+          3
+        ],
+        "account": [
+          "Yes, sign-up required",
+          1
+        ],
+        "storage": "Not stated",
+        "training": [
+          "Profile data shared with ad partners. AI training not stated",
+          3
+        ],
+        "export": [
+          "CSV of transactions and balance history, on the web",
+          4
+        ]
+      },
+      "sources": [
+        "https://www.monarch.com/pricing",
+        "https://www.monarch.com/",
+        "https://www.monarch.com/privacy",
+        "https://help.monarch.com/hc/en-us/articles/15526600975764-Downloading-Transaction-or-Account-History"
+      ],
+      "note": "monarchmoney.com now redirects to monarch.com. The pricing page mentions a first free week without terms."
+    },
+    {
+      "slug": "copilot-money",
+      "name": "Copilot Money",
+      "domain": "copilot.money",
+      "logo_url": "https://www.copilot.money/apple-touch-icon.png",
+      "group": "money apps",
+      "alt_title": "A free, private Copilot Money alternative",
+      "thesis": "Copilot is a paid Apple-first app that links over 16,000 institutions through Plaid and Finicity and stores data in the United States. Glyph Wealth is free, links no bank, and keeps your numbers in your own vault.",
+      "short": [
+        "Copilot connects to your banks. Glyph Wealth needs no bank login.",
+        "Copilot costs $109 a year. Glyph Wealth is free.",
+        "Copilot keeps data on its US servers. Glyph Wealth keeps plain lines in files you own."
+      ],
+      "pick": "Pick Copilot if you want a polished Apple app that categorizes bank transactions for you automatically.",
+      "cells": {
+        "price": [
+          "$9 a month or $109 a year",
+          1
+        ],
+        "platforms": [
+          "iPhone, iPad, Mac, web",
+          1
+        ],
+        "bank": [
+          "Yes, through Plaid and Finicity",
+          2
+        ],
+        "account": [
+          "Yes, registration required",
+          2
+        ],
+        "storage": [
+          "Copilot's service, stored in the United States",
+          2
+        ],
+        "training": [
+          "Financial data never used for ads. Vendors do not train AI on it",
+          2
+        ],
+        "export": [
+          "CSV of all transactions",
+          3
+        ]
+      },
+      "sources": [
+        "https://copilot.money/pricing",
+        "https://copilot.money/privacy_policy",
+        "https://help.copilot.money/en/articles/5944414-exporting-your-transaction-data"
+      ],
+      "note": "No Android app is listed. Privacy policy last updated May 6, 2026."
+    },
+    {
+      "slug": "ynab",
+      "name": "YNAB",
+      "domain": "ynab.com",
+      "logo_url": "https://cdn.prod.website-files.com/640f69143ec11b21d42015c6/6732b255e4999d561f33e7bb_Frame%202%20(1).png",
+      "group": "money apps",
+      "alt_title": "A free, private YNAB alternative",
+      "thesis": "YNAB is a paid budgeting method and app that gives every dollar a job, with optional direct bank import. Glyph Wealth is free, tracks accounts, holdings and net worth from numbers you give it, and keeps them in your own vault.",
+      "short": [
+        "YNAB is built around zero-based budgeting. Glyph Wealth shows where your money stands.",
+        "YNAB costs $109 a year after a 34-day trial. Glyph Wealth is free.",
+        "YNAB needs an account. Glyph Wealth does not."
+      ],
+      "pick": "Pick YNAB if you want a strict budgeting method with lessons and a community behind it.",
+      "cells": {
+        "price": [
+          "$14.99 a month or $109 a year. 34-day free trial",
+          1
+        ],
+        "platforms": [
+          "Web, iPhone, Android, Apple Watch",
+          1
+        ],
+        "bank": [
+          "Optional direct import through Plaid or MX. File import also works",
+          2
+        ],
+        "account": [
+          "Yes, sign-up required for the trial",
+          1
+        ],
+        "storage": [
+          "YNAB's service, stored in the United States",
+          2
+        ],
+        "training": [
+          "Financial data not used for ads. Hashed email shared to show YNAB ads",
+          2
+        ],
+        "export": [
+          "CSV or TSV of plan and transactions, web only",
+          3
+        ]
+      },
+      "sources": [
+        "https://www.ynab.com/pricing",
+        "https://www.ynab.com/privacy-policy",
+        "https://support.ynab.com/en_us/how-to-export-plan-data-Sy_CouWA9"
+      ]
+    },
+    {
+      "slug": "empower",
+      "name": "Empower Personal Dashboard",
+      "domain": "empower.com",
+      "logo_url": "https://www.empower.com/themes/custom/empulsify/favicon.png",
+      "group": "money apps",
+      "alt_title": "A free, private Empower Personal Dashboard alternative",
+      "thesis": "Empower's dashboard is free and links your bank, retirement and investment accounts, and Empower offers paid advisory services to users. Glyph Wealth is also free, but needs no account, links no bank and keeps your numbers in your own vault.",
+      "short": [
+        "Both are free. Empower links your accounts. Glyph Wealth takes numbers you confirm.",
+        "Empower asks for an email and phone number. Glyph Wealth asks for nothing.",
+        "Empower promotes advisory plans. Glyph Wealth sells nothing."
+      ],
+      "pick": "Pick Empower if you want free automatic net worth and investment fee tracking across many linked accounts.",
+      "cells": {
+        "price": [
+          "Free",
+          1
+        ],
+        "platforms": [
+          "Web, iPhone, Android",
+          1
+        ],
+        "bank": [
+          "Yes, links bank, retirement, investment and loan accounts",
+          1
+        ],
+        "account": [
+          "Yes, email and phone number required",
+          1
+        ],
+        "storage": "Not stated",
+        "training": [
+          "Uses advertising cookies and device ad identifiers. AI use not stated",
+          2
+        ],
+        "export": [
+          "CSV of transactions on the web and iPhone",
+          3
+        ]
+      },
+      "sources": [
+        "https://www.empower.com/personal-investors/financial-tools",
+        "https://www.empower.com/privacy",
+        "https://support-personalwealth.empower.com/hc/en-us/articles/18679551671703-Export-Transactions-To-A-CSV-File-Through-Our-Web-Application"
+      ],
+      "note": "Formerly Personal Capital. The page promotes advisory services for balances over $250,000."
+    }
+  ]
+}
