@@ -400,11 +400,11 @@ body[data-page=home] #compare .pin{width:100%}
 .calc .phead{grid-column:1;grid-row:1}
 .calc .clab{grid-column:2;grid-row:1;padding:0 0 2px 4px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--dim)}
 .calc .prows{grid-column:1;grid-row:2}
-.calc .total{grid-column:2;grid-row:2;position:static;justify-content:flex-start;gap:22px}
+.calc .total{grid-column:2;grid-row:2;position:static;justify-content:space-between;gap:22px}
 .total .tt{display:flex;flex-direction:column;gap:6px}
 .total .drop{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-content:start;margin:0}
 .total .drop span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.calc .total .glyph{margin-top:auto;padding-top:16px;border-top:1px solid rgba(255,255,255,.14)}
+.calc .total .glyph{margin-top:0;padding-top:16px;border-top:1px solid rgba(255,255,255,.14)}
 .calc .total .drop span{font-size:12.5px}
 /* One row per Glyph app: its icon, then its paid rivals as logo tiles. Tap one: it lights up and its price is struck. */
 #compare .pin.wide h2{font-size:clamp(36px,4.6vw,64px)}
@@ -420,8 +420,8 @@ body[data-page=home] #compare .pin{width:100%}
 .pa b{font:800 clamp(15px,1.25vw,17px)/1.1 "Bricolage Grotesque",sans-serif;white-space:nowrap}
 .pa{position:relative}
 .pa span{display:inline-flex;align-items:center;gap:4px}.pa span svg{width:13px;height:13px;stroke-width:3}
-.pa b:has(.pop){display:flex;flex-direction:column-reverse;align-items:flex-start;line-height:1}
-.pa .pop{display:block;margin:0 0 3px;padding:2px 6px;border-radius:999px;background:#E5142B;color:#fff;font:900 8.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;font-style:normal;letter-spacing:.08em;text-transform:uppercase}
+.pa b:has(.pop){position:relative}
+.pa .pop{position:absolute;left:0;bottom:calc(100% - 2px);margin:0;white-space:nowrap;padding:2px 6px;border-radius:999px;background:#E5142B;color:#fff;font:900 8.5px/1.3 -apple-system,BlinkMacSystemFont,sans-serif;font-style:normal;letter-spacing:.08em;text-transform:uppercase}
 .pa span{font:800 13px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:5px 9px;border-radius:999px;background:#fff;color:var(--green)}
 .pts{display:flex;flex-wrap:nowrap;gap:2px;overflow-x:auto;scrollbar-width:none;padding:2px}
 .pts::-webkit-scrollbar{display:none}
@@ -433,7 +433,7 @@ body[data-page=home] #compare .pin{width:100%}
 .pt:hover img{opacity:1}
 .pt:has(input:checked){background:#fff;border-color:var(--strike);box-shadow:0 10px 22px rgba(166,64,43,.16)}
 .pt:has(input:checked) img{opacity:1;transform:scale(1.06)}
-.pt:has(input:checked) s{color:var(--strike);text-decoration:line-through;text-decoration-thickness:2.5px}
+.pt:has(input:checked) s{color:var(--ink);text-decoration:line-through;text-decoration-color:var(--strike);text-decoration-thickness:1.5px}
 
 .pt:focus-within{outline:2px solid var(--green);outline-offset:2px}
 .total{position:sticky;top:0;display:flex;flex-direction:column;gap:6px;padding:26px;border-radius:26px;color:#fff;background:linear-gradient(160deg,#0B3D12,#0B1A10);box-shadow:0 26px 50px rgba(11,26,16,.3)}
@@ -446,7 +446,7 @@ body[data-page=home] #compare .pin{width:100%}
 .total .fine{margin:14px 0 0;font-size:11.5px;line-height:1.45;color:rgba(255,255,255,.6)}
 .total .row-btns{margin-top:14px}.total .btn.go{width:100%;justify-content:center}
 @media (max-width:860px){.calc{grid-template-columns:1fr;grid-template-rows:none}.calc>*{grid-column:1!important;grid-row:auto!important}.calc .clab{display:none}.calc .total{position:sticky;top:64px;z-index:2;order:-1;padding:16px 20px}.total .sum{font-size:44px}.total .row-btns,.total .glyph,.total .drop,.total .fine{display:none}}
-@media (min-width:701px) and (max-width:1380px){.parr{display:none}.calc{grid-template-columns:1fr 270px}.prow,.phead{grid-template-columns:1fr 176px}.phead span:last-child{grid-column:2}.total{padding:22px}.total .sum{font-size:52px}.drop span{font-size:12px}.total .fine{font-size:10.5px}.pa{grid-template-columns:auto 1fr;row-gap:1px}.pa img{grid-row:span 2}.pa b{align-self:end}.pa span{align-self:start;justify-self:start;padding:0;background:none;color:#CFFFCF;font-size:11.5px}}
+@media (min-width:701px) and (max-width:1380px){.parr{display:none}.calc{grid-template-columns:1fr 270px}.prow,.phead{grid-template-columns:1fr 176px}.phead span:last-child{grid-column:2}.total{padding:22px}.total .sum{font-size:52px}.drop span{font-size:12px}.total .fine{font-size:10.5px}.pa{grid-template-columns:auto 1fr;row-gap:1px}.pa img{grid-row:span 2}.pa b{align-self:end}.pa span{align-self:start;justify-self:start;padding:0;background:none;color:#CFFFCF;font-size:11.5px}.pa .pop{position:static;display:inline-block;margin-left:6px;vertical-align:2px}}
 @media (max-height:820px) and (min-width:701px){#compare .pin.wide h2{font-size:48px}#compare .pl{margin-bottom:18px}}
 @media (max-width:700px){.phead{display:none}.prow{grid-template-columns:1fr;gap:6px}.parr{display:none}.pa{order:-1;min-height:48px}}
 /* The way back from any panel: a close button, and Esc. */
