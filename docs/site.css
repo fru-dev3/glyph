@@ -394,30 +394,32 @@ main.doc{display:block;min-height:0;padding:80px clamp(16px,4vw,64px) calc(90px 
 .ai span{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--green)}
 @media (max-width:1100px){.tools9{grid-template-columns:repeat(5,minmax(0,110px))}}
 @media (max-width:620px){.core4{grid-template-columns:repeat(2,minmax(0,150px))}.tools9{grid-template-columns:repeat(3,minmax(0,100px))}}
-.calc{display:grid;grid-template-columns:1fr minmax(280px,340px);gap:clamp(18px,2.4vw,36px);align-items:start}
+.calc{display:grid;grid-template-columns:1fr minmax(270px,320px);gap:clamp(18px,2.4vw,36px);align-items:start}
 /* One row per Glyph app: its icon, then its paid rivals as logo tiles. Tap one: it lights up and its price is struck. */
 #compare .pin.wide h2{font-size:clamp(36px,4.6vw,64px)}
-.prows{display:grid;grid-template-columns:1fr 1fr;gap:clamp(6px,.9vh,10px)}
-.prow:first-child{grid-column:1/-1}
-@media (max-width:1100px){.prows{grid-template-columns:1fr}}
-.prow{display:grid;grid-template-columns:clamp(96px,9vw,128px) 1fr;align-items:center;gap:14px;padding:clamp(6px,.9vh,10px) 12px clamp(6px,.9vh,10px) 10px;border-radius:20px;background:var(--card);border:1px solid var(--line)}
-.pa{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);border-right:1px solid var(--line);padding-right:12px;height:100%}
-.pa img{width:clamp(34px,4.6vh,44px);height:auto;border-radius:24%;box-shadow:0 8px 16px rgba(0,100,0,.25);flex:none}
-.pa b{display:block;font:800 17px/1 "Bricolage Grotesque",sans-serif}.pa span{display:block;font-size:12px;font-weight:800;color:var(--green);margin-top:3px}
-.pa{flex-wrap:wrap;align-content:center;row-gap:2px}.pa>b,.pa>span{flex-basis:calc(100% - 56px);margin:0}
-.pts{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:2px}
+.prows{display:flex;flex-direction:column;gap:clamp(5px,.8vh,8px)}
+.phead{display:grid;grid-template-columns:1fr auto clamp(190px,17vw,230px);gap:10px;padding:0 6px 2px 14px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--dim)}
+.phead span:last-child{grid-column:3;color:var(--green)}
+.prow{display:grid;grid-template-columns:1fr auto clamp(190px,17vw,230px);align-items:center;gap:10px;padding:5px 5px 5px 8px;border-radius:20px;background:rgba(255,255,255,.55);border:1px solid var(--line)}
+.parr{display:grid;place-items:center;width:28px;color:var(--dim)}.parr svg{width:22px;height:22px}
+.pa{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;height:100%;min-height:46px;padding:6px 12px 6px 7px;border-radius:15px;text-decoration:none;
+  color:#fff;background:linear-gradient(135deg,#0A8F0A,#006400);box-shadow:0 10px 22px rgba(0,110,0,.28);transition:transform .2s,box-shadow .2s}
+.pa:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(0,110,0,.36)}
+.pa img{width:clamp(26px,3.4vh,32px);height:auto;border-radius:24%;box-shadow:0 0 0 2px rgba(255,255,255,.35)}
+.pa b{font:800 clamp(15px,1.25vw,17px)/1.1 "Bricolage Grotesque",sans-serif;white-space:nowrap}
+.pa span{font:800 13px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:5px 9px;border-radius:999px;background:#fff;color:var(--green)}
+.pts{display:flex;flex-wrap:nowrap;gap:2px;overflow-x:auto;scrollbar-width:none;padding:2px}
 .pts::-webkit-scrollbar{display:none}
-.pt{position:relative;flex:none;width:clamp(62px,5vw,74px);display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 4px 5px;border-radius:16px;cursor:pointer;
-  border:1.5px solid transparent;transition:transform .2s,background .2s,border-color .2s,box-shadow .2s}
+.pt{position:relative;flex:none;display:flex;flex-direction:row;align-items:center;gap:5px;padding:4px 6px 4px 4px;border-radius:13px;cursor:pointer;border:1.5px solid transparent;transition:transform .2s,background .2s,border-color .2s,box-shadow .2s}
 .pt input{position:absolute;opacity:0;pointer-events:none}
-.pt img{width:clamp(34px,4.6vh,44px);height:auto;border-radius:11px;background:#fff;object-fit:contain;opacity:.75;transition:opacity .25s,transform .25s}
-.pt s{font:800 14px/1 -apple-system,BlinkMacSystemFont,sans-serif;font-variant-numeric:tabular-nums;color:var(--dim);text-decoration:none;transition:color .2s}
+.pt img{width:clamp(28px,3.6vh,34px);height:auto;border-radius:9px;background:#fff;object-fit:contain;opacity:.8;transition:opacity .25s,transform .25s}
+.pt s{font:800 13.5px/1 -apple-system,BlinkMacSystemFont,sans-serif;font-variant-numeric:tabular-nums;color:var(--dim);text-decoration:none;transition:color .2s;letter-spacing:-.01em}
 .pt:hover{transform:translateY(-3px);background:rgba(255,255,255,.7)}
 .pt:hover img{opacity:1}
 .pt:has(input:checked){background:#fff;border-color:var(--strike);box-shadow:0 10px 22px rgba(166,64,43,.16)}
 .pt:has(input:checked) img{opacity:1;transform:scale(1.06)}
 .pt:has(input:checked) s{color:var(--strike);text-decoration:line-through;text-decoration-thickness:2.5px}
-.pt:has(input:checked)::after{content:"";position:absolute;top:5px;right:5px;width:16px;height:16px;border-radius:50%;background:var(--strike) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M7 7l10 10M17 7L7 17'/%3E%3C/svg%3E") center/9px no-repeat;animation:pop .3s both}
+.pt:has(input:checked)::after{content:"";position:absolute;top:-5px;left:-5px;width:16px;height:16px;border-radius:50%;background:var(--strike) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M7 7l10 10M17 7L7 17'/%3E%3C/svg%3E") center/9px no-repeat;animation:pop .3s both}
 .pt:focus-within{outline:2px solid var(--green);outline-offset:2px}
 .total{position:sticky;top:0;display:flex;flex-direction:column;gap:6px;padding:26px;border-radius:26px;color:#fff;background:linear-gradient(160deg,#0B3D12,#0B1A10);box-shadow:0 26px 50px rgba(11,26,16,.3)}
 .total>span{opacity:.8;font-weight:600}
@@ -428,8 +430,10 @@ main.doc{display:block;min-height:0;padding:80px clamp(16px,4vw,64px) calc(90px 
 .drop img{width:22px;height:22px;border-radius:6px;background:#fff}
 .total .fine{margin:14px 0 0;font-size:11.5px;line-height:1.45;color:rgba(255,255,255,.6)}
 .total .row-btns{margin-top:14px}.total .btn.go{width:100%;justify-content:center}
-@media (max-width:860px){.calc{grid-template-columns:1fr}.total{position:sticky;top:64px;z-index:2;order:-1;padding:16px 20px}.total .sum{font-size:44px}.total .row-btns,.total .glyph{display:none}}
-@media (max-width:520px){.prow{grid-template-columns:1fr;gap:6px}.pa{border-right:0;padding-right:0}}
+@media (max-width:860px){.calc{grid-template-columns:1fr}.total{position:sticky;top:64px;z-index:2;order:-1;padding:16px 20px}.total .sum{font-size:44px}.total .row-btns,.total .glyph,.total .drop,.total .fine{display:none}}
+@media (min-width:701px) and (max-width:1380px){.parr{display:none}.calc{grid-template-columns:1fr 270px}.pt{gap:4px;padding:3px 5px 3px 3px}.pt img{width:26px}.pt s{font-size:12.5px}.prow,.phead{grid-template-columns:1fr 176px}.phead span:last-child{grid-column:2}.total{padding:22px}.total .sum{font-size:52px}.drop span{font-size:12px}.total .fine{font-size:10.5px}.pa{grid-template-columns:auto 1fr;row-gap:1px}.pa img{grid-row:span 2}.pa b{align-self:end}.pa span{align-self:start;justify-self:start;padding:0;background:none;color:#CFFFCF;font-size:11.5px}}
+@media (max-height:820px) and (min-width:701px){#compare .pin.wide h2{font-size:48px}#compare .pl{margin-bottom:18px}}
+@media (max-width:700px){.phead{display:none}.prow{grid-template-columns:1fr;gap:6px}.parr{display:none}.pa{order:-1;min-height:48px}}
 /* The way back from any panel: a close button, and Esc. */
 .pclose{position:fixed;top:max(10px,env(safe-area-inset-top));right:clamp(10px,2vw,28px);z-index:41;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;
   background:var(--foot);border:1px solid var(--line);color:var(--ink);box-shadow:0 8px 24px rgba(11,26,16,.1);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);transition:transform .2s,background .2s}

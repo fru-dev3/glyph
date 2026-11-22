@@ -328,8 +328,10 @@ def home_panels():
                 tiles.append(f'<label class="pt" title="{e(rv["name"])}, ${m:g} a month"><input type="checkbox" value="{m}"{" checked" if n == 0 else ""}>'
                              f'<img src="{e(rv["logo"])}" width="44" height="44" alt="{e(rv["name"])}" data-n="{e(rv["name"])}"><s>${m:g}</s></label>')
         if tiles:
-            rows_.append(f'<div class="prow"><a class="pa" href="/{p}#compare" title="{e(a["name"])} side by side"><img src="{icon_url(p)}" width="48" height="48" alt="">'
-                         f'<b>{e(a["short"])}</b><span>Free</span></a><div class="pts">{"".join(tiles)}</div></div>')
+            # Fru, 2026-11-22: the paid apps and Glyph must not look alike. Paid on the left, quiet; an arrow; Glyph on the right, solid green.
+            rows_.append(f'<div class="prow"><div class="pts">{"".join(tiles)}</div><span class="parr" aria-hidden="true">{svg("M5 12h14M13 6l6 6-6 6")}</span>'
+                         f'<a class="pa" href="/{p}#compare" title="{e(a["name"])} side by side"><img src="{icon_url(p)}" width="40" height="40" alt="">'
+                         f'<b>{e(a["name"])}</b><span>Free</span></a></div>')
     faq = "".join(f'<details><summary>{e(q)}</summary><p>{e(ans)}</p></details>' for q, ans in h["faq"])
     return f'''<!-- ribbon -->
 {ribbon("home")}
@@ -339,7 +341,7 @@ def home_panels():
 </div></section>
 <section class="panel" id="compare" hidden aria-labelledby="cmp-h">{close("home")}<div class="pin wide">
   <h2 id="cmp-h">What Glyph replaces</h2><p class="pl">Tap what you pay for today. Glyph's answer to each is free.</p>
-  <div class="calc"><div class="prows">{"".join(rows_)}</div>
+  <div class="calc"><div class="prows"><div class="phead"><span>What you pay for today</span><span>Glyph instead</span></div>{"".join(rows_)}</div>
   <aside class="total"><span>You would stop paying</span><b class="sum" data-sum>$0</b><span>a month, or <b data-year>$0</b> a year</span><div class="drop" data-drop aria-live="polite"></div>
   <span class="glyph">Glyph: <b>$0</b></span><p class="fine">Each price is the cheapest paid plan's list price, billed monthly where the vendor offers it, from their own pages as of {asof(h)}. Open an app's Compare tab for the sources. Logos and names belong to their owners; Glyph is not affiliated with them.</p></aside></div>
 </div></section>
