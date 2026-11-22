@@ -333,7 +333,7 @@ def home_panels():
             pop = '<i class="pop">Popular</i>' if p in h.get("popular", []) else ""
             rows_.append(f'<div class="prow"><div class="pts">{"".join(tiles)}</div><span class="parr" aria-hidden="true">{svg("M5 12h14M13 6l6 6-6 6")}</span>'
                          f'<a class="pa" href="{INSTALL}" data-dmg="fru-dev3/glyph-native" data-track="file_download" data-app="{p}" title="Install {e(a["name"])} with Glyph Native">'
-                         f'<img src="{icon_url(p)}" width="40" height="40" alt=""><b>{e(a["short"])}</b><span>{svg("M12 3v12m0 0l-5-5m5 5l5-5M5 21h14")}Install</span>{pop}</a></div>')
+                         f'<img src="{icon_url(p)}" width="40" height="40" alt=""><b>{e(a["short"])}{pop}</b><span>{svg("M12 3v12m0 0l-5-5m5 5l5-5M5 21h14")}Install</span></a></div>')
     faq = "".join(f'<details><summary>{e(q)}</summary><p>{e(ans)}</p></details>' for q, ans in h["faq"])
     return f'''<!-- ribbon -->
 {ribbon("home")}
@@ -342,9 +342,10 @@ def home_panels():
   {"".join(layers)}
 </div></section>
 <section class="panel" id="compare" hidden aria-labelledby="cmp-h">{close("home")}<div class="pin wide">
-  <div class="calc"><div class="cleft"><h2 id="cmp-h">What Glyph replaces</h2><p class="pl">Tap what you pay for today. Glyph's answer to each is free.</p>
-  <div class="prows"><div class="phead"><span>What you pay for today</span><span>Glyph instead</span></div>{"".join(rows_)}</div></div>
-  <aside class="total"><span>You would stop paying</span><b class="sum" data-sum>$0</b><span>a month, or <b data-year>$0</b> a year</span><div class="drop" data-drop aria-live="polite"></div>
+  <h2 id="cmp-h">What Glyph replaces</h2><p class="pl">Tap what you pay for today. Glyph's answer to each is free.</p>
+  <div class="calc"><div class="phead"><span>What you pay for today</span><span>Glyph instead</span></div><div class="clab">Your total</div>
+  <div class="prows">{"".join(rows_)}</div>
+  <aside class="total"><div class="tt"><span>You would stop paying</span><b class="sum" data-sum>$0</b><span>a month, or <b data-year>$0</b> a year</span></div><div class="drop" data-drop aria-live="polite"></div>
   <span class="glyph">Glyph: <b>$0</b></span></aside></div>
 </div></section>
 <section class="panel" id="open" hidden aria-labelledby="open-h">{close("home")}<div class="pin wide">
