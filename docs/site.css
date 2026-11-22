@@ -34,7 +34,7 @@ h1 em{font-style:normal;color:var(--green);white-space:nowrap;display:block}
 .paid{display:flex;gap:clamp(8px,.8vw,12px)}
 .alt figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:4px}
 .alt figure img,.tile{width:clamp(38px,5.4vh,50px);height:auto;aspect-ratio:1;border-radius:24%;box-shadow:0 4px 10px rgba(0,0,0,.12)}
-.paid img{filter:grayscale(.55);opacity:.72;transition:filter .25s,opacity .25s}
+.paid img{filter:grayscale(.15);opacity:.95;transition:filter .25s,opacity .25s}
 .paid figure:hover img{filter:none;opacity:1}
 .tile{display:grid;place-items:center;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.10),inset 0 0 0 1px rgba(11,26,16,.06)}
 .tile svg,.tile img{width:62%;height:62%;object-fit:contain;box-shadow:none;border-radius:0;filter:none;opacity:1}
@@ -262,6 +262,7 @@ body:has(.ribbon) main:not(.doc){padding-top:calc(clamp(16px,3vh,40px) + 46px)}
 .panel[hidden]{display:none}
 body.paneled{overflow:hidden}
 .pin{max-width:1200px;margin:0 auto;text-align:left}
+#how .pin{max-width:1400px}
 .panel .pin>*{animation:rise .55s cubic-bezier(.2,.7,.2,1) both}
 .panel .pin>:nth-child(2){animation-delay:.05s}.panel .pin>:nth-child(3){animation-delay:.1s}.panel .pin>:nth-child(4){animation-delay:.15s}.panel .pin>:nth-child(n+5){animation-delay:.2s}
 @keyframes rise{from{opacity:0;transform:translateY(18px)}}
@@ -277,7 +278,7 @@ main.doc{display:block;min-height:0;padding:80px clamp(16px,4vw,64px) calc(90px 
 .panel h2{white-space:normal}
 
 /* How it works: the steps take turns, the picture follows. */
-.stepper{display:grid;grid-template-columns:minmax(260px,5fr) 8fr;gap:clamp(20px,3vw,48px);align-items:center}
+.stepper{display:grid;grid-template-columns:minmax(250px,4fr) 9fr;gap:clamp(20px,3vw,48px);align-items:center}
 .steplist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
 .steplist button{position:relative;overflow:hidden;width:100%;text-align:left;display:grid;grid-template-columns:auto 1fr;column-gap:14px;align-items:baseline;
   padding:18px 20px;border-radius:18px;border:1px solid transparent;background:transparent;font:inherit;color:var(--soft);cursor:pointer;transition:background .3s,border-color .3s,color .3s,transform .3s}
@@ -292,7 +293,7 @@ main.doc{display:block;min-height:0;padding:80px clamp(16px,4vw,64px) calc(90px 
 .steplist .bar{position:absolute;left:20px;right:20px;bottom:8px;height:3px;border-radius:3px;background:var(--green);transform:scaleX(0);transform-origin:left}
 .steplist [aria-selected=true] .bar{animation:fill 5.5s linear forwards}
 .stepper.hold .bar{animation-play-state:paused!important}
-.shots{position:relative;aspect-ratio:16/10}
+.shots{position:relative;aspect-ratio:16/10;width:min(100%,calc((100dvh - 250px) * 1.6));justify-self:center}
 .shots img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transform:scale(.97) translateY(10px);transition:opacity .6s,transform .6s;filter:drop-shadow(0 30px 60px var(--shadow))}
 .shots img.on{opacity:1;transform:none}
 @media (max-width:860px){.stepper{grid-template-columns:1fr}.shots{order:-1}}
@@ -428,10 +429,10 @@ body[data-page=home] #compare .pin{width:100%}
 .pa span{font:800 13px/1 -apple-system,BlinkMacSystemFont,sans-serif;padding:5px 9px;border-radius:999px;background:#fff;color:var(--green)}
 .pts{display:flex;flex-wrap:nowrap;gap:2px;overflow-x:auto;scrollbar-width:none;padding:2px}
 .pts::-webkit-scrollbar{display:none}
-.pt{position:relative;flex:none;width:81px;display:flex;flex-direction:row;align-items:center;gap:3px;padding:4px 3px;border-radius:12px;cursor:pointer;border:1.5px solid transparent;transition:transform .2s,background .2s,border-color .2s,box-shadow .2s}
+.pt{position:relative;flex:none;width:81px;display:flex;flex-direction:row;align-items:center;gap:2px;padding:4px 2px;border-radius:12px;cursor:pointer;border:1.5px solid transparent;transition:transform .2s,background .2s,border-color .2s,box-shadow .2s}
 .pt input{position:absolute;opacity:0;pointer-events:none}
-.pt img{width:28px;height:28px;flex:none;border-radius:8px;background:#fff;object-fit:contain;opacity:.8;transition:opacity .25s,transform .25s}
-.pt s{font:800 12px/1 -apple-system,BlinkMacSystemFont,sans-serif;font-variant-numeric:tabular-nums;color:var(--dim);text-decoration:none;transition:color .2s;letter-spacing:-.02em;white-space:nowrap}
+.pt img{width:32px;height:32px;flex:none;border-radius:8px;background:#fff;object-fit:contain;opacity:1;transition:transform .25s}
+.pt s{font:800 11.5px/1 -apple-system,BlinkMacSystemFont,sans-serif;font-variant-numeric:tabular-nums;color:var(--dim);text-decoration:none;transition:color .2s;letter-spacing:-.03em;white-space:nowrap}
 .pt:hover{transform:translateY(-3px);background:rgba(255,255,255,.7)}
 .pt:hover img{opacity:1}
 .pt:has(input:checked){background:#fff;border-color:var(--strike);box-shadow:0 10px 22px rgba(166,64,43,.16)}

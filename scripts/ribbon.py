@@ -285,7 +285,6 @@ def panels(k):
 <section class="panel" id="how" hidden aria-labelledby="how-h">{close(k)}<div class="pin">
   <h2 id="how-h">How it works</h2><p class="pl">{e(a["how_lede"])}</p>
   <div class="stepper"><ol class="steplist" role="tablist">{steps}</ol><div class="shots">{shots}</div></div>
-  {cta(k, a["name"])}
 </div></section>
 <section class="panel" id="compare" hidden aria-labelledby="cmp-h">{close(k)}<div class="pin">
   <h2 id="cmp-h">{e(a["name"])} side by side</h2><p class="pl">Pick an app. Every fact about it links to its own site, as of {asof(a)}.</p>
