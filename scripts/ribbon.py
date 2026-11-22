@@ -124,7 +124,10 @@ def ribbon(k, here="", base="", tabs=None):
         href = (base or "/" + ("" if k == "home" else k)) if not t else (f"{base}#{t}" if base else f"#{t}")
         cur = ' aria-current="page"' if t == here else ""
         out.append(f'<a href="{href}" data-tab="{t}"{cur}>{label}</a>')
-    return f'<nav class="ribbon" aria-label="Sections">{"".join(out)}</nav>'
+    # Every page but the home starts with the way home (Fru, 2026-11-22: "how i get back to the main page").
+    home = '' if k == "home" else ('<a class="home" href="/" aria-label="Glyph home" title="Glyph home">'
+                                   '<img src="/family/glyph-tile.svg" width="22" height="22" alt=""></a>')
+    return f'<nav class="ribbon" aria-label="Sections">{home}{"".join(out)}</nav>'
 
 
 def tabs_for(k):
