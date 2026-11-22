@@ -236,10 +236,13 @@ footer .built .heart-i{display:inline-block;vertical-align:-2px;margin:0 1px}
 .ribbon::-webkit-scrollbar{display:none}
 .ribbon a{position:relative;flex:none;padding:7px 15px;border-radius:999px;font:600 14px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:var(--soft);text-decoration:none;white-space:nowrap;transition:background .25s,color .25s}
 .ribbon a:hover{color:var(--ink);background:var(--tint)}
-.ribbon a.home{display:flex;align-items:center;gap:7px;padding:4px 13px 4px 4px;margin-right:6px;border-radius:999px;background:#fff;color:var(--ink);font-weight:750;box-shadow:inset 0 0 0 1.5px var(--ink)}.ribbon a.home img{display:block;border-radius:24%}.ribbon a.home:hover{box-shadow:inset 0 0 0 1.5px var(--green);color:var(--green)}
+.ribbon a.home{display:flex;align-items:center;gap:7px;padding:4px 14px 4px 5px;margin-right:4px;border-radius:999px 0 0 999px;background:none;color:var(--ink);font-weight:700;box-shadow:none;border-right:1px solid var(--line)}.ribbon a.home img{display:block;border-radius:24%}.ribbon a.home:hover{background:var(--tint);color:var(--green)}
 .ribbon a[aria-current=page]{background:var(--green);color:var(--on-green);box-shadow:0 4px 14px rgba(0,128,0,.3)}
 body:has(.ribbon) main:not(.doc){padding-top:calc(clamp(16px,3vh,40px) + 46px)}
 @media (max-width:520px){.ribbon a{padding:6px 11px;font-size:13px}}
+@media (max-width:620px){.ribbon a.home{font-size:0;gap:0;padding:4px 8px 4px 4px;margin-right:2px}}
+.ribbon .ls{display:none}
+@media (max-width:430px){.ribbon .lf{display:none}.ribbon .ls{display:inline}}
 @media (max-width:430px){.ribbon{gap:0;padding:3px}.ribbon a{padding:6px 8px;font-size:12.5px;letter-spacing:-.01em}}
 @media (max-width:385px){.ribbon a{padding:6px 6px;font-size:12px}}
 @media (max-width:340px){.ribbon a[data-tab=""]{display:none}}

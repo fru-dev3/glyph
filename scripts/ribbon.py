@@ -117,13 +117,19 @@ def price_tag(cell):
     return f"${m.group(1).rstrip('.')}{per}"
 
 
+# On a phone the app pages' tabs take short names, so the ribbon fits from 320px (2026-11-22).
+SHORT = {"Overview": "App", "How it works": "How", "In the open": "Open", "Releases": "Builds"}
+
+
 def ribbon(k, here="", base="", tabs=None):
     tabs = tabs or tabs_for(k)
     out = []
     for t, label in tabs:
         href = (base or "/" + ("" if k == "home" else k)) if not t else (f"{base}#{t}" if base else f"#{t}")
         cur = ' aria-current="page"' if t == here else ""
-        out.append(f'<a href="{href}" data-tab="{t}"{cur}>{label}</a>')
+        sh = SHORT.get(label) if k != "home" else None
+        text = f'<span class="lf">{label}</span><span class="ls">{sh}</span>' if sh else label
+        out.append(f'<a href="{href}" data-tab="{t}"{cur}>{text}</a>')
     # Every page but the home starts with the way home (Fru, 2026-11-22: "how i get back to the main page").
     # Fru, 2026-11-22: "make it more prominent that somebody knows that's something you can click on to get back to the home".
     home = ('<a class="home" href="/" title="glyph.fru.dev">'
