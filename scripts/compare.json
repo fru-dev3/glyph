@@ -12,7 +12,15 @@
     "img": "/jot/mac-dictations.webp",
     "w": 1600,
     "h": 1000,
-    "alt": "The day's dictations in Glyph Jot, typed into Mail, Terminal, Slack, Safari and Notes"
+    "alt": "The day's dictations in Glyph Jot, typed into Mail, Terminal, Slack, Safari and Notes",
+    "more": [
+     {
+      "img": "/jot/iphone-kb.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "The Glyph keyboard on iPhone"
+     }
+    ]
    },
    {
     "title": "Click Record for meetings",
@@ -20,7 +28,21 @@
     "img": "/jot/mac-transcript-with-jots.webp",
     "w": 1600,
     "h": 1000,
-    "alt": "A meeting's transcript in Glyph Jot, with a note linked at the moment it was jotted"
+    "alt": "A meeting's transcript in Glyph Jot, with a note linked at the moment it was jotted",
+    "more": [
+     {
+      "img": "/jot/mac-recording-summary.webp",
+      "w": 1600,
+      "h": 1000,
+      "alt": "A meeting recording with its summary"
+     },
+     {
+      "img": "/jot/iphone-rec.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Recording a meeting on iPhone"
+     }
+    ]
    },
    {
     "title": "Find it later",
@@ -28,7 +50,15 @@
     "img": "/jot/mac-notes.webp",
     "w": 1600,
     "h": 1000,
-    "alt": "Notes in Glyph Jot's library, filed with their tags"
+    "alt": "Notes in Glyph Jot's library, filed with their tags",
+    "more": [
+     {
+      "img": "/jot/iphone-home.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Notes and recordings on iPhone"
+     }
+    ]
    }
   ],
   "faq": [
@@ -588,7 +618,15 @@
     "img": "/time/running.webp",
     "w": 1400,
     "h": 900,
-    "alt": "A session on acme-api: the clock open on the right edge of the screen"
+    "alt": "A session on acme-api: the clock open on the right edge of the screen",
+    "more": [
+     {
+      "img": "/time/iphone-today-1.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Today in Glyph Time on iPhone"
+     }
+    ]
    },
    {
     "title": "A nudge every 30 minutes",
@@ -596,7 +634,21 @@
     "img": "/time/nudge.webp",
     "w": 1400,
     "h": 900,
-    "alt": "The half-hour nudge with Keep going and Stop"
+    "alt": "The half-hour nudge with Keep going and Stop",
+    "more": [
+     {
+      "img": "/time/iphone-alarms-1.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Nudges on iPhone"
+     },
+     {
+      "img": "/time/settings.webp",
+      "w": 1400,
+      "h": 900,
+      "alt": "Glyph Time settings"
+     }
+    ]
    },
    {
     "title": "Count down when you want to",
@@ -604,7 +656,21 @@
     "img": "/time/countdown.webp",
     "w": 1400,
     "h": 900,
-    "alt": "A countdown at zero, counting the time over"
+    "alt": "A countdown at zero, counting the time over",
+    "more": [
+     {
+      "img": "/time/iphone-today-2.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Hours by project on iPhone"
+     },
+     {
+      "img": "/time/closed.webp",
+      "w": 1400,
+      "h": 900,
+      "alt": "A finished session"
+     }
+    ]
    }
   ],
   "faq": [
@@ -1244,10 +1310,10 @@
    {
     "title": "Ask your agents",
     "text": "Talk to your chief of staff, or to one agent per area of your life.",
-    "img": "/bot/chat-sources.webp",
+    "img": "/bot/01-home.webp",
     "w": 1600,
     "h": 982,
-    "alt": "Glyph Bot on the Mac: an agent answers and lists the sources it read"
+    "alt": "Ben, the chief of staff, with the day from every agent"
    },
    {
     "title": "It reads before it answers",
@@ -1255,15 +1321,31 @@
     "img": "/bot/chat-sources.webp",
     "w": 1600,
     "h": 982,
-    "alt": "A reply in Glyph Bot with its numbered sources"
+    "alt": "A reply in Glyph Bot with its numbered sources",
+    "more": [
+     {
+      "img": "/bot/sources.webp",
+      "w": 1600,
+      "h": 981,
+      "alt": "Sources: what your agents read"
+     }
+    ]
    },
    {
     "title": "Nothing saved until you say so",
     "text": "When an agent wants to remember something, it asks. Save or Skip.",
-    "img": "/bot/chat-sources.webp",
+    "img": "/bot/chat-saved.webp",
     "w": 1600,
     "h": 982,
-    "alt": "Glyph Bot on the Mac"
+    "alt": "A saved note with Undo",
+    "more": [
+     {
+      "img": "/bot/11-decisions.webp",
+      "w": 1600,
+      "h": 981,
+      "alt": "Decisions waiting on you"
+     }
+    ]
    }
   ],
   "faq": [
@@ -1402,7 +1484,15 @@
     "img": "/arena/picks.webp",
     "w": 1600,
     "h": 1000,
-    "alt": "A blind pick between two answers"
+    "alt": "A blind pick between two answers",
+    "more": [
+     {
+      "img": "/arena/safety.webp",
+      "w": 1600,
+      "h": 1000,
+      "alt": "Safety checks before a pick"
+     }
+    ]
    },
    {
     "title": "A routing policy with reasons",
@@ -1534,7 +1624,15 @@
     "img": "/wealth/mac-today.webp",
     "w": 1400,
     "h": 1003,
-    "alt": "Today on the Mac: net worth, what is liquid and owed"
+    "alt": "Today on the Mac: net worth, what is liquid and owed",
+    "more": [
+     {
+      "img": "/wealth/iphone-today.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph Wealth on iPhone"
+     }
+    ]
    },
    {
     "title": "Bring in a statement",
@@ -1542,7 +1640,15 @@
     "img": "/wealth/mac-cashflow.webp",
     "w": 1400,
     "h": 1003,
-    "alt": "Cash flow on the Mac"
+    "alt": "Cash flow on the Mac",
+    "more": [
+     {
+      "img": "/wealth/iphone-cashflow.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph Wealth on iPhone"
+     }
+    ]
    },
    {
     "title": "See where it stands",
@@ -1550,7 +1656,15 @@
     "img": "/wealth/mac-scenarios.webp",
     "w": 1400,
     "h": 1003,
-    "alt": "Scenarios on the Mac"
+    "alt": "Scenarios on the Mac",
+    "more": [
+     {
+      "img": "/wealth/iphone-portfolio.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph Wealth on iPhone"
+     }
+    ]
    }
   ],
   "faq": [
@@ -1605,7 +1719,15 @@
     "img": "/well/mac-today.webp",
     "w": 1400,
     "h": 973,
-    "alt": "Today on the Mac in Glyph Well"
+    "alt": "Today on the Mac in Glyph Well",
+    "more": [
+     {
+      "img": "/well/iphone-day.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph Well on iPhone"
+     }
+    ]
    },
    {
     "title": "See what often came before",
@@ -1613,7 +1735,15 @@
     "img": "/well/mac-insights.webp",
     "w": 1400,
     "h": 973,
-    "alt": "Insights on the Mac"
+    "alt": "Insights on the Mac",
+    "more": [
+     {
+      "img": "/well/iphone-insights.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph Well on iPhone"
+     }
+    ]
    },
    {
     "title": "Ready for the visit",
@@ -1621,7 +1751,15 @@
     "img": "/well/mac-summary.webp",
     "w": 1400,
     "h": 973,
-    "alt": "A visit summary on the Mac"
+    "alt": "A visit summary on the Mac",
+    "more": [
+     {
+      "img": "/well/iphone-food.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph Well on iPhone"
+     }
+    ]
    }
   ],
   "faq": [
@@ -1677,7 +1815,15 @@
     "img": "/life/mac-due.webp",
     "w": 1400,
     "h": 949,
-    "alt": "Due on the Mac"
+    "alt": "Due on the Mac",
+    "more": [
+     {
+      "img": "/life/iphone-due.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph Life on iPhone"
+     }
+    ]
    },
    {
     "title": "Money out",
@@ -1685,7 +1831,15 @@
     "img": "/life/mac-money.webp",
     "w": 1400,
     "h": 949,
-    "alt": "Money out on the Mac"
+    "alt": "Money out on the Mac",
+    "more": [
+     {
+      "img": "/life/iphone-lists.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph Life on iPhone"
+     }
+    ]
    },
    {
     "title": "Documents and cover",
@@ -1693,7 +1847,15 @@
     "img": "/life/mac-documents.webp",
     "w": 1400,
     "h": 949,
-    "alt": "Documents on the Mac"
+    "alt": "Documents on the Mac",
+    "more": [
+     {
+      "img": "/life/iphone-workflows.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph Life on iPhone"
+     }
+    ]
    }
   ],
   "faq": [
@@ -1744,7 +1906,15 @@
     "img": "/crm/mac-person.webp",
     "w": 1400,
     "h": 897,
-    "alt": "A person's page on the Mac"
+    "alt": "A person's page on the Mac",
+    "more": [
+     {
+      "img": "/crm/iphone-person.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph CRM on iPhone"
+     }
+    ]
    },
    {
     "title": "Linked to each other",
@@ -1752,7 +1922,15 @@
     "img": "/crm/mac-org.webp",
     "w": 1400,
     "h": 897,
-    "alt": "An organisation's page on the Mac"
+    "alt": "An organisation's page on the Mac",
+    "more": [
+     {
+      "img": "/crm/iphone-org.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph CRM on iPhone"
+     }
+    ]
    },
    {
     "title": "Find anyone",
@@ -1760,7 +1938,15 @@
     "img": "/crm/mac-search.webp",
     "w": 1400,
     "h": 897,
-    "alt": "Search on the Mac"
+    "alt": "Search on the Mac",
+    "more": [
+     {
+      "img": "/crm/iphone-tags.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph CRM on iPhone"
+     }
+    ]
    }
   ],
   "faq": [
@@ -1811,7 +1997,15 @@
     "img": "/omega/mac-today.webp",
     "w": 1400,
     "h": 926,
-    "alt": "Today on the Mac in Glyph Omega"
+    "alt": "Today on the Mac in Glyph Omega",
+    "more": [
+     {
+      "img": "/omega/iphone-today.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph Omega on iPhone"
+     }
+    ]
    },
    {
     "title": "Goals by area of life",
@@ -1819,7 +2013,15 @@
     "img": "/omega/mac-goals.webp",
     "w": 1400,
     "h": 926,
-    "alt": "Goals on the Mac"
+    "alt": "Goals on the Mac",
+    "more": [
+     {
+      "img": "/omega/iphone-goals.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph Omega on iPhone"
+     }
+    ]
    },
    {
     "title": "A review once a week",
@@ -1827,7 +2029,15 @@
     "img": "/omega/mac-review.webp",
     "w": 1400,
     "h": 926,
-    "alt": "The weekly review on the Mac"
+    "alt": "The weekly review on the Mac",
+    "more": [
+     {
+      "img": "/omega/iphone-vision.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph Omega on iPhone"
+     }
+    ]
    }
   ],
   "faq": [
@@ -1878,7 +2088,15 @@
     "img": "/connect/mac-reach.webp",
     "w": 1400,
     "h": 926,
-    "alt": "Reach on the Mac"
+    "alt": "Reach on the Mac",
+    "more": [
+     {
+      "img": "/connect/iphone-reach.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph Connect on iPhone"
+     }
+    ]
    },
    {
     "title": "What each tool may do",
@@ -1886,7 +2104,15 @@
     "img": "/connect/mac-tools.webp",
     "w": 1400,
     "h": 926,
-    "alt": "Every tool on the Mac"
+    "alt": "Every tool on the Mac",
+    "more": [
+     {
+      "img": "/connect/iphone-connections.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph Connect on iPhone"
+     }
+    ]
    },
    {
     "title": "Cut one tool, or the app",
@@ -1894,7 +2120,15 @@
     "img": "/connect/mac-app.webp",
     "w": 1400,
     "h": 926,
-    "alt": "One app's page on the Mac"
+    "alt": "One app's page on the Mac",
+    "more": [
+     {
+      "img": "/connect/iphone-chat.webp",
+      "w": 506,
+      "h": 1100,
+      "alt": "Glyph Connect on iPhone"
+     }
+    ]
    }
   ],
   "faq": [

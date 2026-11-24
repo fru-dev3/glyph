@@ -243,11 +243,13 @@ def cta(back_k=None, back_name=None):
 def panels(k):
     a = app(k)
     # How it works: a stepper. The steps on the left take turns; the picture on the right follows.
-    steps = "".join(f'<li><button type="button" role="tab" aria-selected="{"true" if i == 0 else "false"}" data-i="{i}">'
+    # Each step can show several screens (Mac and iPhone) in turn: "more" in compare.json (Fru, 2026-11-24: "show many different images here").
+    pics = [[s] + s.get("more", []) for s in a["how"]]
+    steps = "".join(f'<li><button type="button" role="tab" aria-selected="{"true" if i == 0 else "false"}" data-i="{i}" style="--d:{len(pics[i]) * 3.2 if len(pics[i]) > 1 else 5.5:.1f}s">'
                     f'<span class="no">{i + 1:02d}</span><b>{e(s["title"])}</b><span class="p">{e(s["text"])}</span><i class="bar"></i></button></li>'
                     for i, s in enumerate(a["how"]))
-    shots = "".join(f'<img class="{"on" if i == 0 else ""}{" tall" if s["h"] > s["w"] else ""}" data-i="{i}" src="{e(s["img"])}" width="{s["w"]}" height="{s["h"]}" alt="{e(s["alt"])}" loading="lazy">'
-                    for i, s in enumerate(a["how"]))
+    shots = "".join(f'<img class="{"on" if i == 0 and j == 0 else ""}{" tall" if s["h"] > s["w"] else ""}" data-i="{i}" data-j="{j}" src="{e(s["img"])}" width="{s["w"]}" height="{s["h"]}" alt="{e(s["alt"])}" loading="lazy">'
+                    for i, ps in enumerate(pics) for j, s in enumerate(ps))
     # Compare: a rival picker, the head-to-head, the rows.
     chips, cards = [], []
     for i, rv in enumerate(a["rivals"]):

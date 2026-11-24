@@ -206,18 +206,20 @@ if (panels.length) {
 // How it works: the steps take turns every 5.5 seconds while the panel is open; a tap picks one, hovering holds.
 var stepT = 0; // var: route() above runs before this line on a page opened at a panel
 function stepStop() { clearTimeout(stepT); }
-function stepGo(st, n) {
-  const bs = $$(".steplist button", st), im = $$(".shots img", st);
-  bs.forEach((b, i) => { b.setAttribute("aria-selected", i === n); const bar = $(".bar", b); bar.style.animation = "none"; bar.offsetWidth; bar.style.animation = ""; });
-  im.forEach((x, i) => x.classList.toggle("on", i === n));
+// A step with several screens shows each in turn (3.2 seconds apiece), then hands over to the next step.
+function stepGo(st, n, j = 0) {
+  const bs = $$(".steplist button", st), im = $$(".shots img", st), k = im.filter((x) => +x.dataset.i === n).length;
+  if (!j) bs.forEach((b, i) => { b.setAttribute("aria-selected", i === n); const bar = $(".bar", b); bar.style.animation = "none"; bar.offsetWidth; bar.style.animation = ""; });
+  im.forEach((x) => x.classList.toggle("on", +x.dataset.i === n && +(x.dataset.j || 0) === j));
   stepStop();
-  if (!still && !st.classList.contains("hold")) stepT = setTimeout(() => stepGo(st, (n + 1) % bs.length), 5500);
-  st.dataset.n = n;
+  if (!still && !st.classList.contains("hold"))
+    stepT = setTimeout(() => (j + 1 < k ? stepGo(st, n, j + 1) : stepGo(st, (n + 1) % bs.length)), k > 1 ? 3200 : 5500);
+  st.dataset.n = n; st.dataset.j = j;
 }
 $$(".stepper").forEach((st) => {
   $$(".steplist button", st).forEach((b, i) => b.addEventListener("click", () => { stepGo(st, i); track("how_step", { step: i + 1 }); }));
   st.addEventListener("mouseenter", () => { st.classList.add("hold"); stepStop(); });
-  st.addEventListener("mouseleave", () => { st.classList.remove("hold"); stepGo(st, +st.dataset.n || 0); });
+  st.addEventListener("mouseleave", () => { st.classList.remove("hold"); stepGo(st, +st.dataset.n || 0, +st.dataset.j || 0); });
 });
 // Numbers count up from zero the first time their panel opens.
 function countUp(el) {
