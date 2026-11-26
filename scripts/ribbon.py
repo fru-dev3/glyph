@@ -143,7 +143,7 @@ def ribbon(k, here="", base="", tabs=None):
 
 def tabs_for(k):
     if k == "home":
-        return [("", "Overview"), ("apps", "Apps"), ("compare", "Compare"), ("open", "In the open"), ("faq", "FAQ")]
+        return [("", "Overview"), ("apps", "Apps"), ("compare", "Compare"), ("faq", "FAQ")]
     return [("", "Overview"), ("how", "How it works"), ("compare", "Compare"),
             ("open", "In the open" if data[k].get("repo") else data[k].get("open_tab", "Releases")), ("faq", "FAQ")]
 
@@ -238,6 +238,26 @@ def close(k):
             f'{svg("M6 6l12 12M18 6L6 18")}</a>')
 
 
+# FAQ (Fru, 2026-11-26: "look at all this space... no alignment... is this the best FAQ"): two columns. Left, the title and
+# a way to get help; right, numbered questions as cards, the first open and one open at a time (details name="faq").
+EXTRA_FAQ = [["Can you set it up for me?", "Yes. One hour, live on your Mac, with the builder of Glyph: the apps, Jot dictation and meetings, and your AI agents on your own files. $149, and you pick the time right after paying."],
+             ["How can I support Glyph?", "Every app stays free. If Glyph saves you a subscription, you can support it monthly or once at glyph.fru.dev/support. Nothing is locked."]]
+SETUP_URL = "https://buy.stripe.com/8x2aEWgAR8oHaue40k4Ja02"
+
+
+def faq_panel(k, items, name, ask):
+    qs = "".join(f'<details class="qi" name="faq"{" open" if i == 0 else ""}><summary><span class="no">{i + 1:02d}</span><span class="q">{e(q)}</span></summary><p>{e(ans)}</p></details>'
+                 for i, (q, ans) in enumerate(list(items) + EXTRA_FAQ))
+    return f'''<section class="panel" id="faq" hidden aria-labelledby="faq-h">{close(k)}<div class="pin wide">
+  <div class="qa"><div class="qa-l">
+    <h2 id="faq-h">Questions</h2><p class="pl">Straight answers about {e(name)}. Anything else, <a href="{ask}">ask on GitHub</a>.</p>
+    <div class="qa-help"><b>Rather talk it through?</b><span>One hour on your Mac with the builder. Everything set up for how you work.</span>
+      <a class="btn" href="{SETUP_URL}" data-track="setup_click">Book a session, $149</a></div>
+    <p class="qa-more"><a href="{INSTALL}" data-dmg="fru-dev3/glyph-native" data-track="file_download">{svg("M12 3v12m0 0l-5-5m5 5l5-5M5 21h14")}Install Glyph Native</a><a href="/support" data-track="support_click">{svg("M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z")}Support Glyph</a></p>
+  </div><div class="qa-r">{qs}</div></div>
+</div></section>'''
+
+
 def cta(back_k=None, back_name=None):
     back = f'<a class="btn ghost" href="/{back_k}">Back to {e(back_name)}</a>' if back_k else ""
     return (f'<p class="row-btns"><a class="btn go" href="{INSTALL}" data-dmg="fru-dev3/glyph-native" data-track="file_download">'
@@ -300,11 +320,7 @@ def panels(k):
 <section class="panel" id="open" hidden aria-labelledby="open-h">{close(k)}<div class="pin">
   {open_body}
 </div></section>
-<section class="panel" id="faq" hidden aria-labelledby="faq-h">{close(k)}<div class="pin">
-  <h2 id="faq-h">Questions</h2>
-  <div class="faq">{faq}</div>
-  {cta(k, a["name"])}
-</div></section>
+{faq_panel(k, a["faq"], a["name"], "https://github.com/" + (a.get("repo") or "fru-dev3/glyph-native") + "/issues")}
 <!-- /ribbon -->'''
 
 
@@ -361,17 +377,7 @@ def home_panels():
   <aside class="total"><div class="tt"><span>You would stop paying</span><b class="sum" data-sum>$0</b><span>a month, or <b data-year>$0</b> a year</span></div><div class="drop" data-drop aria-live="polite"></div>
   <span class="glyph">Glyph: <b>$0</b></span></aside></div>
 </div></section>
-<section class="panel" id="open" hidden aria-labelledby="open-h">{close("home")}<div class="pin wide">
-  <h2 id="open-h">Built in the open</h2><p class="pl">Stars, downloads and releases, read from GitHub.</p>
-  <div class="stats">{"".join(stats())}<a class="stat" href="https://github.com/fru-dev3" target="_blank" rel="noreferrer"><b data-count="{len(APPS)}">{len(APPS)}</b><span>apps in the family</span></a></div>
-  <h3>People who starred Glyph</h3><div class="faces big" data-faces></div>
-  <p class="row-btns"><a class="btn go" href="https://github.com/fru-dev3">{svg("M8 6l-6 6 6 6M16 6l6 6-6 6")}Read the code</a></p>
-</div></section>
-<section class="panel" id="faq" hidden aria-labelledby="faq-h">{close(k)}<div class="pin">
-  <h2 id="faq-h">Questions</h2>
-  <div class="faq">{faq}</div>
-  {cta()}
-</div></section>
+{faq_panel("home", h["faq"], "Glyph", "https://github.com/fru-dev3/glyph-native/issues")}
 <!-- /ribbon -->'''
 
 
