@@ -1,7 +1,9 @@
 // The Support button every fru.dev site shows (Fru, 2026-11-26: "very prominent almost everywhere ... you cannot miss it",
 // not a link hiding in the footer). One file, loaded by glyph.fru.dev, fru.dev and every context source with
 //   <script src="https://glyph.fru.dev/support.js" defer></script>
-// It pins a green Support pill to the bottom right, above any pinned footer bar, and opens glyph.fru.dev/support.
+// It pins a "Buy me a coffee" button to the bottom right, above any pinned footer bar, and opens fru.dev/coffee
+// (Buy Me a Coffee). Fru, same day: no heart, it must read as paying at a glance; a coffee cup is the pattern
+// people already know.
 (() => {
   if (window.__fruSupport) return;
   window.__fruSupport = true;
@@ -10,16 +12,17 @@
 
   const css = `
 #fru-support{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:calc(16px + var(--fru-support-lift,0px) + env(safe-area-inset-bottom));z-index:2147483000;
-  display:inline-flex;align-items:center;gap:8px;padding:12px 20px 12px 16px;border-radius:999px;background:#008000;color:#fff!important;text-decoration:none!important;
-  font:700 16px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:.01em;
-  box-shadow:0 10px 26px rgba(0,80,0,.35),0 0 0 3px rgba(255,255,255,.9);transition:transform .2s,box-shadow .2s,background .2s}
-#fru-support:hover{transform:translateY(-2px);background:#006e00;box-shadow:0 14px 32px rgba(0,80,0,.45),0 0 0 3px #fff}
+  display:inline-flex;align-items:center;gap:8px;padding:10px 18px 10px 13px;border-radius:14px;background:#008000;color:#fff!important;text-decoration:none!important;
+  font:700 16px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:.005em;
+  box-shadow:0 10px 26px rgba(0,60,0,.32),0 0 0 2px rgba(255,255,255,.95);transition:transform .2s,box-shadow .2s,background .2s}
+#fru-support:hover{transform:translateY(-2px);background:#006e00;box-shadow:0 14px 32px rgba(0,60,0,.42),0 0 0 2px #fff}
 #fru-support:focus-visible{outline:3px solid #0B1A10;outline-offset:3px}
-#fru-support svg{width:18px;height:18px;flex:none}
-#fru-support.beat svg{animation:fru-beat 1.1s ease-in-out 2}
-@keyframes fru-beat{0%,100%{transform:scale(1)}15%{transform:scale(1.3)}30%{transform:scale(1)}45%{transform:scale(1.2)}}
-@media (max-width:520px){#fru-support{padding:11px 16px 11px 13px;font-size:15px}}
-@media (prefers-reduced-motion:reduce){#fru-support,#fru-support svg{transition:none;animation:none!important}}
+#fru-support svg{width:26px;height:26px;flex:none;margin-top:-2px}
+#fru-support .steam{animation:fru-steam 2.4s ease-in-out infinite}
+#fru-support .steam:nth-of-type(2){animation-delay:.4s}
+@keyframes fru-steam{0%,100%{opacity:.6;transform:translateY(1px)}50%{opacity:1;transform:translateY(-1px)}}
+@media (max-width:520px){#fru-support{padding:10px 14px 10px 12px;font-size:15px}#fru-support svg{width:24px;height:24px}}
+@media (prefers-reduced-motion:reduce){#fru-support,#fru-support .steam{transition:none;animation:none!important}}
 @media print{#fru-support{display:none}}`;
 
   const add = () => {
@@ -29,13 +32,17 @@
     document.head.appendChild(st);
     const a = document.createElement("a");
     a.id = "fru-support";
-    a.href = "https://glyph.fru.dev/support" + (host === "glyph.fru.dev" ? "" : "?from=" + encodeURIComponent(host));
-    a.setAttribute("aria-label", "Support fru.dev: keep it free");
-    a.title = "Everything here is free, built by one person. Support it monthly or once.";
-    a.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg>Support';
-    a.addEventListener("click", () => { try { window.gtag && gtag("event", "support_click", { from: "pill", site: host, link_url: a.href }); } catch {} });
+    a.href = "https://fru.dev/coffee";
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.setAttribute("aria-label", "Buy me a coffee: everything here is free, built by one person");
+    a.title = "Everything here is free, built by one person. Buy me a coffee to keep it going.";
+    a.innerHTML = '<svg viewBox="2 1.2 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      + '<path class="steam" d="M8 2.5c-.6.8-.6 1.7 0 2.5"/><path class="steam" d="M12 2.5c-.6.8-.6 1.7 0 2.5"/>'
+      + '<path d="M3.5 8.5h13v6a5 5 0 0 1-5 5h-3a5 5 0 0 1-5-5z" fill="currentColor"/>'
+      + '<path d="M16.5 10h1.5a2.5 2.5 0 0 1 0 5h-1.6"/></svg>Buy me a coffee';
+    a.addEventListener("click", () => { try { window.gtag && gtag("event", "support_click", { from: "coffee_button", site: host, link_url: a.href }); } catch {} });
     document.body.appendChild(a);
-    setTimeout(() => a.classList.add("beat"), 1500);
 
     // Sit above a pinned footer bar (the context sources pin one to the viewport bottom), never on top of it.
     const lift = () => {
