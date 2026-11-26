@@ -258,3 +258,6 @@ if (calc) {
   calc.addEventListener("change", (ev) => { total(); track("calc_toggle", { value: ev.target.value }); });
   total();
 }
+
+// The Support pill every fru.dev site shows (support.js). Pages without site.js load it themselves.
+{ const s = document.createElement("script"); s.src = "/support.js"; s.defer = true; document.head.appendChild(s); }
