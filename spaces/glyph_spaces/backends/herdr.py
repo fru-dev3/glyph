@@ -230,7 +230,10 @@ def agent_command(tab, path, resume=False):
     # cd first: a tab opened by hand often sits in a parent folder, and the
     # agent should open in the folder the tab is for. --continue picks up the
     # last conversation in that folder, so a relaunch keeps its context.
-    return "cd %s && %s %s%s" % (shlex.quote(path), tab["agent"], tab["mark"],
+    # clear first: answer_trust reads the visible screen, and a dead session's
+    # last frame left on it looks like a live one, so the trust prompt that
+    # follows was never answered.
+    return "clear && cd %s && %s %s%s" % (shlex.quote(path), tab["agent"], tab["mark"],
                                  " --continue" if resume and tab["agent"] == "claude" else "")
 
 
