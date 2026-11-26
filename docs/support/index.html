@@ -16,96 +16,168 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/site.css">
 <style>
-/* Support (Fru, 2026-11-26: "is it a subscription or a one time payment? a lot of that is missing"): monthly or once,
-   three amounts each, every fact a buyer needs on one screen. Each card opens its own Stripe checkout. */
+/* Support (Fru, 2026-11-26: "use all the space ... one page that doesn't need to scroll"). Two halves of one screen:
+   the left says what the money funds (every app, shown), the right is the checkout: pick a plan, one button.
+   Every amount opens its own Stripe checkout. Below 960 wide or 600 tall the halves stack and the page scrolls. */
 html,body{overflow-x:clip}
-.sp{display:block;height:auto;min-height:100dvh;max-width:860px;margin:0 auto;padding:clamp(28px,6vh,72px) 16px 120px;text-align:center}
-.sp .back{display:inline-flex;align-items:center;gap:8px;margin:0 0 28px;color:var(--ink);font-weight:700;text-decoration:none;font-size:15px}
-.sp .back img{width:28px;height:28px;border-radius:23%}
-.sp h1{white-space:normal;text-wrap:balance;margin:0 0 10px;font:800 clamp(38px,6.4vw,64px)/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.03em}
-.sp h1 em{display:inline;font-style:normal;color:var(--green)}
-.sp .sub{max-width:560px;margin:0 auto 28px;color:var(--soft);font-size:17px;line-height:1.45}
-.seg{display:inline-flex;padding:4px;margin:0 0 22px;border-radius:999px;background:rgba(255,255,255,.75);border:1px solid var(--line);box-shadow:0 8px 20px rgba(11,26,16,.06)}
-.seg button{border:0;background:none;padding:10px 20px;border-radius:999px;font:700 15px/1 "Bricolage Grotesque",sans-serif;color:var(--soft);cursor:pointer;transition:background .2s,color .2s}
+.sp{text-align:left;--gap:clamp(16px,2.6vh,28px);display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(28px,4vw,72px);align-items:center;
+  height:100dvh;max-width:1480px;margin:0 auto;padding:clamp(20px,3.5vh,44px) clamp(20px,4vw,64px)}
+.bk{font:800 15px/1 "Bricolage Grotesque",sans-serif}
+.sp .back{display:inline-flex;align-items:center;gap:9px;color:var(--ink);text-decoration:none;font-weight:800;font-size:16px}
+.sp .back img{width:30px;height:30px;border-radius:23%}
+.sp .back:hover{color:var(--green)}
+
+/* Left: the case */
+.sp-case{display:flex;flex-direction:column;gap:var(--gap);min-width:0}
+.sp-case h1{margin:0;white-space:normal;text-wrap:balance;font:800 clamp(44px,min(7.2vw,12.5vh),128px)/.92 "Bricolage Grotesque",sans-serif;letter-spacing:-.04em}
+.sp-case h1 em{display:inline;color:var(--green)}
+.sp-case .sub{margin:0;max-width:34em;color:var(--soft);font-size:clamp(16px,2.1vh,19px);line-height:1.45}
+.sp-case .sub b{color:var(--ink)}
+.sp-funds{padding:clamp(14px,2.2vh,22px);border-radius:24px;background:rgba(255,255,255,.62);border:1px solid var(--line)}
+.sp-funds h2{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 clamp(10px,1.6vh,16px);font:800 clamp(16px,2.1vh,19px)/1.1 "Bricolage Grotesque",sans-serif}
+.sp-funds h2 span{font:600 13px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:var(--dim)}
+.sp-apps{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:clamp(8px,1.4vh,14px) 8px;margin:0;padding:0;list-style:none}
+.sp-apps a{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--soft);text-decoration:none;font-size:12.5px;font-weight:650}
+.sp-apps img{width:clamp(34px,6.6vh,66px);height:clamp(34px,6.6vh,66px);border-radius:23%;box-shadow:0 6px 14px rgba(11,26,16,.12);transition:transform .2s}
+.sp-apps a:hover img{transform:translateY(-3px) rotate(-3deg)}
+.sp-apps a:hover{color:var(--green)}
+.sp-why{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0;padding:0;list-style:none}
+.sp-why li{display:flex;gap:10px;align-items:flex-start;font-size:clamp(13.5px,1.8vh,15.5px);line-height:1.35;color:var(--soft)}
+.sp-why svg{flex:none;width:30px;height:30px;padding:6px;border-radius:10px;background:var(--tint);color:var(--green)}
+.sp-why b{display:block;color:var(--ink);font:800 15px/1.2 "Bricolage Grotesque",sans-serif;margin-bottom:2px}
+
+/* Right: the checkout */
+.sp-pay{display:flex;flex-direction:column;gap:clamp(10px,2.1vh,22px);padding:clamp(18px,3.4vh,40px);border-radius:32px;background:#fff;border:1px solid var(--line);
+  box-shadow:0 30px 70px rgba(11,26,16,.12),0 2px 0 rgba(255,255,255,.8) inset;min-width:0}
+.sp-pay .sp-phead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.sp-title{margin:0;font:800 clamp(22px,3.2vh,30px)/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.02em;color:var(--ink)}
+.seg{display:inline-flex;padding:4px;border-radius:999px;background:var(--tint)}
+.seg button{border:0;background:none;padding:9px 18px;border-radius:999px;font:800 14.5px/1 "Bricolage Grotesque",sans-serif;color:var(--soft);cursor:pointer;transition:background .2s,color .2s}
 .seg button[aria-selected=true]{background:var(--green);color:#fff;box-shadow:0 6px 14px rgba(0,110,0,.25)}
-.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;text-align:left}
+.tiers{display:flex;flex-direction:column;gap:clamp(8px,1.3vh,12px);margin:0;padding:0;border:0}
 .tiers[hidden]{display:none}
-.tier{position:relative;display:flex;flex-direction:column;gap:6px;padding:22px 20px 20px;border-radius:24px;background:rgba(255,255,255,.8);border:1px solid var(--line);
-  color:var(--ink);text-decoration:none;box-shadow:0 14px 30px rgba(11,26,16,.06);transition:transform .2s,box-shadow .2s,border-color .2s}
-.tier:hover{transform:translateY(-4px);border-color:var(--green);box-shadow:0 22px 40px rgba(0,90,0,.14)}
-.tier.pick{border:2px solid var(--green);background:#fff}
-.tier .tag{position:absolute;top:-11px;left:18px;padding:4px 10px;border-radius:999px;background:var(--green);color:#fff;font:800 10.5px/1 -apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.07em;text-transform:uppercase}
-.tier .name{font:800 15px/1 "Bricolage Grotesque",sans-serif;color:var(--green);letter-spacing:.01em}
-.tier .amt{font:800 46px/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.03em}
-.tier .amt small{font-size:16px;font-weight:700;color:var(--dim);letter-spacing:0;margin-left:3px}
-.tier .what{margin:2px 0 14px;color:var(--soft);font-size:14px;line-height:1.4;min-height:2.8em}
-.tier .go{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border-radius:14px;background:var(--tint);color:var(--green);font:800 15px/1 "Bricolage Grotesque",sans-serif;transition:background .2s,color .2s}
-.tier:hover .go,.tier.pick .go{background:var(--green);color:#fff}
-.other{margin:16px 0 0;font-size:15px;color:var(--soft)}
-.other a{color:var(--green);font-weight:700}
-.other .or{margin:0 10px;color:var(--dim)}
-.other a.bmc{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;background:#FFDD00;color:#0B1A10;text-decoration:none;font-weight:800;box-shadow:0 6px 14px rgba(180,150,0,.25);transition:transform .2s}
-.other a.bmc:hover{transform:translateY(-2px)}.other a.bmc svg{width:16px;height:16px}
-.facts{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:26px 0 0;padding:0;list-style:none}
-.facts li{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--soft)}
-.facts svg{width:14px;height:14px;color:var(--green)}
-.why{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:40px 0 0;text-align:left}
-.why div{padding:16px 18px;border-radius:18px;border:1px dashed var(--line)}
-.why b{display:block;margin:0 0 4px;font:800 16px/1.2 "Bricolage Grotesque",sans-serif}
-.why span{font-size:14px;color:var(--soft);line-height:1.4}
-.setup{margin:34px 0 0;font-size:15px;color:var(--soft)}
-.setup a{color:var(--green);font-weight:700}
-@media (max-width:720px){.tiers,.why{grid-template-columns:1fr}.tier .what{min-height:0;margin-bottom:10px}.tier{padding:18px}.tier .amt{font-size:40px}}
+.tier{position:relative;display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:14px;padding:clamp(10px,2.1vh,22px) 20px;border-radius:20px;
+  border:2px solid var(--line);cursor:pointer;transition:border-color .2s,background .2s,transform .2s}
+.tier:hover{border-color:var(--tint-line);transform:translateX(2px)}
+.tier input{appearance:none;margin:0;width:22px;height:22px;border-radius:50%;border:2px solid #B8C6BC;display:grid;place-items:center;cursor:pointer}
+.tier input::after{content:"";width:10px;height:10px;border-radius:50%;background:#fff;transform:scale(0);transition:transform .15s}
+.tier:has(input:checked){border-color:var(--green);background:rgba(0,128,0,.045)}
+.tier input:checked{background:var(--green);border-color:var(--green)}
+.tier input:checked::after{transform:scale(1)}
+.tier input:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+.tier .t b{display:flex;align-items:center;gap:8px;font:800 17px/1.1 "Bricolage Grotesque",sans-serif}
+.tier .t span{display:block;margin-top:3px;color:var(--soft);font-size:14px;line-height:1.35}
+.tier .tag{padding:3px 8px;border-radius:999px;background:var(--green);color:#fff;font:800 10px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.07em;text-transform:uppercase}
+.tier .amt{font:800 clamp(30px,5.4vh,50px)/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.03em;text-align:right;white-space:nowrap}
+.tier .amt small{font-size:14px;font-weight:700;color:var(--dim);letter-spacing:0;margin-left:2px}
+.sp-cta{display:flex;align-items:center;justify-content:center;gap:10px;padding:clamp(15px,2.3vh,20px);border-radius:18px;background:var(--green);color:#fff;text-decoration:none;
+  font:800 clamp(18px,2.5vh,21px)/1 "Bricolage Grotesque",sans-serif;box-shadow:0 14px 30px rgba(0,110,0,.3);transition:background .2s,transform .2s,box-shadow .2s}
+.sp-cta:hover{background:var(--green-h);transform:translateY(-2px);box-shadow:0 18px 36px rgba(0,110,0,.36)}
+.sp-cta svg{width:20px;height:20px}
+.sp-more{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:0;font-size:15px;color:var(--soft)}
+.sp-more a{color:var(--green);font-weight:750}
+.sp-more a.bmc{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;background:#FFDD00;color:#0B1A10;text-decoration:none;font-weight:800;transition:transform .2s}
+.sp-more a.bmc:hover{transform:translateY(-2px)}.sp-more a.bmc svg{width:16px;height:16px}
+.sp-facts{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;margin:0;padding:clamp(10px,1.6vh,14px) 0 0;border-top:1px solid var(--line);list-style:none}
+.sp-facts li{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--dim)}
+.sp-facts svg{width:13px;height:13px;color:var(--green)}
+.sp-setup{margin:0;font-size:14.5px;color:var(--soft)}
+.sp-setup a{color:var(--green);font-weight:750}
+
+@media (max-width:1180px){.sp-apps{grid-template-columns:repeat(7,minmax(0,1fr))}.sp-apps span{display:none}.sp-why{grid-template-columns:1fr}.sp-why li:nth-child(3){display:none}}
+@media (max-width:959px),(max-height:599px){
+  .sp{grid-template-columns:1fr;height:auto;min-height:100dvh;align-items:start;padding:24px 16px 40px;gap:24px}
+  .sp-case{display:contents}.sp>*,.sp-case>*{min-width:0}
+  .sp-case .back{order:0}.sp-case h1{order:1}.sp-case .sub{order:2}.sp-pay{order:3}.sp-funds{order:4}.sp-why{order:5}.sp-setup{order:6}
+  .sp-apps span{display:block}.sp-why li:nth-child(3){display:flex}
+}
+@media (max-width:560px){.sp-apps{grid-template-columns:repeat(5,minmax(0,1fr))}.tier{grid-template-columns:20px 1fr auto;gap:10px;padding:12px 14px}.tier .t span{font-size:13px}}
 </style>
 </head>
 <body data-page="support">
 <main class="sp">
-  <a class="back" href="/"><img src="/family/glyph-tile.svg" width="28" height="28" alt="">Glyph</a>
-  <h1>Keep Glyph <em>free</em>.</h1>
-  <p class="sub">Every Glyph app is free and local-first, built by one person. Your support pays for the work and keeps it that way. Nothing in the apps is locked.</p>
+  <section class="sp-case">
+    <a class="back" href="/"><img src="/family/glyph-tile.svg" width="30" height="30" alt="">Glyph</a>
+    <h1>Keep Glyph <em>free</em>.</h1>
+    <p class="sub">Every Glyph app is free and local-first, <b>built by one person</b>. Your support pays for the work and keeps it that way. Nothing in the apps is locked.</p>
+    <div class="sp-funds">
+      <h2>What your support funds <span>13 apps, all free</span></h2>
+      <ul class="sp-apps">
+        <li><a href="/bot/"><img src="/family/studio-tile.svg" alt=""><span>Bot</span></a></li>
+        <li><a href="/jot/"><img src="/family/jot-tile.svg" alt=""><span>Jot</span></a></li>
+        <li><a href="/cast/"><img src="/family/cast-tile.svg" alt=""><span>Cast</span></a></li>
+        <li><a href="/time/"><img src="/family/time-tile.svg" alt=""><span>Time</span></a></li>
+        <li><a href="/ibis/"><img src="/family/knowledge-tile.svg" alt=""><span>Ibis</span></a></li>
+        <li><a href="/rig/"><img src="/family/rig-tile.svg" alt=""><span>Rig</span></a></li>
+        <li><a href="/arena/"><img src="/family/arena-tile.svg" alt=""><span>Arena</span></a></li>
+        <li><a href="/well/"><img src="/family/well-tile.svg" alt=""><span>Well</span></a></li>
+        <li><a href="/wealth/"><img src="/family/wealth-tile.svg" alt=""><span>Wealth</span></a></li>
+        <li><a href="/crm/"><img src="/family/crm-tile.png" alt=""><span>CRM</span></a></li>
+        <li><a href="/omega/"><img src="/family/omega-tile.svg" alt=""><span>Omega</span></a></li>
+        <li><a href="/connect/"><img src="/family/connect-tile.svg" alt=""><span>Connect</span></a></li>
+        <li><a href="/life/"><img src="/family/life-tile.svg" alt=""><span>Life</span></a></li>
+      </ul>
+    </div>
+    <ul class="sp-why">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg><span><b>Every app stays free</b>No paywalls, no trials, no accounts.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><span><b>Signed and notarized</b>Apple's program and the build machines cost money every year.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg><span><b>New apps, sooner</b>More time on Glyph means features ship faster.</span></li>
+    </ul>
+    <p class="sp-setup">Rather have it set up for you? <a href="https://buy.stripe.com/8x2aEWgAR8oHaue40k4Ja02" data-track="setup_click">One hour on your Mac with the builder, $149</a></p>
+  </section>
 
-  <div class="seg" role="tablist" aria-label="How you want to support">
-    <button type="button" role="tab" aria-selected="true" data-plan="monthly">Monthly</button>
-    <button type="button" role="tab" aria-selected="false" data-plan="once">One time</button>
-  </div>
+  <section class="sp-pay" aria-label="Choose how to support">
+    <div class="sp-phead">
+      <h2 class="sp-title">Choose your support</h2>
+      <div class="seg" role="tablist" aria-label="Monthly or one time">
+        <button type="button" role="tab" aria-selected="true" data-plan="monthly">Monthly</button>
+        <button type="button" role="tab" aria-selected="false" data-plan="once">One time</button>
+      </div>
+    </div>
 
-  <div class="tiers" data-plan="monthly" role="tabpanel">
-    <a class="tier" href="https://buy.stripe.com/eVqaEWdoFdJ145QdAU4Ja07" data-track="support_pick" data-app="monthly-5"><span class="name">Supporter</span><span class="amt">$5<small>/ month</small></span><span class="what">A coffee a month toward the next release.</span><span class="go">Support monthly</span></a>
-    <a class="tier pick" href="https://buy.stripe.com/8x214m0BTfR9gSC40k4Ja08" data-track="support_pick" data-app="monthly-15"><span class="tag">Suggested</span><span class="name">Backer</span><span class="amt">$15<small>/ month</small></span><span class="what">About what one paid app it replaces costs, and every app stays free.</span><span class="go">Support monthly</span></a>
-    <a class="tier" href="https://buy.stripe.com/9B6eVc3O50Wf1XIaoI4Ja09" data-track="support_pick" data-app="monthly-50"><span class="name">Patron</span><span class="amt">$50<small>/ month</small></span><span class="what">For teams and people who run their day on Glyph.</span><span class="go">Support monthly</span></a>
-  </div>
-  <div class="tiers" data-plan="once" role="tabpanel" hidden>
-    <a class="tier" href="https://buy.stripe.com/bJeeVc84lawP45Q54o4Ja04" data-track="support_pick" data-app="once-9"><span class="name">Thanks</span><span class="amt">$9<small>once</small></span><span class="what">A quick thank you.</span><span class="go">Pay once</span></a>
-    <a class="tier pick" href="https://buy.stripe.com/9B68wO84l9sL1XIfJ24Ja05" data-track="support_pick" data-app="once-29"><span class="tag">Suggested</span><span class="name">Supporter</span><span class="amt">$29<small>once</small></span><span class="what">About two months of one paid app it replaces.</span><span class="go">Pay once</span></a>
-    <a class="tier" href="https://buy.stripe.com/5kQfZg98p5cv1XI2Wg4Ja06" data-track="support_pick" data-app="once-99"><span class="name">Champion</span><span class="amt">$99<small>once</small></span><span class="what">Funds a whole feature.</span><span class="go">Pay once</span></a>
-  </div>
-  <p class="other">Another amount? <a href="https://buy.stripe.com/14A00ickBfR9fOy2Wg4Ja03" data-track="support_pick" data-app="once-custom">Pay what you want, once</a><span class="or">or</span><a class="bmc" href="https://fru.dev/coffee" data-track="support_pick" data-app="coffee"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><path d="M6 2v2M10 2v2M14 2v2"/></svg>Buy me a coffee</a></p>
+    <fieldset class="tiers" data-plan="monthly">
+      <legend class="visually-hidden" hidden>Monthly amount</legend>
+      <label class="tier"><input type="radio" name="monthly" value="https://buy.stripe.com/eVqaEWdoFdJ145QdAU4Ja07" data-app="monthly-5" data-cta="Support $5 a month"><span class="t"><b>Supporter</b><span>A coffee a month toward the next release.</span></span><span class="amt">$5<small>/mo</small></span></label>
+      <label class="tier"><input type="radio" name="monthly" value="https://buy.stripe.com/8x214m0BTfR9gSC40k4Ja08" data-app="monthly-15" data-cta="Support $15 a month" checked><span class="t"><b>Backer <i class="tag">Suggested</i></b><span>About what one paid app it replaces costs.</span></span><span class="amt">$15<small>/mo</small></span></label>
+      <label class="tier"><input type="radio" name="monthly" value="https://buy.stripe.com/9B6eVc3O50Wf1XIaoI4Ja09" data-app="monthly-50" data-cta="Support $50 a month"><span class="t"><b>Patron</b><span>For teams and people who run their day on Glyph.</span></span><span class="amt">$50<small>/mo</small></span></label>
+    </fieldset>
+    <fieldset class="tiers" data-plan="once" hidden>
+      <legend hidden>One-time amount</legend>
+      <label class="tier"><input type="radio" name="once" value="https://buy.stripe.com/bJeeVc84lawP45Q54o4Ja04" data-app="once-9" data-cta="Pay $9 once"><span class="t"><b>Thanks</b><span>A quick thank you.</span></span><span class="amt">$9<small>once</small></span></label>
+      <label class="tier"><input type="radio" name="once" value="https://buy.stripe.com/9B68wO84l9sL1XIfJ24Ja05" data-app="once-29" data-cta="Pay $29 once" checked><span class="t"><b>Supporter <i class="tag">Suggested</i></b><span>About two months of one paid app it replaces.</span></span><span class="amt">$29<small>once</small></span></label>
+      <label class="tier"><input type="radio" name="once" value="https://buy.stripe.com/5kQfZg98p5cv1XI2Wg4Ja06" data-app="once-99" data-cta="Pay $99 once"><span class="t"><b>Champion</b><span>Funds a whole feature.</span></span><span class="amt">$99<small>once</small></span></label>
+    </fieldset>
 
-  <ul class="facts">
-    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Card, Apple Pay or Google Pay</li>
-    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Secure checkout by Stripe</li>
-    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Monthly cancels anytime</li>
-    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Receipt by email</li>
-    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Nothing is locked</li>
-  </ul>
+    <a class="sp-cta" id="cta" href="https://buy.stripe.com/8x214m0BTfR9gSC40k4Ja08" data-app="monthly-15"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6.2 4.5c2.4 0 4 1.4 5.8 3.5 1.8-2.1 3.4-3.5 5.8-3.5 3.9 0 5.8 3.9 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg><span id="ctat">Support $15 a month</span></a>
 
-  <div class="why">
-    <div><b>Every app stays free</b><span>No paywalls, no trials, no accounts. Your support is why.</span></div>
-    <div><b>Signed and notarized</b><span>Apple's developer program and the build machines cost money every year.</span></div>
-    <div><b>New apps, sooner</b><span>More time on Glyph means features ship faster.</span></div>
-  </div>
+    <p class="sp-more">Another amount? <a href="https://buy.stripe.com/14A00ickBfR9fOy2Wg4Ja03" data-track="support_pick" data-app="once-custom">Pay what you want</a><span aria-hidden="true">or</span><a class="bmc" href="https://fru.dev/coffee" data-track="support_pick" data-app="coffee"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><path d="M6 2v2M10 2v2M14 2v2"/></svg>Buy me a coffee</a></p>
 
-  <p class="setup">Rather have it set up for you? <a href="https://buy.stripe.com/8x2aEWgAR8oHaue40k4Ja02" data-track="setup_click">One hour on your Mac with the builder, $149</a></p>
+    <ul class="sp-facts">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Card, Apple Pay or Google Pay</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Secure checkout by Stripe</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Monthly cancels anytime</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Receipt by email</li>
+    </ul>
+  </section>
 </main>
 <script src="/site.js"></script>
 <script>
-// Monthly or one time: the switch shows that plan's three cards.
+// Pick a plan and an amount; the one button follows the pick and opens that amount's Stripe checkout.
+const cta = document.getElementById("cta"), ctat = document.getElementById("ctat");
 const segBtns = document.querySelectorAll(".seg button"), planEls = document.querySelectorAll(".tiers");
+const sync = () => {
+  const on = document.querySelector(".tiers:not([hidden]) input:checked");
+  cta.href = on.value; cta.dataset.app = on.dataset.app; ctat.textContent = on.dataset.cta;
+};
+document.querySelectorAll(".tiers input").forEach((i) => i.addEventListener("change", sync));
 segBtns.forEach((b) => b.addEventListener("click", () => {
   segBtns.forEach((x) => x.setAttribute("aria-selected", x === b));
   planEls.forEach((p) => (p.hidden = p.dataset.plan !== b.dataset.plan));
+  sync();
   try { gtag("event", "support_plan", { plan: b.dataset.plan }); } catch {}
 }));
+cta.addEventListener("click", () => { try { gtag("event", "support_pick", { app: cta.dataset.app, link_url: cta.href }); } catch {} });
+sync();
 </script>
 </body>
 </html>

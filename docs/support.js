@@ -6,7 +6,7 @@
   if (window.__fruSupport) return;
   window.__fruSupport = true;
   const host = location.hostname;
-  if (host === "glyph.fru.dev" && /^\/support\/?$/.test(location.pathname)) return;
+  if (/^\/support\/?$/.test(location.pathname)) return;
 
   const css = `
 #fru-support{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:calc(16px + var(--fru-support-lift,0px) + env(safe-area-inset-bottom));z-index:2147483000;
