@@ -15,6 +15,13 @@ if (location.hostname === "glyph.fru.dev") addEventListener("load", () => (windo
   gtag("config", "G-1TQYNT93J1", { site_name: "glyph", content_group: "glyph-" + (document.body.dataset.page || "home") });
 }));
 const track = (name, params) => { try { gtag("event", name, params); } catch {} };
+// An Install click starts the download right here, then opens /thanks: what to do next, and the setup session (decision d-mwww6afh-e4j3fl).
+if (document.body.dataset.page !== "thanks") document.addEventListener("click", (ev) => {
+  const a = ev.target.closest && ev.target.closest('a[href$=".dmg"]');
+  if (!a || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey || ev.button) return;
+  const k = a.dataset.app || document.body.dataset.page || "";
+  setTimeout(() => (location.href = "/thanks/" + (/^[a-z]+$/.test(k) && k !== "home" ? "?app=" + k : "")), 900);
+});
 $$("a[data-track]").forEach((a) => a.addEventListener("click", () => track(a.dataset.track, { link_url: a.href, app: a.dataset.app || document.body.dataset.page || "home", from: location.hash.slice(1) || "overview" })));
 
 // The sheet behind the footer link: #features opens it; Esc, the X or a click outside close it.

@@ -78,6 +78,10 @@ def icon_url(k):
     return "/family/glyph-tile.svg"
 
 
+# The job each app does, in the words of the rivals it stands beside (the Compare panel's Glyph column).
+ROLE = {"jot": "Dictation, meetings", "time": "Time tracking", "cast": "Screen videos", "wealth": "Net worth",
+        "well": "Health log", "omega": "Goals", "crm": "Contacts", "life": "Bills, renewals"}
+
 def app(k):
     """Our side from compare.json, their side from rivals/<k>.json when it is not inline."""
     a = dict(data[k])
@@ -337,10 +341,12 @@ def home_panels():
         if tiles:
             # Fru, 2026-11-22: the paid apps and Glyph must not look alike. Paid on the left, quiet; an arrow; Glyph on the right, solid green.
             # Fru, 2026-11-22: the green block installs ("make it as easy as possible to install"); Glyph Native installs every app.
+            # Fru, 2026-11-26: "looks cheap... progressive reveal": a quiet row, $0 against their prices; Install shows on hover.
             pop = '<i class="pop">Popular</i>' if p in h.get("popular", []) else ""
             rows_.append(f'<div class="prow"><div class="pts">{"".join(tiles)}</div><span class="parr" aria-hidden="true">{svg("M5 12h14M13 6l6 6-6 6")}</span>'
                          f'<a class="pa" href="{INSTALL}" data-dmg="fru-dev3/glyph-native" data-track="file_download" data-app="{p}" title="Install {e(a["name"])} with Glyph Native">'
-                         f'<img src="{icon_url(p)}" width="40" height="40" alt=""><b>{e(a["short"])}{pop}</b><span>{svg("M12 3v12m0 0l-5-5m5 5l5-5M5 21h14")}Install</span></a></div>')
+                         f'<img src="{icon_url(p)}" width="40" height="40" alt=""><span class="nm"><b>{e(a["short"])}{pop}</b><small>{e(ROLE.get(p, ""))}</small></span>'
+                         f'<span class="get"><em>$0</em><span class="ins">{svg("M12 3v12m0 0l-5-5m5 5l5-5M5 21h14")}Install</span></span></a></div>')
     faq = "".join(f'<details><summary>{e(q)}</summary><p>{e(ans)}</p></details>' for q, ans in h["faq"])
     return f'''<!-- ribbon -->
 {ribbon("home")}

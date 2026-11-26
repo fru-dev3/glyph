@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your download has started | Glyph</title>
+<meta name="description" content="Glyph Native is on its way. Three steps to get going, and help if you want it.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="robots" content="noindex,follow">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F7FBF5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<style>
+/* The page an Install click lands on (decision d-mwww6afh-e4j3fl, 2026-11-26): the download is already running;
+   this says what to do next, then offers the setup session, then a quiet way to support Glyph. Nothing is required. */
+html,body{overflow-x:clip}
+.ty{display:block;height:auto;min-height:100dvh;max-width:640px;margin:0 auto;padding:clamp(40px,9vh,96px) 16px 120px;text-align:left}
+.ty .mark{display:flex;align-items:center;gap:14px;margin:0 0 22px}
+.ty .mark img{width:64px;height:64px;border-radius:23%;box-shadow:0 14px 30px rgba(0,90,0,.25);animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+.ty .mark .ok{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(0,128,0,.1);color:var(--green);font:800 12px/1 -apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.04em;text-transform:uppercase}
+.ty h1{white-space:normal;text-wrap:balance;margin:0 0 8px;font:800 clamp(34px,6vw,52px)/1.02 "Bricolage Grotesque",sans-serif;letter-spacing:-.03em}
+.ty .sub{margin:0 0 28px;color:var(--soft);font-size:17px}
+.ty .sub a{color:var(--green);font-weight:600}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 34px;padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;padding:14px 14px 16px;border-radius:18px;background:rgba(255,255,255,.7);border:1px solid var(--line);font-weight:600;font-size:15px;line-height:1.3}
+.steps li::before{content:"0" counter(s);display:block;margin:0 0 8px;font:800 13px/1 "Bricolage Grotesque",sans-serif;color:var(--green)}
+.steps small{display:block;margin-top:4px;color:var(--dim);font-weight:500;font-size:13px}
+.offer{position:relative;padding:24px;border-radius:26px;color:#fff;background:linear-gradient(160deg,#0B3D12,#0B1A10);box-shadow:0 26px 50px rgba(11,26,16,.26)}
+.offer h2{margin:0 0 6px;font:800 clamp(22px,3vw,28px)/1.1 "Bricolage Grotesque",sans-serif;letter-spacing:-.01em}
+.offer p{margin:0 0 16px;color:rgba(255,255,255,.78);font-size:15px;line-height:1.45}
+.offer ul{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding:0;list-style:none}
+.offer li{padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.1);font-size:13px;font-weight:600}
+.offer .go{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:14px;background:#fff;color:#0B3D12;font:800 16px/1 "Bricolage Grotesque",sans-serif;text-decoration:none;transition:transform .2s,box-shadow .2s}
+.offer .go:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(0,0,0,.25)}
+.offer .go b{color:var(--green)}
+.offer .fine{display:block;margin-top:10px;font-size:12px;color:rgba(255,255,255,.55)}
+.sup{margin:22px 4px 0;color:var(--dim);font-size:14px}
+.sup a{color:var(--green);font-weight:700;text-decoration:none}
+.sup a:hover{text-decoration:underline}
+@media (max-width:560px){.steps{grid-template-columns:1fr;gap:8px}.steps li{display:grid;grid-template-columns:30px 1fr;padding:12px 14px}.steps li::before{grid-row:span 2;margin:2px 0 0}.steps small{grid-column:2}}
+</style>
+</head>
+<body data-page="thanks">
+<main class="ty">
+  <div class="mark"><img id="ico" src="/family/glyph-tile.svg" width="64" height="64" alt=""><span class="ok">Downloading</span></div>
+  <h1>Your download has started.</h1>
+  <p class="sub"><span id="what">Glyph Native</span> is on its way to your Downloads folder. Not starting? <a id="again" href="https://github.com/fru-dev3/glyph-native/releases/latest/download/Glyph-Native.dmg" data-track="file_download">Download again</a></p>
+  <ol class="steps">
+    <li>Open the file<small>Glyph-Native.dmg in Downloads</small></li>
+    <li>Drag it to Applications<small>then open it from there</small></li>
+    <li id="pick">Pick your apps<small>Native installs each one</small></li>
+  </ol>
+  <section class="offer" aria-labelledby="offer-h">
+    <h2 id="offer-h">Want it wired into your agents?</h2>
+    <p>One hour, live on your Mac, with Fru, the builder of Glyph. You leave with everything set up for how you work.</p>
+    <ul><li>Glyph and your apps</li><li>Jot dictation and meetings</li><li>Claude Code or Codex on your own files</li><li>A written summary after</li></ul>
+    <a class="go" href="https://gumroad.com/l/glyph-setup" data-track="setup_click">Book a session, <b>$149</b></a>
+    <span class="fine">Launch price for the first 10 sessions, then $249. Glyph itself stays free.</span>
+  </section>
+  <p class="sup">Glyph is free and built by one person. If it saves you a subscription, <a href="https://gumroad.com/l/glyph-supporter" data-track="support_click">you can support it</a>.</p>
+</main>
+<script src="/site.js"></script>
+<script>
+// Which app the Install click was for (?app=jot): its icon and name. Only known names are used.
+const APPS = { jot: ["Glyph Jot", "jot"], time: ["Glyph Time", "time"], bot: ["Glyph Bot", "studio"], cast: ["Glyph Cast", "cast"], arena: ["Glyph Arena", "arena"],
+  wealth: ["Glyph Wealth", "wealth"], well: ["Glyph Well", "well"], life: ["Glyph Life", "life"], crm: ["Glyph CRM", "crm"], omega: ["Glyph Omega", "omega"], connect: ["Glyph Connect", "connect"] };
+const k = new URLSearchParams(location.search).get("app"), a = APPS[k];
+if (a) {
+  document.getElementById("ico").src = "/family/" + a[1] + (k === "crm" ? "-tile.png" : "-tile.svg");
+  document.getElementById("pick").firstChild.textContent = "Pick " + a[0].replace("Glyph ", "");
+}
+document.querySelectorAll("[data-track]").forEach((el) => (el.dataset.app = a ? k : "native")); // site.js sends the event with this app
+</script>
+</body>
+</html>
