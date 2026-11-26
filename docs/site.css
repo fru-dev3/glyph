@@ -468,3 +468,9 @@ body[data-page=home] #compare .pin{width:100%}
 .pclose svg{width:20px;height:20px}
 @media (max-width:700px){.pclose{top:auto;bottom:calc(56px + env(safe-area-inset-bottom));right:14px;width:48px;height:48px;background:var(--ink);color:#fff;border:0}}
 footer a.earn{color:var(--green);font-weight:700}
+/* Support in the hero (Fru, 2026-11-26: "the support is not very prominent. i need to make money"). */
+.btn.sup>svg.hb{width:18px;height:18px;color:#E0465B;animation:beat 1.6s ease-in-out infinite}
+.btn.sup:hover{border-color:#E0465B;color:#C42E43}
+.setme{position:absolute;left:0;top:calc(100% + 36px);text-align:center;font-size:14px;font-weight:700;color:var(--green);text-decoration:underline;text-decoration-color:rgba(0,128,0,.3);text-underline-offset:4px;text-decoration-thickness:1.5px;white-space:nowrap}
+.setme b{font-weight:800}.setme:hover{text-decoration-color:var(--green)}
+@media (max-width:664px){footer a.earn{display:none}}
