@@ -43,6 +43,9 @@ html,body{overflow-x:clip}
 .tier:hover .go,.tier.pick .go{background:var(--green);color:#fff}
 .other{margin:16px 0 0;font-size:15px;color:var(--soft)}
 .other a{color:var(--green);font-weight:700}
+.other .or{margin:0 10px;color:var(--dim)}
+.other a.bmc{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;background:#FFDD00;color:#0B1A10;text-decoration:none;font-weight:800;box-shadow:0 6px 14px rgba(180,150,0,.25);transition:transform .2s}
+.other a.bmc:hover{transform:translateY(-2px)}.other a.bmc svg{width:16px;height:16px}
 .facts{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:26px 0 0;padding:0;list-style:none}
 .facts li{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--soft)}
 .facts svg{width:14px;height:14px;color:var(--green)}
@@ -76,7 +79,7 @@ html,body{overflow-x:clip}
     <a class="tier pick" href="https://buy.stripe.com/9B68wO84l9sL1XIfJ24Ja05" data-track="support_pick" data-app="once-29"><span class="tag">Suggested</span><span class="name">Supporter</span><span class="amt">$29<small>once</small></span><span class="what">About two months of one paid app it replaces.</span><span class="go">Pay once</span></a>
     <a class="tier" href="https://buy.stripe.com/5kQfZg98p5cv1XI2Wg4Ja06" data-track="support_pick" data-app="once-99"><span class="name">Champion</span><span class="amt">$99<small>once</small></span><span class="what">Funds a whole feature.</span><span class="go">Pay once</span></a>
   </div>
-  <p class="other">Another amount? <a href="https://buy.stripe.com/14A00ickBfR9fOy2Wg4Ja03" data-track="support_pick" data-app="once-custom">Pay what you want, once</a></p>
+  <p class="other">Another amount? <a href="https://buy.stripe.com/14A00ickBfR9fOy2Wg4Ja03" data-track="support_pick" data-app="once-custom">Pay what you want, once</a><span class="or">or</span><a class="bmc" href="https://fru.dev/coffee" data-track="support_pick" data-app="coffee"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><path d="M6 2v2M10 2v2M14 2v2"/></svg>Buy me a coffee</a></p>
 
   <ul class="facts">
     <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Card, Apple Pay or Google Pay</li>
