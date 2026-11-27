@@ -689,7 +689,7 @@ def wifi_link(info):
 
 
 def network_block():
-    out = run(["system_profiler", "SPAirPortDataType", "-json"], timeout=10)
+    out = run(["system_profiler", "SPAirPortDataType", "-json"], timeout=30)   # 14 s on a busy mini
     try:
         info = json.loads(out or "")
     except Exception:
