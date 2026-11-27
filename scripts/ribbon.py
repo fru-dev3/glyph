@@ -25,7 +25,7 @@ data = json.loads((root / "scripts/compare.json").read_text())
 APPS = {a["path"]: a for a in json.loads((docs / "apps.json").read_text())}
 e = html.escape
 FAM = "fru-dev3/glyph-native,fru-dev3/glyph-studio,fru-dev3/glyph-jot,fru-dev3/glyph-record,fru-dev3/glyph-time,fru-dev3/glyph-arena,fru-dev3/glyph-cast,fru-dev3/glyph,fru-dev3/glyph-engine"
-INSTALL = "https://github.com/fru-dev3/glyph-native/releases/latest/download/Glyph-Native.dmg"
+INSTALL = "https://github.com/fru-dev3/glyph-studio/releases/download/native/Glyph-Native.dmg"
 
 
 def svg(d, cls="ic"):
@@ -228,7 +228,7 @@ def timeline(rels):
 
 def stats(a=None):
     out = [f'<a class="stat" href="https://github.com/fru-dev3" target="_blank" rel="noreferrer"><b class="n" data-stars="{FAM}" data-floor="{GH["stars"]}" data-count="{GH["stars"]}">{GH["stars"]:,}</b><span>stars across Glyph</span></a>',
-           f'<a class="stat" href="https://github.com/fru-dev3/glyph-native/releases" target="_blank" rel="noreferrer"><span data-downloads="{FAM}" data-match="." data-floor="{GH["downloads"]}" data-label="downloads across Glyph"><b class="n" data-count="{GH["downloads"]}">{GH["downloads"]:,}</b></span><span>downloads across Glyph</span></a>']
+           f'<a class="stat" href="https://github.com/fru-dev3/glyph-studio/releases" target="_blank" rel="noreferrer"><span data-downloads="{FAM}" data-match="." data-floor="{GH["downloads"]}" data-label="downloads across Glyph"><b class="n" data-count="{GH["downloads"]}">{GH["downloads"]:,}</b></span><span>downloads across Glyph</span></a>']
     return out
 
 
@@ -253,14 +253,14 @@ def faq_panel(k, items, name, ask):
     <h2 id="faq-h">Questions</h2><p class="pl">Straight answers about {e(name)}. Anything else, <a href="{ask}">ask on GitHub</a>.</p>
     <div class="qa-help"><b>Rather talk it through?</b><span>One hour on your Mac with the builder. Everything set up for how you work.</span>
       <a class="btn" href="{SETUP_URL}" data-track="setup_click">Book a session, $149</a></div>
-    <p class="qa-more"><a href="{INSTALL}" data-dmg="fru-dev3/glyph-native" data-track="file_download">{svg("M12 3v12m0 0l-5-5m5 5l5-5M5 21h14")}Install Glyph Native</a><a href="/support" data-track="support_click">{svg("M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z")}Support Glyph</a></p>
+    <p class="qa-more"><a href="{INSTALL}" data-dmg="fru-dev3/glyph-studio@native" data-track="file_download">{svg("M12 3v12m0 0l-5-5m5 5l5-5M5 21h14")}Install Glyph Native</a><a href="/support" data-track="support_click">{svg("M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z")}Support Glyph</a></p>
   </div><div class="qa-r">{qs}</div></div>
 </div></section>'''
 
 
 def cta(back_k=None, back_name=None):
     back = f'<a class="btn ghost" href="/{back_k}">Back to {e(back_name)}</a>' if back_k else ""
-    return (f'<p class="row-btns"><a class="btn go" href="{INSTALL}" data-dmg="fru-dev3/glyph-native" data-track="file_download">'
+    return (f'<p class="row-btns"><a class="btn go" href="{INSTALL}" data-dmg="fru-dev3/glyph-studio@native" data-track="file_download">'
             f'{svg("M12 3v12m0 0l-5-5m5 5l5-5M5 21h14")}Install Glyph Native</a>{back}</p>')
 
 
@@ -299,7 +299,7 @@ def panels(k):
   <p class="row-btns"><a class="btn go" href="https://github.com/{repo}">{svg("M8 6l-6 6 6 6M16 6l6 6-6 6")}Read the code</a><a class="btn ghost" href="https://github.com/{repo}/issues">Ask or report an issue</a></p></div></div>'''
     else:
         lede = a.get("open_lede") or f"{a['name']} is installed and kept up to date by Glyph Native, signed and notarized by Apple. Its code is private for now; the family's numbers are public on GitHub."
-        link, label = a.get("open_link") or [f"https://github.com/fru-dev3/glyph-native/releases/tag/{k}", f"{a['name']} builds on GitHub"]
+        link, label = a.get("open_link") or [f"https://github.com/fru-dev3/glyph-studio/releases/tag/{k}", f"{a['name']} builds on GitHub"]
         open_body = f'''<h2 id="open-h">{e(a.get("open_tab", "Releases"))}</h2><p class="pl">{e(lede)}</p>
   <div class="stats">{"".join(stats())}
     <a class="stat" href="{e(link)}" target="_blank" rel="noreferrer"><b>{svg("M5 12h14M13 6l6 6-6 6", "ic big")}</b><span>{e(label)}</span></a>
@@ -320,7 +320,7 @@ def panels(k):
 <section class="panel" id="open" hidden aria-labelledby="open-h">{close(k)}<div class="pin">
   {open_body}
 </div></section>
-{faq_panel(k, a["faq"], a["name"], "https://github.com/" + (a.get("repo") or "fru-dev3/glyph-native") + "/issues")}
+{faq_panel(k, a["faq"], a["name"], "https://github.com/" + (a.get("repo") or "fru-dev3/glyph-studio") + "/issues")}
 <!-- /ribbon -->'''
 
 
@@ -360,7 +360,7 @@ def home_panels():
             # Fru, 2026-11-26: "looks cheap... progressive reveal": a quiet row, $0 against their prices; Install shows on hover.
             pop = '<i class="pop">Popular</i>' if p in h.get("popular", []) else ""
             rows_.append(f'<div class="prow"><div class="pts">{"".join(tiles)}</div><span class="parr" aria-hidden="true">{svg("M5 12h14M13 6l6 6-6 6")}</span>'
-                         f'<a class="pa" href="{INSTALL}" data-dmg="fru-dev3/glyph-native" data-track="file_download" data-app="{p}" title="Install {e(a["name"])} with Glyph Native">'
+                         f'<a class="pa" href="{INSTALL}" data-dmg="fru-dev3/glyph-studio@native" data-track="file_download" data-app="{p}" title="Install {e(a["name"])} with Glyph Native">'
                          f'<img src="{icon_url(p)}" width="40" height="40" alt=""><span class="nm"><b>{e(a["short"])}{pop}</b><small>{e(ROLE.get(p, ""))}</small></span>'
                          f'<span class="get"><em>$0</em><span class="ins">{svg("M12 3v12m0 0l-5-5m5 5l5-5M5 21h14")}Install</span></span></a></div>')
     faq = "".join(f'<details><summary>{e(q)}</summary><p>{e(ans)}</p></details>' for q, ans in h["faq"])
@@ -377,7 +377,7 @@ def home_panels():
   <aside class="total"><div class="tt"><span>You would stop paying</span><b class="sum" data-sum>$0</b><span>a month, or <b data-year>$0</b> a year</span></div><div class="drop" data-drop aria-live="polite"></div>
   <span class="glyph">Glyph: <b>$0</b></span></aside></div>
 </div></section>
-{faq_panel("home", h["faq"], "Glyph", "https://github.com/fru-dev3/glyph-native/issues")}
+{faq_panel("home", h["faq"], "Glyph", "https://github.com/fru-dev3/glyph-studio/issues")}
 <!-- /ribbon -->'''
 
 

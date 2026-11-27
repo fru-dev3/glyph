@@ -2,7 +2,6 @@
  "jot": {
   "name": "Glyph Jot",
   "short": "Jot",
-  "repo": "fru-dev3/glyph-jot",
   "as_of": "2026-11-22",
   "how_lede": "Two keys and one button. Everything stays on your Mac.",
   "how": [
@@ -607,7 +606,6 @@
  "time": {
   "name": "Glyph Time",
   "short": "Time",
-  "repo": "fru-dev3/glyph-time",
   "as_of": "2026-11-22",
   "tag": "A quiet count-up on the edge of your screen.",
   "how_lede": "Start it, forget it, see where the hours went.",
@@ -973,7 +971,6 @@
  "cast": {
   "name": "Glyph Cast",
   "short": "Cast",
-  "repo": "fru-dev3/glyph-cast",
   "as_of": "2026-11-22",
   "tag": "Record your screen, get a clean MP4 back.",
   "how_lede": "Record, stop, and it does the cleanup a recorder leaves to you.",
@@ -1465,7 +1462,6 @@
  "arena": {
   "name": "Glyph Arena",
   "short": "Arena",
-  "repo": "fru-dev3/glyph-arena",
   "as_of": "2026-11-22",
   "tag": "Which AI is best for your own work.",
   "how_lede": "Your own tasks, replayed on two recipes at a time, judged by checkers and by you.",

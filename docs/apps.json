@@ -78,7 +78,7 @@
     "short": "Well",
     "status": "download",
     "promise": "Say how you slept, ate and felt; it reads the patterns, holds your results and comes to the appointment with you.",
-    "dmg": "https://github.com/fru-dev3/glyph-native/releases/download/well/Glyph-Well.dmg"
+    "dmg": "https://github.com/fru-dev3/glyph-studio/releases/download/well/Glyph-Well.dmg"
   },
   {
     "icon": "wealth",
@@ -87,7 +87,7 @@
     "short": "Wealth",
     "status": "download",
     "promise": "Accounts, spending, holdings and net worth, read from what you say and what your statements show. It never invents a number.",
-    "dmg": "https://github.com/fru-dev3/glyph-native/releases/download/wealth/Glyph-Wealth.dmg"
+    "dmg": "https://github.com/fru-dev3/glyph-studio/releases/download/wealth/Glyph-Wealth.dmg"
   },
   {
     "icon": "crm",
@@ -96,7 +96,7 @@
     "short": "CRM",
     "status": "download",
     "promise": "Everyone and everything you deal with, kept as notes in your vault, so every other Glyph app knows who you mean.",
-    "dmg": "https://github.com/fru-dev3/glyph-native/releases/download/crm/Glyph-CRM.dmg"
+    "dmg": "https://github.com/fru-dev3/glyph-studio/releases/download/crm/Glyph-CRM.dmg"
   },
   {
     "icon": "omega",
@@ -105,7 +105,7 @@
     "short": "Omega",
     "status": "download",
     "promise": "Your mission, your vision and your goals, broken down until what is left is the thing to do next.",
-    "dmg": "https://github.com/fru-dev3/glyph-native/releases/download/omega/Glyph-Omega.dmg"
+    "dmg": "https://github.com/fru-dev3/glyph-studio/releases/download/omega/Glyph-Omega.dmg"
   },
   {
     "icon": "connect",
@@ -114,7 +114,7 @@
     "short": "Connect",
     "status": "download",
     "promise": "Every app and tool your agents can get at, what each one may read and write, and what is not connected yet.",
-    "dmg": "https://github.com/fru-dev3/glyph-native/releases/download/connect/Glyph-Connect.dmg"
+    "dmg": "https://github.com/fru-dev3/glyph-studio/releases/download/connect/Glyph-Connect.dmg"
   },
   {
     "icon": "life",
@@ -123,6 +123,6 @@
     "short": "Life",
     "status": "download",
     "promise": "Policies, subscriptions, documents and renewals, each one watched, so the first you hear of a lapse is not the lapse.",
-    "dmg": "https://github.com/fru-dev3/glyph-native/releases/download/life/Glyph-Life.dmg"
+    "dmg": "https://github.com/fru-dev3/glyph-studio/releases/download/life/Glyph-Life.dmg"
   }
 ]

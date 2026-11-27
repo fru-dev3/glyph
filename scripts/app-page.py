@@ -101,11 +101,11 @@ def page(k):
                 f'<div class="fhead"><img src="/family/{k}-tile.svg" width="40" height="40" alt=""><h2 id="feat-h">Everything {e(name)} does</h2>')
     s = between(s, '  <div class="flist">', "  </div>\n</dialog>", '  <div class="flist">\n' + feats + "\n")
     nav = '''<a class="opt" href="/bot" title="Where your agents read it">Bot</a>
-      <a class="opt" href="https://github.com/fru-dev3/glyph-native/releases" title="Every release">Releases</a>
+      <a class="opt" href="https://github.com/fru-dev3/glyph-studio/releases" title="Every release">Releases</a>
       <a class="opt" href="https://github.com/fru-dev3/glyph/issues" title="Contact: open an issue">Contact</a>
       '''
     s = between(s, '<a class="opt" href="/bot"', '<a class="opt" href="https://fru.dev">', nav)
-    s = s.replace('<a class="built" href="https://github.com/fru-dev3/glyph-time">', '<a class="built" href="https://github.com/fru-dev3/glyph">')
+    s = s.replace('<a class="built" href="https://github.com/fru-dev3/glyph">', '<a class="built" href="https://github.com/fru-dev3/glyph">')
     s = s.replace('track("time_view"', f'track("{k}_view"').replace('track("time_device"', f'track("{k}_device"')
     # the Install button counts the whole family's downloads, Time's among them
     left = [m for m in re.findall(r"[^\n]*(?:glyph-time|Glyph Time|/time[/\"])[^\n]*", s) if "data-downloads" not in m]

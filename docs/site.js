@@ -163,11 +163,17 @@ $$("[data-downloads]").forEach((el) => {
 
 // The version beside an app's name: the latest release's number, shields.io first, GitHub's API
 // if that fails; the number baked into the page stays until an answer comes.
+// "owner/name@tag" names a rolling release (fru-dev3/glyph-studio@time, where every app's download
+// lives since its own repo went private): its number is in the release's name ("Glyph Time 0.1.23"),
+// because the repo's latest is another app's.
+const tagged = (spec) => { const [repo, tag] = spec.split("@"); return { repo, tag }; };
+const taggedVersion = (repo, tag) => cachedJson(`https://api.github.com/repos/${repo}/releases/tags/${tag}`, (d) => d.name);
 $$("[data-version]").forEach((el) => {
-  const repo = el.dataset.version;
+  const { repo, tag } = tagged(el.dataset.version);
   const show = (t) => { const v = (t || "").match(/\d+(\.\d+)+/); if (v) el.textContent = "v" + v[0]; };
+  (tag ? taggedVersion(repo, tag) :
   cachedJson(`https://img.shields.io/github/v/release/${repo}.json`, (d) => { if (!/\d/.test(d.value || "")) throw new Error("no version"); return d.value; })
-    .catch(() => cachedJson(`https://api.github.com/repos/${repo}/releases/latest`, (d) => d.tag_name))
+    .catch(() => cachedJson(`https://api.github.com/repos/${repo}/releases/latest`, (d) => d.tag_name)))
     .then(show).catch(() => {});
 });
 
@@ -176,11 +182,12 @@ $$("[data-version]").forEach((el) => {
 // that carries it, so the file in Downloads is Glyph-Native-0.6.5.dmg and not a nameless one. The
 // unversioned link stays until the answer comes, and whenever GitHub does not answer.
 $$("a[data-dmg]").forEach((el) => {
-  const repo = el.dataset.dmg, stem = el.getAttribute("href").split("/").pop().replace(/\.dmg$/, "");
-  cachedJson(`https://api.github.com/repos/${repo}/releases/latest`, (d) => d.tag_name).then((tag) => {
-    const v = (tag || "").match(/\d+(\.\d+)+/);
+  const { repo, tag: rolling } = tagged(el.dataset.dmg), stem = el.getAttribute("href").split("/").pop().replace(/\.dmg$/, "");
+  const ask = rolling ? taggedVersion(repo, rolling) : cachedJson(`https://api.github.com/repos/${repo}/releases/latest`, (d) => d.tag_name);
+  ask.then((t) => {
+    const v = (t || "").match(/\d+(\.\d+)+/);
     if (!v) return;
-    el.href = window.glyphDmg = `https://github.com/${repo}/releases/download/${tag}/${stem}-${v[0]}.dmg`;
+    el.href = window.glyphDmg = `https://github.com/${repo}/releases/download/${rolling || t}/${stem}-${v[0]}.dmg`;
     $$(".dlv").forEach((n) => { n.textContent = v[0]; n.hidden = false; });
   }).catch(() => {});
 });
