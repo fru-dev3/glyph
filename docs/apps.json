@@ -18,8 +18,7 @@
     "layer": 2,
     "promise": "Dictation that types anywhere on your Mac and iPhone, meetings recorded and transcribed, every word kept in a vault you own. Unlimited, and free.",
     "status": "download",
-    "includes": "Glyph Record (formerly Memosa), merged 2026-10-25: /record redirects here",
-    "repo": "fru-dev3/glyph-jot"
+    "includes": "Glyph Record (formerly Memosa), merged 2026-10-25: /record redirects here"
   },
   {
     "icon": "cast",
@@ -28,8 +27,7 @@
     "short": "Cast",
     "status": "download",
     "formerly": "Capture",
-    "promise": "Screen videos, cleaned up: record your screen, get a clean MP4 with the voice cleaned, ums cut, framed and zoomed.",
-    "repo": "fru-dev3/glyph-cast"
+    "promise": "Screen videos, cleaned up: record your screen, get a clean MP4 with the voice cleaned, ums cut, framed and zoomed."
   },
   {
     "icon": "time",
@@ -37,8 +35,7 @@
     "name": "Glyph Time",
     "short": "Time",
     "status": "download",
-    "promise": "See where your hours go: a quiet count-up on the edge of your screen, a nudge every 30 minutes, every session saved to your vault.",
-    "repo": "fru-dev3/glyph-time"
+    "promise": "See where your hours go: a quiet count-up on the edge of your screen, a nudge every 30 minutes, every session saved to your vault."
   },
   {
     "icon": "knowledge",
@@ -68,8 +65,7 @@
     "name": "Glyph Arena",
     "short": "Arena",
     "promise": "Runs the same job across every model and recipe, scored on your own work, and tells you which one actually won.",
-    "status": "download",
-    "repo": "fru-dev3/glyph-arena"
+    "status": "download"
   },
   {
     "icon": "well",

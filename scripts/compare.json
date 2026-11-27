@@ -63,7 +63,7 @@
   "faq": [
    [
     "Is Glyph Jot really free?",
-    "Yes. There is no paid tier, no subscription and no word or minute limit. The code is open on GitHub under the MIT license."
+    "Yes. There is no paid tier, no subscription and no word or minute limit."
    ],
    [
     "Does my voice leave my Mac?",
@@ -99,7 +99,7 @@
    ]
   ],
   "pick": {
-   "dictation": "You are on a Mac and want dictation that never leaves it, free, with the code open.",
+   "dictation": "You are on a Mac and want dictation that never leaves it, free, with no account.",
    "meetings": "You are on a Mac and want meetings recorded, transcribed and summarized with no bot and no cloud, for free.",
    "default": "You are on a Mac and want it private and free."
   },
@@ -126,10 +126,6 @@
     "label": "Account"
    },
    {
-    "k": "source",
-    "label": "Source code"
-   },
-   {
     "k": "storage",
     "label": "Where it is kept"
    },
@@ -152,7 +148,6 @@
    "processing": "On your Mac: Apple's on-device speech model and Apple Intelligence",
    "capture": "None. Records the mic and the Mac's sound",
    "account": "None",
-   "source": "Open, MIT license on GitHub",
    "storage": "A folder on your Mac that you choose",
    "training": "No. Nothing leaves your Mac",
    "offline": "Yes",
@@ -189,7 +184,6 @@
       "Required",
       2
      ],
-     "source": "No public code found",
      "storage": [
       "Their servers by default (cloud storage can be turned off)",
       4
@@ -220,8 +214,8 @@
     "name": "Superwhisper",
     "logo": "/logos/superwhisper.webp",
     "group": "dictation",
-    "alt_title": "A free, open-source Superwhisper alternative",
-    "thesis": "Both can turn speech into text on your device. Glyph Jot has no paid tier, and its code is open on GitHub.",
+    "alt_title": "A free Superwhisper alternative",
+    "thesis": "Both can turn speech into text on your device. Glyph Jot is free, with no paid tier.",
     "short": [
      "Superwhisper Pro is $8.49 a month or $249.99 once. Glyph Jot is free.",
      "Both can keep your speech on your device and work offline.",
@@ -245,7 +239,6 @@
       "Not needed for offline use",
       3
      ],
-     "source": "No public code found",
      "storage": [
       "On your device until you delete it",
       2
@@ -297,7 +290,6 @@
       3
      ],
      "account": "Not stated",
-     "source": "No public code found",
      "storage": [
       "History on your device; nothing kept on their side by default",
       4
@@ -350,7 +342,6 @@
       "Required, the same one on each device",
       2
      ],
-     "source": "No public code found",
      "storage": [
       "Their servers, unless Privacy Mode is on",
       3
@@ -405,7 +396,6 @@
       "Required: Google, Microsoft or SSO",
       4
      ],
-     "source": "No public code found",
      "storage": [
       "Their cloud (AWS, US). No audio kept",
       4
@@ -465,7 +455,6 @@
       "Required",
       2
      ],
-     "source": "No public code found",
      "storage": [
       "Their cloud (AWS, US)",
       5
@@ -523,7 +512,6 @@
       2
      ],
      "account": "Required",
-     "source": "No public code found",
      "storage": [
       "Their servers, in the US and other countries",
       3
@@ -576,7 +564,6 @@
       "Required",
       5
      ],
-     "source": "No public code found",
      "storage": [
       "Their cloud (US), unlimited",
       4
@@ -674,7 +661,7 @@
   "faq": [
    [
     "Is Glyph Time free?",
-    "Yes, free and open source under the MIT license."
+    "Yes. There is no paid tier and no subscription."
    ],
    [
     "Does it watch everything I do?",
@@ -722,10 +709,6 @@
     "label": "Account"
    },
    {
-    "k": "source",
-    "label": "Source code"
-   },
-   {
     "k": "storage",
     "label": "Where it is kept"
    },
@@ -747,7 +730,6 @@
    "platforms": "Mac (Apple silicon, macOS 26 or later). iPhone in testing",
    "tracking": "A count-up you start, the project guessed; apps and tabs only if you turn it on",
    "account": "None",
-   "source": "Open, MIT license on GitHub",
    "storage": "Plain files in a folder you choose",
    "training": "No",
    "offline": "Yes",
@@ -759,8 +741,8 @@
     "name": "Timing",
     "logo": "/logos/timing.webp",
     "group": "time trackers",
-    "alt_title": "A free, open-source Timing alternative",
-    "thesis": "Timing tracks every app, document and website automatically, for a monthly fee. Glyph Time is a count-up you start, free and open source.",
+    "alt_title": "A free Timing alternative",
+    "thesis": "Timing tracks every app, document and website automatically, for a monthly fee. Glyph Time is a free count-up you start.",
     "short": [
      "Timing has no free plan. Glyph Time is free.",
      "Timing records apps, documents and sites on its own. Time keeps only the project and the app in front.",
@@ -784,7 +766,6 @@
       "Not needed to track; needed for sync and AI features",
       5
      ],
-     "source": "No public code found",
      "storage": [
       "On your device; optional sync to their cloud",
       2
@@ -837,7 +818,6 @@
       "Required",
       4
      ],
-     "source": "No public code found",
      "storage": [
       "Their cloud",
       4
@@ -891,7 +871,6 @@
       "Required",
       4
      ],
-     "source": "No public code found",
      "storage": [
       "Their cloud, in the US",
       4
@@ -944,7 +923,6 @@
       "Required",
       3
      ],
-     "source": "No public code found",
      "storage": [
       "Their cloud, mainly in the US",
       3
@@ -1003,7 +981,7 @@
   "faq": [
    [
     "Is Glyph Cast free?",
-    "Yes, free and open source under the MIT license."
+    "Yes. There is no paid tier and no subscription."
    ],
    [
     "Does it upload my recordings?",
@@ -1047,10 +1025,6 @@
     "label": "Account"
    },
    {
-    "k": "source",
-    "label": "Source code"
-   },
-   {
     "k": "storage",
     "label": "Where recordings are kept"
    },
@@ -1072,7 +1046,6 @@
    "platforms": "Mac (Apple silicon, macOS 15 or later)",
    "processing": "On your Mac: transcription and voice cleanup run locally",
    "account": "None",
-   "source": "Open, MIT license on GitHub",
    "storage": "Plain files in your Movies folder",
    "training": "No. Nothing is uploaded",
    "offline": "Yes, after the models download once",
@@ -1084,8 +1057,8 @@
     "name": "Screen Studio",
     "logo": "/logos/screenstudio.webp",
     "group": "screen video",
-    "alt_title": "A free, open-source Screen Studio alternative",
-    "thesis": "Both record on your Mac and zoom in where you click. Screen Studio is a subscription; Glyph Cast is free and open source.",
+    "alt_title": "A free Screen Studio alternative",
+    "thesis": "Both record on your Mac and zoom in where you click. Screen Studio is a subscription; Glyph Cast is free.",
     "short": [
      "Screen Studio is $29 a month. Glyph Cast is free.",
      "Both record and render on your Mac and work offline.",
@@ -1109,7 +1082,6 @@
       "Sign in with your purchase email",
       4
      ],
-     "source": "No public code found",
      "storage": [
       "Local files; share links upload to their cloud",
       3
@@ -1158,7 +1130,6 @@
       3
      ],
      "account": "Not stated",
-     "source": "No public code found",
      "storage": [
       "Their cloud",
       4
@@ -1213,7 +1184,6 @@
       3
      ],
      "account": "Not stated",
-     "source": "No public code found",
      "storage": [
       "Their cloud",
       4
@@ -1242,7 +1212,7 @@
     "name": "Camtasia",
     "logo": "/logos/camtasia.webp",
     "group": "screen video",
-    "alt_title": "A free, open-source Camtasia alternative",
+    "alt_title": "A free Camtasia alternative",
     "thesis": "Camtasia is a full desktop editor sold by the year. Glyph Cast does the common cleanup on its own: the voice, the ums, the framing and the zooms.",
     "short": [
      "Camtasia Essentials is $179.88 a year. Glyph Cast is free.",
@@ -1267,7 +1237,6 @@
       "Required to activate",
       3
      ],
-     "source": "No public code found",
      "storage": [
       "Local files",
       4
@@ -2244,7 +2213,7 @@
    ],
    [
     "Is it open source?",
-    "Bot, Jot, Rig, Arena, Cast and Time are open source under the MIT license. The newer apps are private for now."
+    "Glyph Bot, its engine and Glyph Rig are open source on GitHub. Every other app is free, and its code is private for now."
    ],
    [
     "How do I install the apps?",
