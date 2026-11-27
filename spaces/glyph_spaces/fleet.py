@@ -19,7 +19,7 @@ Three rules hold this file together:
 - Nothing is read twice from two places. The agents and their flags are read
   out of glyph.zsh, the machine's roots and profiles out of the spaces map.
 """
-import json, os, re, shutil, subprocess, sys, tempfile, threading, time
+import json, os, plistlib, re, shutil, subprocess, sys, tempfile, threading, time
 from concurrent import futures
 
 from glyph_spaces import claims, core
@@ -642,8 +642,111 @@ def storage_block(roots):
                      "used_percent": round(100.0 * (total - free) / total),
                      "kind": kind, "network": kind == "network",
                      "read_only": "read-only" in flags, "role": role})
+    for r in rows:
+        if r["kind"] in ("internal", "external"):
+            r["solid_state"] = solid_state(r["mount"])
     rows.sort(key=lambda r: (r["kind"] != "internal", r["mount"]))
     return {"volumes": rows, "warnings": over_full(rows)}
+
+
+def solid_state(mount):
+    """True for an SSD, False for a spinning disk, None when diskutil will not say."""
+    out = run(["diskutil", "info", "-plist", mount], timeout=3)
+    try:
+        return plistlib.loads((out or "").encode()).get("SolidState")
+    except Exception:
+        return None
+
+
+# --- network ----------------------------------------------------------------
+
+def wifi_link(info):
+    """The Wi-Fi link from `system_profiler SPAirPortDataType -json`, or None.
+
+    The network's name is left out when macOS redacts it, which it does for any
+    process without location access; the link itself is never redacted.
+    """
+    for top in (info or {}).get("SPAirPortDataType") or []:
+        for i in top.get("spairport_airport_interfaces") or []:
+            cur = i.get("spairport_current_network_information")
+            if not cur or i.get("spairport_status_information") != "spairport_status_connected":
+                continue
+            sig = re.findall(r"-?\d+", cur.get("spairport_signal_noise") or "")
+            ch = cur.get("spairport_network_channel")
+            band = re.search(r"(\d+(?:\.\d+)?)GHz", str(ch or ""))
+            width = re.search(r"(\d+)MHz", str(ch or ""))
+            name = cur.get("_name")
+            return {"interface": i.get("_name"),
+                    "ssid": None if not name or "redacted" in name else name,
+                    "phy": cur.get("spairport_network_phymode"),
+                    "channel": int(re.match(r"\d+", str(ch)).group(0)) if ch and re.match(r"\d+", str(ch)) else None,
+                    "band_ghz": float(band.group(1)) if band else None,
+                    "width_mhz": int(width.group(1)) if width else None,
+                    "rate_mbps": cur.get("spairport_network_rate"),
+                    "signal_dbm": int(sig[0]) if len(sig) > 0 else None,
+                    "noise_dbm": int(sig[1]) if len(sig) > 1 else None}
+    return None
+
+
+def network_block():
+    out = run(["system_profiler", "SPAirPortDataType", "-json"], timeout=10)
+    try:
+        info = json.loads(out or "")
+    except Exception:
+        info = None
+    return {"wifi": wifi_link(info), "speed": last_speed(core.machine_id())}
+
+
+def speed_file(mid, when=None):
+    return os.path.join(rig_dir(), "history", "%s.%s.speed.jsonl"
+                        % (time.strftime("%Y-%m", time.localtime(when)), mid))
+
+
+def speed_line(nq, wifi, at):
+    """One speed test as a history line, from `networkQuality -c -s`."""
+    def mbps(v):
+        return round(v / 1e6, 1) if isinstance(v, (int, float)) else None
+    return {"at": at, "down_mbps": mbps(nq.get("dl_throughput")),
+            "up_mbps": mbps(nq.get("ul_throughput")),
+            "rtt_ms": round(nq["base_rtt"], 1) if isinstance(nq.get("base_rtt"), (int, float)) else None,
+            "interface": nq.get("interface_name"),
+            "rate_mbps": (wifi or {}).get("rate_mbps"),
+            "signal_dbm": (wifi or {}).get("signal_dbm")}
+
+
+def last_speed(mid):
+    """The newest speed test this machine wrote, this month or last."""
+    now = time.time()
+    for when in (now, now - 32 * 86400):
+        try:
+            with open(speed_file(mid, when)) as f:
+                lines = [l for l in f.read().splitlines() if l.strip()]
+            if lines:
+                return json.loads(lines[-1])
+        except Exception:
+            continue
+    return None
+
+
+# --- backups ----------------------------------------------------------------
+
+def time_machine(dest_out, latest_out):
+    """Time Machine's destinations and newest backup, from tmutil's own words."""
+    dests = re.findall(r"^Name\s*:\s*(.+)$", dest_out or "", re.M)
+    latest = (latest_out or "").strip().splitlines()
+    latest = latest[0] if latest else ""
+    mo = re.search(r"(\d{4}-\d{2}-\d{2}-\d{6})", latest)
+    at = None
+    if mo:
+        t = time.strptime(mo.group(1), "%Y-%m-%d-%H%M%S")
+        at = stamp(time.mktime(t))
+    err = None if mo or not latest else latest[:160]
+    return {"destinations": dests, "latest": at, "error": err}
+
+
+def backups_block():
+    return {"time_machine": time_machine(run(["tmutil", "destinationinfo"], timeout=5),
+                                         run(["tmutil", "latestbackup"], timeout=10))}
 
 
 # --- agents and accounts ----------------------------------------------------
@@ -3016,6 +3119,8 @@ def collect(account_tag_given=None):
             "tools": lambda: probe_versions(TOOLS),
             "setup": lambda: setup_block(record),
             "installed": installed_block,
+            "network": network_block,
+            "backups": backups_block,
         }
         running = dict((ex.submit(guard, name, fn), name) for name, fn in jobs.items())
         for f in futures.as_completed(running):
@@ -3023,8 +3128,8 @@ def collect(account_tag_given=None):
     rep = {"schema": SCHEMA,
            "taken": stamp(time.time()),
            "took_ms": None}
-    for name in ("machine", "tailscale", "compute", "storage", "setup", "agents",
-                 "sessions", "inference", "backends", "spaces", "installed"):
+    for name in ("machine", "tailscale", "compute", "storage", "network", "backups", "setup",
+                 "agents", "sessions", "inference", "backends", "spaces", "installed"):
         rep[name] = got.get(name)
     # Derived from two blocks that already answered, so it is worked out after
     # them rather than being a reader of its own: it reads nothing and costs
@@ -3089,6 +3194,8 @@ def history_line(rep):
             "busy_percent": c.get("busy_percent"), "load": (c.get("load") or [None])[0],
             "free_bytes": vols,
             "live": len(((rep.get("sessions") or {}).get("live")) or []),
+            "wifi_rate_mbps": ((rep.get("network") or {}).get("wifi") or {}).get("rate_mbps"),
+            "wifi_signal_dbm": ((rep.get("network") or {}).get("wifi") or {}).get("signal_dbm"),
             "errors": len(rep.get("errors") or [])}
 
 
@@ -3360,6 +3467,29 @@ def fold_roster(net, machines, reps):
         hits = [k for k in known if nid.startswith(k + "-")]
         out[max(hits, key=len) if hits else nid] = row
     return out
+
+
+def cmd_speed(args):
+    """Test this machine's internet speed with macOS's own networkQuality and
+    keep the result as a line of history, so a trend can be drawn from it."""
+    out = run(["networkQuality", "-c", "-s"], timeout=90, strict=True)
+    try:
+        nq = json.loads(out or "")
+    except Exception:
+        print("glyph fleet: networkQuality gave no result (macOS 12 or later, and a network)")
+        return 1
+    wifi = guard("network", network_block) or {}
+    line = speed_line(nq, wifi.get("wifi"), stamp(time.time()))
+    if args.json:
+        print(json.dumps(line, indent=2))
+        return 0
+    path = speed_file(core.machine_id())
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "a") as f:
+        f.write(json.dumps(line) + "\n")
+    print("down %s Mb/s, up %s Mb/s, %s ms  %s"
+          % (line["down_mbps"], line["up_mbps"], line["rtt_ms"], tilde(path)))
+    return 0
 
 
 def cmd_status(args):

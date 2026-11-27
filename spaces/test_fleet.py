@@ -1037,6 +1037,46 @@ def test_an_apple_id_in_a_list_is_not_a_thing_that_can_sign():
         fleet.run, fleet.provisioning_profiles, fleet.asc_keys = keep
 
 
+def test_wifi_link_reads_the_link_and_drops_a_redacted_name():
+    info = {"SPAirPortDataType": [{"spairport_airport_interfaces": [
+        {"_name": "awdl0", "spairport_current_network_information": {"spairport_network_type": "x"}},
+        {"_name": "en0", "spairport_status_information": "spairport_status_connected",
+         "spairport_current_network_information": {
+             "_name": "<redacted>", "spairport_network_channel": "44 (5GHz, 80MHz)",
+             "spairport_network_phymode": "802.11ax", "spairport_network_rate": 1200,
+             "spairport_signal_noise": "-26 dBm / -94 dBm"}}]}]}
+    w = fleet.wifi_link(info)
+    assert w == {"interface": "en0", "ssid": None, "phy": "802.11ax", "channel": 44,
+                 "band_ghz": 5.0, "width_mhz": 80, "rate_mbps": 1200,
+                 "signal_dbm": -26, "noise_dbm": -94}, w
+    info["SPAirPortDataType"][0]["spairport_airport_interfaces"][1][
+        "spairport_current_network_information"]["_name"] = "acme-guest"
+    assert fleet.wifi_link(info)["ssid"] == "acme-guest"
+    assert fleet.wifi_link({}) is None and fleet.wifi_link(None) is None
+
+
+def test_speed_line_is_megabits():
+    line = fleet.speed_line({"dl_throughput": 555805056, "ul_throughput": 43092588,
+                             "base_rtt": 36.347, "interface_name": "en0"},
+                            {"rate_mbps": 1200, "signal_dbm": -26}, "2026-01-02T03:04:05")
+    assert line == {"at": "2026-01-02T03:04:05", "down_mbps": 555.8, "up_mbps": 43.1,
+                    "rtt_ms": 36.3, "interface": "en0", "rate_mbps": 1200,
+                    "signal_dbm": -26}, line
+    empty = fleet.speed_line({}, None, "t")
+    assert empty["down_mbps"] is None and empty["rate_mbps"] is None, empty
+
+
+def test_time_machine_says_when_and_why_not():
+    dest = "====\nName          : laptop-backup\nKind          : Local\n"
+    ok = fleet.time_machine(dest, "/Volumes/laptop-backup/2026-01-02-030405.backup\n")
+    assert ok["destinations"] == ["laptop-backup"] and ok["latest"].startswith("2026-01-02T03:04:05"), ok
+    assert ok["error"] is None, ok
+    bad = fleet.time_machine(dest, "Failed to mount backup destination\n")
+    assert bad["latest"] is None and bad["error"].startswith("Failed to mount"), bad
+    none = fleet.time_machine("", "")
+    assert none == {"destinations": [], "latest": None, "error": None}, none
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for t in tests:

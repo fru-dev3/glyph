@@ -34,6 +34,9 @@ def main():
     # rather than have a second set of rules here to disagree with it.
     r.add_argument("--account-tag", help="the account tag glyph's shell derived")
     r.set_defaults(func=fleet.cmd_report)
+    q = sub.add_parser("speed", help="test this machine's internet speed and keep it in history")
+    q.add_argument("--json", action="store_true", help="print the result instead of keeping it")
+    q.set_defaults(func=fleet.cmd_speed)
     s = sub.add_parser("status", help="every machine, side by side")
     s.add_argument("--live", action="store_true",
                    help="ask every reachable machine over ssh first")

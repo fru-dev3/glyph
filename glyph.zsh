@@ -1472,7 +1472,7 @@ glyph-fleet() {
   # cannot be reached. `command` skips this function, which is what keeps the
   # one name working both here and over ssh.
   case ${1:-} in
-    report|status|diff|setup|rig)
+    report|status|diff|setup|rig|speed)
       if ! command -v glyph-fleet >/dev/null 2>&1; then
         print -ru2 -- "glyph fleet $1 runs from a clone of the repo:"
         print -ru2 -- "  git clone https://github.com/fru-dev3/glyph && cd glyph && source ./install.sh"

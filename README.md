@@ -434,6 +434,7 @@ glyph fleet report    # collect this machine and write it down
 glyph fleet status    # every machine, side by side
 glyph fleet diff      # the configuration that is not the same everywhere
 glyph fleet setup     # what a machine still needs before it can do the work
+glyph fleet speed     # test the internet speed and keep it as history
 ```
 
 `report` asks this Mac what it is: its model, chip, cores split performance and
@@ -441,7 +442,10 @@ efficiency, memory and swap, every mounted volume including the externals and
 the network shares, which agents are installed and at which version, which
 login each one is signed into and whether that login can actually be used
 right now, what is running right now, local inference
-models, everything installed from Homebrew or sitting in `/Applications`, and a
+models, the Wi-Fi link (standard, band, channel, link rate, signal and noise),
+whether each disk is an SSD or a spinning one, Time Machine's destinations and
+its newest backup or why there is none, everything installed from Homebrew or
+sitting in `/Applications`, and a
 flat map of versions, MCP servers, skills and loaded services for comparing
 against another machine. It writes one file per machine and appends a line of
 history, so a trend exists later:
@@ -450,6 +454,11 @@ history, so a trend exists later:
 ~/.config/glyph/rig/machines/<machine>.json
 ~/.config/glyph/rig/history/<YYYY-MM>.<machine>.jsonl
 ```
+
+`speed` runs macOS's own `networkQuality` and appends download, upload and
+round trip, with the Wi-Fi link it was measured on, to
+`history/<YYYY-MM>.<machine>.speed.jsonl`. The next `report` carries the newest
+one. Nothing else runs it: schedule it as often as the trend needs.
 
 Point `GLYPH_RIG` at a synced folder, or link `~/.config/glyph/rig` to one, and
 every machine's last reading is readable from any of them with no network call.
