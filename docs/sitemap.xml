@@ -41,9 +41,6 @@
   <url><loc>https://glyph.fru.dev/rig/vs/conductor</loc><lastmod>2026-11-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://glyph.fru.dev/rig/vs/warp</loc><lastmod>2026-11-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://glyph.fru.dev/rig/vs/claude-squad</loc><lastmod>2026-11-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://glyph.fru.dev/arena/vs/lmarena</loc><lastmod>2026-11-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://glyph.fru.dev/arena/vs/artificial-analysis</loc><lastmod>2026-11-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://glyph.fru.dev/arena/vs/openrouter-rankings</loc><lastmod>2026-11-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://glyph.fru.dev/ibis/vs/feedly</loc><lastmod>2026-11-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://glyph.fru.dev/ibis/vs/perplexity</loc><lastmod>2026-11-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://glyph.fru.dev/ibis/vs/exa</loc><lastmod>2026-11-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -69,4 +66,7 @@
   <url><loc>https://glyph.fru.dev/connect/vs/composio</loc><lastmod>2026-11-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://glyph.fru.dev/connect/vs/zapier-mcp</loc><lastmod>2026-11-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://glyph.fru.dev/connect/vs/docker-mcp-toolkit</loc><lastmod>2026-11-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://glyph.fru.dev/arena/vs/lmarena</loc><lastmod>2026-11-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://glyph.fru.dev/arena/vs/artificial-analysis</loc><lastmod>2026-11-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://glyph.fru.dev/arena/vs/openrouter-rankings</loc><lastmod>2026-11-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>

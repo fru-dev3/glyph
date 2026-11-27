@@ -1462,76 +1462,76 @@
  "arena": {
   "name": "Glyph Arena",
   "short": "Arena",
-  "as_of": "2026-11-22",
+  "as_of": "2026-11-27",
   "tag": "Which AI is best for your own work.",
-  "how_lede": "Your own tasks, replayed on two recipes at a time, judged by checkers and by you.",
+  "how_lede": "Your own tests, every model you can reach, and a verdict you can act on.",
   "how": [
    {
-    "title": "Replay your own tasks",
-    "text": "The prompts you actually gave your AI tools, replayed on two recipes at a time.",
-    "img": "/arena/leagues.webp",
+    "title": "Tests from your own work",
+    "text": "Tests drawn from your notes, in 23 areas from writing to money, each with a rubric. Add one whenever a model lets you down.",
+    "img": "/arena/area.webp",
     "w": 1600,
     "h": 1000,
-    "alt": "Leagues: each domain and kind of task, with the leading recipe"
+    "alt": "An area in Glyph Arena: the best, everyday and cheapest model, then the board with each model's record against the leader"
    },
    {
-    "title": "Checkers, then blind picks",
-    "text": "Checkers settle what they can. Where answers differ, pick one blind in two seconds.",
-    "img": "/arena/picks.webp",
+    "title": "Head to head, test by test",
+    "text": "Two models on the tests both took. The record says Clear, Leaning or Coin flip, and never crowns on too few.",
+    "img": "/arena/compare.webp",
     "w": 1600,
     "h": 1000,
-    "alt": "A blind pick between two answers",
+    "alt": "Two models compared area by area: the side ahead in green, solid when the lead is clear",
     "more": [
      {
-      "img": "/arena/safety.webp",
+      "img": "/arena/models.webp",
       "w": 1600,
       "h": 1000,
-      "alt": "Safety checks before a pick"
+      "alt": "A model's scorecard: its record against the leader in every area"
      }
     ]
    },
    {
-    "title": "A routing policy with reasons",
-    "text": "Each kind of task goes to the recipe that won, or the cheaper of two even ones.",
-    "img": "/arena/policy.webp",
+    "title": "One answer to ask for",
+    "text": "Ask which model for what you are doing. Get the one to use, the command that starts it, and a quicker or cheaper one.",
+    "img": "/arena/ask.webp",
     "w": 1600,
     "h": 1000,
-    "alt": "Glyph Arena's routing policy"
+    "alt": "Ask: which model for finding a vulnerability in auth code, with the model to use and its command"
    }
   ],
   "faq": [
    [
     "Is Glyph Arena free?",
-    "Yes, free and open source under the MIT license. Cloud model calls are billed by their providers, under a monthly cap you set."
+    "Yes. Glyph Native installs it and keeps it up to date, and the engine that runs every test is open source (GPL-3.0). Cloud model calls are billed by their providers, under a monthly cap you set."
    ],
    [
-    "What is a recipe?",
-    "A model plus how it is asked: the prompt style, the context it gets and its tools."
+    "Which models can it test?",
+    "Every model your installed tools reach: Claude Code, Codex, the Gemini CLI, Ollama on this Mac and your other Macs, and image and voice models through the API keys you already have. Each effort level can enter on its own."
+   ],
+   [
+    "What do Clear, Leaning and Coin flip mean?",
+    "Two models are compared on the tests both took. Clear means the record would almost never happen by chance (six straight wins or better). Leaning means more tests could settle it. Coin flip means nothing separates them yet."
    ],
    [
     "Are health and money questions sent to the cloud?",
-    "No. The Home Only league runs them on local models only, refused before any call."
+    "No. Those areas run only on models on your own Macs, refused before any call."
    ],
    [
-    "What happens when a model gets it badly wrong?",
-    "Flag it. One severe event, or two major ones in 30 days, suspends that model in that domain."
-   ],
-   [
-    "How does Glyph Bot use the result?",
-    "Bot's Auto setting follows the routing policy and says routed by Arena."
+    "What if two models keep tying?",
+    "When both score near the top, the tests are too easy. Arena says so and asks for a harder test, instead of running more of the same."
    ]
   ],
   "pick": {
-   "default": "You want to know which model and prompt work best on your own tasks, not on a public benchmark."
+   "default": "You want to know which model works best on your own work, not on a public benchmark."
   },
   "ours": {
    "price": "Free; cloud model calls billed by their providers, under your cap",
    "account": "None",
-   "tasks": "Your own past tasks, replayed",
-   "judging": "Checkers first, then your two-second blind picks",
+   "tasks": "Your own tests, from your notes",
+   "judging": "Checkers and a judge panel, then head to head on the tests both models took",
    "local": "Yes: health and money run on local models only",
-   "output": "A routing policy for your own work, with reasons",
-   "source": "Open, MIT license on GitHub"
+   "output": "The best, everyday and cheapest model for each area of your work",
+   "source": "Engine open source (GPL-3.0)"
   },
   "no_strike": true
  },
