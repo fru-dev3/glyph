@@ -3185,8 +3185,9 @@ def collect(account_tag_given=None):
     rep = {"schema": SCHEMA,
            "taken": stamp(time.time()),
            "took_ms": None}
-    for name in ("machine", "tailscale", "compute", "storage", "network", "backups", "setup",
-                 "agents", "sessions", "inference", "backends", "spaces", "installed"):
+    # Every reader in `jobs` lands in the report, except the ones only used below (tools). A block left
+    # off a hand-kept list here was read and dropped (security, 2026-11-27).
+    for name in [n for n in jobs if n != "tools"]:
         rep[name] = got.get(name)
     # Derived from two blocks that already answered, so it is worked out after
     # them rather than being a reader of its own: it reads nothing and costs
