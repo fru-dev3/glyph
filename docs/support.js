@@ -1,9 +1,9 @@
 // The Support button every fru.dev site shows (Fru, 2026-11-26: "very prominent almost everywhere ... you cannot miss it",
 // not a link hiding in the footer). One file, loaded by glyph.fru.dev, fru.dev and every context source with
 //   <script src="https://glyph.fru.dev/support.js" defer></script>
-// It pins a "Buy me a coffee" button to the bottom right, above any pinned footer bar, and opens fru.dev/coffee
-// (Buy Me a Coffee). Fru, same day: no heart, it must read as paying at a glance; a coffee cup is the pattern
-// people already know.
+// It pins a "Buy me a coffee" button to the bottom right, above any pinned footer bar, and opens the support page,
+// glyph.fru.dev/support, where the coffee is (Fru, same day: no heart, it must read as paying at a glance; and
+// "this doesn't go to support page" when it went straight to Buy Me a Coffee).
 (() => {
   if (window.__fruSupport) return;
   window.__fruSupport = true;
@@ -32,7 +32,7 @@
     document.head.appendChild(st);
     const a = document.createElement("a");
     a.id = "fru-support";
-    a.href = "https://fru.dev/coffee";
+    a.href = "https://glyph.fru.dev/support" + (host === "glyph.fru.dev" ? "" : "?from=" + encodeURIComponent(host));
     a.target = "_blank";
     a.rel = "noopener";
     a.setAttribute("aria-label", "Buy me a coffee: everything here is free, built by one person");
