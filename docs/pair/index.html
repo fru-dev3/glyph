@@ -19,26 +19,23 @@
 .pair p{margin:0 0 14px;color:var(--soft)}
 .pair .btn{justify-content:center;width:100%;box-sizing:border-box}
 .pair .btn.alt{background:#fff;color:var(--green);border:1.5px solid var(--green)}
-.pair .coming{margin-top:40px;padding-top:28px;border-top:1px solid rgba(0,0,0,.08)}
-.pair .coming b{display:block;color:var(--ink);margin-bottom:4px}
+.pair .steps{list-style:none;margin:28px 0 18px;padding:0;display:grid;gap:12px;text-align:left}
+.pair .steps .btn{justify-content:flex-start;gap:12px}
+.pair .steps .n{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.22);font-weight:700;flex:none}
+.pair .steps .alt .n{background:rgba(0,128,0,.1)}
+.pair .steps small{display:block;margin:6px 4px 0;color:var(--dim);font-size:14px}
 .pair .quiet{font-size:14px;color:var(--dim)}
 [hidden]{display:none!important}
 </style>
 </head>
 <body data-page="pair">
 <main class="pair">
-<h1 id="h">Pair your iPhone</h1>
-<div id="with" hidden>
-<a class="btn go" id="open" href="#">Open in Glyph Native</a>
-</div>
-<p id="without">Open Glyph Native on your Mac, choose Vault, then Add my iPhone.</p>
+<h1 id="h">Get Glyph on your iPhone</h1>
+<p id="pairs" hidden>Pairs with <b id="mac"></b>.</p>
+<ol class="steps" id="steps"></ol>
+<p class="quiet" id="note">Already have it? The last step opens it straight away. This page waits here while the app installs.</p>
+<p id="nopair" hidden>To pair it, open Glyph Native on your Mac and turn on Share with my iPhone, then scan its code.</p>
 <p class="quiet" id="desk" hidden>Open this on your iPhone.</p>
-<div class="coming">
-<b>No Glyph Native on this iPhone yet?</b>
-<p>Glyph Native for iPhone is coming.</p>
-<a class="btn alt" href="https://github.com/fru-dev3/glyph-studio/releases" target="_blank" rel="noopener">Tell me when it's out</a>
-<p class="quiet">Watch the releases on GitHub to hear first.</p>
-</div>
 </main>
 <footer>
   <div class="bar">
@@ -51,17 +48,45 @@
 </footer>
 <script>
 // The values live in the fragment: the browser never sends it. Read only here; never printed (name only), stored or logged.
+// The TestFlight links: the same table as GlyphCore's GlyphPhoneApps (Sources/GlyphVault/SharedHub.swift). TODO- is a placeholder.
+var APPS = {
+  native: ["Glyph Native", "https://testflight.apple.com/join/TODO-native"],
+  jot: ["Glyph Jot", "https://testflight.apple.com/join/TODO-jot"],
+  time: ["Glyph Time", "https://testflight.apple.com/join/TODO-time"],
+  well: ["Glyph Well", "https://testflight.apple.com/join/TODO-well"],
+  crm: ["Glyph CRM", "https://testflight.apple.com/join/TODO-crm"],
+  omega: ["Glyph Omega", "https://testflight.apple.com/join/TODO-omega"],
+  bot: ["Glyph Bot", "https://testflight.apple.com/join/TODO-bot"],
+  connect: ["Glyph Connect", "https://testflight.apple.com/join/TODO-connect"],
+  wealth: ["Glyph Wealth", "https://testflight.apple.com/join/TODO-wealth"],
+  life: ["Glyph Life", "https://testflight.apple.com/join/TODO-life"],
+  travel: ["Glyph X", "https://testflight.apple.com/join/TODO-travel"]
+};
 (function () {
-  var p = new URLSearchParams(location.hash.replace(/^#/, "")), url = (p.get("url") || "").trim(), name = (p.get("name") || "").trim() || "your Mac", code = (p.get("code") || "").trim(), ok = false;
+  var p = new URLSearchParams(location.hash.replace(/^#/, "")), get = function (k) { return (p.get(k) || "").trim(); };
+  var id = APPS[get("app")] ? get("app") : "native", app = APPS[id], url = get("url"), name = get("name") || "your Mac", ok = false;
   try { var u = new URL(url); ok = (u.protocol === "http:" || u.protocol === "https:") && !!u.hostname; } catch (e) {}
   if (!/iPhone|iPad|iPod/.test(navigator.userAgent)) document.getElementById("desk").hidden = false;
-  if (!ok) return;
-  var link = "glyph-native://pair?url=" + encodeURIComponent(url) + "&name=" + encodeURIComponent(name) + (code ? "&code=" + encodeURIComponent(code) : "");
-  document.getElementById("h").textContent = "Connect to " + name;
-  document.getElementById("open").href = link;
-  document.getElementById("with").hidden = false;
-  document.getElementById("without").hidden = true;
-  location.href = link;
+  var steps = document.getElementById("steps"), n = 0;
+  function step(label, href, alt, small) {
+    var li = document.createElement("li"), a = document.createElement("a"), b = document.createElement("span"), t = document.createElement("span");
+    a.className = "btn go" + (alt ? " alt" : ""); a.href = href;
+    if (/^https:/.test(href)) { a.target = "_blank"; a.rel = "noopener"; }
+    b.className = "n"; b.textContent = String(++n); t.textContent = label;
+    a.appendChild(b); a.appendChild(t); li.appendChild(a);
+    if (small) { var s = document.createElement("small"); s.textContent = small; li.appendChild(s); }
+    steps.appendChild(li); return a;
+  }
+  document.getElementById("h").textContent = app[0] + " for iPhone";
+  step("Get it on TestFlight", app[1], false);
+  if (!ok) { document.getElementById("nopair").hidden = false; document.getElementById("note").hidden = true; return; }
+  document.getElementById("mac").textContent = name;
+  document.getElementById("pairs").hidden = false;
+  // Glyph Native does the pairing for every Glyph app on the phone; another app's page installs it too.
+  if (id !== "native") step("Get Glyph Native on TestFlight", APPS.native[1], true, "It pairs every Glyph app on this phone, once.");
+  var link = "glyph-native://pair?url=" + encodeURIComponent(url) + "&name=" + encodeURIComponent(name);
+  ["code", "bonjour"].forEach(function (k) { if (get(k)) link += "&" + k + "=" + encodeURIComponent(get(k)); });
+  step("Open and pair", link, true).id = "open";
 })();
 </script>
 <script src="/support.js" defer></script>
