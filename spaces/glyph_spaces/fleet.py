@@ -3550,6 +3550,62 @@ def cmd_speed(args):
     return 0
 
 
+def human_bytes(n):
+    """1536 -> "1.5 KB", decimal units as Finder shows them."""
+    for unit in ("B", "KB", "MB", "GB", "TB"):
+        if abs(n) < 1000 or unit == "TB":
+            return ("%d %s" if unit == "B" else "%.1f %s") % (n, unit)
+        n /= 1000.0
+
+
+def du_entries(lines):
+    """`du -sk` output lines ("<kb>\t<path>") as [{name, bytes}], biggest first."""
+    out = []
+    for line in (lines or "").splitlines():
+        kb, _, path = line.partition("\t")
+        if kb.strip().isdigit() and path:
+            out.append({"name": os.path.basename(path.rstrip("/")) or path, "bytes": int(kb) * 1024})
+    return sorted(out, key=lambda e: -e["bytes"])
+
+
+def cmd_du(args):
+    """What fills a folder or a drive: each entry at its top, sized, biggest first. Read only.
+
+    Each entry is sized by its own `du -skx` (one file system, so a mount inside is not counted twice),
+    all at once, each under the same time limit. An entry still being counted when the limit comes is
+    kept with `partial: true` and the size it reached is not known, so it is reported as None.
+    """
+    root = os.path.abspath(os.path.expanduser(args.path))
+    try:
+        names = sorted(os.listdir(root))
+    except OSError as e:
+        print(json.dumps({"path": root, "error": str(e)}) if args.json else "glyph fleet: %s" % e)
+        return 1
+    if not args.hidden:
+        names = [n for n in names if not n.startswith(".")]
+    t0 = time.time()
+
+    def size(name):
+        out = run(["du", "-skx", os.path.join(root, name)], timeout=args.limit)
+        got = du_entries(out)
+        return {"name": name, "bytes": got[0]["bytes"] if got else None, "partial": not got,
+                "dir": os.path.isdir(os.path.join(root, name))}
+    with futures.ThreadPoolExecutor(max_workers=8) as ex:
+        entries = list(ex.map(size, names))
+    entries.sort(key=lambda e: -(e["bytes"] or -1))
+    st = os.statvfs(root)
+    rep = {"path": root, "taken": stamp(time.time()), "took_ms": int((time.time() - t0) * 1000),
+           "total_bytes": st.f_blocks * st.f_frsize, "free_bytes": st.f_bavail * st.f_frsize,
+           "entries": entries[: args.top]}
+    if args.json:
+        print(json.dumps(rep, indent=2))
+        return 0
+    for e in rep["entries"]:
+        print("%10s  %s%s" % (human_bytes(e["bytes"]) if e["bytes"] is not None else "?", e["name"],
+                              "/" if e["dir"] else ""))
+    return 0
+
+
 def cmd_status(args):
     net = guard("tailscale", tailnet) or {}
     try:

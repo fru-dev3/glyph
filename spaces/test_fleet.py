@@ -1090,6 +1090,12 @@ def test_security_reads_each_guard_from_its_own_words():
     assert off["gatekeeper"] is False and off["stealth"] is None and off["auto_updates"] is None, off
 
 
+def test_du_entries_are_biggest_first_in_bytes():
+    got = fleet.du_entries("12\t/v/small\n4096\t/v/big/\nnot a line\n")
+    assert got == [{"name": "big", "bytes": 4096 * 1024}, {"name": "small", "bytes": 12 * 1024}], got
+    assert fleet.human_bytes(1536) == "1.5 KB" and fleet.human_bytes(999) == "999 B", fleet.human_bytes(1536)
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for t in tests:
