@@ -1096,6 +1096,31 @@ def test_du_entries_are_biggest_first_in_bytes():
     assert fleet.human_bytes(1536) == "1.5 KB" and fleet.human_bytes(999) == "999 B", fleet.human_bytes(1536)
 
 
+def test_clean_takes_only_known_ids_and_empties_only_the_named_cache():
+    import tempfile, types, io, contextlib
+    home = tempfile.mkdtemp()
+    for d in ("Library/Caches/pip/http", "Library/Caches/Yarn/v6"):
+        os.makedirs(os.path.join(home, d))
+        open(os.path.join(home, d, "blob"), "w").write("x" * 5000)
+    old = os.environ["HOME"]
+    os.environ["HOME"] = home
+    try:
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            assert fleet.cmd_clean(types.SimpleNamespace(apply="pip,../../etc", json=True)) == 2
+        assert "not a cache" in out.getvalue(), out.getvalue()
+        assert os.path.exists(os.path.join(home, "Library/Caches/pip/http/blob")), "a bad id changes nothing"
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            assert fleet.cmd_clean(types.SimpleNamespace(apply="pip", json=True)) == 0
+        rep = json.loads(out.getvalue())
+        assert os.path.isdir(os.path.join(home, "Library/Caches/pip")) and not os.listdir(os.path.join(home, "Library/Caches/pip"))
+        assert os.path.exists(os.path.join(home, "Library/Caches/Yarn/v6/blob")), "an unnamed cache stays"
+        assert {r["id"] for r in rep["caches"]} == {"pip", "yarn"}, rep
+    finally:
+        os.environ["HOME"] = old
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for t in tests:

@@ -3606,6 +3606,79 @@ def cmd_du(args):
     return 0
 
 
+# Caches that rebuild themselves: the only things `clean` may empty. Each is a folder under the home
+# folder; its contents go, the folder stays. Anything else, however large, is never touched here: user
+# data is moved by a person, never cleaned by a tool. (id, path, what it is, a process that means "busy")
+CACHES = (
+    ("npm", "~/.npm/_cacache", "npm's download cache", "npm"),
+    ("npx", "~/.npm/_npx", "npx's installed tools", "npx"),
+    ("uv", "~/.cache/uv", "uv's package cache", "uv"),
+    ("pip", "~/Library/Caches/pip", "pip's download cache", "pip"),
+    ("homebrew", "~/Library/Caches/Homebrew", "Homebrew's downloads", "brew"),
+    ("yarn", "~/Library/Caches/Yarn", "Yarn's package cache", "yarn"),
+    ("go-build", "~/Library/Caches/go-build", "Go's build cache", "go"),
+    ("node-gyp", "~/Library/Caches/node-gyp", "node-gyp's headers", "node-gyp"),
+    ("electron", "~/Library/Caches/electron", "Electron's downloads", None),
+    ("playwright", "~/Library/Caches/ms-playwright", "Playwright's browsers", "playwright"),
+    ("puppeteer", "~/.cache/puppeteer", "Puppeteer's browsers", None),
+    ("hf-xet", "~/.cache/huggingface/xet", "Hugging Face's chunk cache (models stay)", None),
+    ("xcode-derived", "~/Library/Developer/Xcode/DerivedData", "Xcode's build products", "xcodebuild"),
+    ("simulator-caches", "~/Library/Developer/CoreSimulator/Caches", "the Simulator's caches", "simctl"),
+)
+
+
+def busy(proc):
+    """True when a process named `proc` runs now: its cache is in use and is left alone."""
+    return bool(proc) and bool(run(["pgrep", "-x", proc], timeout=5).strip())
+
+
+def cmd_clean(args):
+    """The caches that rebuild themselves, sized; with --apply, the named ones emptied.
+
+    Only ids from CACHES are accepted, so whatever asks (a person, an app, a model) can never name a path.
+    A cache whose tool is running is skipped. Without --apply nothing changes."""
+    known = {c[0]: c for c in CACHES}
+    want = [i for i in (args.apply or "").split(",") if i]
+    bad = [i for i in want if i not in known]
+    if bad:
+        print(json.dumps({"error": "not a cache: %s" % ", ".join(bad)}) if args.json else "glyph fleet: not a cache: %s" % ", ".join(bad))
+        return 2
+    out = []
+    for cid, path, what, proc in CACHES:
+        full = os.path.expanduser(path)
+        if not os.path.isdir(full) or os.path.islink(full):
+            continue
+        got = du_entries(run(["du", "-skx", full], timeout=60))
+        size = got[0]["bytes"] if got else None
+        row = {"id": cid, "path": path, "what": what, "bytes": size, "busy": busy(proc)}
+        if cid in want:
+            if row["busy"]:
+                row["skipped"] = "%s is running" % proc
+            else:
+                for name in os.listdir(full):
+                    p = os.path.join(full, name)
+                    try:
+                        if os.path.isdir(p) and not os.path.islink(p):
+                            shutil.rmtree(p, ignore_errors=True)
+                        else:
+                            os.unlink(p)
+                    except OSError:
+                        pass
+                left = du_entries(run(["du", "-skx", full], timeout=60))
+                row["freed"] = max(0, (size or 0) - (left[0]["bytes"] if left else 0))
+        out.append(row)
+    out.sort(key=lambda r: -(r["bytes"] or 0))
+    rep = {"taken": stamp(time.time()), "applied": want, "caches": out,
+           "total_bytes": sum(r["bytes"] or 0 for r in out), "freed_bytes": sum(r.get("freed", 0) for r in out)}
+    if args.json:
+        print(json.dumps(rep, indent=2))
+        return 0
+    for r in out:
+        print("%10s  %-18s %s%s" % (human_bytes(r["bytes"] or 0), r["id"], r["what"],
+                                    "  (busy)" if r["busy"] else "  freed %s" % human_bytes(r["freed"]) if "freed" in r else ""))
+    return 0
+
+
 def cmd_status(args):
     net = guard("tailscale", tailnet) or {}
     try:

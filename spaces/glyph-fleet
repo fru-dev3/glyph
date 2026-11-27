@@ -44,6 +44,10 @@ def main():
     d.add_argument("--limit", type=float, default=60, help="seconds each entry may take to count (60)")
     d.add_argument("--hidden", action="store_true", help="count names that start with a dot too")
     d.set_defaults(func=fleet.cmd_du)
+    c = sub.add_parser("clean", help="caches that rebuild themselves, sized; --apply empties the named ones")
+    c.add_argument("--apply", help="comma-separated cache ids to empty (from the list it prints)")
+    c.add_argument("--json", action="store_true", help="print it as JSON")
+    c.set_defaults(func=fleet.cmd_clean)
     s = sub.add_parser("status", help="every machine, side by side")
     s.add_argument("--live", action="store_true",
                    help="ask every reachable machine over ssh first")
