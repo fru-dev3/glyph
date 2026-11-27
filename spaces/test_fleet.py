@@ -1121,6 +1121,21 @@ def test_clean_takes_only_known_ids_and_empties_only_the_named_cache():
         os.environ["HOME"] = old
 
 
+def test_a_listing_that_never_answers_is_given_up_not_waited_on():
+    import time as _t
+    old = fleet.LIST_LIMIT
+    fleet.LIST_LIMIT = 0.2
+    try:
+        t0 = _t.time()
+        assert fleet.bounded_list("/guarded/place", lambda p: _t.sleep(5) or ["x"]) == []
+        assert _t.time() - t0 < 1, "it waited"
+        assert fleet.bounded_list("/guarded/place/inside", lambda p: ["never asked"]) == [], "under a guarded folder"
+        assert fleet.bounded_list("/open", lambda p: ["a"]) == ["a"]
+    finally:
+        fleet.LIST_LIMIT = old
+        fleet._blocked.clear()
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for t in tests:

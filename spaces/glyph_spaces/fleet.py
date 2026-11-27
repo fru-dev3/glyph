@@ -1448,11 +1448,38 @@ def on_boot(path):
         return None
 
 
-def listnames(path):
-    try:
-        return sorted(os.listdir(path))
-    except OSError:
+# Folders macOS guards (Documents, Desktop, a removable volume) do not refuse a process without access
+# when it runs from launchd: the listing waits on a consent prompt no one on a headless machine will ever
+# answer, and the whole report waited with it (five hours, 2026-11-27). So every listing here runs in a
+# daemon thread with a ceiling; a folder that does not answer in time is treated as unreadable, and so is
+# everything under it for the rest of the run.
+LIST_LIMIT = 5.0
+_blocked = set()
+
+
+def bounded_list(path, fn):
+    """fn(path) within LIST_LIMIT seconds, else [] and the path remembered as guarded."""
+    real = os.path.abspath(path)
+    if any(real == b or real.startswith(b + os.sep) for b in _blocked):
         return []
+    box = {}
+
+    def go():
+        try:
+            box["v"] = fn(path)
+        except OSError:
+            box["v"] = []
+    t = threading.Thread(target=go, daemon=True)
+    t.start()
+    t.join(LIST_LIMIT)
+    if t.is_alive():
+        _blocked.add(real)
+        return []
+    return box.get("v", [])
+
+
+def listnames(path):
+    return bounded_list(path, lambda p: sorted(os.listdir(p)))
 
 
 _TREES = {}
@@ -1485,13 +1512,12 @@ def project_dirs(roots):
 
 
 def _subdirs(path):
-    try:
-        with os.scandir(path) as it:
+    def scan(p):
+        with os.scandir(p) as it:
             return sorted(e.path for e in it
                           if not e.name.startswith(".")
                           and e.is_dir(follow_symlinks=False))
-    except OSError:
-        return []
+    return bounded_list(path, scan)
 
 
 def found_under(roots, tail):
