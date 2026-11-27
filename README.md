@@ -444,7 +444,9 @@ login each one is signed into and whether that login can actually be used
 right now, what is running right now, local inference
 models, the Wi-Fi link (standard, band, channel, link rate, signal and noise),
 whether each disk is an SSD or a spinning one, Time Machine's destinations and
-its newest backup or why there is none, everything installed from Homebrew or
+its newest backup or why there is none, the Mac's guards (FileVault, the firewall
+and stealth mode, System Integrity Protection, Gatekeeper, automatic macOS and
+security updates, and whether remote login or screen sharing answers), everything installed from Homebrew or
 sitting in `/Applications`, and a
 flat map of versions, MCP servers, skills and loaded services for comparing
 against another machine. It writes one file per machine and appends a line of

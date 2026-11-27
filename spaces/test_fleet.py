@@ -1077,6 +1077,19 @@ def test_time_machine_says_when_and_why_not():
     assert none == {"destinations": [], "latest": None, "error": None}, none
 
 
+def test_security_reads_each_guard_from_its_own_words():
+    on = fleet.security("FileVault is On.\n", "Firewall is enabled. (State = 1)\n", "Firewall stealth mode is off\n",
+                        "System Integrity Protection status: enabled.\n", "assessments enabled\n",
+                        {"AutomaticallyInstallMacOSUpdates": "1", "CriticalUpdateInstall": "0"}, True, False)
+    assert on == {"filevault": True, "firewall": True, "stealth": False, "sip": True, "gatekeeper": True,
+                  "auto_updates": True, "security_updates": False, "remote_login": True,
+                  "screen_sharing": False}, on
+    off = fleet.security("FileVault is Off.\n", "Firewall is disabled. (State = 0)\n", None,
+                         "System Integrity Protection status: disabled.\n", "assessments disabled\n", {}, False, False)
+    assert off["filevault"] is False and off["firewall"] is False and off["sip"] is False, off
+    assert off["gatekeeper"] is False and off["stealth"] is None and off["auto_updates"] is None, off
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for t in tests:

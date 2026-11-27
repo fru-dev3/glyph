@@ -749,6 +749,62 @@ def backups_block():
                                          run(["tmutil", "latestbackup"], timeout=10))}
 
 
+def _on(text, yes, no=None):
+    """True or False from a tool's own sentence, None when it said neither (or nothing)."""
+    t = (text or "").lower()
+    if no and no in t:
+        return False
+    if yes in t:
+        return True
+    return None
+
+
+def security(fv, fw, stealth, sip, gk, updates, ssh_open, vnc_open):
+    """This Mac's guards, each True, False or None (not read). From the tools' own words, no root.
+
+    fv `fdesetup status`, fw and stealth `socketfilterfw --getglobalstate/--getstealthmode`,
+    sip `csrutil status`, gk `spctl --status`, updates the SoftwareUpdate preferences as a dict,
+    ssh_open and vnc_open whether ports 22 and 5900 answer on this Mac.
+    """
+    u = updates or {}
+
+    def flag(k):
+        v = u.get(k)
+        return None if v is None else str(v).strip() in ("1", "true", "True", "YES")
+    return {
+        "filevault": _on(fv, "filevault is on", "filevault is off"),
+        "firewall": _on(fw, "enabled", "disabled"),
+        "stealth": _on(stealth, "stealth mode is on", "stealth mode is off"),
+        "sip": _on(sip, "status: enabled", "status: disabled"),
+        "gatekeeper": _on(gk, "assessments enabled", "assessments disabled"),
+        "auto_updates": flag("AutomaticallyInstallMacOSUpdates"),
+        "security_updates": flag("CriticalUpdateInstall"),
+        "remote_login": ssh_open,
+        "screen_sharing": vnc_open,
+    }
+
+
+def _port_open(port):
+    import socket
+    try:
+        with socket.create_connection(("127.0.0.1", port), timeout=1):
+            return True
+    except OSError:
+        return False
+
+
+def security_block():
+    fw = "/usr/libexec/ApplicationFirewall/socketfilterfw"
+    prefs = {}
+    for line in (run(["defaults", "read", "/Library/Preferences/com.apple.SoftwareUpdate"], timeout=5) or "").splitlines():
+        mo = re.match(r"\s*(\w+)\s*=\s*\"?([^\";]*)\"?;", line)
+        if mo:
+            prefs[mo.group(1)] = mo.group(2)
+    return security(run(["fdesetup", "status"], timeout=5), run([fw, "--getglobalstate"], timeout=5),
+                    run([fw, "--getstealthmode"], timeout=5), run(["csrutil", "status"], timeout=5),
+                    run(["spctl", "--status"], timeout=5), prefs, _port_open(22), _port_open(5900))
+
+
 # --- agents and accounts ----------------------------------------------------
 
 def claude_mcp():
@@ -3121,6 +3177,7 @@ def collect(account_tag_given=None):
             "installed": installed_block,
             "network": network_block,
             "backups": backups_block,
+            "security": security_block,
         }
         running = dict((ex.submit(guard, name, fn), name) for name, fn in jobs.items())
         for f in futures.as_completed(running):
