@@ -8,11 +8,16 @@
 # user who ran sudo) run that one file without a password. The sudoers line is checked with visudo before it
 # is put in place. Every folder above the helper must be root-owned, or anyone could swap the file.
 #   sudo sh install-rig-helper.sh --remove     takes both away again
+# Glyph Rig runs it through macOS's own password dialog, which runs it as root with no SUDO_USER, so it
+# names the user: install-rig-helper.sh --user <name>.
 set -eu
 PATH=/usr/bin:/bin:/usr/sbin:/sbin
 [ "$(id -u)" = 0 ] || { echo "run it with sudo: sudo sh $0" >&2; exit 1; }
 user=${SUDO_USER:-}
-[ -n "$user" ] && [ "$user" != root ] || { echo "run it with sudo from your own account, not as root" >&2; exit 1; }
+if [ "${1:-}" = --user ]; then user=${2:-}; shift 2; fi
+case "$user" in ''|*[!A-Za-z0-9._-]*) user="";; esac
+id "$user" >/dev/null 2>&1 || user=""
+[ -n "$user" ] && [ "$user" != root ] || { echo "run it with sudo from your own account, or name it with --user" >&2; exit 1; }
 here=$(cd "$(dirname "$0")" && pwd)
 dest=/usr/local/libexec/glyph-rig-helper
 rule=/etc/sudoers.d/glyph-rig
