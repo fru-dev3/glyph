@@ -22,7 +22,7 @@ Three rules hold this file together:
 import json, os, plistlib, re, shutil, subprocess, sys, tempfile, threading, time
 from concurrent import futures
 
-from glyph_spaces import claims, core
+from glyph_spaces import claims, core, macs
 
 HOME = os.path.expanduser("~")
 SCHEMA = 1
@@ -3204,6 +3204,13 @@ def collect(account_tag_given=None):
             "network": network_block,
             "backups": backups_block,
             "security": security_block,
+            # Glyph Rig's machine tabs (macs.py): power, traffic and ports, displays and sound, settings.
+            "power": macs.power_block,
+            "traffic": macs.traffic_block,
+            "ports": macs.ports_block,
+            "displays": macs.displays_block,
+            "audio": macs.audio_block,
+            "knobs": macs.knobs_block,
         }
         running = dict((ex.submit(guard, name, fn), name) for name, fn in jobs.items())
         for f in futures.as_completed(running):
@@ -3222,6 +3229,10 @@ def collect(account_tag_given=None):
                                 (got.get("setup") or {}).get("checks"),
                                 got.get("spaces"), got.get("agents"),
                                 rep["taken"]) or []
+    # What the machine's template asks for, against what the knobs read: drift, never a change.
+    rep["template"] = guard("template", macs.template_block, mid, os.path.join(rig_dir(), "templates"),
+                            (got.get("knobs") or {}).get("values") or {},
+                            bool((got.get("power") or {}).get("has_battery")))
     if not rep.get("machine"):
         rep["machine"] = {"id": mid}
     if account_tag_given and rep.get("machine"):
