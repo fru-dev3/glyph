@@ -78,12 +78,14 @@ var APPS = {
     steps.appendChild(li); return a;
   }
   document.getElementById("h").textContent = app[0] + " for iPhone";
-  step("Get it on TestFlight", app[1], false);
+  function ready(link) { return link.indexOf("/join/TODO-") < 0; }
+  if (ready(app[1])) step("Get it on TestFlight", app[1], false);
   if (!ok) { document.getElementById("nopair").hidden = false; document.getElementById("note").hidden = true; return; }
   document.getElementById("mac").textContent = name;
   document.getElementById("pairs").hidden = false;
   // Glyph Native does the pairing for every Glyph app on the phone; another app's page installs it too.
-  if (id !== "native") step("Get Glyph Native on TestFlight", APPS.native[1], true, "It pairs every Glyph app on this phone, once.");
+  if (id !== "native" && ready(APPS.native[1])) step("Get Glyph Native on TestFlight", APPS.native[1], true, "It pairs every Glyph app on this phone, once.");
+  if (!ready(app[1])) { var soon = document.createElement("p"); soon.className = "pl"; soon.textContent = "The public TestFlight link opens soon. Already have the app? Open and pair below."; document.getElementById("h").after(soon); }
   var link = "glyph-native://pair?url=" + encodeURIComponent(url) + "&name=" + encodeURIComponent(name);
   ["code", "bonjour"].forEach(function (k) { if (get(k)) link += "&" + k + "=" + encodeURIComponent(get(k)); });
   step("Open and pair", link, true).id = "open";
