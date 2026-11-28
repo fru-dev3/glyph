@@ -264,6 +264,15 @@ def cta(back_k=None, back_name=None):
             f'{svg("M12 3v12m0 0l-5-5m5 5l5-5M5 21h14")}Install Glyph Native</a>{back}</p>')
 
 
+def switching(a):
+    """One small line to the /<rival>-alternative pages, when the app has any."""
+    names = [f'<a href="/{rv["slug"]}-alternative">{e(rv["name"])}</a>' for rv in a.get("rivals", []) if "alt" in rv]
+    if not names:
+        return ""
+    joined = ", ".join(names[:-1]) + " or " + names[-1] if len(names) > 1 else names[0]
+    return f'<p class="fine switch">Switching from {joined}? What to know, and how to bring your notes over.</p>'
+
+
 def panels(k):
     a = app(k)
     # How it works: a stepper. The steps on the left take turns; the picture on the right follows.
@@ -315,7 +324,7 @@ def panels(k):
 <section class="panel" id="compare" hidden aria-labelledby="cmp-h">{close(k)}<div class="pin">
   <h2 id="cmp-h">{e(a["name"])} side by side</h2><p class="pl">Pick an app. Every fact about it links to its own site, as of {asof(a)}.</p>
   <div class="rivals" role="tablist" aria-label="Compare with">{groups}</div>
-  {"".join(cards)}
+  {switching(a)}{"".join(cards)}
 </div></section>
 <section class="panel" id="open" hidden aria-labelledby="open-h">{close(k)}<div class="pin">
   {open_body}
@@ -434,6 +443,65 @@ def vs_page(k, a, rv):
 '''
 
 
+def alt_page(k, a, rv):
+    """/<rival>-alternative: the page people search for when they want off a paid app (2026-11-27).
+    The vs page's frame; what the rival does and costs (cited, checked on alt["checked"]), what the app does,
+    where it is behind, how to bring notes over, and one Install button."""
+    al, x = a["alt"], rv["alt"]
+    url = f"https://glyph.fru.dev/{rv['slug']}-alternative"
+    title = f'{x["h1"]} | {a["name"]}'
+    desc = f'{x["lede"]} What {rv["name"]} costs, what {a["name"]} does, where it is behind, and how to bring your notes over.'
+    srcs = []
+
+    def c(item):
+        t, u = item
+        if u not in srcs:
+            srcs.append(u)
+        return (f'<span>{e(t)}<a class="cite" href="{e(u)}" target="_blank" rel="noreferrer nofollow" '
+                f'title="{e(rv["name"])}\'s own page">{srcs.index(u) + 1}</a></span>')
+
+    def li(xs, ic, cls="ok"):
+        return "".join(f"<li>{svg(ic, cls)}{t}</li>" for t in xs)
+
+    plain = lambda ts: [f"<span>{e(t)}</span>" for t in ts]
+    does = li([c(i) for i in x["does"]], "M12 16v-4M12 8h.01M12 3a9 9 0 100 18 9 9 0 000-18z")
+    costs = li([c(i) for i in x["costs"]], ROWICON["price"])
+    ours = li(plain(al["does"]), CHECK)
+    behind = li(plain(al["behind"]["all"] + al["behind"][rv["group"]] + x.get("behind_extra", [])), "M5 12h14", "ok gap")
+    move = li([c(i) for i in x["export"]] + plain([x["after"], al["folder"], al["audio"]]), "M5 12h14M13 6l6 6-6 6")
+    d = date.fromisoformat(al["checked"])
+    bare = lambda u: re.sub(r"^https?://(www\.)?", "", u)
+    others = "".join(f'<a href="/{o["slug"]}-alternative"><img src="{e(o["logo"])}" width="28" height="28" alt="">{e(o["name"])}</a>'
+                     for o in a["rivals"] if o is not rv and "alt" in o)
+    src_li = "".join(f'<li><a href="{e(u)}" target="_blank" rel="noreferrer nofollow">{e(bare(u))}</a></li>' for u in srcs)
+    body = f'''  <p class="crumb"><a href="/{k}#compare">{e(a["name"])} side by side</a></p>
+  <h1>{e(x["h1"])}</h1>
+  <p class="pl">{e(x["lede"])}</p>
+  {duel(k, a, rv)}
+  <h2>What {e(rv["name"])} does</h2><ul class="short">{does}</ul>
+  <h2>What {e(rv["name"])} costs</h2><ul class="short">{costs}</ul>
+  <p class="fine">US prices from {e(rv["name"])}'s own pages, checked {d.strftime('%B')} {d.day}, {d.year}. Prices change; the links show today's.</p>
+  <h2>What {e(a["name"])} does</h2><ul class="short">{ours}</ul>
+  <h2>Where {e(a["short"])} is behind</h2><ul class="short">{behind}</ul>
+  <h2>Bring your notes over</h2><ul class="short">{move}</ul>
+  <h2>What you need</h2><p class="pl sm">{e(al["needs"])}</p>
+  {cta()}
+  <p class="more"><a href="/{k}/vs/{rv["slug"]}">{e(a["name"])} vs {e(rv["name"])}, row by row {svg("M5 12h14M13 6l6 6-6 6", "arr")}</a></p>
+  <h2>Other alternatives</h2><div class="others">{others}</div>
+  <h2>Sources</h2><ol class="srcs">{src_li}</ol>'''
+    page = vs_page(k, a, rv)
+    page = re.sub(r"<title>.*?</title>", lambda m: f"<title>{e(title)}</title>", page, count=1)
+    page = re.sub(r'(<meta (?:name="description"|property="og:description") content=")[^"]*', lambda m: m.group(1) + e(desc), page)
+    page = re.sub(r'(<meta property="og:title" content=")[^"]*', lambda m: m.group(1) + e(title), page)
+    page = page.replace(f"https://glyph.fru.dev/{k}/vs/{rv['slug']}", url)
+    og = '<meta property="og:image" content="https://glyph.fru.dev/og-image.png">'
+    page = page.replace(og, og + '\n<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:site" content="@fru">', 1)
+    page = page.replace(f'data-page="{k}-vs-{rv["slug"]}"', f'data-page="{rv["slug"]}-alternative"')
+    start = '<main class="doc"><div class="pin">\n'
+    i = page.index(start) + len(start)
+    return page[:i] + body + page[page.index("\n</div></main>"):]
+
+
 def bake(path, block):
     s = path.read_text()
     if "<!-- ribbon -->" in s:
@@ -445,8 +513,9 @@ def bake(path, block):
 
 def sitemap(k, a):
     sm = docs / "sitemap.xml"
-    lines = [l for l in sm.read_text().splitlines() if f"glyph.fru.dev/{k}/vs/" not in l]
-    lines[-1:-1] = [f'  <url><loc>https://glyph.fru.dev/{k}/vs/{rv["slug"]}</loc><lastmod>{a["as_of"]}</lastmod>'
+    alts = [f'https://glyph.fru.dev/{rv["slug"]}-alternative' for rv in a["rivals"] if "alt" in rv]
+    lines = [l for l in sm.read_text().splitlines() if f"glyph.fru.dev/{k}/vs/" not in l and not any(f"<loc>{u}</loc>" in l for u in alts)]
+    lines[-1:-1] = [f'  <url><loc>{u}</loc><lastmod>{a["alt"]["checked"]}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>' for u in alts] + [f'  <url><loc>https://glyph.fru.dev/{k}/vs/{rv["slug"]}</loc><lastmod>{a["as_of"]}</lastmod>'
                     f'<changefreq>monthly</changefreq><priority>0.7</priority></url>' for rv in a["rivals"]]
     sm.write_text("\n".join(lines) + "\n")
 
@@ -465,6 +534,10 @@ def main(keys):
             out = docs / k / "vs" / rv["slug"] / "index.html"
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_text(vs_page(k, a, rv))
+            if "alt" in rv:
+                alt = docs / f"{rv['slug']}-alternative" / "index.html"
+                alt.parent.mkdir(exist_ok=True)
+                alt.write_text(alt_page(k, a, rv))
         sitemap(k, a)
         print(f"{k}: ribbon + {len(a['rivals'])} vs pages")
 

@@ -207,7 +207,42 @@
      "https://docs.wisprflow.ai/articles/3467817258-security-and-compliance-faq",
      "https://docs.wisprflow.ai/articles/9609615338-private-cloud-sync-and-data-sharing-preferences-in-wispr-flow",
      "https://wisprflow.ai/android"
-    ]
+    ],
+    "alt": {
+     "h1": "A free, private alternative to Wispr Flow",
+     "lede": "Wispr Flow turns your speech into text in its cloud. Glyph Jot does the same job on your Mac, for free, with no account.",
+     "does": [
+      [
+       "Wispr Flow is a dictation app. You hold a key, talk, and it types into any app, cleaning up the text as it goes.",
+       "https://docs.wisprflow.ai/articles/2772472373-what-is-flow"
+      ],
+      [
+       "It runs on Mac, Windows, iPhone and Android. Speech is turned into text in its cloud, so it needs an account and an internet connection.",
+       "https://wisprflow.ai/android"
+      ]
+     ],
+     "costs": [
+      [
+       "Free: a 2,000-word weekly allowance on Mac and Windows (5,000 words at most), resetting each Sunday. Phones get a smaller weekly allowance.",
+       "https://docs.wisprflow.ai/articles/9559327591-flow-plans-and-what-s-included"
+      ],
+      [
+       "Pro: $15 a user a month, or $144 a year.",
+       "https://docs.wisprflow.ai/articles/9559327591-flow-plans-and-what-s-included"
+      ],
+      [
+       "Team plans (Growth and Enterprise) cost more and are listed on its pricing page.",
+       "https://wisprflow.ai/pricing"
+      ]
+     ],
+     "export": [
+      [
+       "In Flow on a Mac or Windows PC, open Settings, then Data and Privacy, and choose Download your data. Flow emails you when the ZIP file is ready. It holds your dictation history, meetings, Scratchpad notes and settings, and stays available for 30 days.",
+       "https://docs.wisprflow.ai/articles/3467817258-security-and-compliance-faq"
+      ]
+     ],
+     "after": "Jot does not read Flow's ZIP file itself. Unzip it, keep it in your Glyph vault folder, and save the notes you want in Jot as Markdown files in its notes folder."
+    }
    },
    {
     "slug": "superwhisper",
@@ -261,7 +296,41 @@
      "https://superwhisper.com/privacy",
      "https://superwhisper.com/offline-transcription",
      "https://superwhisper.com/docs/get-started/cli"
-    ]
+    ],
+    "alt": {
+     "h1": "A free alternative to Superwhisper",
+     "lede": "Superwhisper and Glyph Jot can both keep your speech on your Mac. Jot is free, with no paid tier, and does meetings in the same app.",
+     "does": [
+      [
+       "Superwhisper is a dictation app with modes that rewrite your words using AI models. It can run speech models on your device, or in its cloud on Pro, and it records meetings.",
+       "https://superwhisper.com/docs/billing/plans"
+      ],
+      [
+       "It runs on Mac, Windows, iPhone and Android.",
+       "https://superwhisper.com/docs/billing/plans"
+      ]
+     ],
+     "costs": [
+      [
+       "Free: unlimited dictation with local Whisper models and up to two modes without AI processing. No file transcription, cloud voice models or AI modes.",
+       "https://superwhisper.com/docs/billing/plans"
+      ],
+      [
+       "Pro: $8.49 a month, $84.99 a year, or $249.99 once.",
+       "https://superwhisper.com/docs/billing/plans"
+      ]
+     ],
+     "export": [
+      [
+       "Install Superwhisper's command-line tool (Mac only), then run superwhisper export -f markdown > dictations.md. It writes every dictation, oldest first, into one Markdown file.",
+       "https://superwhisper.com/docs/get-started/cli"
+      ]
+     ],
+     "after": "Move that file into Jot's notes folder and it shows up as a note.",
+     "behind_extra": [
+      "Superwhisper lets you pick from many speech models, local or cloud. Jot uses Apple's on-device model only."
+     ]
+    }
    },
    {
     "slug": "willow",
@@ -419,7 +488,42 @@
      "https://www.granola.ai/security",
      "https://docs.granola.ai/help-center/consent-security-privacy/security-privacy-data-faqs",
      "https://docs.granola.ai/help-center/sharing/exporting-notes"
-    ]
+    ],
+    "alt": {
+     "h1": "A free, local alternative to Granola",
+     "lede": "Granola takes meeting notes with no bot, then transcribes in its cloud. Glyph Jot records with no bot too, and keeps the whole meeting on your Mac, for free.",
+     "does": [
+      [
+       "Granola is a meeting notepad. It listens to your computer's audio with no bot in the call, you type rough notes, and it writes them up with the transcript.",
+       "https://docs.granola.ai/help-center/taking-notes/transcription"
+      ],
+      [
+       "Transcription and AI run in its cloud, and you sign in with Google, Microsoft or SSO.",
+       "https://docs.granola.ai/help-center/consent-security-privacy/security-privacy-data-faqs"
+      ]
+     ],
+     "costs": [
+      [
+       "Basic: free, with 30 days of meeting history.",
+       "https://www.granola.ai/pricing"
+      ],
+      [
+       "Business: $14 a user a month.",
+       "https://www.granola.ai/pricing"
+      ],
+      [
+       "Enterprise: $35 a user a month.",
+       "https://www.granola.ai/pricing"
+      ]
+     ],
+     "export": [
+      [
+       "In Granola, open Settings, then Profile, and choose Generate CSV. Granola emails a link within a few hours that works for 24 hours. The CSV holds each note's title, summary and transcript.",
+       "https://docs.granola.ai/help-center/sharing/exporting-notes"
+      ]
+     ],
+     "after": "Jot does not read CSV files. Keep the CSV in your Glyph vault folder, and paste the notes you want in Jot into Markdown files in its notes folder."
+    }
    },
    {
     "slug": "otter",
@@ -479,7 +583,38 @@
      "https://help.otter.ai/hc/en-us/articles/44008744581271",
      "https://otter.ai/privacy-policy",
      "https://help.otter.ai/hc/en-us/articles/360047733634"
-    ]
+    ],
+    "alt": {
+     "h1": "A free, private alternative to Otter",
+     "lede": "Otter transcribes your meetings in its cloud. Glyph Jot records them with no bot and keeps the audio, transcript and summary on your Mac, for free.",
+     "does": [
+      [
+       "Otter records and transcribes meetings in its cloud. Its notetaker can join Zoom, Meet and Teams calls, or its desktop app records without one.",
+       "https://otter.ai/pricing"
+      ],
+      [
+       "It runs on Mac, Windows, iPhone, Android and the web.",
+       "https://otter.ai/pricing"
+      ]
+     ],
+     "costs": [
+      [
+       "Basic: free, with 300 transcription minutes a month, up to 30 minutes per conversation and your 25 most recent conversations.",
+       "https://otter.ai/pricing"
+      ],
+      [
+       "Pro: $16.99 a month, or $8.33 a month billed yearly. A 50% off sale was running on the day we checked.",
+       "https://otter.ai/pricing"
+      ]
+     ],
+     "export": [
+      [
+       "Open a conversation in Otter and use Export to save the transcript as a file. Otter's help center lists which formats each plan can export.",
+       "https://help.otter.ai/hc/en-us/articles/360047733634"
+      ]
+     ],
+     "after": "Save text transcripts as Markdown (.md) files in Jot's notes folder."
+    }
    },
    {
     "slug": "fireflies",
@@ -528,7 +663,42 @@
      "https://fireflies.ai/desktop",
      "https://fireflies.ai/privacy",
      "https://fireflies.ai/security"
-    ]
+    ],
+    "alt": {
+     "h1": "A free, private alternative to Fireflies",
+     "lede": "Fireflies records meetings through a bot or its desktop app and works in its cloud. Glyph Jot records with no bot, offline, on your Mac, for free.",
+     "does": [
+      [
+       "Fireflies records meetings by inviting its notetaker, Fred, into the call, or through its desktop app capturing the computer's audio.",
+       "https://fireflies.ai/desktop"
+      ],
+      [
+       "It transcribes and summarizes in its cloud and keeps meetings on its servers.",
+       "https://fireflies.ai/privacy"
+      ]
+     ],
+     "costs": [
+      [
+       "Free: 400 minutes of storage per team and up to 2 hours per meeting. No downloads.",
+       "https://fireflies.ai/blog/fireflies-pricing-which-plan-is-right-for-you"
+      ],
+      [
+       "Pro: $18 a seat a month, or $10 a seat a month billed yearly.",
+       "https://guide.fireflies.ai/articles/9606045468-fireflies-billing-terms"
+      ],
+      [
+       "Business: $29 a seat a month, or $19 billed yearly.",
+       "https://guide.fireflies.ai/articles/9606045468-fireflies-billing-terms"
+      ]
+     ],
+     "export": [
+      [
+       "Open a meeting in Fireflies, click Download, choose Transcript and a format: PDF, DOCX, SRT, CSV, JSON or MD. Downloads need Pro or higher.",
+       "https://guide.fireflies.ai/articles/3319752033-how-to-download-transcripts-summaries-and-meeting-recordings-from-fireflies"
+      ]
+     ],
+     "after": "Choose MD and save the files into Jot's notes folder."
+    }
    },
    {
     "slug": "fathom",
@@ -588,7 +758,34 @@
     ]
    }
   ],
-  "tag": "Talk and it types. Click Record for meetings."
+  "tag": "Talk and it types. Click Record for meetings.",
+  "alt": {
+   "checked": "2026-11-27",
+   "does": [
+    "Hold Fn and talk, in any app on the Mac. Let go and the words are typed where your cursor is.",
+    "Fn + Shift saves what you said as a note instead of typing it.",
+    "Click Record for meetings: Zoom, Meet, FaceTime or a talk in the room. No bot joins. The transcript, summary and action items are written on your Mac.",
+    "Speech is turned into text by Apple's on-device model. Summaries and clean-up use Apple Intelligence on the Mac. Glyph Jot makes no network requests and needs no account.",
+    "Everything is plain files in a folder you choose: notes are Markdown, dictations are lines of JSON, recordings are folders with an .m4a file.",
+    "Free, with no paid tier and no word or minute limit."
+   ],
+   "behind": {
+    "all": [
+     "Jot is for the Mac, with an iPhone app and keyboard in TestFlight testing. There is no Windows, Android or web version.",
+     "Jot listens in one speech language at a time, picked in Settings. It does not detect the language as you talk."
+    ],
+    "dictation": [
+     "The dictionary grows by hand. Jot offers a word after you fix it twice, and you choose to add it."
+    ],
+    "meetings": [
+     "Meetings stay on your Mac. There are no share links, team workspaces or app integrations.",
+     "Jot does not watch your calendar or join meetings for you. You click Record when the call starts."
+    ]
+   },
+   "folder": "Jot lists every Markdown (.md) file in its notes folder as a note. The notes folder is the one you pick in Settings; in a Glyph vault it is data/domains/notes/source/jot.",
+   "audio": "Recordings come over too: Import Audio (Shift-Command-I, or drop files on the library) takes .m4a, .mp3, .wav, .aiff and video files and transcribes them on your Mac.",
+   "needs": "An Apple silicon Mac on macOS 26 or later. Summaries and asking your history need Apple Intelligence; plain dictation and recording do not. Glyph Native installs Glyph Jot and keeps it up to date."
+  }
  },
  "time": {
   "name": "Glyph Time",

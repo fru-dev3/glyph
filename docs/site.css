@@ -345,6 +345,8 @@ main.doc{display:block;min-height:0;padding:80px clamp(16px,4vw,64px) calc(90px 
 .short{list-style:none;padding:0;display:grid;gap:10px;font-size:clamp(17px,1.8vw,20px)}
 .short li{display:flex;gap:12px;align-items:flex-start;padding:14px 18px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
 .short .ok{width:22px;height:22px;flex:none;color:var(--green);stroke-width:3;margin-top:2px}
+.short .gap{color:var(--dim)}
+.switch{margin:0 0 14px}.switch a{color:var(--green);font-weight:700}
 .others{display:flex;flex-wrap:wrap;gap:8px}
 .others a{display:inline-flex;align-items:center;gap:9px;padding:6px 14px 6px 6px;border-radius:999px;border:1px solid var(--line);background:var(--card);text-decoration:none;color:var(--ink);font-weight:600}
 .others img{border-radius:8px;background:#fff;object-fit:contain}
