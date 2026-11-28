@@ -1,0 +1,49 @@
+#!/bin/sh
+# glyph-rig-helper: everything Glyph Rig may do as root, and nothing else.
+#
+# Installed root-owned at /usr/local/libexec/glyph-rig-helper by install-rig-helper.sh, with one sudoers
+# line that lets the owner run exactly this file without a password. It takes fixed verbs and checks every
+# argument against a closed list or a range before anything runs, so the worst a caller can do is set a
+# legal value. It reads no file, no template and no vault: what to set arrives as arguments, chosen by
+# Rig's code from its knob table, after the owner clicked a card.
+#
+#   glyph-rig-helper pmset <ac|battery|all> <displaysleep|sleep|disksleep> <minutes, 0 to 180>
+#   glyph-rig-helper pmset <ac|battery|all> <womp|powernap|tcpkeepalive> <on|off>
+#   glyph-rig-helper firewall <on|off>
+#   glyph-rig-helper firewall stealth <on|off>
+#   glyph-rig-helper version
+#
+# GLYPH_RIG_HELPER_DRY=1 prints the command instead of running it (the tests). sudo clears the
+# environment, so a caller going through sudo cannot set it.
+set -eu
+PATH=/usr/bin:/bin:/usr/sbin:/sbin
+export PATH
+
+no() { echo "glyph-rig-helper: $*" >&2; exit 2; }
+run() { if [ "${GLYPH_RIG_HELPER_DRY:-}" = 1 ]; then echo "$*"; else exec "$@"; fi; }
+minutes() { case "$1" in ''|*[!0-9]*) no "not a number of minutes: $1";; esac; [ "$1" -le 180 ] || no "more than 180 minutes: $1"; }
+onoff() { case "$1" in on) echo 1;; off) echo 0;; *) no "on or off, not: $1";; esac; }
+
+case "${1:-}" in
+  pmset)
+    [ $# -eq 4 ] || no "pmset takes a power source, a setting and a value"
+    case "$2" in ac) s=-c;; battery) s=-b;; all) s=-a;; *) no "power source is ac, battery or all, not: $2";; esac
+    v=$4
+    case "$3" in
+      displaysleep|sleep|disksleep) minutes "$v";;
+      womp|powernap|tcpkeepalive) v=$(onoff "$v");;
+      *) no "not a power setting Rig sets: $3";;
+    esac
+    run pmset "$s" "$3" "$v";;
+  firewall)
+    fw=/usr/libexec/ApplicationFirewall/socketfilterfw
+    if [ $# -eq 2 ]; then
+      case "$2" in on|off) run "$fw" --setglobalstate "$2";; *) no "firewall on or off, not: $2";; esac
+    elif [ $# -eq 3 ] && [ "$2" = stealth ]; then
+      case "$3" in on|off) run "$fw" --setstealthmode "$3";; *) no "stealth on or off, not: $3";; esac
+    else
+      no "firewall <on|off> or firewall stealth <on|off>"
+    fi;;
+  version) echo "glyph-rig-helper 1";;
+  *) no "usage: pmset <ac|battery|all> <setting> <value> | firewall <on|off> | firewall stealth <on|off> | version";;
+esac
